@@ -1,0 +1,23 @@
+{
+  "name": "extensy",
+  "version": "0.0.0",
+  "files": [
+    "out"
+  ],
+  "sideEffects": false,
+  "main": "./out/index.js",
+  "exports": {
+    ".": {
+      "types": "./out/index.d.ts",
+      "default": "./out/index.js"
+    },
+    "./*": "./out/*"
+  },
+  "scripts": {
+    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
+    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "devDependencies": {
+    "vite": "catalog:"
+  }
+}

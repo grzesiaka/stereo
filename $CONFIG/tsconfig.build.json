@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.dev.json",
+  "compilerOptions": {
+    // it is assumed to use this config from project's node_modules/dev
+    "outDir": "${configDir}/../../out",
+    "paths": {
+      "@": ["${configDir}/../../src"],
+      "@/*": ["${configDir}/../../src/*"]
+    },
+    "noEmit": false,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true
+  },
+  "include": ["${configDir}/../../src"]
+}

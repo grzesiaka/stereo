@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "stereo",
+  "version": "0.0.0",
+  "description": "mono stereo",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "scripts": {
+    "ci": "turbo run build tsc test --affected",
+    "build": "turbo run build",
+    "dev": "turbo run dev --ui=tui",
+    "test": "turbo run test",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "postinstall": "node ./\\$CONFIG/src/set-defaults.ts",
+    "clear-all": "node ./\\$CONFIG/src/clear-all.ts",
+    "refresh": "pnpm clear-all && pnpm install && pnpm build"
+  },
+  "devDependencies": {
+    "oxfmt": "0.24.0",
+    "oxlint": "1.39.0",
+    "turbo": "2.7.5",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "pnpm@10.29.1"
+}

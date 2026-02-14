@@ -1,0 +1,19 @@
+{
+  "name": "~dom",
+  "version": "0.0.0",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./out/index.d.ts",
+      "default": "./out/index.js"
+    },
+    "./*": "./out/*"
+  },
+  "scripts": {
+    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
+    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "dependencies": {
+    "@types/web": "0.0.336"
+  }
+}

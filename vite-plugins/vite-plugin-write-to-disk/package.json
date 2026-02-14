@@ -1,0 +1,21 @@
+{
+  "name": "vite-plugin-write-to-disk",
+  "version": "0.0.0",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./out/index.d.ts",
+      "default": "./out/index.js"
+    },
+    "./*": "./out/*"
+  },
+  "scripts": {
+    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
+    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "devDependencies": {
+    "vite": "catalog:",
+    "~nodejs": "workspace:"
+  }
+}
