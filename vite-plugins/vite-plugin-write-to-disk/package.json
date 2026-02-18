@@ -1,8 +1,8 @@
 {
   "name": "vite-plugin-write-to-disk",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "sideEffects": false,
-  "main": "./src/index.ts",
+  "main": "./out/index.ts",
   "exports": {
     ".": {
       "types": "./out/index.d.ts",

@@ -14,10 +14,10 @@
     "dev": "vite dev"
   },
   "dependencies": {
-    "extensy": "workspace:"
+    "rxjs": "7.8.2",
+    "exte": "workspace:"
   },
   "devDependencies": {
-    "rxjs": "7.8.2",
     "vite": "catalog:",
     "vite-plugin-inspect": "11.3.3",
     "~dom": "workspace:",

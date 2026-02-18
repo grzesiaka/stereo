@@ -5,14 +5,13 @@ import WriteToDisk from "../src";
 import $ from "~nodejs";
 
 export default defineConfig({
-  root: "src",
-  // appType: "custom",
+  root: import.meta.dirname + "/src",
   build: {
-    // minify: true,
-    // manifest: true,
-    modulePreload: false,
-    outDir: "../out",
-    // emptyOutDir: true,
+    minify: true,
+    modulePreload: true,
+    // Seems there is a bug when using relative path. It is relative to repo's root in case of `serve` and absolute in case of `build`.
+    outDir: import.meta.dirname + "/out",
+    emptyOutDir: true,
     rolldownOptions: {
       input: {
         popup: "./popup/index.html",
@@ -23,7 +22,6 @@ export default defineConfig({
         entryFileNames: (a) => {
           $.console.log("ENTRY", a);
           return `[name].js`;
-          // return `${a.name}.${a.facadeModuleId?.split(".").pop() || "unknown"}`;
         },
         chunkFileNames: (a) => {
           $.console.log("CHUNK", a);
@@ -41,12 +39,5 @@ export default defineConfig({
       "@": import.meta.dirname + "/src",
     },
   },
-  plugins: [WriteToDisk(), Inspect()],
-  experimental: {
-    bundledDev: true,
-    renderBuiltUrl: (a, b) => {
-      $.console.log(a, b);
-      return a;
-    },
-  },
+  plugins: [WriteToDisk({}), Inspect()],
 });

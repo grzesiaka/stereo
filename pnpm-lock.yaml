@@ -46,7 +46,7 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
-  extensy:
+  exte:
     dependencies:
       ~cfg:
         specifier: 'workspace:'
@@ -90,16 +90,16 @@ importers:
 
   vite-plugins/vite-plugin-write-to-disk/example:
     dependencies:
-      extensy:
+      exte:
         specifier: 'workspace:'
-        version: link:../../../extensy
+        version: link:../../../exte
+      rxjs:
+        specifier: 7.8.2
+        version: 7.8.2
       ~cfg:
         specifier: 'workspace:'
         version: link:../../../$CONFIG
     devDependencies:
-      rxjs:
-        specifier: 7.8.2
-        version: 7.8.2
       vite:
         specifier: 'catalog:'
         version: 8.0.0-beta.14(@types/node@25.2.3)(esbuild@0.27.3)

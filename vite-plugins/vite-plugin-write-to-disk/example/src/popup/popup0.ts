@@ -6,6 +6,6 @@ import Dep0 from "./popup-dep0";
 type A = typeof $;
 const A: A = $;
 
-$.console.log("AAA", X, A, Dep0);
+$.console.log("ABC", X, A, Dep0);
 
 export default Dep0;

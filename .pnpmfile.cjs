@@ -6,6 +6,7 @@ module.exports = {
       delete pkg.devDependencies;
       delete pkg.scripts;
       pkg.publishedAt = new Date().toISOString();
+      pkg.files = pkg.files || ["out/**/*"];
       return pkg;
     },
     readPackage(pkg) {
