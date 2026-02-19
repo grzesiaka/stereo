@@ -13,7 +13,7 @@ catalogs:
       specifier: 8.0.0-beta.14
       version: 8.0.0-beta.14
 
-pnpmfileChecksum: sha256-+M4uOpGup+SwNR6ho8s/Pi6v3luv8sOx4DTC9mbSRgw=
+pnpmfileChecksum: sha256-gEBEgc1j/JkFLmQEdJfep32htNBd4kcIY9NdQanMBb8=
 
 importers:
 
@@ -46,7 +46,13 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
-  exte:
+  exexe:
+    dependencies:
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../$CONFIG
+
+  extens:
     dependencies:
       ~cfg:
         specifier: 'workspace:'
@@ -75,6 +81,18 @@ importers:
         specifier: 'catalog:'
         version: 25.2.3
 
+  oyoyo:
+    dependencies:
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../$CONFIG
+
+  treeo:
+    dependencies:
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../$CONFIG
+
   vite-plugins/vite-plugin-write-to-disk:
     dependencies:
       ~cfg:
@@ -90,9 +108,9 @@ importers:
 
   vite-plugins/vite-plugin-write-to-disk/example:
     dependencies:
-      exte:
+      extens:
         specifier: 'workspace:'
-        version: link:../../../exte
+        version: link:../../../extens
       rxjs:
         specifier: 7.8.2
         version: 7.8.2

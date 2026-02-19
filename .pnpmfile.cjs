@@ -7,6 +7,7 @@ module.exports = {
       delete pkg.scripts;
       pkg.publishedAt = new Date().toISOString();
       pkg.files = pkg.files || ["out/**/*"];
+      pkg.license = "NON-AI-MIT";
       return pkg;
     },
     readPackage(pkg) {

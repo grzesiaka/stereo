@@ -1,8 +1,7 @@
 {
-  "name": "vite-plugin-write-to-disk",
+  "name": "treeo",
   "version": "1.0.0-alpha.0",
   "sideEffects": false,
-  "main": "./out/index.ts",
   "exports": {
     ".": {
       "types": "./out/index.d.ts",
@@ -13,9 +12,5 @@
   "scripts": {
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json"
-  },
-  "devDependencies": {
-    "vite": "catalog:",
-    "~nodejs": "workspace:"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-write-to-disk-example",
-  "version": "0.0.0",
+  "version": "1.0.0-alpha.0",
   "sideEffects": false,
   "exports": {
     ".": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "rxjs": "7.8.2",
-    "exte": "workspace:"
+    "extens": "workspace:"
   },
   "devDependencies": {
     "vite": "catalog:",
