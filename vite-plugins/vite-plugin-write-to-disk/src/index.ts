@@ -33,14 +33,14 @@ export default (options: WriteToDiskOptions | ((defaultOptions: typeof defOption
   };
 
   const src = (...seg: string[]) => resolve(cfg.root, ...seg);
-  const srcRelative = (path: string) => relative(path, src());
+  const srcRelative = (path: string) => relative(src(), path);
   const out = (...seg: string[]) => resolve(cfg.build.outDir, ...seg);
   let node_modules: string;
 
   const viteOrigin = () => `http${cfg.server.https ? "s" : ""}://${cfg.server.host || "localhost"}:${cfg.server.port}`;
 
   const rebaseHTML = (file: string, content: string) =>
-    content.replace("<head>", `<head><base href="${viteOrigin()}${srcRelative(file).substring(2)}"/>`);
+    content.replace("<head>", `<head><base href="${viteOrigin()}/${srcRelative(file)}"/>`);
   // .replace("/@vite/client", `${viteOrigin()}/@vite/client`)
   // .replace(/(<script .*)src=(.*).ts/g, "$1src=$2.js")
   // .replace(/(<link .*)href=(")(.*).css/g, `$1href=$2${viteOrigin()}/$3.css`);
@@ -71,11 +71,8 @@ export default (options: WriteToDiskOptions | ((defaultOptions: typeof defOption
     enforce: "post",
 
     config(cfg) {
-      // L(cfg);
       return {
-        // appType: "custom",
         server: {
-          // https: true,
           warmup: {
             // public is copied as such
             clientFiles: ["**/*", cfg.publicDir || "!public/"],
@@ -90,9 +87,6 @@ export default (options: WriteToDiskOptions | ((defaultOptions: typeof defOption
       cfg = _cfg;
       node_modules = src(opt.node_modules);
       this.info("config resolved");
-      L("SRC", src());
-      L(`OUT`, out());
-      L("PUBLIC", cfg.publicDir);
     },
 
     buildStart() {
