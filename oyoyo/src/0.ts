@@ -1,28 +1,27 @@
 /**
  *  Potential / Hole / Future
- * 
+ *
  * `X | undefined`
  */
-export type __<X = never> = X | undefined
+export type __<X = never> = X | undefined;
 
 /**
- *  Partial id
- * 
- * `<X>(x?: X) => x`
+ * `void 0`
  */
-export const __ = <X>(x?: X) => x
-
+export const __ = void 0;
 /**
  * `Exclude<X, undefined>`
  */
-export type $$<X = unknown> = Exclude<X, undefined>
+export type $$<X = unknown> = Exclude<X, __>;
+
+export type FLIP<X> = __ extends X ? [$$<X>] : [__<X>?];
 
 /**
  * Unnamed, ordered group
- * 
+ *
  * `ReadonlyArray<X>` / `readonly X[]`
  */
-export type ARR<X = any> = ReadonlyArray<X>
+export type ARR<X = any> = ReadonlyArray<X>;
 
 /**
  * Function with optional attached information
@@ -31,20 +30,23 @@ export type Fn<I extends ARR = ARR, O = unknown, E = {}> = (E extends string ? {
 
 /**
  * An alias for:
- * 
+ *
  * `Object.assign`
- * 
+ *
  * @todo Improve the typing of built-in typescript's Object.assign
  */
-export const a = Object.assign
+export const a = Object.assign;
 
 /**
  * Tags an object-like value with its direct context
- * 
+ *
  * @param operation_id id of the operation
  * @param operation_params params of the operation
  * @param x value to be tagged
  * @returns `Object.assign(x, { __: [Params, OP_ID] })`
  */
-export const OP = <OP_ID extends string>(id: OP_ID) => <const Params>(p: Params) => <X extends {}>(x: X) =>
-    a(x, { __: [p, id] as [Params, OP_ID]})
+export const OP =
+  <OP_ID extends string>(id: OP_ID) =>
+  <const Params>(p: Params) =>
+  <X extends {}>(x: X) =>
+    a(x, { __: [p, id] as [Params, OP_ID] });
