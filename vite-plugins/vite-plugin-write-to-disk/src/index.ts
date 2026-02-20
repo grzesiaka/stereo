@@ -75,7 +75,7 @@ export default (options: WriteToDiskOptions | ((defaultOptions: typeof defOption
         server: {
           warmup: {
             // public is copied as such
-            clientFiles: ["**/*", cfg.publicDir || "!public/"],
+            clientFiles: ["**/*", cfg.publicDir || "!public/", '!**/*d.ts'],
           },
         },
       };
@@ -97,18 +97,18 @@ export default (options: WriteToDiskOptions | ((defaultOptions: typeof defOption
     },
 
     transformIndexHtml: (code, ctx) => {
-      L("trans-html\n", ctx.filename);
-      L(code);
+      // L("trans-html\n", ctx.filename);
+      // L(code);
       writeToDisk(ctx.filename, rebaseHTML(ctx.filename, code));
       return code;
     },
-    transform: (code, id) => {
-      L("trans\n", id, opt);
-      L("");
+    transform(code, id) {
+      this.emitFile({ })
+      L("trans\n", id, code.substring(0, 128));
       writeToDisk(id, code);
       return code;
     },
-    handleHotUpdate: async (x) => {
+    async handleHotUpdate(x) {
       const content = await x.read();
       L("hot", x.file, content);
       writeToDisk(x.file, content);
