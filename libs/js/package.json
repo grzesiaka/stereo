@@ -1,6 +1,6 @@
 {
-  "name": "oyoyo",
-  "version": "1.0.0-alpha.0",
+  "name": "~js",
+  "version": "0.0.0",
   "sideEffects": false,
   "exports": {
     ".": {
@@ -11,8 +11,7 @@
   },
   "scripts": {
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
-    "test": "vitest"
+    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
     "vitest": "catalog:"
