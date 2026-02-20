@@ -6,6 +6,13 @@
 export type __<X = never> = X | undefined
 
 /**
+ *  Partial id
+ * 
+ * `<X>(x?: X) => x`
+ */
+export const __ = <X>(x?: X) => x
+
+/**
  * `Exclude<X, undefined>`
  */
 export type $$<X = unknown> = Exclude<X, undefined>
@@ -39,5 +46,5 @@ export const a = Object.assign
  * @param x value to be tagged
  * @returns `Object.assign(x, { __: [Params, OP_ID] })`
  */
-export const OP = <OP_ID extends string>(id: OP_ID) => <Params>(p: Params) => <X extends {}>(x: X) =>
+export const OP = <OP_ID extends string>(id: OP_ID) => <const Params>(p: Params) => <X extends {}>(x: X) =>
     a(x, { __: [p, id] as [Params, OP_ID]})
