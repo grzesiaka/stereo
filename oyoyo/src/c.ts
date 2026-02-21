@@ -22,49 +22,49 @@ export type $Compose<L> = (<X>() => Compose<X, L>) & (<const X>(x: X) => Compose
 
 export type Compose<X, L> = (() => (...x: FLIP<X>) => $$<X>) &
   (<const R>(f0: (x: $$<X>, L: L) => R) => (...x: FLIP<X>) => R) &
-  (<const R, const X0>(f0: (x: $$<X>, L: L) => X0, f1: (x: X0, L: L, R: [X, X0]) => R) => (...x: FLIP<X>) => R) &
+  (<const R, const X0>(f0: (x: $$<X>, L: L) => X0, f1: (x: X0, L: L, R: [$$<X>, X0]) => R) => (...x: FLIP<X>) => R) &
   (<const R, const X0, const X1>(
     f0: (x: $$<X>, L: L) => X0,
-    f1: (x: X0, L: L, R: [X, X0]) => X1,
-    f2: (x: X1, L: L, R: [X, X0, X1]) => R,
+    f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
+    f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => R,
   ) => (...x: FLIP<X>) => R) &
   (<const R, const X0, const X1, const X2>(
     f0: (x: $$<X>, L: L) => X0,
-    f1: (x: X0, L: L, R: [X, X0]) => X1,
-    f2: (x: X1, L: L, R: [X, X0, X1]) => X2,
-    f3: (x: X2, L: L, R: [X, X0, X1, X]) => R,
+    f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
+    f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => X2,
+    f3: (x: X2, L: L, R: [$$<X>, X0, X1, X]) => R,
   ) => (...x: FLIP<X>) => R) &
   (<const R, const X0, const X1, const X2, const X3>(
     f0: (x: $$<X>, L: L) => X0,
-    f1: (x: X0, L: L, R: [X, X0]) => X1,
-    f2: (x: X1, L: L, R: [X, X0, X1]) => X2,
-    f3: (x: X2, L: L, R: [X, X0, X1, X]) => X3,
-    f4: (x: X3, L: L, R: [X, X0, X1, X2, X3]) => R,
+    f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
+    f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => X2,
+    f3: (x: X2, L: L, R: [$$<X>, X0, X1, X]) => X3,
+    f4: (x: X3, L: L, R: [$$<X>, X0, X1, X2, X3]) => R,
   ) => (...x: FLIP<X>) => R) &
   (<const R, const X0, const X1, const X2, const X3, const X4>(
     f0: (x: $$<X>, L: L) => X0,
-    f1: (x: X0, L: L, R: [X, X0]) => X1,
-    f2: (x: X1, L: L, R: [X, X0, X1]) => X2,
-    f3: (x: X2, L: L, R: [X, X0, X1, X]) => X3,
-    f4: (x: X3, L: L, R: [X, X0, X1, X2, X3]) => X4,
-    f5: (x: X4, L: L, R: [X, X0, X1, X2, X3, X4]) => R,
+    f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
+    f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => X2,
+    f3: (x: X2, L: L, R: [$$<X>, X0, X1, X]) => X3,
+    f4: (x: X3, L: L, R: [$$<X>, X0, X1, X2, X3]) => X4,
+    f5: (x: X4, L: L, R: [$$<X>, X0, X1, X2, X3, X4]) => R,
   ) => (...x: FLIP<X>) => R) &
   (<const R, const X0, const X1, const X2, const X3, const X4, const X5>(
     f0: (x: $$<X>, L: L) => X0,
-    f1: (x: X0, L: L, R: [X, X0]) => X1,
-    f2: (x: X1, L: L, R: [X, X0, X1]) => X2,
-    f3: (x: X2, L: L, R: [X, X0, X1, X]) => X3,
-    f4: (x: X3, L: L, R: [X, X0, X1, X2, X3]) => X4,
-    f5: (x: X4, L: L, R: [X, X0, X1, X2, X3, X4]) => X5,
-    f6: (x: X5, L: L, R: [X, X0, X1, X2, X3, X4, X5]) => R,
+    f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
+    f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => X2,
+    f3: (x: X2, L: L, R: [$$<X>, X0, X1, X]) => X3,
+    f4: (x: X3, L: L, R: [$$<X>, X0, X1, X2, X3]) => X4,
+    f5: (x: X4, L: L, R: [$$<X>, X0, X1, X2, X3, X4]) => X5,
+    f6: (x: X5, L: L, R: [$$<X>, X0, X1, X2, X3, X4, X5]) => R,
   ) => (...x: FLIP<X>) => R) &
   (<const R, const X0, const X1, const X2, const X3, const X4, const X5, const X6>(
     f0: (x: $$<X>, L: L) => X0,
-    f1: (x: X0, L: L, R: [X, X0]) => X1,
-    f2: (x: X1, L: L, R: [X, X0, X1]) => X2,
-    f3: (x: X2, L: L, R: [X, X0, X1, X]) => X3,
-    f4: (x: X3, L: L, R: [X, X0, X1, X2, X3]) => X4,
-    f5: (x: X4, L: L, R: [X, X0, X1, X2, X3, X4]) => X5,
-    f6: (x: X5, L: L, R: [X, X0, X1, X2, X3, X4, X5]) => X6,
-    f7: (x: X6, L: L, R: [X, X0, X1, X2, X3, X4, X5, X6]) => R,
+    f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
+    f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => X2,
+    f3: (x: X2, L: L, R: [$$<X>, X0, X1, X]) => X3,
+    f4: (x: X3, L: L, R: [$$<X>, X0, X1, X2, X3]) => X4,
+    f5: (x: X4, L: L, R: [$$<X>, X0, X1, X2, X3, X4]) => X5,
+    f6: (x: X5, L: L, R: [$$<X>, X0, X1, X2, X3, X4, X5]) => X6,
+    f7: (x: X6, L: L, R: [$$<X>, X0, X1, X2, X3, X4, X5, X6]) => R,
   ) => (...x: FLIP<X>) => R);
