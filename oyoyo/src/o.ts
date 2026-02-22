@@ -1,8 +1,9 @@
 import { $$, __, ARR, FLIP, Fn, OP } from "./0";
 
 export const o =
-  <L, X>(L: L, x: X): ComposeAsync<X, L> =>
+  <X, L>(x: X, L: L): ComposeAsync<X, L> =>
   (...fns: ARR<Fn>) => {
+    if (fns.length === 0) return [x, L] as any;
     const f = async (i: any) => {
       let r = [i];
       for (let f of $.__[0][2]) {
@@ -16,7 +17,7 @@ export const o =
     return $;
   };
 
-o.$ = <const L = {}>(L = {} as L) => ((x?: unknown) => o(L, x)) as any as $ComposeAsync<L>;
+o.$ = <const L = {}>(L = {} as L) => ((x?: unknown) => o(x, L)) as any as $ComposeAsync<L>;
 
 export default o;
 
@@ -30,9 +31,10 @@ type RR<X, ACC extends ARR = []> = X extends [infer H, ...infer R]
   : never;
 export type oResult<X, ACC extends ARR = []> = Promise<RR<X, ACC>>;
 
-export type $ComposeAsync<L> = (<X>() => ComposeAsync<__<X>, L>) & (<const X>(x: X) => ComposeAsync<X, L>);
+export type $ComposeAsync<L> = (<X>() => ComposeAsync<__ extends X ? X : __<X>, L>) &
+  (<const X>(x: X) => ComposeAsync<X, L>);
 
-export type ComposeAsync<X, L> = (() => (...x: FLIP<X>) => Promise<$$<X>>) &
+export type ComposeAsync<X, L> = (() => [X, L]) &
   (<const R>(f0: (x: $$<X>, L: L) => R) => (...x: FLIP<X>) => oResult<[$$<X>, R]>) &
   (<const R, const X0>(
     f0: (x: $$<X>, L: L) => X0,
@@ -83,3 +85,7 @@ export type ComposeAsync<X, L> = (() => (...x: FLIP<X>) => Promise<$$<X>>) &
     f6: (x: A<X5>, L: L, R: AA<[$$<X>, X0, X1, X2, X3, X4, X5]>) => X6,
     f7: (x: A<X6>, L: L, R: AA<[$$<X>, X0, X1, X2, X3, X4, X5, X6]>) => R,
   ) => (...x: FLIP<X>) => oResult<[$$<X>, X0, X1, X2, X3, X4, X5, X6, R]>);
+
+const A = async () => {
+  return 1;
+};

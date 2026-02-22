@@ -14,11 +14,8 @@ describe("o / compose async", () => {
   test("no type & no initial value", async () => {
     const type0value0 = y();
 
-    const unknown2unknown = type0value0();
-    expect(await unknown2unknown(0)).toBe(0);
-
-    // @ts-expect-error no initial value => must be provided when running
-    unknown2unknown();
+    const xL = type0value0();
+    expect(xL).toStrictEqual([__, L]);
 
     const _1 = type0value0((x) => x);
     expect(await _1(_1)).toBe(_1);
@@ -27,10 +24,8 @@ describe("o / compose async", () => {
 
   test("undefined type & no initial value", async () => {
     const N = y<__<number>>();
-    const number2number = N();
-    // @ts-expect-error number expected
-    number2number("");
-    expect(await number2number(1)).toBe(1);
+    const xL = N();
+    expect(xL).toStrictEqual([__, L]);
 
     const _1 = N(IP);
     expect(await _1(1)).toBe(2);
@@ -59,13 +54,12 @@ describe("o / compose async", () => {
 
   test("no type & undefined initial value", async () => {
     const O = y(__ as __<typeof o>); // better would be: y<__<typeof c>>()
-    const o2o = O();
+    const xL = O();
+    expect(xL).toStrictEqual([__, L]);
     const dup = O((x) => P([x, x]));
 
     expect(await dup(o)).toStrictEqual([o, o]);
 
-    // @ts-expect-error incorrect type
-    o2o("");
     // @ts-expect-error no initial value => must be provided when running
     dup();
   });
@@ -97,34 +91,3 @@ describe("errors", () => {
     expect(await x(4)).toStrictEqual([STOP("67?!"), [4, 5, 6, 6, "67"]]);
   });
 });
-
-// describe("L", () => {
-//   const L =
-//     <X, L, R>(_L: (L: L) => (x: X) => R) =>
-//     (x: X, L: L) =>
-//       _L(L)(x);
-
-//   const y = o.$({ SQ: <N extends number>(n: N) => [n, n] as const })<1>();
-
-//   const x = y(L(($) => $.SQ));
-// });
-
-// describe("L", () => {
-//   const L =
-//     <X, L extends Record<keyof any, Fn>, N extends keyof L>(n: N) =>
-//     (
-//       x: X,
-//       L: L,
-//     ): L[N] extends (x: NoInfer<X>) => any
-//       ? ReturnType<L[N]>
-//       : TypeError & { message: "In correct function selected" } =>
-//       L[n]?.(x);
-
-//   const y = o.$({
-//     DUP: (x: string) => [x, x] as const,
-//     SQ: <N extends number>(n: N) => n * n,
-//     ID: <N>(n: N) => n,
-//   })<1>();
-
-//   const a = y(L("SQ"));
-// });
