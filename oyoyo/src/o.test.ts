@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 
 import o from "./o";
-import { __, Fn } from "./0";
+import { __ } from "./0";
 
 const P = <X>(x: X) => Promise.resolve(x);
 const IP = (x: number) => P(x + 1);

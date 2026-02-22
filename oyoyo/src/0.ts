@@ -1,3 +1,5 @@
+import { UnknownRecord } from "type-fest";
+
 /**
  *  Potential / Hole / Future
  *
@@ -36,6 +38,15 @@ export type Fn<I extends ARR = ARR, O = unknown, E = {}> = (E extends string ? {
  * @todo Improve the typing of built-in typescript's Object.assign
  */
 export const a = Object.assign;
+
+/**
+ * Upgrades value by merging it with a result of a computation based on that value
+ *
+ * @param x a value to upgrade
+ * @param $ derived properties
+ * @returns `Object.assign(x, $(x))`
+ */
+export const u = <X extends UnknownRecord, Y>(x: X, $: (x: X) => Y) => a(x, $(x));
 
 /**
  * Tags an object-like value with its direct context
