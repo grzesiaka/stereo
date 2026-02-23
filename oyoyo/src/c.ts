@@ -10,7 +10,7 @@ export const c =
       }
       return r[r.length - 1] as any;
     };
-    const $ = OP("o")([L, x, fns])(x === void 0 ? f : (...[x]: any[]): any => f(x === void 0 ? $.__[0][1] : x));
+    const $ = OP("c")([L, x, fns])(x === void 0 ? f : (...[x]: any[]): any => f(x === void 0 ? $.__[0][1] : x));
     return $;
   };
 
