@@ -1,5 +1,5 @@
 {
-  "$schema": "./dev/node_modules/oxlint/configuration_schema.json",
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["unicorn", "typescript", "oxc"],
   "categories": {},
   "rules": {
@@ -44,7 +44,7 @@
     "no-unsafe-finally": "warn",
     "no-unsafe-negation": "warn",
     "no-unsafe-optional-chaining": "warn",
-    "no-unused-expressions": "warn",
+    "no-unused-expressions": "off", // this block common patter `A && A()`
     "no-unused-labels": "warn",
     "no-unused-private-class-members": "warn",
     "no-unused-vars": "warn",

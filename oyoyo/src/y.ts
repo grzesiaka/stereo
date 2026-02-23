@@ -1,6 +1,7 @@
 import { Simplify, UnknownRecord } from "type-fest";
 import { __, a, Fn, u } from "./0";
 import o from "./o";
+import c from "./c";
 
 /**
  * Callback
@@ -93,7 +94,7 @@ const _I =
     $y0(x, { v }, ($) => ({
       i: (v: X) => (($.v = v), $.x(v), v),
     })) as Input<X>;
-const I = <X>(v: X) => o(_I(v), {});
+const I = <X>(v: X) => c(_I(v), {});
 
 interface FilterMap<X, P extends yR> extends iR<X, {}, ReturnType<P>, __> {
   __: readonly [Fn<[yR2X<P>], X>, "<="];
@@ -113,7 +114,7 @@ const b = I(1)(
   F((x) => [x, x] as const),
 );
 
-(await b())((x) => x);
+b()((x) => x);
 
 // I(1)();
 // const

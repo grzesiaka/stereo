@@ -85,7 +85,3 @@ export type ComposeAsync<X, L> = (() => [X, L]) &
     f6: (x: A<X5>, L: L, R: AA<[$$<X>, X0, X1, X2, X3, X4, X5]>) => X6,
     f7: (x: A<X6>, L: L, R: AA<[$$<X>, X0, X1, X2, X3, X4, X5, X6]>) => R,
   ) => (...x: FLIP<X>) => oResult<[$$<X>, X0, X1, X2, X3, X4, X5, X6, R]>);
-
-const A = async () => {
-  return 1;
-};

@@ -1,8 +1,9 @@
 import { $$, __, ARR, FLIP, Fn, OP } from "./0";
 
 export const c =
-  <X, L>(L: L, x: X): Compose<X, L> =>
+  <X, L>(x: X, L: L): Compose<X, L> =>
   (...fns: ARR<Fn>) => {
+    if (!fns.length) return [x, L] as any;
     const f = (i: any) => {
       let r = [i];
       for (let f of $.__[0][2]) {
@@ -14,13 +15,13 @@ export const c =
     return $;
   };
 
-c.$ = <const L = {}>(L = {} as L) => ((x?: unknown) => c(L, x)) as any as $Compose<L>;
+c.$ = <const L = {}>(L = {} as L) => ((x?: unknown) => c(x, L)) as any as $Compose<L>;
 
 export default c;
 
 export type $Compose<L> = (<X>() => Compose<X, L>) & (<const X>(x: X) => Compose<X, L>);
 
-export type Compose<X, L> = (() => (...x: FLIP<X>) => $$<X>) &
+export type Compose<X, L> = (() => [X, L]) &
   (<const R>(f0: (x: $$<X>, L: L) => R) => (...x: FLIP<X>) => R) &
   (<const R, const X0>(f0: (x: $$<X>, L: L) => X0, f1: (x: X0, L: L, R: [$$<X>, X0]) => R) => (...x: FLIP<X>) => R) &
   (<const R, const X0, const X1>(

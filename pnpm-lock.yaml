@@ -12,6 +12,9 @@ catalogs:
     '@vitest/coverage-v8':
       specifier: 4.0.18
       version: 4.0.18
+    type-fest:
+      specifier: 5.4.4
+      version: 5.4.4
     vite:
       specifier: 8.0.0-beta.14
       version: 8.0.0-beta.14
@@ -64,7 +67,7 @@ importers:
         specifier: 'workspace:'
         version: link:../$CONFIG
 
-  extens:
+  extensy:
     dependencies:
       ~cfg:
         specifier: 'workspace:'
@@ -112,6 +115,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 4.0.18(vitest@4.0.18(@types/node@25.2.3)(lightningcss@1.31.1))
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.4.4
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
@@ -137,9 +143,9 @@ importers:
 
   vite-plugins/vite-plugin-write-to-disk/example:
     dependencies:
-      extens:
+      extensy:
         specifier: 'workspace:'
-        version: link:../../../extens
+        version: link:../../../extensy
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
@@ -1042,6 +1048,10 @@ packages:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
 
+  tagged-tag@1.0.0:
+    resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
+    engines: {node: '>=20'}
+
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
@@ -1101,6 +1111,10 @@ packages:
   turbo@2.7.5:
     resolution: {integrity: sha512-7Imdmg37joOloTnj+DPrab9hIaQcDdJ5RwSzcauo/wMOSAgO+A/I/8b3hsGGs6PWQz70m/jkPgdqWsfNKtwwDQ==}
     hasBin: true
+
+  type-fest@5.4.4:
+    resolution: {integrity: sha512-JnTrzGu+zPV3aXIUhnyWJj4z/wigMsdYajGLIYakqyOW1nPllzXEJee0QQbHj+CTIQtXGlAjuK0UY+2xTyjVAw==}
+    engines: {node: '>=20'}
 
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
@@ -2251,6 +2265,10 @@ snapshots:
       has-flag: 4.0.0
       ~cfg: link:$CONFIG
 
+  tagged-tag@1.0.0:
+    dependencies:
+      ~cfg: link:$CONFIG
+
   tinybench@2.9.0:
     dependencies:
       ~cfg: link:$CONFIG
@@ -2321,6 +2339,11 @@ snapshots:
       turbo-linux-arm64: 2.7.5
       turbo-windows-64: 2.7.5
       turbo-windows-arm64: 2.7.5
+
+  type-fest@5.4.4:
+    dependencies:
+      tagged-tag: 1.0.0
+      ~cfg: link:$CONFIG
 
   typescript@5.9.3:
     dependencies:
