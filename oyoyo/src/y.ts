@@ -1,12 +1,16 @@
 import { Simplify, UnknownRecord } from "type-fest";
-import { __, a, Fn, u } from "./0";
-import o from "./o";
+import { __, a, Fn, Fn$I, Fn$O, Fn1, u } from "./0";
 import c from "./c";
 
 /**
  * Callback
  */
 type Cb<X> = (x: X) => void;
+
+/**
+ * Continuation
+ */
+type Ko<X = unknown, R = unknown> = (x: Cb<X>) => R;
 
 /**
  * Done / Dispose / Clean-up
@@ -56,65 +60,74 @@ type iR<
    *
    * `undefined` for final iR
    */
-  n?: iR;
+  // n?: iR;
 };
 
 /**
  * yR (why-er)
  *
- * a wire of iRs
+ * wire / chain of iRs
  */
-type yR<X = any, L extends UnknownRecord = any, Prev extends yR = yR<any, any, any>, D extends Done = any> = (
-  c: Cb<X>,
-) => iR<X, L, ReturnType<Prev>, D>;
+type yR<X = any, L extends UnknownRecord = any, Prev extends yR = yR<any, any, any>, D extends Done = any> = Ko<
+  X,
+  iR<X, L, ReturnType<Prev>, D>
+>;
 type yR2X<RC> = RC extends yR<infer X, any> ? X : never;
-// type yR2L<RC> = RC extends yR<any, infer L extends UnknownRecord> ? L : never;
 
-const $y = <X, L extends UnknownRecord, Prev extends __<yR>, y extends Partial<iR>>(
+const iR = <X, L extends UnknownRecord, Prev extends __<yR>, y extends Partial<iR>>(
   x: Cb<X>,
   L: L,
   p: Prev,
   $: ($: iR<X, L, __, __>, p: Prev) => y,
 ) => u(a(L, { x, p: __ }), (x) => $(x, p)) as Simplify<y & iR<X, L>>;
 
-const $y0 = <X, L extends UnknownRecord, y extends Partial<iR> & { p?: __ }>(
+const iR0 = <X, L extends UnknownRecord, y extends Partial<iR> & { p?: __ }>(
   x: Cb<X>,
   L: L,
   $: ($: iR<X, L, __>) => y,
-) => $y(x, L, __, $) as Simplify<y & iR<X, L, __>>;
+) => iR(x, L, __, $) as Simplify<y & iR<X, L, __>>;
 
-interface Input<X> extends iR<X> {
+interface _Input<X> extends iR<X> {
   x: Cb<X>;
   i: (v: X) => X;
-  d: __;
+  d?: __;
 }
+
+type Input<X> = Ko<X, _Input<X>>;
+
 const _I =
-  <X>(v: X) =>
+  <X>(v: X): Input<X> =>
   (x: Cb<X>) =>
-    $y0(x, { v }, ($) => ({
-      i: (v: X) => (($.v = v), $.x(v), v),
-    })) as Input<X>;
-const I = <X>(v: X) => c(_I(v), {});
+    iR0(
+      x,
+      { v },
+      ($) => (
+        $.x(v),
+        {
+          i: (v: X) => (($.v = v), $.x(v), v),
+        }
+      ),
+    );
+export const I = <X>(v: X) => c(_I(v), {});
+I._ = _I;
 
-interface FilterMap<X, P extends yR> extends iR<X, {}, ReturnType<P>, __> {
-  __: readonly [Fn<[yR2X<P>], X>, "<="];
+export interface _FilterMap<X, P extends yR> extends iR<X, {}, ReturnType<P>, __> {
+  __: readonly [Fn<[yR2X<P>], X>, "F"];
 }
+export type FilterMap<X, P extends yR> = Ko<X, _FilterMap<X, P>>;
 
-const F =
-  <X, P extends yR>(f: Fn<[yR2X<P>], X>) =>
-  (P: P) =>
-  (x: Cb<X>): FilterMap<X, P> =>
-    $y(x, { __: [f, "<="] as const, d: __ }, P, ($, P) => ({
+export const F =
+  <const X, P extends yR>(f: Fn<[yR2X<P>], X>) =>
+  (P: P): FilterMap<X, P> =>
+  (x: Cb<X>) =>
+    iR(x, { __: [f, "F"] as const, d: __ }, P, ($, P) => ({
       p: P((x) => $.x($.__[0](x))),
-      d: __,
     }));
 
-const b = I(1)(
-  F((x) => `${x}`),
-  F((x) => [x, x] as const),
-);
+F.ify = <F extends Fn1>(fn: F) => F(fn) as <P extends yR<Fn$I<F>[0]>>(P: P) => FilterMap<Fn$O<F>, P>;
 
-b()((x) => x);
+//const O = <X, E>(e: E) => e;
+// const z = O();
 
 // I(1)();
 // const
@@ -133,18 +146,18 @@ b()((x) => x);
  * @param d clean-up logic
  * @returns a function that should be assigned to y.d; once called with (prev: false) it will unset y.d
  */
-const d = (y: iR, d: () => void) => () => {
-  if (!y.d) return; // already disposed -- most likely this is a logic error; there is no need to call it more than once
-  d();
-  y.d = __;
-  let p = y.p as __<iR>;
-  // skip non disposable blocks
-  while (p && !p.d) {
-    p = p.p;
-  }
-  // the closest disposable block MUST take care to propagate the info down
-  p?.d?.();
-};
+// const d = (y: iR, d: () => void) => () => {
+//   if (!y.d) return; // already disposed -- most likely this is a logic error; there is no need to call it more than once
+//   d();
+//   y.d = __;
+//   let p = y.p as __<iR>;
+//   // skip non disposable blocks
+//   while (p && !p.d) {
+//     p = p.p;
+//   }
+//   // the closest disposable block MUST take care to propagate the info down
+//   p?.d?.();
+// };
 
 /**
  * Connects two iRs
@@ -155,4 +168,4 @@ const d = (y: iR, d: () => void) => () => {
  * @param n next iR
  * @returns void
  */
-const y2y = <Prev extends iR, Next extends iR>(p: Prev, n: Next) => ((p.n = n), (n.p = p));
+// const y2y = <Prev extends iR, Next extends iR>(p: Prev, n: Next) => ((p.n = n), (n.p = p));

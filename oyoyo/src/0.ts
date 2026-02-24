@@ -8,6 +8,8 @@ import { UnknownRecord } from "type-fest";
 export type __<X = never> = X | undefined;
 
 /**
+ * bottom / `undefined`
+ *
  * `void 0`
  */
 export const __ = void 0;
@@ -29,6 +31,20 @@ export type ARR<X = any> = ReadonlyArray<X>;
  * Function with optional attached information
  */
 export type Fn<I extends ARR = ARR, O = unknown, E = {}> = (E extends string ? { name: E } : {}) & ((...i: I) => O);
+
+/**
+ * Single parameter function
+ */
+export type Fn1<I = any, O = unknown, E = {}> = Fn<[I], O, E>;
+
+/**
+ * Function to its input
+ */
+export type Fn$I<F> = F extends Fn<infer I> ? I : never;
+/**
+ * Function to its output
+ */
+export type Fn$O<F> = F extends Fn<any, infer O> ? O : never;
 
 /**
  * An alias for:
