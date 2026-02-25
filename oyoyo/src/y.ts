@@ -1,6 +1,6 @@
 import { Simplify, UnknownRecord } from "type-fest";
 import { __, a, Fn, Fn$I, Fn$O, Fn1, u } from "./0";
-import c from "./c";
+import p from "./p";
 
 /**
  * Callback
@@ -108,7 +108,7 @@ const _I =
         }
       ),
     );
-export const I = <X>(v: X) => c(_I(v), {});
+export const I = <X>(v: X) => p(_I(v));
 I._ = _I;
 
 export interface _FilterMap<X, P extends yR> extends iR<X, {}, ReturnType<P>, __> {
@@ -126,18 +126,22 @@ export const F =
 
 F.ify = <F extends Fn1>(fn: F) => F(fn) as <P extends yR<Fn$I<F>[0]>>(P: P) => FilterMap<Fn$O<F>, P>;
 
-//const O = <X, E>(e: E) => e;
-// const z = O();
+export const UP =
+  <const X extends UnknownRecord, P extends yR>($: (p: Fn$O<P>) => X) =>
+  (P: P) =>
+  (x: Cb<yR2X<P>>) =>
+    u(P(x), $);
 
-// I(1)();
-// const
+export const AD = <const X extends UnknownRecord, P extends yR>(x: X): Fn$O<typeof UP<X, P>> => UP(() => x);
 
-// const y = <X, L extends UnknownRecord = {}, D extends Done = undefined, P extends y = y>(
-//   x: Cb<X>,
-//   L: L,
-//   P: P,
-//   $: ($: iR<X, L, __>, P: P) => D,
-// ): iR<X, L, D> => u(a(L, { x }) as iR<X, L, __>, (x) => ({ d: $(x, P) }));
+export const ID = <ID extends PropertyKey, P extends yR, K extends PropertyKey = "id">(
+  i: ID,
+  k = "id" as K,
+): Fn$O<typeof UP<{ [k in K]: ID }, P>> => UP(() => ({ [k]: i }));
+
+export const DW = () => 1;
+
+export const RD = () => 1;
 
 /**
  * Helper for disposing iR
@@ -146,18 +150,18 @@ F.ify = <F extends Fn1>(fn: F) => F(fn) as <P extends yR<Fn$I<F>[0]>>(P: P) => F
  * @param d clean-up logic
  * @returns a function that should be assigned to y.d; once called with (prev: false) it will unset y.d
  */
-// const d = (y: iR, d: () => void) => () => {
-//   if (!y.d) return; // already disposed -- most likely this is a logic error; there is no need to call it more than once
-//   d();
-//   y.d = __;
-//   let p = y.p as __<iR>;
-//   // skip non disposable blocks
-//   while (p && !p.d) {
-//     p = p.p;
-//   }
-//   // the closest disposable block MUST take care to propagate the info down
-//   p?.d?.();
-// };
+export const d = (y: iR, d: () => void) => () => {
+  if (!y.d) return; // already disposed -- most likely this is a logic error; there is no need to call it more than once
+  d();
+  y.d = __;
+  let p = y.p as __<iR>;
+  // skip non disposable blocks
+  while (p && !p.d) {
+    p = p.p;
+  }
+  // the closest disposable block MUST take care to propagate the info down
+  p?.d?.();
+};
 
 /**
  * Connects two iRs

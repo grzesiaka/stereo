@@ -1,10 +1,10 @@
 import { describe, test, expect } from "vitest";
 
-import { I, F } from "./y";
+import { I, F, UP } from "./y";
 
 describe("yR / initial values", () => {
   test("I", () => {
-    const i = I(1)()[0];
+    const i = I(1)();
     const re = [] as unknown[];
     const x = i((x) => re.push(x));
     x.i(2);
@@ -21,7 +21,8 @@ describe("yR / partial map", () => {
       F((x) => `${x}`),
       F((x) => [x, x]),
       F(id),
-    )();
+      UP(() => ({ id: "??" })),
+    );
     const re = [] as (readonly [string, string])[];
     const x = i((x) => re.push(x));
     x.p.p.p.p.i(2);
