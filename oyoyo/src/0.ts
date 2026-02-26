@@ -47,6 +47,16 @@ export type Fn$I<F> = F extends Fn<infer I> ? I : never;
 export type Fn$O<F> = F extends Fn<any, infer O> ? O : never;
 
 /**
+ * Identity
+ *
+ * `<X>(x: X) => x`
+ *
+ * @param x a value
+ * @returns `x`
+ */
+export const id = <X>(x: X) => x;
+
+/**
  * An alias for:
  *
  * `Object.assign`
