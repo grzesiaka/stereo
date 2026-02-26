@@ -1,1 +1,1 @@
-export default "oyoyo!";
+export default "~js";

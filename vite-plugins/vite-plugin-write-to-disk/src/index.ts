@@ -75,7 +75,7 @@ export default (options: WriteToDiskOptions | ((defaultOptions: typeof defOption
         server: {
           warmup: {
             // public is copied as such
-            clientFiles: ["**/*", cfg.publicDir || "!public/", '!**/*d.ts'],
+            clientFiles: ["**/*", cfg.publicDir || "!public/", "!**/*d.ts"],
           },
         },
       };
@@ -103,7 +103,7 @@ export default (options: WriteToDiskOptions | ((defaultOptions: typeof defOption
       return code;
     },
     transform(code, id) {
-      this.emitFile({ })
+      // this.emitFile({ })
       L("trans\n", id, code.substring(0, 128));
       writeToDisk(id, code);
       return code;
