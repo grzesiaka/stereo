@@ -1,5 +1,3 @@
-import { UnknownRecord } from "type-fest";
-
 /**
  *  Potential / Hole / Future
  *
@@ -72,7 +70,11 @@ export const a = Object.assign;
  * @param $ derived properties
  * @returns `Object.assign(x, $(x))`
  */
-export const u = <X extends UnknownRecord, Y>(x: X, $: (x: X) => Y) => a(x, $(x));
+export const u = <X extends object, Y>(x: X, $: (x: X) => Y) => a(x, $(x));
+
+export interface WithOP<OP_ID extends PropertyKey, Params> {
+  __: [Params, OP_ID];
+}
 
 /**
  * Tags an object-like value with its direct context

@@ -1,34 +1,48 @@
 import { describe, test, expect } from "vitest";
 
-import { I, F, UP } from "./y";
+import { IN, F, Fify, UP } from "./y";
+import { __ } from "./0";
 
-describe("yR / initial values", () => {
-  test("I", () => {
-    const i = I(1)();
+describe("IN / Input", () => {
+  test("IN", () => {
+    const i = IN(7)();
     const re = [] as unknown[];
     const x = i((x) => re.push(x));
     x.i(2);
-    expect(re).toStrictEqual([1, 2]);
+    expect(re).toStrictEqual([7, 2]);
   });
 });
 
-describe("yR / partial map", () => {
-  test(() => {
+describe("F / partial map", () => {
+  test("a simple flow", () => {
     const id = <X>(x: X) => x;
-    const toString = F.ify(<X>(n: X) => `${n}`);
-    const i = I(1)(
+    const toString = Fify(<X>(n: X) => `${n}`);
+    const i = IN(1, "i")(
       toString,
-      F((x) => `${x}`),
+      F(parseFloat),
       F((x) => [x, x]),
       F(id),
-      UP(() => ({ id: "??" })),
+      UP(() => ({ id: "UPPED" })),
     );
-    const re = [] as (readonly [string, string])[];
+
+    const re = [] as (readonly [number, number])[];
     const x = i((x) => re.push(x));
+
     x.p.p.p.p.i(2);
+    expect(x.id).toBe("UPPED");
+    expect(x.p.p.p.p.id).toBe("i");
     expect(re).toStrictEqual([
-      ["1", "1"], // initial value
-      ["2", "2"], // above call .i(2)
+      [1, 1], // initial value
+      [2, 2], // above call .i(2)
     ]);
+  });
+
+  test("undefined (aka __) are ignored by default (via default id transform)", () => {
+    const i = IN(__ as __<number>)(F());
+    const re = [] as unknown[];
+    const x = i((x) => re.push(x));
+    x.p.i(7);
+    x.p.i(undefined);
+    expect(re).toStrictEqual([7]);
   });
 });
