@@ -3,8 +3,8 @@ import { describe, test, expect } from "vitest";
 import p from "./p";
 import { __ } from "./0";
 
-describe("c / compose", () => {
-  test("undefined type & no initial value", () => {
+describe("p / pipe", () => {
+  test("0-16", () => {
     const N = p;
     expect(N(0)()).toStrictEqual(0);
 
@@ -26,5 +26,17 @@ describe("c / compose", () => {
     expect(p(14)(I, I, I, I, I, I, I, I, I, I, I, I, I, I)).toBe(28);
     expect(p(15)(I, I, I, I, I, I, I, I, I, I, I, I, I, I, I)).toBe(30);
     expect(p(16)(I, I, I, I, I, I, I, I, I, I, I, I, I, I, I, I)).toBe(32);
+  });
+
+  test("L / context", () => {
+    expect(p(p)()).toBe(p);
+
+    const L = [{ p }, "?"] as const;
+    expect(p(0, ...L)()).toStrictEqual([0, ...L]);
+
+    expect(p(0, ...L)((_, { p }, q) => p(q))()).toBe("?");
+    expect(p(0, ...L)((_, { p }, q) => p(q)())).toBe("?");
+    expect(p(0, ...L)((_, { p }, q) => p(q, ...L)())).toStrictEqual(["?", ...L]);
+    expect(p(0, ...L)((_, { p }, q) => p(q, ...L))()).toStrictEqual(["?", ...L]);
   });
 });
