@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { IN, F, Fify, UP } from "./y";
+import { IN, F, Fify, UP, S } from "./y";
 import { __ } from "./0";
 
 describe("IN / Input", () => {
@@ -45,7 +45,29 @@ describe("F / partial map", () => {
     x.p.i(undefined);
     expect(re).toStrictEqual([7]);
   });
+});
 
+describe("S / Scan", () => {
+  test("simple", () => {
+    const empty = () => "";
+    const i = IN.L(empty)(0)(
+      F((x) => x * x),
+      S((v, s: __<number>) => v + (s || 0)),
+      S(
+        (L) => L(),
+        (v, s) => [s, `${v}`].filter(Boolean).join(";"),
+      ),
+      // S(() => 1),
+    );
+    const re = [] as unknown[];
+    const x = i((x) => re.push(x));
+    x.p.p.p.i(1);
+    x.p.p.p.i(2);
+    expect(re).toStrictEqual(["0", "0;1", "0;1;5"]);
+  });
+});
+
+describe("meta", () => {
   test("reference to previous", () => {
     const f = (x: unknown) => x;
     const i = IN(1, "1")(F(f)) as any;

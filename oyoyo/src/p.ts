@@ -23,8 +23,12 @@ export default p;
 
 export type Pipe<X, L extends ARR = []> = (() => [] extends L ? X : [X, ...L]) &
   (<const R>(f0: (x: X, ...L: L) => R) => R) &
-  (<const R, const X0>(f0: (x: X, ...L: L) => X0, f1: (x: X0) => R) => R) &
-  (<const R, const X0, const X1>(f0: (x: X, ...L: L) => X0, f1: (x: X0, ...L: L) => X1, f2: (x: X1) => R) => R) &
+  (<const R, const X0>(f0: (x: X, ...L: L) => X0, f1: (x: X0, ...L: L) => R) => R) &
+  (<const R, const X0, const X1>(
+    f0: (x: X, ...L: L) => X0,
+    f1: (x: X0, ...L: L) => X1,
+    f2: (x: X1, ...L: L) => R,
+  ) => R) &
   (<const R, const X0, const X1, const X2>(
     f0: (x: X, ...L: L) => X0,
     f1: (x: X0, ...L: L) => X1,

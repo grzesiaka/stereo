@@ -91,18 +91,17 @@ export interface Finite<N extends number> {
 export interface yR_Base<X, P extends yR> extends WithObserver<X>, WithPrevious<yR2R<P>> {}
 
 const yR =
-  <OP extends string, ParamsRaw extends ARR, Params = ParamsRaw[0]>(
+  <OP extends string, ParamsRaw extends ARR, Params = ParamsRaw>(
     o: OP,
-    r = id as any as (...p: ParamsRaw) => Params,
+    r = ((...x: ParamsRaw) => x) as any as (...p: ParamsRaw) => Params,
   ) =>
   <cR, cPrev extends __<yR> = yR, cX = unknown>(
-    $: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P: cPrev, r: ParamsRaw, ...L: ARR) => cR,
+    $: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P: cPrev, r: ParamsRaw, L: ARR) => cR,
   ) =>
   (...p: ParamsRaw) =>
-  (P: cPrev) => {
+  (P: cPrev, ...L: ARR) => {
     const op = [r(...p), o] as [Params, OP];
-    const y = (x: Cb<cX>, ...L: ARR) =>
-      $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P, p, ...L);
+    const y = (x: Cb<cX>) => $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P, p, L);
     y.__ = [...op, P];
     return y;
   };
@@ -112,13 +111,13 @@ const yR0 =
     o: OP,
     r = id as any as (...p: ParamsRaw) => Params,
   ) =>
-  <cR, cX = unknown>($: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, r: ParamsRaw, ...L: ARR) => cR) =>
+  <cR, cX = unknown>($: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, r: ParamsRaw, L: ARR) => cR) =>
+  <L extends ARR>(...L: L) =>
   (...i: ParamsRaw) => {
     const op = [r(...i), o] as [Params, OP];
-    const y = (x: Cb<cX>, ...L: ARR) =>
-      $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, i, ...L);
+    const y = (x: Cb<cX>) => $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, i, L);
     y.__ = op;
-    return p(y);
+    return p(y, ...L);
   };
 
 export interface _Input<X = unknown> extends WithObserver<X>, WithState<X> {
@@ -126,7 +125,7 @@ export interface _Input<X = unknown> extends WithObserver<X>, WithState<X> {
 }
 export type Input<X> = yR<X, _Input<X>>;
 export type InputId<X, Id extends PropertyKey> = yR<X, _Input<X> & WithId<Id>>;
-export const IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
+const $IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
   ($, p) => (
     $.x($.__[0]),
     a($, {
@@ -135,7 +134,11 @@ export const IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
       i: (v: unknown) => (($.v = v), $.x(v), v),
     })
   ),
-) as <X, Id extends __<PropertyKey> = __>(x: X, id?: Id) => Pipe<Id extends PropertyKey ? InputId<X, Id> : Input<X>>;
+) as <L extends ARR>(
+  ...L: L
+) => <X, Id extends __<PropertyKey> = __>(x: X, id?: Id) => Pipe<Id extends PropertyKey ? InputId<X, Id> : Input<X>, L>;
+export const IN = $IN() as Fn$O<typeof $IN<[]>> & { L: typeof $IN };
+IN.L = $IN;
 
 /**
  * Applies a function to a stream value
@@ -145,8 +148,11 @@ export const IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
  * @param f a function to apply to each value in a stream
  * @returns a function from previous *yR* P to FilterMap<X, P>
  */
-export const F = yR("F")(($, P) => {
-  $.__[0] = $.__[0] || (id as any);
+export const F = yR(
+  "F",
+  id,
+)(($, P) => {
+  $.__[0] = $.__[0] || id;
   return a($, {
     p: P((x) => {
       const v = $.__[0]!(x);
@@ -159,15 +165,34 @@ export const Fify = <F extends Fn1>(fn: F) => F(fn) as <P extends yR<Fn$I<F>[0]>
 export interface _FilterMap<X, P extends yR> extends yR_Base<X, P> {}
 export type FilterMap<X, P extends yR> = yR<$$<X>, _FilterMap<X, P>>;
 
-export type UpgRade<X extends {}, P extends yR> = Fn$O<typeof UP<X, P>>;
+type ScanParamsRaw = [init: (...L: ARR) => unknown, next: (v: unknown, s: unknown, ...L: ARR) => typeof s];
+export const S = yR<"S", [ScanParamsRaw[1]] | ScanParamsRaw, ScanParamsRaw>("S", (...p: any) =>
+  p[1] ? p : (p.unshift(() => __), p),
+)(($, P, _, L) => {
+  $.v = $.__[0][0](...L) as any;
+  return a($, {
+    p: P((x) => (($.v = $.__[0][1](x, $.v, ...L) as any), $.x($.v as any))),
+  } as _Scan);
+}) as (<P extends yR, const X, L extends ARR>(
+  init: (...L: L) => X,
+  next: (v: yR2X<P>, s: NoInfer<X>, ...L: L) => NoInfer<X>,
+) => (P: P, ...L: L) => Scan<X, P>) &
+  (<P extends yR, X, L extends ARR>(
+    next: (v: yR2X<P>, s: __<X>, ...L: L) => NoInfer<X>,
+  ) => (P: P, ...L: L) => Scan<X, P>);
+
+export interface _Scan<X = unknown, P extends yR = yR> extends yR_Base<X, P>, WithState<X> {}
+export type Scan<X, P extends yR> = yR<X, _Scan<X, P>>;
+
 export const UP =
   <const X extends {}, P extends yR>($: (p: yR2R<P>) => X) =>
   (P: P) =>
   (x: Cb<yR2X<P>>) =>
     u(P(x), $);
+export type Upgrade<X extends {}, P extends yR> = Fn$O<typeof UP<X, P>>;
 
 export const AD =
-  <const X extends {}, P extends yR>($: X): UpgRade<X, P> =>
+  <const X extends {}, P extends yR>($: X): Upgrade<X, P> =>
   (P: P) =>
   (x: Cb<yR2X<P>>) =>
     a(P(x), $);
@@ -175,6 +200,6 @@ export const AD =
 export const ID = <ID extends PropertyKey, P extends yR, K extends PropertyKey = "id">(
   i: ID,
   k = "id" as K,
-): UpgRade<{ [k in K]: ID }, P> => AD({ [k]: i });
+): Upgrade<{ [k in K]: ID }, P> => AD({ [k]: i });
 
-export const YD = <YD extends PropertyKey, P extends yR>(i: YD) => ID(i, "yd") as UpgRade<{ yd: YD }, P>;
+export const YD = <YD extends PropertyKey, P extends yR>(i: YD) => ID(i, "yd") as Upgrade<{ yd: YD }, P>;
