@@ -1,4 +1,4 @@
-import { $$, __, ARR, Fn, Fn$I, Fn$O, Fn1, id, u, WithOP } from "./0";
+import { $$, __, a, ARR, Fn, Fn$I, Fn$O, Fn1, id, u, WithOP } from "./0";
 import p, { Pipe } from "./p";
 
 /**
@@ -30,9 +30,23 @@ export interface WithState<X = unknown> {
   v: X;
 }
 
+/**
+ * Id of single computation unit
+ */
 export type WithId<Id extends __<PropertyKey> = __> = Id extends PropertyKey
   ? {
       id: Id;
+    }
+  : {};
+
+/**
+ * Id of the whole yR
+ *
+ * Might be useful when combining multiple computations
+ */
+export type WithYd<Yd extends __<PropertyKey> = __> = Yd extends PropertyKey
+  ? {
+      yd: Yd;
     }
   : {};
 
@@ -82,11 +96,11 @@ export type InputId<X, Id extends PropertyKey> = yR<X, _Input<X> & WithId<Id>>;
 export const IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
   ($) => (
     $.x($.__[0][0]),
-    u($, ($) => ({
+    a($, {
       id: $.__[0][1],
       v: $.__[0][0],
       i: (v: unknown) => (($.v = v), $.x(v), v),
-    }))
+    })
   ),
 ) as <X, Id extends __<PropertyKey> = __>(x: X, id?: Id) => Pipe<Id extends PropertyKey ? InputId<X, Id> : Input<X>>;
 
@@ -100,27 +114,34 @@ export const IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
  */
 export const F = yR("F")(($, P) => {
   $.__[0][0] = $.__[0][0] || (id as any);
-  return u($, () => ({
+  return a($, {
     p: P((x) => {
       const v = $.__[0][0]!(x as any);
       v !== __ && $.x(v);
     }),
-  }));
+  });
 }) as <P extends yR, const X = yR2X<P>>(f?: Fn<[yR2X<P>], X>) => (P: P) => FilterMap<X, P>;
 export const Fify = <F extends Fn1>(fn: F) => F(fn) as <P extends yR<Fn$I<F>[0]>>(P: P) => FilterMap<Fn$O<F>, P>;
 
 export interface _FilterMap<X, P extends yR> extends yR_Base<X, P> {}
 export type FilterMap<X, P extends yR> = yR<$$<X>, _FilterMap<X, P>>;
 
+export type Upgrade<X extends {}, P extends yR> = Fn$O<typeof UP<X, P>>;
 export const UP =
   <const X extends {}, P extends yR>($: (p: yR2R<P>) => X) =>
   (P: P) =>
   (x: Cb<yR2X<P>>) =>
     u(P(x), $);
 
-export const AD = <const X extends {}, P extends yR>(x: X): Fn$O<typeof UP<X, P>> => UP(() => x);
+export const AD =
+  <const X extends {}, P extends yR>($: X): Upgrade<X, P> =>
+  (P: P) =>
+  (x: Cb<yR2X<P>>) =>
+    a(P(x), $);
 
 export const ID = <ID extends PropertyKey, P extends yR, K extends PropertyKey = "id">(
   i: ID,
   k = "id" as K,
-): Fn$O<typeof UP<{ [k in K]: ID }, P>> => UP(() => ({ [k]: i }));
+): Upgrade<{ [k in K]: ID }, P> => AD({ [k]: i });
+
+export const YD = <YD extends PropertyKey, P extends yR>(i: YD) => ID(i, "yd") as Upgrade<{ yd: YD }, P>;
