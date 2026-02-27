@@ -63,6 +63,20 @@ export interface Disposable {
   d: Dispose;
 }
 
+/**
+ * A computation that completes with value `Z`
+ */
+export interface Completable<Z> extends Disposable {
+  z: Promise<__<Z>>;
+}
+
+/**
+ * A computation that produces up to `N` values
+ */
+export interface Finite<N extends number> {
+  "#": N;
+}
+
 export interface yR_Base<X, P extends yR> extends WithObserver<X>, WithPrevious<yR2R<P>> {}
 
 const yR =

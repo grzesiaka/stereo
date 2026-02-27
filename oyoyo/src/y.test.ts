@@ -45,4 +45,14 @@ describe("F / partial map", () => {
     x.p.i(undefined);
     expect(re).toStrictEqual([7]);
   });
+
+  test("reference to previous", () => {
+    const f = (x: unknown) => x;
+    const i = IN(1, "1")(F(f)) as any;
+    expect(i.__.slice(0, 2)).toStrictEqual([[f], "F"]);
+    expect(i.__[2].__).toStrictEqual([[1, "1"], "IN"]);
+    const x = i((x: 1) => x);
+    expect(x.__.slice(0, 2)).toStrictEqual([[f], "F"]);
+    expect(x.p.__).toStrictEqual([[1, "1"], "IN"]);
+  });
 });
