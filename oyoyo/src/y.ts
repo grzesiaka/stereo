@@ -4,14 +4,14 @@ import p, { Pipe } from "./p";
 /**
  * Callback
  */
-export type Cb<X = unknown> = (x: X) => void;
+export type Cb<X = unknown, R = void> = (x: X) => R;
 
 /**
  * **yR** wire
  *
- * Computation of any (0, 1 or more) values of `X`
+ * (Co)computation of any (0, 1 or more) values of `X` delivered via callback.
  *
- * `R` is support for computation. It should reflect all properties of the computation.
+ * `R` is support for (co)computation. It should reflect all properties of the (co)computation.
  */
 export type yR<X = any, R extends {} = any> = (x: Cb<X>) => R;
 export type yR2X<y> = y extends yR<infer X> ? X : never;
@@ -26,6 +26,9 @@ export interface WithObserver<X = unknown> {
   x: Cb<X>;
 }
 
+/**
+ * A stateful context
+ */
 export interface WithState<X = unknown> {
   v: X;
 }
@@ -43,6 +46,8 @@ export type WithId<Id extends __<PropertyKey> = __> = Id extends PropertyKey
  * Id of the whole yR
  *
  * Might be useful when combining multiple computations
+ *
+ * (Not sure if needed)
  */
 export type WithYd<Yd extends __<PropertyKey> = __> = Yd extends PropertyKey
   ? {
@@ -51,7 +56,7 @@ export type WithYd<Yd extends __<PropertyKey> = __> = Yd extends PropertyKey
   : {};
 
 /**
- * A direct dependency of computation. In most cases a provider / providers of inputs.
+ * A direct dependency of (co)computation. In most cases a provider / providers of inputs.
  */
 export interface WithPrevious<P = unknown> {
   p: P;
@@ -64,14 +69,20 @@ export interface Disposable {
 }
 
 /**
- * A computation that completes with value `Z`
+ * A computation that completes with value `Z`.
+ *
+ * **default (not-present)**: `never`
  */
 export interface Completable<Z> extends Disposable {
-  z: Promise<__<Z>>;
+  z: Promise<Z>;
 }
 
 /**
- * A computation that produces up to `N` values
+ * A computation that produces up to `N` values.
+ *
+ * `#` could be calculated automatically when (co)composing.
+ *
+ * **default (not-present)**: `infinity`
  */
 export interface Finite<N extends number> {
   "#": N;
