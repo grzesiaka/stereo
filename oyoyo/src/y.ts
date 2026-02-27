@@ -91,24 +91,32 @@ export interface Finite<N extends number> {
 export interface yR_Base<X, P extends yR> extends WithObserver<X>, WithPrevious<yR2R<P>> {}
 
 const yR =
-  <OP extends string>(o: OP) =>
-  <cR, Params extends ARR, cPrev extends __<yR> = yR, cX = unknown>(
-    $: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P: cPrev) => cR,
+  <OP extends string, ParamsRaw extends ARR, Params = ParamsRaw[0]>(
+    o: OP,
+    r = id as any as (...p: ParamsRaw) => Params,
   ) =>
-  (...p: Params) =>
+  <cR, cPrev extends __<yR> = yR, cX = unknown>(
+    $: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P: cPrev, r: ParamsRaw, ...L: ARR) => cR,
+  ) =>
+  (...p: ParamsRaw) =>
   (P: cPrev) => {
-    const op = [p, o] as [Params, OP];
-    const y = (x: Cb<cX>) => $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P);
+    const op = [r(...p), o] as [Params, OP];
+    const y = (x: Cb<cX>, ...L: ARR) =>
+      $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P, p, ...L);
     y.__ = [...op, P];
     return y;
   };
 
 const yR0 =
-  <OP extends string>(o: OP) =>
-  <cR, Params extends ARR, cX = unknown>($: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>) => cR) =>
-  (...i: Params) => {
-    const op = [i, o] as [Params, OP];
-    const y = (x: Cb<cX>) => $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>);
+  <OP extends string, ParamsRaw extends ARR, Params = ParamsRaw[0]>(
+    o: OP,
+    r = id as any as (...p: ParamsRaw) => Params,
+  ) =>
+  <cR, cX = unknown>($: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, r: ParamsRaw, ...L: ARR) => cR) =>
+  (...i: ParamsRaw) => {
+    const op = [r(...i), o] as [Params, OP];
+    const y = (x: Cb<cX>, ...L: ARR) =>
+      $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, i, ...L);
     y.__ = op;
     return p(y);
   };
@@ -119,11 +127,11 @@ export interface _Input<X = unknown> extends WithObserver<X>, WithState<X> {
 export type Input<X> = yR<X, _Input<X>>;
 export type InputId<X, Id extends PropertyKey> = yR<X, _Input<X> & WithId<Id>>;
 export const IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
-  ($) => (
-    $.x($.__[0][0]),
+  ($, p) => (
+    $.x($.__[0]),
     a($, {
-      id: $.__[0][1],
-      v: $.__[0][0],
+      id: p[1],
+      v: p[0],
       i: (v: unknown) => (($.v = v), $.x(v), v),
     })
   ),
@@ -138,10 +146,10 @@ export const IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
  * @returns a function from previous *yR* P to FilterMap<X, P>
  */
 export const F = yR("F")(($, P) => {
-  $.__[0][0] = $.__[0][0] || (id as any);
+  $.__[0] = $.__[0] || (id as any);
   return a($, {
     p: P((x) => {
-      const v = $.__[0][0]!(x as any);
+      const v = $.__[0]!(x);
       v !== __ && $.x(v);
     }),
   });
