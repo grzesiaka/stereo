@@ -126,7 +126,7 @@ export const Fify = <F extends Fn1>(fn: F) => F(fn) as <P extends yR<Fn$I<F>[0]>
 export interface _FilterMap<X, P extends yR> extends yR_Base<X, P> {}
 export type FilterMap<X, P extends yR> = yR<$$<X>, _FilterMap<X, P>>;
 
-export type Upgrade<X extends {}, P extends yR> = Fn$O<typeof UP<X, P>>;
+export type UpgRade<X extends {}, P extends yR> = Fn$O<typeof UP<X, P>>;
 export const UP =
   <const X extends {}, P extends yR>($: (p: yR2R<P>) => X) =>
   (P: P) =>
@@ -134,7 +134,7 @@ export const UP =
     u(P(x), $);
 
 export const AD =
-  <const X extends {}, P extends yR>($: X): Upgrade<X, P> =>
+  <const X extends {}, P extends yR>($: X): UpgRade<X, P> =>
   (P: P) =>
   (x: Cb<yR2X<P>>) =>
     a(P(x), $);
@@ -142,6 +142,6 @@ export const AD =
 export const ID = <ID extends PropertyKey, P extends yR, K extends PropertyKey = "id">(
   i: ID,
   k = "id" as K,
-): Upgrade<{ [k in K]: ID }, P> => AD({ [k]: i });
+): UpgRade<{ [k in K]: ID }, P> => AD({ [k]: i });
 
-export const YD = <YD extends PropertyKey, P extends yR>(i: YD) => ID(i, "yd") as Upgrade<{ yd: YD }, P>;
+export const YD = <YD extends PropertyKey, P extends yR>(i: YD) => ID(i, "yd") as UpgRade<{ yd: YD }, P>;
