@@ -16,32 +16,26 @@ describe("IN / Input", () => {
 describe("F / partial map", () => {
   test("a simple flow", () => {
     const id = <X>(x: X) => x;
-    const toString = F.ify(<X>(n: X) => `${n}`);
-    const i = IN.L({ dup: <X>(x: X) => [x, x] as [X, X] })(1, "i")(
-      toString,
+    const toString = <X>(n: X) => `${n}`;
+    const toStringF = F.ify(toString);
+    const i = IN.L({ a: "A", toString, dup: <X>(x: X) => [x, x] as [X, X] })(1, "i")(
+      toStringF,
       F(parseFloat),
       F((x) => [x, x]),
       F(id),
       UP(() => ({ id: "UPPED" })),
       F.L(($) => $.dup),
+      F("toString"),
+      // F('a')
     );
 
-    const re = [] as [readonly [number, number], readonly [number, number]][];
+    const re = [] as string[];
     const x = i((x) => re.push(x));
 
-    x.p.p.p.p.p.i(2);
-    expect(x.p.id).toBe("UPPED");
-    expect(x.p.p.p.p.p.id).toBe("i");
-    expect(re).toStrictEqual([
-      [
-        [1, 1],
-        [1, 1],
-      ], // initial value
-      [
-        [2, 2],
-        [2, 2],
-      ], // above call .i(2)
-    ]);
+    x.p.p.p.p.p.p.i(2);
+    expect(x.p.p.id).toBe("UPPED");
+    expect(x.p.p.p.p.p.p.id).toBe("i");
+    expect(re).toStrictEqual(["1,1,1,1", "2,2,2,2"]);
   });
 
   test("undefined (aka __) are ignored by default (via default id transform)", () => {

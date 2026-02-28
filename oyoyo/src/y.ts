@@ -163,17 +163,27 @@ const FL: FilterMapLOp = yR(
  * @param f a function to apply to each value in a stream
  * @returns a function from previous *yR* P to FilterMap<X, P>
  */
-export const F = ((f?: Fn) => FL(() => f || id)) as any as FilterMapOp & { ify: FilterMapify; L: FilterMapLOp };
+export const F = ((f?: Fn | string) =>
+  FL((...L) => (typeof f === "string" ? L[0][f] : f || id))) as any as FilterMapOp & {
+  ify: FilterMapify;
+  L: FilterMapLOp;
+};
 F.ify = ((fn: Fn1) => F(fn)) as FilterMapify;
 F.L = FL;
 
 export interface _FilterMap<X, P extends yR> extends yR_Base<X, P> {}
 export type FilterMap<X, P extends yR> = yR<$$<X>, _FilterMap<X, P>>;
-export type FilterMapify = <F extends Fn1>(F: F) => <P extends yR<Fn$I<F>[0]>>(P: P) => FilterMap<Fn$O<F>, P>;
-export type FilterMapOp = <P extends yR, const X = yR2X<P>>(f?: Fn<[yR2X<P>], X>) => (P: P) => FilterMap<X, P>;
+
+type FilterMapOpByName = <P extends yR, L extends ARR, K extends keyof L[0]>(
+  k: K,
+) => (P: P, ...L: L) => L[0][K] extends Fn<yR2X<P>> ? FilterMap<Fn$O<L[0][K]>, P> : ["WTF", Fn<yR2X<P>>, L[0][K]];
+export type FilterMapOp = FilterMapOpByName &
+  (<P extends yR, const X = yR2X<P>>(f?: Fn<[yR2X<P>], X>) => (P: P) => FilterMap<X, P>);
 export type FilterMapLOp = <P extends yR, L extends ARR, const X = yR2X<P>>(
   f: (...L: L) => Fn<[yR2X<P>], X>,
 ) => (P: P, ...L: L) => FilterMap<X, P>;
+
+export type FilterMapify = <F extends Fn1>(F: F) => <P extends yR<Fn$I<F>[0]>>(P: P) => FilterMap<Fn$O<F>, P>;
 // #endregion
 
 // #region Scan
