@@ -1,5 +1,3 @@
-import { ARR } from "./0";
-
 /**
  * A sequence of transformation applied to a starting value
  *
@@ -7,7 +5,7 @@ import { ARR } from "./0";
  * @returns final result obtained by applying all the transformation
  */
 export const p =
-  <X, L extends ARR = []>(x: X, ...L: L): Pipe<X, L> =>
+  <X, L extends [unknown?] = []>(x: X, ...L: L): Pipe<X, L> =>
   <Fs extends ReadonlyArray<Function>>(...fs: Fs) => {
     if (!fs.length) {
       return L.length ? [x, ...L] : (x as any);
@@ -21,7 +19,7 @@ export const p =
 
 export default p;
 
-export type Pipe<X, L extends ARR = []> = (() => [] extends L ? X : [X, ...L]) &
+export type Pipe<X, L extends [unknown?] = []> = (() => [] extends L ? X : [X, ...L]) &
   (<const R>(f0: (x: X, ...L: L) => R) => R) &
   (<const R, const X0>(f0: (x: X, ...L: L) => X0, f1: (x: X0, ...L: L) => R) => R) &
   (<const R, const X0, const X1>(

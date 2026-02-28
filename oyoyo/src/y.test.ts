@@ -52,11 +52,11 @@ describe("S / Scan", () => {
   test("simple", () => {
     const empty = () => "";
     const add = (a: number, b: number) => a + b;
-    const i = IN.L(empty, add)(0)(
+    const i = IN.L([empty, add])(0)(
       F((x) => x * x),
-      S((v, s: __<number>, _, add) => add(v, s || 0)),
+      S((v, s: __<number>, [_, add]) => add(v, s || 0)),
       S(
-        (L) => L(),
+        ([e]) => e(),
         (v, s) => [s, `${v}`].filter(Boolean).join(";"),
       ),
     );

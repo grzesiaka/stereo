@@ -135,7 +135,7 @@ const $IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
       i: (v: unknown) => (($.v = v), $.x(v), v),
     })
   ),
-) as <L extends ARR>(
+) as <const L extends [unknown?]>(
   ...L: L
 ) => <X, Id extends __<PropertyKey> = __>(x: X, id?: Id) => Pipe<Id extends PropertyKey ? InputId<X, Id> : Input<X>, L>;
 export const IN = $IN() as Fn$O<typeof $IN<[]>> & { L: typeof $IN };
