@@ -25,8 +25,7 @@ describe("F / partial map", () => {
       F(id),
       UP(() => ({ id: "UPPED" })),
       F.L(($) => $.dup),
-      F("toString"),
-      // F('a')
+      F.seL("toString"),
     );
 
     const re = [] as string[];
