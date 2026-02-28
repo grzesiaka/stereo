@@ -1,7 +1,10 @@
 import { describe, test, expect } from "vitest";
 
-import { IN, F, UP, S } from "./y";
-import { __ } from "./0";
+import { IN } from "./I";
+import { F } from "./F";
+import { S } from "./S";
+import { UP } from "./$";
+import { __ } from "../0";
 
 describe("IN / Input", () => {
   test("IN", () => {

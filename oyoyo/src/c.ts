@@ -1,5 +1,12 @@
 import { $$, __, ARR, FLIP, Fn, OP } from "./0";
 
+/**
+ * Function composition with optional initial value
+ *
+ * @param x initial value (might be undefined to force )
+ * @param L
+ * @returns
+ */
 export const c =
   <X, L>(x: X, L: L): Compose<X, L> =>
   (...fns: ARR<Fn>) => {
