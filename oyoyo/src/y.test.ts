@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import { IN, F, Fify, UP, S } from "./y";
+import { IN, F, UP, S } from "./y";
 import { __ } from "./0";
 
 describe("IN / Input", () => {
@@ -16,24 +16,31 @@ describe("IN / Input", () => {
 describe("F / partial map", () => {
   test("a simple flow", () => {
     const id = <X>(x: X) => x;
-    const toString = Fify(<X>(n: X) => `${n}`);
-    const i = IN(1, "i")(
+    const toString = F.ify(<X>(n: X) => `${n}`);
+    const i = IN.L({ dup: <X>(x: X) => [x, x] as [X, X] })(1, "i")(
       toString,
       F(parseFloat),
       F((x) => [x, x]),
       F(id),
       UP(() => ({ id: "UPPED" })),
+      F.L(($) => $.dup),
     );
 
-    const re = [] as (readonly [number, number])[];
+    const re = [] as [readonly [number, number], readonly [number, number]][];
     const x = i((x) => re.push(x));
 
-    x.p.p.p.p.i(2);
-    expect(x.id).toBe("UPPED");
-    expect(x.p.p.p.p.id).toBe("i");
+    x.p.p.p.p.p.i(2);
+    expect(x.p.id).toBe("UPPED");
+    expect(x.p.p.p.p.p.id).toBe("i");
     expect(re).toStrictEqual([
-      [1, 1], // initial value
-      [2, 2], // above call .i(2)
+      [
+        [1, 1],
+        [1, 1],
+      ], // initial value
+      [
+        [2, 2],
+        [2, 2],
+      ], // above call .i(2)
     ]);
   });
 
@@ -50,14 +57,14 @@ describe("F / partial map", () => {
 describe("S / Scan", () => {
   test("simple", () => {
     const empty = () => "";
-    const i = IN.L(empty)(0)(
+    const add = (a: number, b: number) => a + b;
+    const i = IN.L(empty, add)(0)(
       F((x) => x * x),
-      S((v, s: __<number>) => v + (s || 0)),
+      S((v, s: __<number>, _, add) => add(v, s || 0)),
       S(
         (L) => L(),
         (v, s) => [s, `${v}`].filter(Boolean).join(";"),
       ),
-      // S(() => 1),
     );
     const re = [] as unknown[];
     const x = i((x) => re.push(x));
@@ -71,10 +78,10 @@ describe("meta", () => {
   test("reference to previous", () => {
     const f = (x: unknown) => x;
     const i = IN(1, "1")(F(f)) as any;
-    expect(i.__.slice(0, 2)).toStrictEqual([f, "F"]);
+    expect(i.__[0]()).toStrictEqual(f);
     expect(i.__[2].__).toStrictEqual([1, "IN"]);
     const x = i((x: 1) => x);
-    expect(x.__.slice(0, 2)).toStrictEqual([f, "F"]);
+    expect(x.__[0]()).toStrictEqual(f);
     expect(x.p.__).toStrictEqual([1, "IN"]);
   });
 });
