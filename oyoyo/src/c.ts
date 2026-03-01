@@ -1,14 +1,7 @@
 import { $$, __, ARR, FLIP, Fn, OP } from "./0";
 
-/**
- * Function composition with optional initial value
- *
- * @param x initial value (might be undefined to force )
- * @param L
- * @returns
- */
 export const c =
-  <X, L>(x: X, L: L): Compose<X, L> =>
+  <X, L = __, R = unknown>(x: X, L = __ as L, _?: R): Compose<X, L> =>
   (...fns: ARR<Fn>) => {
     if (!fns.length) return [x, L] as any;
     const f = (i: any) => {
@@ -22,34 +15,41 @@ export const c =
     return $;
   };
 
-c.$ = <const L = {}>(L = {} as L) => ((x?: unknown) => c(x, L)) as any as $Compose<L>;
+c.$$ = (() =>
+  (L = __) =>
+  (x?) =>
+    c(x, L)) as $$Compose;
+c.$ = c.$$();
 
 export default c;
 
-export type $Compose<L> = (<X>() => Compose<X, L>) & (<const X>(x: X) => Compose<X, L>);
+type $$Compose = <R>() => <const L = __>(L?: L) => (<X>() => Compose<X, L, R>) & (<const X>(x: X) => Compose<X, L, R>);
 
-export type Compose<X, L> = (() => [X, L]) &
-  (<const R>(f0: (x: $$<X>, L: L) => R) => (...x: FLIP<X>) => R) &
-  (<const R, const X0>(f0: (x: $$<X>, L: L) => X0, f1: (x: X0, L: L, R: [$$<X>, X0]) => R) => (...x: FLIP<X>) => R) &
-  (<const R, const X0, const X1>(
+export type Compose<X, L, cR = unknown> = (() => [X, L]) &
+  (<const R extends cR>(f0: (x: $$<X>, L: L) => R) => (...x: FLIP<X>) => R) &
+  (<const R extends cR, const X0>(
+    f0: (x: $$<X>, L: L) => X0,
+    f1: (x: X0, L: L, R: [$$<X>, X0]) => R,
+  ) => (...x: FLIP<X>) => R) &
+  (<const R extends cR, const X0, const X1>(
     f0: (x: $$<X>, L: L) => X0,
     f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
     f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => R,
   ) => (...x: FLIP<X>) => R) &
-  (<const R, const X0, const X1, const X2>(
+  (<const R extends cR, const X0, const X1, const X2>(
     f0: (x: $$<X>, L: L) => X0,
     f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
     f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => X2,
     f3: (x: X2, L: L, R: [$$<X>, X0, X1, X]) => R,
   ) => (...x: FLIP<X>) => R) &
-  (<const R, const X0, const X1, const X2, const X3>(
+  (<const R extends cR, const X0, const X1, const X2, const X3>(
     f0: (x: $$<X>, L: L) => X0,
     f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
     f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => X2,
     f3: (x: X2, L: L, R: [$$<X>, X0, X1, X]) => X3,
     f4: (x: X3, L: L, R: [$$<X>, X0, X1, X2, X3]) => R,
   ) => (...x: FLIP<X>) => R) &
-  (<const R, const X0, const X1, const X2, const X3, const X4>(
+  (<const R extends cR, const X0, const X1, const X2, const X3, const X4>(
     f0: (x: $$<X>, L: L) => X0,
     f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
     f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => X2,
@@ -57,7 +57,7 @@ export type Compose<X, L> = (() => [X, L]) &
     f4: (x: X3, L: L, R: [$$<X>, X0, X1, X2, X3]) => X4,
     f5: (x: X4, L: L, R: [$$<X>, X0, X1, X2, X3, X4]) => R,
   ) => (...x: FLIP<X>) => R) &
-  (<const R, const X0, const X1, const X2, const X3, const X4, const X5>(
+  (<const R extends cR, const X0, const X1, const X2, const X3, const X4, const X5>(
     f0: (x: $$<X>, L: L) => X0,
     f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
     f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => X2,
@@ -66,7 +66,7 @@ export type Compose<X, L> = (() => [X, L]) &
     f5: (x: X4, L: L, R: [$$<X>, X0, X1, X2, X3, X4]) => X5,
     f6: (x: X5, L: L, R: [$$<X>, X0, X1, X2, X3, X4, X5]) => R,
   ) => (...x: FLIP<X>) => R) &
-  (<const R, const X0, const X1, const X2, const X3, const X4, const X5, const X6>(
+  (<const R extends cR, const X0, const X1, const X2, const X3, const X4, const X5, const X6>(
     f0: (x: $$<X>, L: L) => X0,
     f1: (x: X0, L: L, R: [$$<X>, X0]) => X1,
     f2: (x: X1, L: L, R: [$$<X>, X0, X1]) => X2,

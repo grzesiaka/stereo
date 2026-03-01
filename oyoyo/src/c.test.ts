@@ -81,4 +81,14 @@ describe("c / compose", () => {
     // @ts-expect-error
     y<"x">("y");
   });
+
+  test("specify return type", () => {
+    const secret = () => "secret" as const;
+    const y = c.$$<"secret">()(secret)();
+
+    // @ts-expect-error: Type 'number' is not assignable to type '"secret"'
+    y(() => 1);
+
+    expect(y((_, L) => L())(1)).toBe("secret");
+  });
 });
