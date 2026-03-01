@@ -32,11 +32,12 @@ describe("p / pipe", () => {
     expect(p(p)()).toBe(p);
 
     const L = [{ p }, "?"] as const;
-    expect(p(0, ...L)()).toStrictEqual([0, ...L]);
+    expect(p(0, L)()).toStrictEqual(0);
 
-    expect(p(0, ...L)((_, { p }, q) => p(q))()).toBe("?");
-    expect(p(0, ...L)((_, { p }, q) => p(q)())).toBe("?");
-    expect(p(0, ...L)((_, { p }, q) => p(q, ...L)())).toStrictEqual(["?", ...L]);
-    expect(p(0, ...L)((_, { p }, q) => p(q, ...L))()).toStrictEqual(["?", ...L]);
+    expect(p(0, L)((_, [{ p }, q]) => p(q))()).toBe("?");
+    expect(p(0, L)((_, [{ p }, q]) => p(q)())).toBe("?");
+    expect(p(0, L)((_, [{ p }, q]) => p(q, L)())).toStrictEqual("?");
+    expect(p(0, L)((_, [{ p }, q]) => p(q, L))()).toStrictEqual("?");
+    expect(p(0, L)((_, L) => L)).toStrictEqual(L);
   });
 });

@@ -96,13 +96,13 @@ export const yR0 =
     o: OP,
     r = id as any as (...p: ParamsRaw) => Params,
   ) =>
-  <cR, cX = unknown>($: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, r: ParamsRaw, L: ARR) => cR) =>
-  <L extends ARR>(...L: L) =>
+  <cR, cX = unknown>($: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, r: ParamsRaw, L: unknown) => cR) =>
+  <L>(L: L) =>
   (...i: ParamsRaw) => {
     const op = [r(...i), o] as [Params, OP];
     const y = (x: Cb<cX>) => $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, i, L);
     y.__ = op;
-    return p(y, ...L);
+    return p(y, L);
   };
 
 /** A helper for creating a subsequent yR segment */
@@ -112,10 +112,10 @@ export const yR =
     r = ((...x: ParamsRaw) => x) as any as (...p: ParamsRaw) => Params,
   ) =>
   <cR, cPrev extends __<yR> = yR, cX = unknown>(
-    $: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P: cPrev, r: ParamsRaw, L: ARR) => cR,
+    $: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P: cPrev, r: ParamsRaw, L: unknown) => cR,
   ) =>
   (...p: ParamsRaw) =>
-  (P: cPrev, ...L: ARR) => {
+  (P: cPrev, L: unknown) => {
     const op = [r(...p), o] as [Params, OP];
     const y = (x: Cb<cX>) => $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P, p, L);
     y.__ = [...op, P];
