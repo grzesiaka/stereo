@@ -10,7 +10,7 @@ describe("c / compose", () => {
   test("no type & no initial value", () => {
     const type0value0 = y();
 
-    expect(type0value0()).toStrictEqual([__, L]);
+    expect(type0value0()).toStrictEqual(__);
 
     const _1 = type0value0((x) => x);
     expect(_1(_1)).toBe(_1);
@@ -19,7 +19,7 @@ describe("c / compose", () => {
 
   test("undefined type & no initial value", () => {
     const N = y<__<number>>();
-    expect(N()).toStrictEqual([__, L]);
+    expect(N()).toStrictEqual(__);
 
     const I = (x: number) => x + 1;
 
@@ -64,10 +64,10 @@ describe("c / compose", () => {
   test("no type & defined initial value", () => {
     const yyy = y(y(y));
     const C = y(yyy); // Compose<Compose<Compose<$Compose<...>>>>
-    expect(C()).toStrictEqual([yyy, L]);
+    expect(C()).toStrictEqual(yyy);
     const h = C(
-      (yyy) => yyy((x) => x)(), // one option to extract initial value
-      (yy) => yy()[0], // another option to extract initial value
+      (yyy) => yyy((x) => x)(), // one option to extract initial value (by passing id function)
+      (yy) => yy(), // another option to extract initial value
     )();
     expect(h).toBe(y);
   });
