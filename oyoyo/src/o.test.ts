@@ -15,7 +15,7 @@ describe("o / compose async", () => {
     const type0value0 = y();
 
     const xL = type0value0();
-    expect(xL).toStrictEqual([__, L]);
+    expect(xL).toBe(__);
 
     const _1 = type0value0((x) => x);
     expect(await _1(_1)).toBe(_1);
@@ -25,7 +25,7 @@ describe("o / compose async", () => {
   test("undefined type & no initial value", async () => {
     const N = y<__<number>>();
     const xL = N();
-    expect(xL).toStrictEqual([__, L]);
+    expect(xL).toBe(__);
 
     const _1 = N(IP);
     expect(await _1(1)).toBe(2);
@@ -55,13 +55,23 @@ describe("o / compose async", () => {
   test("no type & undefined initial value", async () => {
     const O = y(__ as __<typeof o>); // better would be: y<__<typeof c>>()
     const xL = O();
-    expect(xL).toStrictEqual([__, L]);
+    expect(xL).toStrictEqual(__);
     const dup = O((x) => P([x, x]));
 
     expect(await dup(o)).toStrictEqual([o, o]);
 
     // @ts-expect-error no initial value => must be provided when running
     dup();
+  });
+
+  test("specify return type", async () => {
+    const secret = () => Promise.resolve("secret" as const);
+    const y = o.$$<"secret">()(secret)();
+
+    // @ts-expect-error: Type 'number' is not assignable to type '"secret" | Promise<"secret">'
+    y(() => 1);
+
+    expect(await y((_, L) => L())(1)).toBe("secret");
   });
 });
 
