@@ -3,23 +3,15 @@
   // "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "out/**"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["out/**"]
     },
     "tsc": {},
     "test": {
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "dev": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "persistent": true,
       "cache": false
     }

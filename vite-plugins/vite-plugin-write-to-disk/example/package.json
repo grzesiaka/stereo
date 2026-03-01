@@ -14,8 +14,8 @@
     "dev": "vite dev"
   },
   "dependencies": {
-    "rxjs": "7.8.2",
-    "extensy": "workspace:"
+    "extensy": "workspace:",
+    "rxjs": "7.8.2"
   },
   "devDependencies": {
     "vite": "catalog:",
