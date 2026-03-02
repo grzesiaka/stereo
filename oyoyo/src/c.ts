@@ -6,12 +6,12 @@ export const c =
     if (!fns.length) return x as any;
     const f = (i: any) => {
       let r = [i];
-      for (let f of $.__[0][2]) {
-        r.push(f(r[r.length - 1], $.__[0][0], r));
+      for (let f of $.__[1][2]) {
+        r.push(f(r[r.length - 1], $.__[1][0], r));
       }
       return r[r.length - 1] as any;
     };
-    const $ = OP("c")([L, x, fns])(x === void 0 ? f : (...[x]: any[]): any => f(x === void 0 ? $.__[0][1] : x));
+    const $ = OP("c")([L, x, fns])(x === void 0 ? f : (...[x]: any[]): any => f(x === void 0 ? $.__[1][1] : x));
     return $;
   };
 

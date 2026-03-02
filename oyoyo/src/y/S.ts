@@ -5,9 +5,9 @@ type ScanParamsRaw = [init: (L: unknown) => unknown, next: (v: unknown, s: unkno
 export const S = yR<"S", [ScanParamsRaw[1]] | ScanParamsRaw, ScanParamsRaw>("S", (...p: any) =>
   p[1] ? p : (p.unshift(() => __), p),
 )(($, P, _, L) => {
-  $.v = $.__[0][0](L);
+  $.v = $.__[1][0](L);
   return a($, {
-    p: P((x) => (($.v = $.__[0][1](x, $.v, L) as any), $.x($.v))),
+    p: P((x) => (($.v = $.__[1][1](x, $.v, L) as any), $.x($.v))),
   } as _Scan);
 }) as ScanOp;
 

@@ -6,14 +6,14 @@ export const o =
     if (fns.length === 0) return x as any;
     const f = async (i: any) => {
       let r = [i];
-      for (let f of $.__[0][2]) {
-        const n = await f(r[r.length - 1], $.__[0][0], r);
+      for (let f of $.__[1][2]) {
+        const n = await f(r[r.length - 1], $.__[1][0], r);
         if (n instanceof Error) return [n, r];
         r.push(n);
       }
       return r[r.length - 1] as any;
     };
-    const $ = OP("o")([L, x, fns])(x === void 0 ? f : (...[x]: any[]): any => f(x === void 0 ? $.__[0][1] : x));
+    const $ = OP("o")([L, x, fns])(x === void 0 ? f : (...[x]: any[]): any => f(x === void 0 ? $.__[1][1] : x));
     return $;
   };
 

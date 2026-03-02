@@ -74,10 +74,10 @@ describe("meta", () => {
   test("reference to previous", () => {
     const f = (x: unknown) => x;
     const i = IN(1, "1")(F(f)) as any;
-    expect(i.__[0]()).toStrictEqual(f);
-    expect(i.__[2].__).toStrictEqual([1, "IN"]);
+    expect(i.__[1]()).toStrictEqual(f);
+    expect(i.__[2].__).toStrictEqual(["IN", 1]);
     const x = i((x: 1) => x);
-    expect(x.__[0]()).toStrictEqual(f);
-    expect(x.p.__).toStrictEqual([1, "IN"]);
+    expect(x.__[1]()).toStrictEqual(f);
+    expect(x.p.__).toStrictEqual(["IN", 1]);
   });
 });

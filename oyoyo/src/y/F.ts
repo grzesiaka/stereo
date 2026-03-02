@@ -7,7 +7,7 @@ const FL: FilterMapLOp = yR(
 )(($, P, _, L) =>
   a($, {
     p: P((x) => {
-      const v = $.__[0]!(L)(x);
+      const v = $.__[1]!(L)(x);
       v !== __ && $.x(v);
     }),
   }),

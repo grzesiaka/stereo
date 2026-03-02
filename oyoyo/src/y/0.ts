@@ -1,4 +1,4 @@
-import { __, ARR, id, WithOP } from "../0";
+import { __, ARR, id, WithOP, OP } from "../0";
 import p from "../p";
 
 /**
@@ -92,32 +92,32 @@ export interface yR_Base<X, P extends yR> extends WithObserver<X>, WithPrevious<
 
 /** A helper for creating an initial yR segment */
 export const yR0 =
-  <OP extends string, ParamsRaw extends ARR, Params = ParamsRaw[0]>(
-    o: OP,
+  <OP_ID extends string, ParamsRaw extends ARR, Params = ParamsRaw[0]>(
+    o: OP_ID,
     r = id as any as (...p: ParamsRaw) => Params,
   ) =>
-  <cR, cX = unknown>($: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, r: ParamsRaw, L: unknown) => cR) =>
+  <cR, cX = unknown>($: ($: WithObserver<cX> & WithOP<OP_ID, Params> & Partial<cR>, r: ParamsRaw, L: unknown) => cR) =>
   <L>(L: L) =>
   (...i: ParamsRaw) => {
-    const op = [r(...i), o] as [Params, OP];
-    const y = (x: Cb<cX>) => $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, i, L);
+    const op = [o, r(...i)] as OP<OP_ID, Params>;
+    const y = (x: Cb<cX>) => $({ x, __: op } as WithObserver<cX> & WithOP<OP_ID, Params> & Partial<cR>, i, L);
     y.__ = op;
     return p(y, L);
   };
 
 /** A helper for creating a subsequent yR segment */
 export const yR =
-  <OP extends string, ParamsRaw extends ARR, Params = ParamsRaw>(
-    o: OP,
+  <OP_ID extends string, ParamsRaw extends ARR, Params = ParamsRaw>(
+    o: OP_ID,
     r = ((...x: ParamsRaw) => x) as any as (...p: ParamsRaw) => Params,
   ) =>
   <cR, cPrev extends __<yR> = yR, cX = unknown>(
-    $: ($: WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P: cPrev, r: ParamsRaw, L: unknown) => cR,
+    $: ($: WithObserver<cX> & WithOP<OP_ID, Params> & Partial<cR>, P: cPrev, r: ParamsRaw, L: unknown) => cR,
   ) =>
   (...p: ParamsRaw) =>
   (P: cPrev, L: unknown) => {
-    const op = [r(...p), o] as [Params, OP];
-    const y = (x: Cb<cX>) => $({ x, __: op } as WithObserver<cX> & WithOP<OP, Params> & Partial<cR>, P, p, L);
+    const op = [o, r(...p)] as [OP_ID, Params];
+    const y = (x: Cb<cX>) => $({ x, __: op } as WithObserver<cX> & WithOP<OP_ID, Params> & Partial<cR>, P, p, L);
     y.__ = [...op, P];
     return y;
   };

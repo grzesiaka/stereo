@@ -5,7 +5,7 @@ import type { WithObserver, WithState, yR, WithId } from "./0";
 
 const $IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
   ($, p) => (
-    $.x($.__[0]),
+    $.x($.__[1]),
     a($, {
       id: p[1],
       v: p[0],
