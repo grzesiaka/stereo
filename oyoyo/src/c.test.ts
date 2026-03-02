@@ -3,92 +3,101 @@ import { describe, test, expect } from "vitest";
 import c from "./c";
 import { __ } from "./0";
 
-describe("c / compose", () => {
+const P = <X>(x: X) => Promise.resolve(x);
+const IP = (x: number) => P(x + 1);
+const I = (x: number) => x + 1;
+
+describe("o / compose async", () => {
   const L = { L: "L" as const };
   const y = c.$(L);
 
-  test("no type & no initial value", () => {
+  test("no type & no initial value", async () => {
     const type0value0 = y();
 
-    expect(type0value0()).toStrictEqual(__);
+    const xL = type0value0();
+    expect(xL).toBe(__);
 
     const _1 = type0value0((x) => x);
-    expect(_1(_1)).toBe(_1);
+    expect(await _1(_1)).toBe(_1);
     expect(_1.length).toBe(1);
   });
 
-  test("undefined type & no initial value", () => {
+  test("undefined type & no initial value", async () => {
     const N = y<__<number>>();
-    expect(N()).toStrictEqual(__);
+    const xL = N();
+    expect(xL).toBe(__);
 
-    const I = (x: number) => x + 1;
+    const _1 = N(IP);
+    expect(await _1(1)).toBe(2);
 
-    const _1 = N(I);
-    expect(_1(1)).toBe(2);
+    const _2 = N(IP, IP);
+    expect(await _2(2)).toBe(4);
 
-    const _2 = N(I, I);
-    expect(_2(2)).toBe(4);
+    const _3 = N(IP, I, IP);
+    expect(await _3(3)).toBe(6);
 
-    const _3 = N(I, I, I);
-    expect(_3(3)).toBe(6);
+    const _4 = N(IP, IP, I, IP);
+    expect(await _4(4)).toBe(8);
 
-    const _4 = N(I, I, I, I);
-    expect(_4(4)).toBe(8);
+    const _5 = N(IP, IP, I, IP, IP);
+    expect(await _5(5)).toBe(10);
 
-    const _5 = N(I, I, I, I, I);
-    expect(_5(5)).toBe(10);
+    const _6 = N(IP, IP, I, IP, IP, IP);
+    expect(await _6(6)).toBe(12);
 
-    const _6 = N(I, I, I, I, I, I);
-    expect(_6(6)).toBe(12);
+    const _7 = N(IP, IP, I, IP, IP, IP, IP);
+    expect(await _7(7)).toBe(14);
 
-    const _7 = N(I, I, I, I, I, I, I);
-    expect(_7(7)).toBe(14);
-
-    const _8 = N(I, I, I, I, I, I, I, I);
-    expect(_8(8)).toBe(16);
+    const _8 = N(IP, IP, I, IP, IP, IP, IP, IP);
+    expect(await _8(8)).toBe(16);
   });
 
-  test("no type & undefined initial value", () => {
-    const C = y(__ as __<typeof c>); // better would be: y<__<typeof c>>()
-    const c2c = C((x) => x);
-    const dup = C((x) => [x, x]);
+  test("no type & undefined initial value", async () => {
+    const O = y(__ as __<typeof c>); // better would be: y<__<typeof c>>()
+    const xL = O();
+    expect(xL).toStrictEqual(__);
+    const dup = O((x) => P([x, x]));
 
-    expect(dup(c)).toStrictEqual([c, c]);
+    expect(await dup(c)).toStrictEqual([c, c]);
 
-    // @ts-expect-error incorrect type
-    c2c("");
-    // @ts-expect-error no initial value => must be provided when calling
+    // @ts-expect-error no initial value => must be provided when running
     dup();
   });
 
-  test("no type & defined initial value", () => {
-    const yyy = y(y(y));
-    const C = y(yyy); // Compose<Compose<Compose<$Compose<...>>>>
-    expect(C()).toStrictEqual(yyy);
-    const h = C(
-      (yyy) => yyy((x) => x)(), // one option to extract initial value (by passing id function)
-      (yy) => yy(), // another option to extract initial value
-    )();
-    expect(h).toBe(y);
-  });
-  test("type & defined initial value", () => {
-    const x = y<0>(0);
-    expect(x.length).toBe(0);
-    expect(x((x) => x)()).toBe(0);
-    // @ts-expect-error 1 instead of zero, but id works as expected
-    expect(x((x) => x)(1)).toBe(1);
-
-    // @ts-expect-error
-    y<"x">("y");
-  });
-
-  test("specify return type", () => {
-    const secret = () => "secret" as const;
+  test("specify return type", async () => {
+    const secret = () => Promise.resolve("secret" as const);
     const y = c.$$<"secret">()(secret)();
 
-    // @ts-expect-error: Type 'number' is not assignable to type '"secret"'
+    // @ts-expect-error: Type 'number' is not assignable to type '"secret" | Promise<"secret">'
     y(() => 1);
 
-    expect(y((_, L) => L())(1)).toBe("secret");
+    expect(await y((_, L) => L())(1)).toBe("secret");
+  });
+});
+
+describe("errors", () => {
+  class StopError<X> extends Error {
+    constructor(public readonly x: X) {
+      super();
+    }
+  }
+
+  const STOP = <X>(x = 0 as X) => new StopError(x);
+
+  const y = c.$(STOP)<number>(0);
+
+  test("stop", async () => {
+    const x = y(
+      I,
+      IP,
+      (x, s) => (x > 7 ? s(7) : x),
+      (x) => `${x}${x + 1}`,
+      (x, s) => (x === "67" ? s("67?!") : x),
+      (x) => [x, x],
+    );
+
+    expect(await x()).toStrictEqual(["23", "23"]);
+    expect(await x(6)).toStrictEqual([STOP(7), [6, 7, 8]]);
+    expect(await x(4)).toStrictEqual([STOP("67?!"), [4, 5, 6, 6, "67"]]);
   });
 });

@@ -1,3 +1,5 @@
+import { __ } from "./0";
+
 /**
  * A sequence of transformation applied to a starting value
  *
@@ -5,7 +7,7 @@
  * @returns final result obtained by applying all the transformation
  */
 export const p =
-  <X, L>(x: X, L?: L): Pipe<X, L> =>
+  <X, L = __>(x: X, L?: L): Pipe<X, L> =>
   <Fs extends ReadonlyArray<Function>>(...fs: Fs) => {
     if (!fs.length) {
       return x as any;
@@ -19,7 +21,7 @@ export const p =
 
 export default p;
 
-export type Pipe<X, L> = (() => X) &
+export type Pipe<X, L = __> = (() => X) &
   (<const R>(f0: (x: X, L: L) => R) => R) &
   (<const R, const X0>(f0: (x: X, L: L) => X0, f1: (x: X0, L: L) => R) => R) &
   (<const R, const X0, const X1>(f0: (x: X, L: L) => X0, f1: (x: X0, L: L) => X1, f2: (x: X1, L: L) => R) => R) &
