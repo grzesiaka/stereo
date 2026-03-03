@@ -5,7 +5,7 @@ export const c =
   (...fns: ARR<Fn>) => {
     if (fns.length === 0) return x as any;
     const f = async (i: any) => {
-      let r = [i];
+      let r = [await i];
       for (let f of $.__[1][2]) {
         const n = await f(r[r.length - 1], $.__[1][0], r);
         if (n instanceof Error) return [n, r];
@@ -39,7 +39,7 @@ export type $$ComposeAsync = <R>() => <L = __>(
   L?: L,
 ) => (<X>() => ComposeAsync<__ extends X ? X : __<X>, L, R>) & (<const X>(x: X) => ComposeAsync<X, L, R>);
 
-export type ComposeAsync<X, L, cR> = (() => X) &
+export type ComposeAsync<X, L = undefined, cR = unknown> = (() => X) &
   (<const R extends cR | Promise<cR>>(f0: (x: $$<X>, L: L) => R) => (...x: FLIP<X>) => oResult<[$$<X>, R]>) &
   (<const R extends cR | Promise<cR>, const X0>(
     f0: (x: $$<X>, L: L) => X0,

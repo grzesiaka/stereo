@@ -48,6 +48,29 @@ describe("F / partial map", () => {
     x.p.i(undefined);
     expect(re).toStrictEqual([7]);
   });
+
+  test("compose & compose-async", async () => {
+    const L = {
+      toString: <X>(x: X) => `${x}`,
+      toPromise: <X>(x: X) => Promise.resolve(x),
+      error: <X>(x: X) => (x === "1" ? new Error("!") : x),
+    };
+    const i = IN.L(L)(0)(
+      F.o((o, L) => o(L.toString, L.toPromise)),
+      F.c((c, L) => c(L.error, (x: unknown) => (x === "2" ? 4 : x))),
+    );
+
+    const re = [] as unknown[];
+    const x = i(async (x) => re.push(await x));
+    x.p.p.i(1);
+    x.p.p.i(2);
+
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(re).toStrictEqual([[new Error("!"), ["1"]], "0", 4]);
+  });
 });
 
 describe("S / Scan", () => {
