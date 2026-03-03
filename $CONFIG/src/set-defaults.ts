@@ -28,7 +28,7 @@ const setDefaults = (root: string, files: string[]) => {
 
     !("sideEffects" in pkg) && (pkg.sideEffects = false);
 
-    writeFile(pkgPath, JSON.stringify(pkg, null, 2), () => 1);
+    writeFile(pkgPath, JSON.stringify(pkg, null, 2) + "\n", () => 1);
   });
 
   if (!files.includes("src")) {

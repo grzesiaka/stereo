@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 
 import p from "./p";
-import { __ } from "./0";
+import { __ } from "~js";
 
 describe("p / pipe", () => {
   test("0-16", () => {

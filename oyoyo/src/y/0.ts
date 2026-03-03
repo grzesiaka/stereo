@@ -1,4 +1,4 @@
-import { __, ARR, id, WithOP, OP } from "../0";
+import { __, ARR, id, WithOP, OP } from "~js";
 import p from "../p";
 
 /**

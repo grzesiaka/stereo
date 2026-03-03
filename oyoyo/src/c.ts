@@ -1,4 +1,4 @@
-import { $$, __, ARR, FLIP, Fn, OP } from "./0";
+import { $$, __, ARR, FLIP, Fn, OP } from "~js";
 
 export const c =
   <X, L = __, R = unknown>(x: X, L = __ as L, _?: R): ComposeAsync<X, L, R> =>

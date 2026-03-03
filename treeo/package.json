@@ -12,5 +12,11 @@
   "scripts": {
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "dependencies": {
+    "~js": "workspace:"
+  },
+  "devDependencies": {
+    "type-fest": "catalog:"
   }
 }

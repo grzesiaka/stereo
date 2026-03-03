@@ -14,6 +14,9 @@
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
     "test": "vitest src"
   },
+  "dependencies": {
+    "~js": "workspace:"
+  },
   "devDependencies": {
     "@vitest/coverage-v8": "catalog:",
     "type-fest": "catalog:",

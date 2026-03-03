@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 
 import c from "./c";
-import { __ } from "./0";
+import { __ } from "~js";
 
 const P = <X>(x: X) => Promise.resolve(x);
 const IP = (x: number) => P(x + 1);

@@ -1,5 +1,5 @@
 import o, { Compose } from "../o";
-import { __, Fn, Fn1, id, Fn$O, Fn$I, $$, a } from "../0";
+import { __, Fn, Fn1, id, Fn$O, Fn$I, $$, a } from "~js";
 import { yR, yR2X, yR_Base } from "./0";
 import c, { ComposeAsync } from "../c";
 

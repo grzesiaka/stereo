@@ -1,4 +1,4 @@
-import { a, __, type Fn$O } from "../0";
+import { a, __, type Fn$O } from "~js";
 import type { Pipe } from "../p";
 import { yR0 } from "./0";
 import type { WithObserver, WithState, yR, WithId } from "./0";

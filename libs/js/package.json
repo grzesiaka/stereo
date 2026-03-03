@@ -10,8 +10,8 @@
     "./*": "./out/*"
   },
   "scripts": {
-    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json"
+    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
+    "build": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
     "vitest": "catalog:"

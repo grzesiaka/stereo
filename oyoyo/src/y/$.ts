@@ -1,4 +1,4 @@
-import { a, Fn$O, u } from "../0";
+import { a, Fn$O, u } from "~js";
 import { Cb, yR, yR2R, yR2X } from "./0";
 
 export const UP =

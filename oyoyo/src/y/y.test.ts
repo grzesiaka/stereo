@@ -4,7 +4,7 @@ import { IN } from "./I";
 import { F } from "./F";
 import { S } from "./S";
 import { UP } from "./$";
-import { __ } from "../0";
+import { __ } from "~js";
 
 describe("IN / Input", () => {
   test("IN", () => {

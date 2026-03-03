@@ -1,4 +1,4 @@
-import { $$, __, ARR, FLIP, Fn, OP } from "./0";
+import { $$, __, ARR, FLIP, Fn, OP } from "~js";
 
 export const o =
   <X, L = __, R = unknown>(x: X, L = __ as L, _?: R): Compose<X, L> =>

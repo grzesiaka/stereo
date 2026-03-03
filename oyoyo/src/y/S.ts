@@ -1,4 +1,4 @@
-import { __, a } from "../0";
+import { __, a } from "~js";
 import { WithState, yR, yR2X, yR_Base } from "./0";
 
 type ScanParamsRaw = [init: (L: unknown) => unknown, next: (v: unknown, s: unknown, L: unknown) => typeof s];

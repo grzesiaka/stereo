@@ -10,6 +10,7 @@
   "scripts": {
     "ci": "turbo run build tsc test --affected",
     "build": "turbo run build",
+    "pre-build": "turbo run pre-build",
     "dev": "turbo run dev --ui=tui",
     "test": "turbo run test",
     "fmt": "oxfmt",
