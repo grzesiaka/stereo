@@ -24,6 +24,7 @@ module.exports = {
             },
             "./*": "./out/*",
           });
+        pkg.scripts.test && (pkg.devDependencies["vitest"] = "catalog:");
       }
       return pkg;
     },

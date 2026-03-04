@@ -22,7 +22,7 @@ catalogs:
       specifier: 4.0.18
       version: 4.0.18
 
-pnpmfileChecksum: sha256-gEBEgc1j/JkFLmQEdJfep32htNBd4kcIY9NdQanMBb8=
+pnpmfileChecksum: sha256-tJjoEeTyu9x9pxvv9y+I2856MO23P4DQKvZsXYZYOyE=
 
 importers:
 
@@ -54,6 +54,9 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
 
   arryo:
     dependencies:
@@ -155,6 +158,9 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
 
   vite-plugins/vite-plugin-write-to-disk:
     dependencies:

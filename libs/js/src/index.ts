@@ -31,6 +31,11 @@ export type ARR<X = any> = ReadonlyArray<X>;
 export type Fn<I extends ARR = ARR, O = unknown, E = {}> = (E extends string ? { name: E } : {}) & ((...i: I) => O);
 
 /**
+ * Function with 0 parameters or a single optional parameter
+ */
+export type Fn0<O = unknown, I = never, E = {}> = [I] extends [never] ? Fn<[], O, E> : Fn<[I?], O, E>;
+
+/**
  * Single parameter function
  */
 export type Fn1<I = any, O = unknown, E = {}> = Fn<[I], O, E>;
