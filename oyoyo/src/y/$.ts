@@ -1,5 +1,5 @@
-import { a, Fn$O, u } from "~js";
-import { Cb, yR, yR2R, yR2X } from "./0";
+import { Cb, a, Fn$O, u } from "~js";
+import { yR, yR2R, yR2X } from "./0";
 
 export const UP =
   <const X extends {}, P extends yR>($: (p: yR2R<P>) => X) =>

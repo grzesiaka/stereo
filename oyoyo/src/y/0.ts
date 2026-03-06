@@ -1,10 +1,5 @@
-import { __, ARR, id, WithOP, OP } from "~js";
+import { __, ARR, id, WithOP, OP, Cb } from "~js";
 import p from "../p";
-
-/**
- * Callback
- */
-export type Cb<X = unknown, R = void> = (x: X) => R;
 
 /**
  * **yR** wire
