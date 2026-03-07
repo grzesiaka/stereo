@@ -1,9 +1,13 @@
 {
   "$schema": "node_modules/turbo/schema.json",
+  "ui": "tui",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["out/**"]
+    },
+    "~types#build": {
+      "outputs": []
     },
     "tsc": {},
     "test": {

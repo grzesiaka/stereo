@@ -11,6 +11,10 @@
   },
   "scripts": {
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
-    "build": "tsc -p node_modules/~cfg/tsconfig.build.json"
+    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "~types": "workspace:"
   }
 }

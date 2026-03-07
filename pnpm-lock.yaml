@@ -22,7 +22,7 @@ catalogs:
       specifier: 4.0.18
       version: 4.0.18
 
-pnpmfileChecksum: sha256-2ZiK6MoEErUFAtAyLLhcs41fbVfTutCxl580V7tB5iI=
+pnpmfileChecksum: sha256-v7igjTXqTSAhAu2FjCoz1Cw721O6Z9/oqb6ApZStqkY=
 
 importers:
 
@@ -37,6 +37,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: 'link:'
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   .:
     devDependencies:
@@ -64,6 +67,9 @@ importers:
       ~testing:
         specifier: 'workspace:'
         version: link:libs/testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:libs/types
 
   arryo:
     devDependencies:
@@ -73,6 +79,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   cocompyo:
     devDependencies:
@@ -82,15 +91,34 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   exexe:
+    dependencies:
+      oyoyo:
+        specifier: workspace:*
+        version: link:../oyoyo
+      ~js:
+        specifier: workspace:*
+        version: link:../libs/js
     devDependencies:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   extensy:
     devDependencies:
@@ -103,6 +131,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   ioioy:
     dependencies:
@@ -116,6 +147,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   libs/envs/dom:
     dependencies:
@@ -129,6 +163,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../../../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../../types
 
   libs/envs/nodejs:
     devDependencies:
@@ -141,15 +178,27 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../../../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../../types
 
   libs/js:
     devDependencies:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
 
   libs/testing:
     devDependencies:
@@ -162,6 +211,21 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
+
+  libs/types:
+    devDependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.4.4
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: 'link:'
 
   libs/var:
     dependencies:
@@ -172,9 +236,18 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
 
   okoko:
     devDependencies:
@@ -184,6 +257,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   oyoyo:
     dependencies:
@@ -206,6 +282,9 @@ importers:
       ~testing:
         specifier: 'workspace:'
         version: link:../libs/testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   rxihno:
     dependencies:
@@ -219,6 +298,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   specyo:
     devDependencies:
@@ -228,6 +310,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   taskyo:
     dependencies:
@@ -241,6 +326,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   treeo:
     dependencies:
@@ -260,6 +348,9 @@ importers:
       ~testing:
         specifier: 'workspace:'
         version: link:../libs/testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   uiyui:
     devDependencies:
@@ -269,6 +360,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   vite-plugins/vite-plugin-write-to-disk:
     devDependencies:
@@ -284,6 +378,9 @@ importers:
       ~nodejs:
         specifier: 'workspace:'
         version: link:../../libs/envs/nodejs
+      ~types:
+        specifier: 'workspace:'
+        version: link:../../libs/types
 
   vite-plugins/vite-plugin-write-to-disk/example:
     dependencies:
@@ -312,6 +409,9 @@ importers:
       ~nodejs:
         specifier: 'workspace:'
         version: link:../../../libs/envs/nodejs
+      ~types:
+        specifier: 'workspace:'
+        version: link:../../../libs/types
 
   yxyo:
     devDependencies:
@@ -321,6 +421,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
 packages:
 

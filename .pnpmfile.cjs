@@ -13,6 +13,7 @@ module.exports = {
     readPackage(pkg) {
       if (!pkg.name !== "~cfg") {
         pkg.devDependencies["~cfg"] = "workspace:";
+        pkg.devDependencies["~types"] = "workspace:";
         pkg.devDependencies["type-fest"] = "catalog:";
 
         if (pkg.scripts?.test) {

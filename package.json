@@ -9,8 +9,7 @@
   "type": "module",
   "scripts": {
     "ci": "turbo run build tsc test --affected",
-    "build": "turbo run build",
-    "pre-build": "turbo run pre-build",
+    "build": "turbo run build --ui=stream",
     "dev": "turbo run dev --ui=tui",
     "test": "turbo run test",
     "fmt": "oxfmt",
