@@ -13,11 +13,18 @@ export type $$<X = unknown> = Exclude<X, __>;
 export type FLIP<X> = __ extends X ? [$$<X>] : [__<X>?];
 
 /**
- * Unnamed, ordered group
  *
  * `ReadonlyArray<X>` / `readonly X[]`
  */
 export type ARR<X = any> = ReadonlyArray<X>;
+
+/**
+ * Non empty readonly array
+ *
+ * `readonly [X, ...R[]]`
+ *
+ */
+export type ARR1<X = any, R = X> = readonly [X, ...R[]];
 
 /**
  * Function with optional attached information

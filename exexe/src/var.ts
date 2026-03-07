@@ -1,6 +1,6 @@
 import { Simplify, Writable } from "type-fest";
 import { __, a } from "~js";
-import { $$, Cb, FlipOptionalAndRequiredProperties } from "~types";
+import { $$, ARR, Cb } from "~types";
 
 interface OO<X> {
   v: X;
@@ -37,32 +37,36 @@ interface Ctx<X = any> {
   OOs?: Set<Cb<$$<X>>>;
 }
 
-type $Var<X, L extends Ctx<__<X>> = Ctx<__<X>>> =
-  // default context
-  L extends Ctx<__<X>>
-    ? (<const E extends L>(
-        e?: E,
-      ) => Var<
-        __ extends E["v"] ? (__ extends E["defV"] ? __<X> : $$<X>) : $$<X>,
-        Writable<E extends { defV: any } ? E : E extends { v: any } ? Simplify<Omit<E, "v">> : E>
-      >) &
-        (<ID extends string, const iX extends __<X>>(
-          ...p: [id: ID, defaultValue?: iX]
-        ) => Var<__ extends iX ? __<X> : $$<X>, __ extends iX ? ID : { id: ID; defV: iX }>)
-    : // custom context
-      <E extends L>(e: FlipOptionalAndRequiredProperties<L>) => Var<Required<L>["v"], Simplify<E & L>>;
+type $Var<X, cL extends Ctx<__<X>> = Ctx<__<X>>, E extends ARR = []> = E extends readonly [any, ...any[]]
+  ? // custom context
+    <const L extends cL>(
+      L: E extends [] ? L : (...E: E) => L,
+    ) => Var<
+      __ extends L["v"] ? (__ extends L["defV"] ? __<X> : $$<X>) : $$<X>,
+      Writable<L extends { defV: any } ? L : L extends { v: any } ? Simplify<Omit<L, "v">> : L>
+    >
+  : // default context
+    (<const L extends cL>(
+      L?: L,
+    ) => Var<
+      __ extends L["v"] ? (__ extends L["defV"] ? __<X> : $$<X>) : $$<X>,
+      Writable<L extends { defV: any } ? L : L extends { v: any } ? Simplify<Omit<L, "v">> : L>
+    >) &
+      (<ID extends string, const iX extends __<X>>(
+        ...p: [id: ID, defaultValue?: iX]
+      ) => Var<__ extends iX ? __<X> : $$<X>, __ extends iX ? ID : { id: ID; defV: iX }>);
 
-export const $Var = <X, cL extends Ctx<__<X>> = Ctx<__<X>>>(cL = {} as cL) =>
+export const $Var = <X, cL = Ctx<__<X>>, E extends ARR = []>(...E: E) =>
   ((idOrL, defV) => {
-    if (idOrL === void 0) return $Var({})(cL);
-    if (typeof idOrL === "string")
-      return ($Var as any)(cL)(defV === void 0 ? { id: idOrL } : { id: idOrL, v: defV, defV });
-    const $: Var = a((x: X) => (($.v = x), $.OOs.forEach((c) => c($.v))), cL, idOrL);
+    if (E.length) return $Var()((idOrL as any)(...E));
+    if (idOrL === void 0) return $Var()({});
+    if (typeof idOrL === "string") return $Var()(defV === void 0 ? { id: idOrL } : { id: idOrL, v: defV, defV });
+    const $: Var = a((x: X) => (($.v = x), $.OOs.forEach((c) => c($.v))), idOrL);
     !$.OOs && ($.OOs = new Set());
     !$.OO && (($ as Var<any, any>).OO = OO($));
     "defV" in $ && ($.v = $.defV);
     return $;
-  }) as $Var<X, cL>;
+  }) as $Var<X, cL & Ctx<__<X>>, E>;
 
 export const VAR = $Var() as $Var<unknown> & { $: typeof $Var; N: $Var<number>; S: $Var<string>; B: $Var<boolean> };
 

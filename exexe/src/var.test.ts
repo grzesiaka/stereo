@@ -1,8 +1,9 @@
 import { describe as dt } from "~testing";
 
 import V from "./var";
+import { __ } from "~js";
 
-dt(V, ({ eq }) => ({
+dt("Var / default context", ({ eq }) => ({
   unknown: () => {
     const x = V();
     const r = [] as unknown[];
@@ -22,7 +23,6 @@ dt(V, ({ eq }) => ({
 
     o.d();
     eq(x.OOs.size, 0);
-
     x(2);
     eq(o.v, 2); // edge-case o.v has newest version after disposed
     eq(x.v, 2);
@@ -137,5 +137,22 @@ dt(V, ({ eq }) => ({
 
     // @ts-expect-error must be a number so `undefined` is filtered out
     x(void 0);
+  },
+}));
+
+dt("Var / custom context", ({ eq }) => ({
+  no_extra: () => {
+    const x = V.$<[string, number], { "!": "!" }>()({
+      defV: ["abc", 1],
+      "!": "!",
+    });
+  },
+
+  with_extra: () => {
+    const E = ["abra", "kadabra"] as const;
+    const x = V.$<typeof V, { "!": "abra kadabra" }, typeof E>(...E)((a, b) => ({
+      defV: V,
+      "!": `${a} ${b}`,
+    }));
   },
 }));
