@@ -146,13 +146,19 @@ dt("Var / custom context", ({ eq }) => ({
       defV: ["abc", 1],
       "!": "!",
     });
+    eq(x["!"], "!");
+    eq(x.v, ["abc", 1]);
   },
 
   with_extra: () => {
     const E = ["abra", "kadabra"] as const;
-    const x = V.$<typeof V, { "!": "abra kadabra" }, typeof E>(...E)((a, b) => ({
+    const x = V.$<typeof V, { "!": "abra kadabra"; id: string }, typeof E>(...E)((a, b) => ({
+      id: "id",
       defV: V,
       "!": `${a} ${b}`,
     }));
+    eq(x.id)("id");
+    eq(x["!"], "abra kadabra");
+    eq(x.v, V);
   },
 }));
