@@ -1,7 +1,7 @@
-import { dt } from "~testing";
+import { describe } from "~testing";
 import { capped, type Capped } from "./capped";
 
-dt(capped, ({ eq }) => ({
+describe(capped, ({ eq }) => ({
   0: () => {
     const a = capped(0);
     eq(a.cap, 0);
