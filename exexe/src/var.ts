@@ -8,12 +8,15 @@ interface OO<X> {
   d: () => void;
 }
 
-type Var<X = unknown, L = unknown> = (L extends string ? { id: L } : L) & {
-  (v: $$<X>): void;
-  v: X;
+interface VarBase<X> {
+  V: X;
   OO: (x: Cb<$$<X>>) => OO<X>;
   OOs: Set<Cb<$$<X>>>;
-};
+  "--": "--";
+  __: "__";
+}
+
+type Var<X = unknown, L = unknown> = (L extends string ? { Id: L } : L) & ((x: $$<X>) => $$<X>) & VarBase<X>;
 
 const OO =
   <X>($: Var<X>) =>
@@ -22,7 +25,7 @@ const OO =
       x,
       // .v is still refreshed after disposed
       get v() {
-        return $.v;
+        return $.V;
       },
       d: () => $.OOs.delete(x),
     };
@@ -30,11 +33,9 @@ const OO =
     return o;
   };
 
-interface Ctx<X = any> {
-  id?: string;
-  v?: X;
-  defV?: X;
-  OOs?: Set<Cb<$$<X>>>;
+interface Ctx<X = any> extends Partial<VarBase<X>> {
+  Id?: string;
+  DefV?: X;
 }
 
 type $Var<X, cL extends Ctx<__<X>> = Ctx<__<X>>, E extends ARR = []> = E extends readonly [any, ...any[]]
@@ -42,29 +43,29 @@ type $Var<X, cL extends Ctx<__<X>> = Ctx<__<X>>, E extends ARR = []> = E extends
     <const L extends cL>(
       L: E extends [] ? L : (...E: E) => L,
     ) => Var<
-      __ extends L["v"] ? (__ extends L["defV"] ? __<X> : $$<X>) : $$<X>,
-      Writable<L extends { defV: any } ? L : L extends { v: any } ? Simplify<Omit<L, "v">> : L>
+      __ extends L["V"] ? (__ extends L["DefV"] ? __<X> : $$<X>) : $$<X>,
+      Writable<L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L>
     >
   : // default context
     (<const L extends cL>(
       L?: L,
     ) => Var<
-      __ extends L["v"] ? (__ extends L["defV"] ? __<X> : $$<X>) : $$<X>,
-      Writable<L extends { defV: any } ? L : L extends { v: any } ? Simplify<Omit<L, "v">> : L>
+      __ extends L["V"] ? (__ extends L["DefV"] ? __<X> : $$<X>) : $$<X>,
+      Writable<L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L>
     >) &
       (<ID extends string, const iX extends __<X>>(
         ...p: [id: ID, defaultValue?: iX]
-      ) => Var<__ extends iX ? __<X> : $$<X>, __ extends iX ? ID : { id: ID; defV: iX }>);
+      ) => Var<__ extends iX ? __<X> : $$<X>, __ extends iX ? ID : { Id: ID; DefV: iX }>);
 
 export const $Var = <X, cL = Ctx<__<X>>, E extends ARR = []>(...E: E) =>
-  ((idOrL, defV) => {
+  ((idOrL, DefV) => {
     if (E.length) return $Var()((idOrL as any)(...E));
     if (idOrL === void 0) return $Var()({});
-    if (typeof idOrL === "string") return $Var()(defV === void 0 ? { id: idOrL } : { id: idOrL, v: defV, defV });
-    const $: Var = a((x: X) => (($.v = x), $.OOs.forEach((c) => c($.v))), idOrL);
+    if (typeof idOrL === "string") return $Var()(DefV === void 0 ? { Id: idOrL } : { Id: idOrL, V: DefV, DefV });
+    const $: Var = a((x: X) => (($.V = x), $.OOs.forEach((c) => c($.V))), idOrL);
     !$.OOs && ($.OOs = new Set());
     !$.OO && (($ as Var<any, any>).OO = OO($));
-    "defV" in $ && ($.v = $.defV);
+    "DefV" in $ && ($.V = $.DefV);
     return $;
   }) as $Var<X, cL & Ctx<__<X>>, E>;
 

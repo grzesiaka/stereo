@@ -11,27 +11,27 @@ dt("Var / default context", ({ eq }) => ({
     const o = x.OO(cb);
 
     eq(x.OOs.size, 1);
-    eq(x.v, void 0);
+    eq(x.V, void 0);
     eq(o.x, cb);
     eq(o.v, void 0);
     eq(r, []);
 
     x(1);
     eq(o.v, 1);
-    eq(x.v, 1);
+    eq(x.V, 1);
     eq(r, [1]);
 
     o.d();
     eq(x.OOs.size, 0);
     x(2);
     eq(o.v, 2); // edge-case o.v has newest version after disposed
-    eq(x.v, 2);
+    eq(x.V, 2);
     eq(r, [1]);
   },
 
   num: () => {
     const x = V.N("num");
-    eq(x.id, "num");
+    eq(x.Id, "num");
 
     const r = [] as number[];
     const cb = (x: number) => r.push(x);
@@ -41,14 +41,14 @@ dt("Var / default context", ({ eq }) => ({
     x.OO(cb); // no effect as already registered
     eq(x.OOs.size, 1);
 
-    eq(x.v, void 0);
+    eq(x.V, void 0);
     eq(o.x, cb);
     eq(o.v, void 0);
     eq(r, []);
 
     x(1);
     eq(o.v, 1);
-    eq(x.v, 1);
+    eq(x.V, 1);
     eq(r, [1]);
 
     o.d();
@@ -56,7 +56,7 @@ dt("Var / default context", ({ eq }) => ({
 
     x(2);
     eq(o.v, 2); // edge-case o.v has newest version after disposed
-    eq(x.v, 2);
+    eq(x.V, 2);
     eq(r, [1]);
 
     // @ts-expect-error must be a number so `undefined` is filtered out
@@ -65,8 +65,8 @@ dt("Var / default context", ({ eq }) => ({
 
   str: () => {
     const x = V.S("str", "d");
-    eq(x.id, "str");
-    eq(x.defV, "d");
+    eq(x.Id, "str");
+    eq(x.DefV, "d");
 
     const r = [] as string[];
     const cb = (x: string) => r.push(x);
@@ -74,8 +74,8 @@ dt("Var / default context", ({ eq }) => ({
     const o1 = x.OO((x: string) => r.push(x));
 
     eq(x.OOs.size, 2);
-    eq(x.v, "d");
-    // eq(x.v, void 0); an error as default value provided
+    eq(x.V, "d");
+    // eq(x.V, void 0); an error as default value provided
     eq(o.x, cb);
     // eq(o.v, void 0);  an error as default value provided
     eq(o.v, eq(o1.v, "d"));
@@ -84,7 +84,7 @@ dt("Var / default context", ({ eq }) => ({
     x("1");
     eq(o.v, "1");
     eq(o1.v, "1");
-    eq(x.v, "1");
+    eq(x.V, "1");
     eq(r, ["1", "1"]);
 
     o.d();
@@ -93,7 +93,7 @@ dt("Var / default context", ({ eq }) => ({
     x("2");
     eq(o.v, "2"); // edge-case o.v has newest version after disposed
     eq(o1.v, "2");
-    eq(x.v, "2");
+    eq(x.V, "2");
     eq(r, ["1", "1", "2"]);
 
     // @ts-expect-error must be a number so `undefined` is filtered out
@@ -101,11 +101,11 @@ dt("Var / default context", ({ eq }) => ({
   },
 
   bool: () => {
-    const x = V.B({ id: "boo", v: true });
-    eq(x.id, "boo");
+    const x = V.B({ Id: "boo", V: true });
+    eq(x.Id, "boo");
     // @ts-expect-error .defV can be added when constructing
-    eq(x.defV, void 0);
-    eq(x.v, true);
+    eq(x.DefV, void 0);
+    eq(x.V, true);
 
     const r = [] as boolean[];
     const cb = (x: boolean) => r.push(x);
@@ -113,8 +113,8 @@ dt("Var / default context", ({ eq }) => ({
     const o1 = x.OO((x: boolean) => r.push(x));
 
     eq(x.OOs.size, 2);
-    eq(x.v, true);
-    // eq(x.v, void 0); // an error as default value provided
+    eq(x.V, true);
+    // eq(x.V, void 0); // an error as default value provided
     eq(o.x, cb);
     // eq(o.v, void 0);  an error as default value provided
     eq(o.v, eq(o1.v, true));
@@ -123,7 +123,7 @@ dt("Var / default context", ({ eq }) => ({
     x(false);
     eq(o.v, false);
     eq(o1.v, false);
-    eq(x.v, false);
+    eq(x.V, false);
     eq(r, [false, false]);
 
     o.d();
@@ -132,7 +132,7 @@ dt("Var / default context", ({ eq }) => ({
     x(true);
     eq(o.v, true); // edge-case o.v has newest version after disposed
     eq(o1.v, true);
-    eq(x.v, true);
+    eq(x.V, true);
     eq(r, [false, false, true]);
 
     // @ts-expect-error must be a number so `undefined` is filtered out
@@ -143,22 +143,22 @@ dt("Var / default context", ({ eq }) => ({
 dt("Var / custom context", ({ eq }) => ({
   no_extra: () => {
     const x = V.$<[string, number], { "!": "!" }>()({
-      defV: ["abc", 1],
+      DefV: ["abc", 1],
       "!": "!",
     });
     eq(x["!"], "!");
-    eq(x.v, ["abc", 1]);
+    eq(x.V, ["abc", 1]);
   },
 
   with_extra: () => {
     const E = ["abra", "kadabra"] as const;
-    const x = V.$<typeof V, { "!": "abra kadabra"; id: string }, typeof E>(...E)((a, b) => ({
-      id: "id",
-      defV: V,
+    const x = V.$<typeof V, { "!": "abra kadabra"; Id: string }, typeof E>(...E)((a, b) => ({
+      Id: "id",
+      DefV: V,
       "!": `${a} ${b}`,
     }));
-    eq(x.id)("id");
+    eq(x.Id)("id");
     eq(x["!"], "abra kadabra");
-    eq(x.v, V);
+    eq(x.V, V);
   },
 }));
