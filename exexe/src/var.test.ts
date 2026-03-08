@@ -143,6 +143,9 @@ dt("Var / default context", ({ eq }) => ({
 dt("Var / custom context", ({ eq }) => ({
   no_extra: () => {
     const x = V.$<[string, number], { "!": "!" }>()({
+      Fn(x) {
+        return x;
+      },
       DefV: ["abc", 1],
       "!": "!",
     });
@@ -160,5 +163,25 @@ dt("Var / custom context", ({ eq }) => ({
     eq(x.Id)("id");
     eq(x["!"], "abra kadabra");
     eq(x.V, V);
+  },
+
+  fn: () => {
+    const E = ["abra", "kadabra"] as const;
+    const x = V.$<typeof V, { "!": "abra kadabra"; Id: string }, typeof E>(...E)((a, b) => ({
+      Id: "id",
+      DefV: V,
+      Fn(x, $$) {
+        const $ = $$(this);
+        console.log("---->", $);
+        $.dupa = "2";
+        return x;
+      },
+      "!": `${a} ${b}` as const,
+    }));
+    eq(x.Id)("id");
+    eq(x["!"], "abra kadabra");
+    eq(x.V, V);
+    x(V);
+    console.log(x, "<-----");
   },
 }));

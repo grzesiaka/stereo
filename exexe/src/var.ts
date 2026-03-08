@@ -1,4 +1,4 @@
-import { Simplify, Writable } from "type-fest";
+import { Simplify } from "type-fest";
 import { __, a } from "~js";
 import { $$, ARR, Cb } from "~types";
 
@@ -12,11 +12,9 @@ interface VarBase<X> {
   V: X;
   OO: (x: Cb<$$<X>>) => OO<X>;
   OOs: Set<Cb<$$<X>>>;
-  "--": "--";
-  __: "__";
 }
 
-type Var<X = unknown, L = unknown> = (L extends string ? { Id: L } : L) & ((x: $$<X>) => $$<X>) & VarBase<X>;
+type Var<X = any, L = any> = (L extends string ? { Id: L } : L) & ((x: $$<X>) => $$<X>) & VarBase<X>;
 
 const OO =
   <X>($: Var<X>) =>
@@ -36,22 +34,23 @@ const OO =
 interface Ctx<X = any> extends Partial<VarBase<X>> {
   Id?: string;
   DefV?: X;
+  Fn?: (x: $$<X>, $: <$>($: $) => $ & VarBase<X>) => $$<X>;
 }
 
 type $Var<X, cL extends Ctx<__<X>> = Ctx<__<X>>, E extends ARR = []> = E extends readonly [any, ...any[]]
   ? // custom context
-    <const L extends cL>(
+    <L extends cL>(
       L: E extends [] ? L : (...E: E) => L,
     ) => Var<
       __ extends L["V"] ? (__ extends L["DefV"] ? __<X> : $$<X>) : $$<X>,
-      Writable<L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L>
+      L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L
     >
   : // default context
-    (<const L extends cL>(
+    (<L extends cL>(
       L?: L,
     ) => Var<
       __ extends L["V"] ? (__ extends L["DefV"] ? __<X> : $$<X>) : $$<X>,
-      Writable<L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L>
+      L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L
     >) &
       (<ID extends string, const iX extends __<X>>(
         ...p: [id: ID, defaultValue?: iX]
@@ -62,7 +61,7 @@ export const $Var = <X, cL = Ctx<__<X>>, E extends ARR = []>(...E: E) =>
     if (E.length) return $Var()((idOrL as any)(...E));
     if (idOrL === void 0) return $Var()({});
     if (typeof idOrL === "string") return $Var()(DefV === void 0 ? { Id: idOrL } : { Id: idOrL, V: DefV, DefV });
-    const $: Var = a((x: X) => (($.V = x), $.OOs.forEach((c) => c($.V))), idOrL);
+    const $: Var = a((x: X) => (($.V = x), idOrL.Fn?.(x, () => $), $.OOs.forEach((c) => c($.V))), idOrL);
     !$.OOs && ($.OOs = new Set());
     !$.OO && (($ as Var<any, any>).OO = OO($));
     "DefV" in $ && ($.V = $.DefV);
@@ -81,3 +80,7 @@ VAR.S = Str;
 VAR.B = Bool;
 
 export default VAR;
+
+function $() {}
+
+$.a = "";
