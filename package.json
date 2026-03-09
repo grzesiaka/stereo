@@ -8,7 +8,7 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "ci": "turbo run build tsc test --affected",
+    "ci": "CI=true turbo run build tsc test --affected --ui=stream",
     "build": "turbo run build --ui=stream",
     "dev": "turbo run dev --ui=tui",
     "test": "turbo run test",

@@ -227,28 +227,6 @@ importers:
         specifier: 'workspace:'
         version: 'link:'
 
-  libs/var:
-    dependencies:
-      ~js:
-        specifier: 'workspace:'
-        version: link:../js
-    devDependencies:
-      type-fest:
-        specifier: 'catalog:'
-        version: 5.4.4
-      vitest:
-        specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
-      ~cfg:
-        specifier: 'workspace:'
-        version: link:../../$CONFIG
-      ~testing:
-        specifier: 'workspace:'
-        version: link:../testing
-      ~types:
-        specifier: 'workspace:'
-        version: link:../types
-
   okoko:
     devDependencies:
       type-fest:
@@ -303,6 +281,18 @@ importers:
         version: link:../libs/types
 
   specyo:
+    devDependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.4.4
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
+
+  statree:
     devDependencies:
       type-fest:
         specifier: 'catalog:'
