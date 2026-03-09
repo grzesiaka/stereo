@@ -4,18 +4,19 @@ import { $$, ARR, Cb, Fn } from "~types";
 
 interface OO<X> {
   v: X;
-  x: Cb<$$<X>>;
+  x: Cb<X>;
   d: () => void;
 }
 
 interface VarBase<X> {
   V: X;
-  OO: (x: Cb<$$<X>>) => OO<X>;
+  OO: (x: Cb<X>) => OO<X>;
   // TODO make it iterator and allow sorting to address diamond update problem
-  OOs: Set<Cb<$$<X>>>;
+  OOs: Set<Cb<X>>;
 }
 
-type Var<X = any, L = any, I = $$<X>> = (L extends string ? { Id: L } : L) & ((x: I) => $$<X>) & VarBase<X>;
+type Var<X = any, L = any> = (L extends string ? { Id: L } : L) & ((x: X) => X) & VarBase<X>;
+type VarIO<I = any, X = any, L = any> = (L extends string ? { Id: L } : L) & ((x: I) => X) & VarBase<X>;
 
 const OO =
   <X>($: Var<X>) =>
@@ -39,29 +40,31 @@ interface Ctx<X = any, I = any> extends Partial<VarBase<X>> {
   DefV?: X;
 }
 
-type Ctx$I<L> = L extends Ctx<any, infer X> ? X : never;
+type Ctx$O<L, X> = L extends Ctx<any> ? (__ extends L["V"] ? (__ extends L["DefV"] ? __<X> : $$<X>) : $$<X>) : never;
 
-type $Var<X, cL extends Ctx<__<X>, any> = Ctx<__<X>, any>, E extends ARR = []> = E extends readonly [any, ...any[]]
+// type Ctx$I<L> = L extends Ctx<any, infer X> ? X : never;
+
+type $Var<X, cL extends Ctx<__<X>, any> = Ctx<__<X>, any>, E extends ARR = [], I = X> = E extends readonly [
+  any,
+  ...any[],
+]
   ? // custom context
     <const L extends cL>(
       L: E extends [] ? L : (...E: E) => L,
-    ) => Var<
-      __ extends L["V"] ? (__ extends L["DefV"] ? __<X> : $$<X>) : $$<X>,
-      L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L,
-      Ctx$I<L>
-    >
+    ) => Ctx$O<L, X> extends I
+      ? Var<Ctx$O<L, X>, L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L>
+      : VarIO<I, Ctx$O<L, X>, L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L>
   : // default context
     (<const L extends cL>(
       L?: L,
-    ) => Var<
-      __ extends L["V"] ? (__ extends L["DefV"] ? __<X> : $$<X>) : $$<X>,
-      L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L
-    >) &
+    ) => Ctx$O<L, X> extends I
+      ? Var<Ctx$O<L, X>, L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L>
+      : VarIO<I, Ctx$O<L, X>, L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L>) &
       (<ID extends string, const iX extends __<X>>(
         ...p: [id: ID, defaultValue?: iX]
       ) => Var<__ extends iX ? __<X> : $$<X>, __ extends iX ? ID : { Id: ID; DefV: iX }>);
 
-export const $Var = <X, cL = Ctx<__<X>>, E extends ARR = [], I = $$<X>>(...E: E) =>
+export const $Var = <X, cL = Ctx<__<X>>, E extends ARR = [], I = X>(...E: E) =>
   ((L__id__fn, DefV) => {
     let L = (L__id__fn || {}) as Ctx;
     if (typeof L__id__fn === "string") L = DefV === void 0 ? { Id: L__id__fn } : { Id: L__id__fn, V: DefV, DefV };
@@ -74,7 +77,7 @@ export const $Var = <X, cL = Ctx<__<X>>, E extends ARR = [], I = $$<X>>(...E: E)
     !$.OO && (($ as Var<any, any>).OO = OO($));
     "DefV" in $ && ($.V = $.DefV);
     return $;
-  }) as $Var<X, cL & Ctx<__<X>, I>, E>;
+  }) as $Var<X, cL & Ctx<__<X>, I>, E, I>;
 
 export const VAR = $Var() as $Var<unknown> & { $: typeof $Var; N: $Var<number>; S: $Var<string>; B: $Var<boolean> };
 

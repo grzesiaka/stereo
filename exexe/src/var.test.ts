@@ -33,8 +33,8 @@ dt("Var / default context", ({ eq }) => ({
     const x = V.N("num");
     eq(x.Id, "num");
 
-    const r = [] as number[];
-    const cb = (x: number) => r.push(x);
+    const r = [] as (number | undefined)[];
+    const cb = (x?: number) => r.push(x);
     const o = x.OO(cb);
 
     eq(x.OOs.size, 1);
@@ -59,7 +59,6 @@ dt("Var / default context", ({ eq }) => ({
     eq(x.V, 2);
     eq(r, [1]);
 
-    // @ts-expect-error must be a number so `undefined` is filtered out
     x(void 0);
   },
 
@@ -135,7 +134,7 @@ dt("Var / default context", ({ eq }) => ({
     eq(x.V, true);
     eq(r, [false, false, true]);
 
-    // @ts-expect-error must be a number so `undefined` is filtered out
+    // @ts-expect-error only boolean accepted
     x(void 0);
   },
 }));
