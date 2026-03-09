@@ -22,5 +22,6 @@
     "@vitest/coverage-v8": "catalog:",
     "type-fest": "catalog:",
     "vitest": "catalog:"
-  }
+  },
+  "type": "module"
 }

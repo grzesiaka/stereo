@@ -23,5 +23,6 @@
     "vite-plugin-inspect": "11.3.3",
     "~dom": "workspace:",
     "~nodejs": "workspace:"
-  }
+  },
+  "type": "module"
 }

@@ -20,5 +20,6 @@
   },
   "devDependencies": {
     "type-fest": "catalog:"
-  }
+  },
+  "type": "module"
 }

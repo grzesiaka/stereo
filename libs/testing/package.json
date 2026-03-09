@@ -16,5 +16,6 @@
   },
   "devDependencies": {
     "vitest": "catalog:"
-  }
+  },
+  "type": "module"
 }

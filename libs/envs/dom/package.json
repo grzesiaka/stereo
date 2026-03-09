@@ -16,5 +16,6 @@
   },
   "dependencies": {
     "@types/web": "0.0.336"
-  }
+  },
+  "type": "module"
 }

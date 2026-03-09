@@ -17,5 +17,6 @@
   },
   "devDependencies": {
     "~types": "workspace:"
-  }
+  },
+  "type": "module"
 }

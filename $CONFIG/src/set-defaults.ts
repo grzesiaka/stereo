@@ -15,8 +15,8 @@ const setDefaults = (root: string, files: string[]) => {
     pkg.version = pkg.version || "0.0.0";
 
     pkg.scripts = pkg.scripts || {};
-    // pkg.type = "module";
-    delete pkg.type;
+    pkg.type = "module";
+    // delete pkg.type;
     !pkg.scripts.build && (pkg.scripts.build = "tsc -p node_modules/~cfg/tsconfig.build.json");
     !pkg.scripts.dev && (pkg.scripts.dev = "tsc --watch -p node_modules/~cfg/tsconfig.build.json");
     !pkg.scripts.dev$ && (pkg.scripts.dev$ = `turbo run dev --filter='${pkg.name}'...`);

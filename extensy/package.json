@@ -20,5 +20,6 @@
   },
   "devDependencies": {
     "vite": "catalog:"
-  }
+  },
+  "type": "module"
 }
