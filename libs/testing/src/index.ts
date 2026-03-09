@@ -4,6 +4,21 @@ type EQ = (<const A>(a: A) => (b: NoInfer<A>) => A) & (<const A>(a: A, b: NoInfe
 
 const eq: EQ = (...a: [any] | [any, any]) => (a.length === 2 ? eq(a[0])(a[1]) : (b) => (v.expect(a[0]).toEqual(b), b));
 
+const res = <X>() => {
+  const r = [] as X[];
+  return {
+    items: r,
+    add: (x: X) => r.push(x),
+    eq: eq(r),
+    last: (n?: number, t?: (x: X) => unknown) => {
+      n !== void 0 && eq(r.length, n);
+      const l = r[r.length - 1] as X;
+      return eq(t ? t(l) : l);
+    },
+    len: (n: number) => eq(r.length, n),
+  };
+};
+
 const ctx = {
   /**
    * `import * as v from "vitest"`
@@ -19,6 +34,11 @@ const ctx = {
    * ```
    */
   eq,
+
+  /**
+   * Creates an array of given type, and some test helpers
+   */
+  res,
 };
 
 type Ctx = typeof ctx;
