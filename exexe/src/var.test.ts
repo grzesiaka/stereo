@@ -167,16 +167,17 @@ dt("Var / custom context", ({ eq }) => ({
 
   custom_function: () => {
     const E = ["abra", "kadabra"] as const;
-    const x = V.$<number, { "!": "abra kadabra"; Id: string }, typeof E>(...E)((a, b) => ({
+    const x = V.$<number, { "!": "abra kadabra"; Id: string }, typeof E, string>(...E)((a, b) => ({
       Id: "id",
       DefV: 0,
       CallCount: 0 as number,
       $(x, _, $$) {
         const $ = $$(this);
         $.CallCount++;
-        $.V = x;
-        $.OOs.forEach((c) => c(x));
-        return x;
+        const v = parseInt(x);
+        $.V = v;
+        $.OOs.forEach((c) => c(v));
+        return v;
       },
       "!": `${a} ${b}`,
     }));
@@ -190,14 +191,14 @@ dt("Var / custom context", ({ eq }) => ({
     eq(x.DefV, 0);
     eq(x.CallCount, 0);
 
-    x(7);
+    x("7");
     eq(x.Id)("id");
     eq(x["!"], "abra kadabra");
     eq(x.V, 7);
     eq(x.DefV, 0);
     eq(x.CallCount, 1);
 
-    x(1);
+    x("1");
     eq(x.Id)("id");
     eq(x["!"], "abra kadabra");
     eq(x.V, 1);
