@@ -143,7 +143,7 @@ dt("Var / default context", ({ eq }) => ({
 dt("Var / custom context", ({ eq }) => ({
   no_extra: () => {
     const x = V.$<[string, number], { "!": "!" }>()({
-      Fn(x) {
+      $(x) {
         return x;
       },
       DefV: ["abc", 1],
@@ -165,23 +165,43 @@ dt("Var / custom context", ({ eq }) => ({
     eq(x.V, V);
   },
 
-  fn: () => {
+  custom_function: () => {
     const E = ["abra", "kadabra"] as const;
-    const x = V.$<typeof V, { "!": "abra kadabra"; Id: string }, typeof E>(...E)((a, b) => ({
+    const x = V.$<number, { "!": "abra kadabra"; Id: string }, typeof E>(...E)((a, b) => ({
       Id: "id",
-      DefV: V,
-      Fn(x, $$) {
+      DefV: 0,
+      CallCount: 0 as number,
+      $(x, _, $$) {
         const $ = $$(this);
-        console.log("---->", $);
-        $.dupa = "2";
+        $.CallCount++;
+        $.V = x;
+        $.OOs.forEach((c) => c(x));
         return x;
       },
-      "!": `${a} ${b}` as const,
+      "!": `${a} ${b}`,
     }));
+
+    const re = [] as unknown[];
+    x.OO((x) => re.push(x));
+
     eq(x.Id)("id");
     eq(x["!"], "abra kadabra");
-    eq(x.V, V);
-    x(V);
-    console.log(x, "<-----");
+    eq(x.V, 0);
+    eq(x.DefV, 0);
+    eq(x.CallCount, 0);
+
+    x(7);
+    eq(x.Id)("id");
+    eq(x["!"], "abra kadabra");
+    eq(x.V, 7);
+    eq(x.DefV, 0);
+    eq(x.CallCount, 1);
+
+    x(1);
+    eq(x.Id)("id");
+    eq(x["!"], "abra kadabra");
+    eq(x.V, 1);
+    eq(x.DefV, 0);
+    eq(x.CallCount, 2);
   },
 }));

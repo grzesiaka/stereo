@@ -1,6 +1,6 @@
-import { Simplify } from "type-fest";
+import { Simplify, Writable } from "type-fest";
 import { __, a } from "~js";
-import { $$, ARR, Cb } from "~types";
+import { $$, ARR, Cb, Fn } from "~types";
 
 interface OO<X> {
   v: X;
@@ -11,6 +11,7 @@ interface OO<X> {
 interface VarBase<X> {
   V: X;
   OO: (x: Cb<$$<X>>) => OO<X>;
+  // TODO make it iterator and allow sorting to address diamond update problem
   OOs: Set<Cb<$$<X>>>;
 }
 
@@ -21,7 +22,7 @@ const OO =
   (x: Cb<X>): OO<X> => {
     const o: OO<X> = {
       x,
-      // .v is still refreshed after disposed
+      // edge-case: .v is still refreshed/accessible after disposed
       get v() {
         return $.V;
       },
@@ -32,21 +33,22 @@ const OO =
   };
 
 interface Ctx<X = any> extends Partial<VarBase<X>> {
+  /** a custom function that  */
+  $?: (x: $$<X>, $: Writable<VarBase<X>>, $$: <$>($: $) => Writable<$ & VarBase<X>>) => $$<X>;
   Id?: string;
   DefV?: X;
-  Fn?: (x: $$<X>, $: <$>($: $) => $ & VarBase<X>) => $$<X>;
 }
 
 type $Var<X, cL extends Ctx<__<X>> = Ctx<__<X>>, E extends ARR = []> = E extends readonly [any, ...any[]]
   ? // custom context
-    <L extends cL>(
+    <const L extends cL>(
       L: E extends [] ? L : (...E: E) => L,
     ) => Var<
       __ extends L["V"] ? (__ extends L["DefV"] ? __<X> : $$<X>) : $$<X>,
       L extends { DefV: any } ? L : L extends { V: any } ? Simplify<Omit<L, "V">> : L
     >
   : // default context
-    (<L extends cL>(
+    (<const L extends cL>(
       L?: L,
     ) => Var<
       __ extends L["V"] ? (__ extends L["DefV"] ? __<X> : $$<X>) : $$<X>,
@@ -57,11 +59,14 @@ type $Var<X, cL extends Ctx<__<X>> = Ctx<__<X>>, E extends ARR = []> = E extends
       ) => Var<__ extends iX ? __<X> : $$<X>, __ extends iX ? ID : { Id: ID; DefV: iX }>);
 
 export const $Var = <X, cL = Ctx<__<X>>, E extends ARR = []>(...E: E) =>
-  ((idOrL, DefV) => {
-    if (E.length) return $Var()((idOrL as any)(...E));
-    if (idOrL === void 0) return $Var()({});
-    if (typeof idOrL === "string") return $Var()(DefV === void 0 ? { Id: idOrL } : { Id: idOrL, V: DefV, DefV });
-    const $: Var = a((x: X) => (($.V = x), idOrL.Fn?.(x, () => $), $.OOs.forEach((c) => c($.V))), idOrL);
+  ((L__id__fn, DefV) => {
+    let L = (L__id__fn || {}) as Ctx;
+    if (typeof L__id__fn === "string") L = DefV === void 0 ? { Id: L__id__fn } : { Id: L__id__fn, V: DefV, DefV };
+    else if (E.length) L = (L__id__fn as Fn<E, Ctx>)(...E);
+
+    const $: Var = L.$
+      ? a((x: X) => (L as Required<Ctx>).$(x, $, () => $), L)
+      : a((x: X) => (($.V = x), $.OOs.forEach((c: any) => c($.V))), L);
     !$.OOs && ($.OOs = new Set());
     !$.OO && (($ as Var<any, any>).OO = OO($));
     "DefV" in $ && ($.V = $.DefV);
