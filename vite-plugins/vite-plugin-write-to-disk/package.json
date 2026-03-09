@@ -12,7 +12,8 @@
   },
   "scripts": {
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json"
+    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
+    "dev$": "turbo run dev --filter='vite-plugin-write-to-disk'..."
   },
   "devDependencies": {
     "vite": "catalog:",

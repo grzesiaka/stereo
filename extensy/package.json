@@ -15,7 +15,8 @@
   },
   "scripts": {
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json"
+    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
+    "dev$": "turbo run dev --filter='extensy'..."
   },
   "devDependencies": {
     "vite": "catalog:"

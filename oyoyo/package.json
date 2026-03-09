@@ -12,7 +12,8 @@
   "scripts": {
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
-    "test": "vitest src"
+    "test": "vitest src",
+    "dev$": "turbo run dev --filter='oyoyo'..."
   },
   "dependencies": {
     "~js": "workspace:"
