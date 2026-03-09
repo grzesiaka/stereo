@@ -15,8 +15,9 @@ interface VarBase<X> {
   OOs: Set<Cb<X>>;
 }
 
-type Var<X = any, L = any> = (L extends string ? { Id: L } : L) & ((x: X) => X) & VarBase<X>;
-type VarIO<I = any, X = any, L = any> = (L extends string ? { Id: L } : L) & ((x: I) => X) & VarBase<X>;
+type VarIO<I = any, O = any, L = any> = (L extends string ? { Id: L } : L) & ((x: I) => O) & VarBase<O>;
+type Var<X = any, L = any> = VarIO<X, X, L>;
+// type Var<X = any, L = any> = (L extends string ? { Id: L } : L) & ((x: X) => X) & VarBase<X>;
 
 const OO =
   <X>($: Var<X>) =>

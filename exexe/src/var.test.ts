@@ -3,7 +3,7 @@ import { describe as dt } from "~testing";
 import V from "./var";
 import { __ } from "~js";
 
-dt("Var / default context", ({ eq }) => ({
+dt("Var / default context", ({ eq, res }) => ({
   unknown: () => {
     const x = V();
     const r = [] as unknown[];
@@ -29,7 +29,7 @@ dt("Var / default context", ({ eq }) => ({
     eq(r, [1]);
   },
 
-  num: () => {
+  num_via_id_no_initial_value: () => {
     const x = V.N("num");
     eq(x.Id, "num");
 
@@ -62,7 +62,7 @@ dt("Var / default context", ({ eq }) => ({
     x(void 0);
   },
 
-  str: () => {
+  str_via_id_with_DefV: () => {
     const x = V.S("str", "d");
     eq(x.Id, "str");
     eq(x.DefV, "d");
@@ -99,31 +99,31 @@ dt("Var / default context", ({ eq }) => ({
     x(void 0);
   },
 
-  bool: () => {
+  bool_via_objet_with_V: () => {
     const x = V.B({ Id: "boo", V: true });
     eq(x.Id, "boo");
     // @ts-expect-error .defV can be added when constructing
     eq(x.DefV, void 0);
     eq(x.V, true);
 
-    const r = [] as boolean[];
-    const cb = (x: boolean) => r.push(x);
-    const o = x.OO(cb);
-    const o1 = x.OO((x: boolean) => r.push(x));
+    const r = res();
+    const o = x.OO(r.add);
+    // a separate callback
+    const o1 = x.OO((x: boolean) => r.add(x));
 
     eq(x.OOs.size, 2);
     eq(x.V, true);
     // eq(x.V, void 0); // an error as default value provided
-    eq(o.x, cb);
+    eq(o.x, r.add);
     // eq(o.v, void 0);  an error as default value provided
     eq(o.v, eq(o1.v, true));
-    eq(r, []);
+    r.eq([]);
 
     x(false);
     eq(o.v, false);
     eq(o1.v, false);
     eq(x.V, false);
-    eq(r, [false, false]);
+    r.eq([false, false]);
 
     o.d();
     eq(x.OOs.size, 1);
@@ -132,14 +132,14 @@ dt("Var / default context", ({ eq }) => ({
     eq(o.v, true); // edge-case o.v has newest version after disposed
     eq(o1.v, true);
     eq(x.V, true);
-    eq(r, [false, false, true]);
+    r.eq([false, false, true]);
 
     // @ts-expect-error only boolean accepted
     x(void 0);
   },
 }));
 
-dt("Var / custom context", ({ eq }) => ({
+dt("Var / custom context", ({ eq, res }) => ({
   no_extra: () => {
     const x = V.$<[string, number], { "!": "!" }>()({
       $(x) {
@@ -150,6 +150,13 @@ dt("Var / custom context", ({ eq }) => ({
     });
     eq(x["!"], "!");
     eq(x.V, ["abc", 1]);
+
+    const r = res();
+    r.eq([]);
+
+    // since a custom function updates must be handled manually
+    x(["", 0]);
+    r.eq([]);
   },
 
   with_extra: () => {
@@ -165,6 +172,46 @@ dt("Var / custom context", ({ eq }) => ({
   },
 
   custom_function: () => {
+    const E = ["abra", "kadabra"] as const;
+    const x = V.$<number, { "!": "abra kadabra"; Id: string }, typeof E>(...E)((a, b) => ({
+      Id: "id",
+      DefV: 0,
+      CallCount: 0 as number,
+      $(v, _, $$) {
+        const $ = $$(this);
+        $.CallCount++;
+        $.V = v;
+        $.OOs.forEach((c) => c(v));
+        return v;
+      },
+      "!": `${a} ${b}`,
+    }));
+
+    const re = [] as unknown[];
+    x.OO((x) => re.push(x));
+
+    eq(x.Id)("id");
+    eq(x["!"], "abra kadabra");
+    eq(x.V, 0);
+    eq(x.DefV, 0);
+    eq(x.CallCount, 0);
+
+    x(7);
+    eq(x.Id)("id");
+    eq(x["!"], "abra kadabra");
+    eq(x.V, 7);
+    eq(x.DefV, 0);
+    eq(x.CallCount, 1);
+
+    x(1);
+    eq(x.Id)("id");
+    eq(x["!"], "abra kadabra");
+    eq(x.V, 1);
+    eq(x.DefV, 0);
+    eq(x.CallCount, 2);
+  },
+
+  custom_function_with_different_input: () => {
     const E = ["abra", "kadabra"] as const;
     const x = V.$<number, { "!": "abra kadabra"; Id: string }, typeof E, string>(...E)((a, b) => ({
       Id: "id",
