@@ -12,7 +12,7 @@ const setDefaults = (root: string, files: string[]) => {
   readFile(pkgPath, { encoding: "utf-8" }, (_, data) => {
     const pkg = JSON.parse(data);
 
-    pkg.version = pkg.version || "0.0.0";
+    pkg.version = pkg.version || "1.0.0-alpha.0";
 
     pkg.scripts = pkg.scripts || {};
     pkg.type = "module";
@@ -36,7 +36,7 @@ const setDefaults = (root: string, files: string[]) => {
 
   if (!files.includes("src")) {
     mkdir(resolve(root, "src"), () => {
-      writeFile(resolve(root, "src/index.ts"), `//${root}`, {}, () => 1);
+      writeFile(resolve(root, "src/index.ts"), `export default "${root.split("/").pop()}"`, {}, () => 1);
     });
   }
 
