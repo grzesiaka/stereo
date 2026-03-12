@@ -1,0 +1,21 @@
+{
+  "name": "oformo",
+  "version": "1.0.0-alpha.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./out/index.d.ts",
+      "default": "./out/index.js"
+    },
+    "./*": "./out/*"
+  },
+  "scripts": {
+    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
+    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
+    "dev$": "turbo run dev --filter='oformo'..."
+  },
+  "dependencies": {
+    "~js": "workspace:"
+  }
+}
