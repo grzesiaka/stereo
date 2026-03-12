@@ -1,6 +1,7 @@
 {
-  "name": "cocompyo",
+  "name": "composyo",
   "version": "1.0.0-alpha.0",
+  "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
@@ -12,7 +13,6 @@
   "scripts": {
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
-    "dev$": "turbo run dev --filter='cocompyo'..."
-  },
-  "type": "module"
+    "dev$": "turbo run dev --filter='compsyo'..."
+  }
 }
