@@ -83,7 +83,7 @@ importers:
         specifier: 'workspace:'
         version: link:../libs/types
 
-  cocompyo:
+  composyo:
     devDependencies:
       type-fest:
         specifier: 'catalog:'
@@ -150,6 +150,18 @@ importers:
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
+
+  libs/arrobje:
+    devDependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.4.4
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
 
   libs/envs/dom:
     dependencies:
@@ -226,6 +238,22 @@ importers:
       ~types:
         specifier: 'workspace:'
         version: 'link:'
+
+  oformo:
+    dependencies:
+      ~js:
+        specifier: 'workspace:'
+        version: link:../libs/js
+    devDependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.4.4
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../$CONFIG
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
 
   okoko:
     devDependencies:

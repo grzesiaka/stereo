@@ -3,15 +3,20 @@ import { __, a } from "~js";
 import { $$, ARR, Cb, Fn } from "~types";
 
 export interface OO<X> {
+  /** current value: last emitted or initial if no emission */
   v: X;
+  /** callback */
   x: Cb<X>;
+  /** dispose */
   d: () => void;
 }
 
 export interface VarBase<X> {
+  /** current value: last emitted or initial if no emission */
   V: X;
+  /** register observer */
   OO: (x: Cb<X>) => OO<X>;
-  // TODO make it iterator and allow sorting to address diamond update problem
+  /** observer's registry */
   OOs: Set<Cb<X>>;
 }
 
@@ -23,7 +28,7 @@ export const OO =
   (x: Cb<X>): OO<X> => {
     const o: OO<X> = {
       x,
-      // edge-case: .v is still refreshed/accessible after disposed
+      // edge-case: .v is still refreshed/accessible after disposed; the .v could be redefine to remember $.v when disposed called
       get v() {
         return $.V;
       },
@@ -34,9 +39,11 @@ export const OO =
   };
 
 export interface VarCtx<X = any, I = any> extends Partial<VarBase<X>> {
-  /** a custom function that  */
+  /** a custom function to replace standard fan-out, that has access to Var context   */
   $?: (x: I, $: Writable<VarBase<X>>, $$: <$>($: $) => Writable<$ & VarBase<X>>) => $$<X>;
+  /** Id of the variable */
   Id?: string;
+  /** Default value */
   DefV?: X;
 }
 
