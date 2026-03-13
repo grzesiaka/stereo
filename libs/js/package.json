@@ -1,6 +1,7 @@
 {
   "name": "~js",
   "version": "0.0.0",
+  "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
@@ -16,7 +17,7 @@
     "dev$": "turbo run dev --filter='~js'..."
   },
   "devDependencies": {
+    "~testing": "workspace:",
     "~types": "workspace:"
-  },
-  "type": "module"
+  }
 }

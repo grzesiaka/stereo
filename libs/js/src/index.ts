@@ -1,4 +1,4 @@
-// export * from "./num";
+export * from "./num";
 
 // TODO remove from here and fix imports
 export * from "~types";
