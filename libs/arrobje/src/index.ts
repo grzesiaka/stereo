@@ -1,8 +1,10 @@
-// import type { ARR } from "~types";
+// import { __, ARR } from "~types";
+// import { Get } from "type-fest";
 
-// export type $ArrObje<
-//   Xs extends ARR,
-//   Key extends keyof Xs[number],
-//   Value extends keyof Xs[number] | undefined = undefined,
-//   ObjeSym extends string = "$",
-// > = 1;
+// export const $arreobje = <IdK extends PropertyKey, ValueK extends __<PropertyKey> = __, AnchorK extends string = "$">(
+//   idK: IdK,
+//   vK = void 0 as ValueK,
+//   aK = "$" as AnchorK,
+// ) => <Xs extends ARR>(xs: Xs) => {
+//     const a = xs.map(x => )
+// };

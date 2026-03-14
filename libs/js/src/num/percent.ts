@@ -1,6 +1,6 @@
 import type { Tagged } from "type-fest";
-import { $clamp, IntervalTagMeta } from "./interval";
-import { __, Fn$O } from "../";
+import { $clamp, IntervalTagMeta } from "./interval.js";
+import { __, Fn$O } from "..";
 
 export type ProgressValue<V extends number = number> = Fn$O<typeof calc<V>>;
 export type Percent = Tagged<number, "%">;

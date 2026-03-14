@@ -55,6 +55,11 @@ export type Fn$I<F> = F extends Fn<infer I> ? I : never;
  */
 export type Fn$O<F> = F extends Fn<any, infer O> ? O : never;
 
+/**
+ * Dispose
+ */
+export type Dispose = () => void;
+
 export type MakeUndefinedParamsOptional<X> = X extends readonly [infer H, ...infer R]
   ? undefined extends H
     ? [H?, ...MakeUndefinedParamsOptional<R>]

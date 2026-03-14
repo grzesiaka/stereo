@@ -1,6 +1,4 @@
-export * from "./num";
-
-// TODO remove from here and fix imports
+export * from "./num/index.js"; // FIX me
 export * from "~types";
 
 /**

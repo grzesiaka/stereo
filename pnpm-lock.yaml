@@ -321,6 +321,10 @@ importers:
         version: link:../libs/types
 
   statree:
+    dependencies:
+      ~js:
+        specifier: 'workspace:'
+        version: link:../libs/js
     devDependencies:
       type-fest:
         specifier: 'catalog:'

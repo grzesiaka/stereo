@@ -1,6 +1,7 @@
 {
   "name": "statree",
   "version": "1.0.0-alpha.0",
+  "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
@@ -14,5 +15,7 @@
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
     "dev$": "turbo run dev --filter='statree'..."
   },
-  "type": "module"
+  "dependencies": {
+    "~js": "workspace:"
+  }
 }
