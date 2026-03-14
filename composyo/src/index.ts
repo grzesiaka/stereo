@@ -1,1 +1,3 @@
-export default "composyo";
+export * from "./o";
+export * from "./c";
+export * from "./p";

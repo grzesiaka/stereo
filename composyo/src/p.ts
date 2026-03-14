@@ -6,7 +6,7 @@ import { __ } from "~js";
  * @param x a starting value (sets the type of the first transformation)
  * @returns final result obtained by applying all the transformation
  */
-export const p =
+export const pipe =
   <X, L = __>(x: X, L?: L): Pipe<X, L> =>
   <Fs extends ReadonlyArray<Function>>(...fs: Fs) => {
     if (!fs.length) {
@@ -19,7 +19,7 @@ export const p =
     return r;
   };
 
-export default p;
+export default pipe;
 
 export type Pipe<X, L = __> = (() => X) &
   (<const R>(f0: (x: X, L: L) => R) => R) &

@@ -1,6 +1,7 @@
 {
   "name": "oyoyo",
   "version": "1.0.0-alpha.6",
+  "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
@@ -16,12 +17,12 @@
     "dev$": "turbo run dev --filter='oyoyo'..."
   },
   "dependencies": {
+    "composyo": "workspace:",
     "~js": "workspace:"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "catalog:",
     "type-fest": "catalog:",
     "vitest": "catalog:"
-  },
-  "type": "module"
+  }
 }

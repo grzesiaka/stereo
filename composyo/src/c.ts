@@ -1,6 +1,6 @@
 import { $$, __, ARR, FLIP, Fn, OP } from "~js";
 
-export const c =
+export const composeAsync =
   <X, L = __, R = unknown>(x: X, L = __ as L, _?: R): ComposeAsync<X, L, R> =>
   (...fns: ARR<Fn>) => {
     if (fns.length === 0) return x as any;
@@ -17,13 +17,13 @@ export const c =
     return $;
   };
 
-c.$$ = (() =>
+composeAsync.$$ = (() =>
   <const L = __>(L = __ as L) =>
   (x?: unknown) =>
-    c(x, L)) as $$ComposeAsync;
-c.$ = c.$$();
+    composeAsync(x, L)) as $$ComposeAsync;
+composeAsync.$ = composeAsync.$$();
 
-export default c;
+export default composeAsync;
 
 type A<X> = Exclude<Awaited<X>, Error>;
 type AA<X> = X extends [infer H, ...infer R] ? [A<H>, ...AA<R>] : [];

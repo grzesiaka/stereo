@@ -1,6 +1,6 @@
 import { $$, __, ARR, FLIP, Fn, OP } from "~js";
 
-export const o =
+export const compose =
   <X, L = __, R = unknown>(x: X, L = __ as L, _?: R): Compose<X, L> =>
   (...fns: ARR<Fn>) => {
     if (!fns.length) return x as any;
@@ -15,13 +15,13 @@ export const o =
     return $;
   };
 
-o.$$ = (() =>
+compose.$$ = (() =>
   (L = __) =>
   (x?) =>
-    o(x, L)) as $$Compose;
-o.$ = o.$$();
+    compose(x, L)) as $$Compose;
+compose.$ = compose.$$();
 
-export default o;
+export default compose;
 
 type $$Compose = <R>() => <const L = __>(L?: L) => (<X>() => Compose<X, L, R>) & (<const X>(x: X) => Compose<X, L, R>);
 

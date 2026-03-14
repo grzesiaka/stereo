@@ -1,5 +1,5 @@
 import { a, __, type Fn$O } from "~js";
-import type { Pipe } from "../p";
+import type { Pipe } from "composyo/p.js";
 import { yR0 } from "./0";
 import type { WithObserver, WithState, yR, WithId } from "./0";
 

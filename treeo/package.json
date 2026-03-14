@@ -1,6 +1,7 @@
 {
   "name": "treeo",
   "version": "1.0.0-alpha.0",
+  "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
@@ -19,7 +20,7 @@
     "~js": "workspace:"
   },
   "devDependencies": {
+    "composyo": "workspace:",
     "type-fest": "catalog:"
-  },
-  "type": "module"
+  }
 }

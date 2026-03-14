@@ -31,7 +31,7 @@ describe("p / pipe", () => {
   test("L / context", () => {
     expect(p(p)()).toBe(p);
 
-    const L = [{ p }, "?"] as const;
+    const L = [{ p: p }, "?"] as const;
     expect(p(0, L)()).toStrictEqual(0);
 
     expect(p(0, L)((_, [{ p }, q]) => p(q))()).toBe("?");

@@ -8,11 +8,17 @@
       "types": "./out/index.d.ts",
       "default": "./out/index.js"
     },
+    "./compose": "./out/o.js",
+    "./compose-async": "./out/c.js",
+    "./pipe": "./out/p.js",
     "./*": "./out/*"
   },
   "scripts": {
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
     "dev$": "turbo run dev --filter='compsyo'..."
+  },
+  "dependencies": {
+    "~js": "workspace:"
   }
 }
