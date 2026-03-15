@@ -1,4 +1,4 @@
-import { __, ARR, id, WithOP, OP, Cb } from "~js";
+import { __, ARR, id, WithOP, OP, Cb, Disposable } from "~js";
 import p from "composyo/p.js";
 
 /**
@@ -56,13 +56,6 @@ export type WithYd<Yd extends __<PropertyKey> = __> = Yd extends PropertyKey
 export interface WithPrevious<P = unknown> {
   p: P;
 }
-
-export type Dispose = () => void;
-
-export interface Disposable {
-  d: Dispose;
-}
-
 /**
  * A computation that completes with value `Z`.
  *

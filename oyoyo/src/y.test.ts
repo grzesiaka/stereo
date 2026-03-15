@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe } from "~testing";
 
 import { IN } from "./I";
 import { F } from "./F";
@@ -6,18 +6,18 @@ import { S } from "./S";
 import { UP } from "./$";
 import { __ } from "~js";
 
-describe("IN / Input", () => {
-  test("IN", () => {
+describe(IN, ({ eq }) => ({
+  no_id: () => {
     const i = IN(7)();
     const re = [] as unknown[];
     const x = i((x) => re.push(x));
     x.i(2);
-    expect(re).toStrictEqual([7, 2]);
-  });
-});
+    eq(re)([7, 2]);
+  },
+}));
 
-describe("F / partial map", () => {
-  test("a simple flow", () => {
+describe(F, ({ eq }) => ({
+  simple_flow: () => {
     const id = <X>(x: X) => x;
     const toString = <X>(n: X) => `${n}`;
     const toStringF = F.ify(toString);
@@ -35,21 +35,19 @@ describe("F / partial map", () => {
     const x = i((x) => re.push(x));
 
     x.p.p.p.p.p.p.i(2);
-    expect(x.p.p.id).toBe("UPPED");
-    expect(x.p.p.p.p.p.p.id).toBe("i");
-    expect(re).toStrictEqual(["1,1,1,1", "2,2,2,2"]);
-  });
-
-  test("undefined (aka __) are ignored by default (via default id transform)", () => {
+    eq(x.p.p.id)("UPPED");
+    eq(x.p.p.p.p.p.p.id)("i");
+    eq(re)(["1,1,1,1", "2,2,2,2"]);
+  },
+  undefined_ignored: () => {
     const i = IN(__ as __<number>)(F());
     const re = [] as unknown[];
     const x = i((x) => re.push(x));
     x.p.i(7);
     x.p.i(undefined);
-    expect(re).toStrictEqual([7]);
-  });
-
-  test("compose & compose-async", async () => {
+    eq(re)([7]);
+  },
+  compose_and_compose_async: async () => {
     const L = {
       toString: <X>(x: X) => `${x}`,
       toPromise: <X>(x: X) => Promise.resolve(x),
@@ -69,12 +67,12 @@ describe("F / partial map", () => {
     await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
-    expect(re).toStrictEqual([[new Error("!"), ["1"]], "0", 4]);
-  });
-});
+    eq(re)([[new Error("!"), ["1"]], "0", 4]);
+  },
+}));
 
-describe("S / Scan", () => {
-  test("simple", () => {
+describe(S, ({ eq }) => ({
+  simple: () => {
     const empty = () => "";
     const add = (a: number, b: number) => a + b;
     const i = IN.L([empty, add])(0)(
@@ -89,18 +87,15 @@ describe("S / Scan", () => {
     const x = i((x) => re.push(x));
     x.p.p.p.i(1);
     x.p.p.p.i(2);
-    expect(re).toStrictEqual(["0", "0;1", "0;1;5"]);
-  });
-});
-
-describe("meta", () => {
-  test("reference to previous", () => {
+    eq(re)(["0", "0;1", "0;1;5"]);
+  },
+  meta: () => {
     const f = (x: unknown) => x;
     const i = IN(1, "1")(F(f)) as any;
-    expect(i.__[1]()).toStrictEqual(f);
-    expect(i.__[2].__).toStrictEqual(["IN", 1]);
+    eq(i.__[1]())(f);
+    eq(i.__[2].__)(["IN", 1]);
     const x = i((x: 1) => x);
-    expect(x.__[1]()).toStrictEqual(f);
-    expect(x.p.__).toStrictEqual(["IN", 1]);
-  });
-});
+    eq(x.__[1]())(f);
+    eq(x.p.__)(["IN", 1]);
+  },
+}));
