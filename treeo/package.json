@@ -4,17 +4,15 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./out/index.d.ts",
-      "default": "./out/index.js"
-    },
+    ".": "./out/index.mjs",
     "./*": "./out/*"
   },
   "scripts": {
-    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
     "test": "vitest src",
-    "dev$": "turbo run dev --filter='treeo'..."
+    "dev$": "turbo run dev --filter='treeo'...",
+    "build$": "turbo run build --filter='treeo'..."
   },
   "dependencies": {
     "~js": "workspace:"

@@ -4,25 +4,22 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./out/index.d.ts",
-      "default": "./out/index.js"
-    },
+    ".": "./out/index.mjs",
     "./*": "./out/*"
   },
   "scripts": {
-    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
-    "test": "vitest src",
-    "dev$": "turbo run dev --filter='oyoyo'..."
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
+    "dev$": "turbo run dev --filter='oyoyo'...",
+    "build$": "turbo run build --filter='oyoyo'...",
+    "test": "vitest ./test"
   },
-  "dependencies": {
-    "composyo": "workspace:",
-    "~js": "workspace:"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@vitest/coverage-v8": "catalog:",
+    "composyo": "workspace:",
     "type-fest": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "~js": "workspace:"
   }
 }

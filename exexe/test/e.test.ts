@@ -1,10 +1,10 @@
 import { describe } from "~testing";
 
-import IN from "./i";
+import EM from "../out/e.mjs";
 
-describe(IN, ({ eq, res }) => ({
+describe(EM, ({ eq, res }) => ({
   no_context: () => {
-    const { I, OO } = IN()(1);
+    const { I, OO } = EM<number>()();
     const r = res<number>();
 
     I(0);
@@ -17,7 +17,7 @@ describe(IN, ({ eq, res }) => ({
   },
 
   L_context: () => {
-    const { I, OO } = IN()(1, "L");
+    const { I, OO } = EM<number>()("L");
 
     eq(I.I, "L");
     eq(OO.OO, "L");
@@ -34,9 +34,9 @@ describe(IN, ({ eq, res }) => ({
   },
 
   LR_context: () => {
-    const { I, OO } = IN()(1, { "?": 1 }, "R");
+    const { I, OO } = EM<number>()("L", "R");
 
-    eq(I.I, { "?": 1 });
+    eq(I.I, "L");
     eq(OO.OO, "R");
 
     const r = res<number>();

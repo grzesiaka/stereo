@@ -8,21 +8,22 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "ci": "CI=true turbo run build tsc test --affected --ui=stream",
+    "ci": "pnpm build --affected && pnpm test --affected",
     "build": "turbo run build --ui=stream",
+    "test": "CI=true turbo run test --ui=stream",
     "dev": "turbo run dev --ui=tui",
-    "test": "turbo run test",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "postinstall": "node ./\\$CONFIG/src/set-defaults.ts",
     "clear-all": "node ./\\$CONFIG/src/clear-all.ts",
-    "refresh": "pnpm clear-all && pnpm install && pnpm build"
+    "refresh": "pnpm clear-all && pnpm install && pnpm build && pnpm test"
   },
   "devDependencies": {
     "oxfmt": "0.24.0",
     "oxlint": "1.39.0",
+    "tsdown": "0.21.2",
     "turbo": "2.7.5",
     "typescript": "5.9.3"
   },

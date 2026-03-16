@@ -16,16 +16,17 @@ const setDefaults = (root: string, files: string[]) => {
 
     pkg.scripts = pkg.scripts || {};
     pkg.type = "module";
-    // delete pkg.type;
-    !pkg.scripts.build && (pkg.scripts.build = "tsc -p node_modules/~cfg/tsconfig.build.json");
-    !pkg.scripts.dev && (pkg.scripts.dev = "tsc --watch -p node_modules/~cfg/tsconfig.build.json");
+
+    !pkg.scripts.build &&
+      (pkg.scripts.build =
+        "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json");
+    !pkg.scripts.dev && (pkg.scripts.dev = "pnpm build --watch");
+
     !pkg.scripts.dev$ && (pkg.scripts.dev$ = `turbo run dev --filter='${pkg.name}'...`);
+    !pkg.scripts.build$ && (pkg.scripts.build$ = `turbo run build --filter='${pkg.name}'...`);
     !pkg.exports &&
       (pkg.exports = {
-        ".": {
-          types: "./out/index.d.ts",
-          default: "./out/index.js",
-        },
+        ".": "./out/index.mjs",
         "./*": "./out/*",
       });
 

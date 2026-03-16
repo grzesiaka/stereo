@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import c from "./c";
+import c from "../out/compose-async.mjs";
 import { __ } from "~js";
 
 const P = <X>(x: X) => Promise.resolve(x);

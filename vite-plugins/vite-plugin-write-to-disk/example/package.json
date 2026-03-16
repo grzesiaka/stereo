@@ -12,7 +12,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite dev",
-    "dev$": "turbo run dev --filter='vite-plugin-write-to-disk-example'..."
+    "dev$": "turbo run dev --filter='vite-plugin-write-to-disk-example'...",
+    "build$": "turbo run build --filter='vite-plugin-write-to-disk-example'..."
   },
   "dependencies": {
     "extensy": "workspace:",

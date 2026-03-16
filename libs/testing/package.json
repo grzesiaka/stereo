@@ -1,21 +1,19 @@
 {
   "name": "~testing",
   "version": "0.0.0",
+  "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./out/index.d.ts",
-      "default": "./out/index.js"
-    },
-    "./*": "./out/*"
+    ".": "./src/index.ts",
+    "./*": "./src/*"
   },
   "scripts": {
-    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
-    "dev$": "turbo run dev --filter='~testing'..."
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
+    "dev$": "turbo run dev --filter='~testing'...",
+    "build$": "turbo run build --filter='~testing'..."
   },
-  "devDependencies": {
+  "dependencies": {
     "vitest": "catalog:"
-  },
-  "type": "module"
+  }
 }

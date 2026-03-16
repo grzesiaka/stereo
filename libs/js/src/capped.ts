@@ -1,4 +1,4 @@
-import { a } from "../";
+import { a } from "./";
 
 export type Capped<X = unknown, N extends number | undefined = number | undefined> = X[] &
   (number | undefined extends N ? { cap?: N } : { cap: N });

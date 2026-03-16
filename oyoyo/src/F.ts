@@ -1,5 +1,5 @@
-import o, { Compose } from "composyo/o.js";
-import c, { ComposeAsync } from "composyo/c.js";
+import o, { Compose } from "composyo/o";
+import c, { ComposeAsync } from "composyo/c";
 import { __, Fn, Fn1, id, Fn$O, Fn$I, $$, a } from "~js";
 import { yR, yR2X, yR_Base } from "./0";
 

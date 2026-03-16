@@ -1,13 +1,16 @@
 import { a, __, type Fn$O } from "~js";
-import type { Pipe } from "composyo/p.js";
+import type { Pipe } from "composyo/p";
 import { yR0 } from "./0";
 import type { WithObserver, WithState, yR, WithId } from "./0";
 
 const $IN = yR0("IN")<_Input & WithId, [unknown, PropertyKey]>(
   ($, p) => (
-    $.x($.__[1]),
+    $.x(
+      // initial fire
+      $.__[1],
+    ),
     a($, {
-      id: p[1],
+      ...(p[1] !== void 0 && { id: p[1] }),
       v: p[0],
       i: (v: unknown) => (($.v = v), $.x(v), v),
     })

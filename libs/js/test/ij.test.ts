@@ -1,7 +1,7 @@
-import { __ } from ".";
-
 import { describe } from "~testing";
-import ij from "./ij";
+import ij from "../out/ij.mjs";
+
+const __ = void 0;
 
 const _123 = [1, 2, 3] as const;
 const objs = [

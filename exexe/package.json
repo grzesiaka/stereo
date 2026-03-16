@@ -1,23 +1,21 @@
 {
   "name": "exexe",
   "version": "1.0.0-alpha.2",
+  "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./out/index.d.ts",
-      "default": "./out/index.js"
-    },
+    ".": "./out/index.mjs",
     "./*": "./out/*"
   },
   "scripts": {
-    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter=exexe...",
-    "test": "vitest"
+    "test": "vitest test",
+    "build$": "turbo run build --filter='exexe'..."
   },
   "dependencies": {
     "oyoyo": "workspace:*",
     "~js": "workspace:*"
-  },
-  "type": "module"
+  }
 }

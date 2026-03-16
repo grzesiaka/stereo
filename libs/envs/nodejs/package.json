@@ -1,21 +1,19 @@
 {
   "name": "~nodejs",
   "version": "0.0.0",
+  "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./out/index.d.ts",
-      "default": "./out/index.js"
-    },
+    ".": "./out/index.js",
     "./*": "./out/*"
   },
   "scripts": {
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
-    "dev$": "turbo run dev --filter='~nodejs'..."
+    "dev$": "turbo run dev --filter='~nodejs'...",
+    "build$": "turbo run build --filter='~nodejs'..."
   },
   "devDependencies": {
     "@types/node": "catalog:"
-  },
-  "type": "module"
+  }
 }

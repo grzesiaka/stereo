@@ -1,5 +1,5 @@
-import c from "./c";
-import o from "./o";
-import p from "./p";
+import c from "./compose-async";
+import o from "./compose";
+import p from "./pipe";
 
 export { c, o, p };

@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import { capped, type Capped } from "./capped";
+import { capped, type Capped } from "../out/capped.mjs";
 
 describe(capped, ({ eq }) => ({
   0: () => {

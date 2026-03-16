@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 
-import o from "./o";
+import o from "../out/compose.mjs";
 import { __ } from "~js";
 
 describe("c / compose", () => {

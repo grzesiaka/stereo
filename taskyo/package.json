@@ -1,24 +1,22 @@
 {
   "name": "taskyo",
   "version": "1.0.0-alpha.0",
+  "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./out/index.d.ts",
-      "default": "./out/index.js"
-    },
+    ".": "./out/index.mjs",
     "./*": "./out/*"
   },
   "scripts": {
-    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
-    "dev$": "turbo run dev --filter='taskyo'..."
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
+    "dev$": "turbo run dev --filter='taskyo'...",
+    "build$": "turbo run build --filter='taskyo'..."
   },
   "dependencies": {
     "~js": "workspace:"
   },
   "devDependencies": {
     "type-fest": "catalog:"
-  },
-  "type": "module"
+  }
 }

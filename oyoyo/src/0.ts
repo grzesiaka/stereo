@@ -1,5 +1,5 @@
 import { __, ARR, id, WithOP, OP, Cb, Disposable } from "~js";
-import p from "composyo/p.js";
+import p from "composyo/p";
 
 /**
  * **yR** wire

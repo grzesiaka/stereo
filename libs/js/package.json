@@ -4,17 +4,15 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./out/index.d.ts",
-      "default": "./out/index.js"
-    },
+    ".": "./out/index.mjs",
     "./*": "./out/*"
   },
   "scripts": {
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
-    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "test": "vitest",
-    "dev$": "turbo run dev --filter='~js'..."
+    "dev": "pnpm build --watch",
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "test": "vitest test",
+    "dev$": "turbo run dev --filter='~js'...",
+    "build$": "turbo run build --filter='~js'..."
   },
   "devDependencies": {
     "~testing": "workspace:",

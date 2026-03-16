@@ -1,18 +1,37 @@
 import { describe } from "~testing";
 
-import { IN } from "./I";
-import { F } from "./F";
-import { S } from "./S";
-import { UP } from "./$";
+import { IN } from "../out/I.mjs";
+import { F } from "../out/F.mjs";
+import { S } from "../out/S.mjs";
+import { UP } from "../out/meta.mjs";
 import { __ } from "~js";
 
-describe(IN, ({ eq }) => ({
+describe(IN, ({ eq, res }) => ({
   no_id: () => {
     const i = IN(7)();
-    const re = [] as unknown[];
-    const x = i((x) => re.push(x));
+    const re = res();
+    const x = i(re.add);
     x.i(2);
-    eq(re)([7, 2]);
+    re.eq([7, 2]);
+    eq("id" in x, false);
+  },
+
+  empty_id: () => {
+    const i = IN("", "")();
+    const re = res();
+    const x = i(re.add);
+    x.i("1");
+    re.eq(["", "1"]);
+    eq(x.id, "");
+  },
+
+  with_id: () => {
+    const i = IN("", "/id/")();
+    const re = res();
+    const x = i(re.add);
+    x.i("1");
+    re.eq(["", "1"]);
+    eq(x.id, "/id/");
   },
 }));
 

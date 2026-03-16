@@ -1,3 +1,3 @@
-export * from "./o";
-export * from "./c";
-export * from "./p";
+export * from "./compose";
+export * from "./compose-async";
+export * from "./pipe";
