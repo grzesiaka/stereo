@@ -167,9 +167,18 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../../$CONFIG
+      ~js:
+        specifier: 'workspace:'
+        version: link:../js
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../testing
       ~types:
         specifier: 'workspace:'
         version: link:../types
