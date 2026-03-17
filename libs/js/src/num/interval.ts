@@ -14,4 +14,4 @@ export const $clamp =
   <V extends number>(val: V) =>
     Math.min(max, Math.max(min, val)) as Tagged<V, K, IntervalTagMeta<Min, Max, "]">>;
 
-export const clamp = $clamp<"clamped">();
+export const clamp = /* @__PURE__ */ $clamp<"clamped">();

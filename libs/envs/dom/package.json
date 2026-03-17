@@ -11,7 +11,8 @@
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
     "dev$": "turbo run dev --filter='~dom'...",
-    "build$": "turbo run build --filter='~dom'..."
+    "build$": "turbo run build --filter='~dom'...",
+    "test": "vitest test --passWithNoTests"
   },
   "dependencies": {
     "@types/web": "0.0.336"

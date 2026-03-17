@@ -79,9 +79,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -140,9 +146,15 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.0.0-beta.14(@types/node@25.2.3)(esbuild@0.27.4)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -152,12 +164,18 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
       ~js:
         specifier: 'workspace:'
         version: link:../libs/js
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -192,9 +210,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../../../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../../testing
       ~types:
         specifier: 'workspace:'
         version: link:../../types
@@ -207,15 +231,42 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../../../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../../testing
       ~types:
         specifier: 'workspace:'
         version: link:../../types
 
   libs/js:
     devDependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
+
+  libs/proyij:
+    devDependencies:
+      composyo:
+        specifier: 'workspace:'
+        version: link:../../composyo
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
@@ -244,6 +295,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: 'link:'
       ~types:
         specifier: 'workspace:'
         version: link:../types
@@ -253,9 +307,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../testing
       ~types:
         specifier: 'workspace:'
         version: 'link:'
@@ -269,9 +329,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -281,9 +347,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -324,9 +396,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -336,9 +414,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -352,9 +436,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -368,9 +458,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -405,9 +501,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -420,12 +522,18 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.0.0-beta.14(@types/node@25.2.3)(esbuild@0.27.4)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../../$CONFIG
       ~nodejs:
         specifier: 'workspace:'
         version: link:../../libs/envs/nodejs
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../../libs/types
@@ -448,6 +556,9 @@ importers:
       vite-plugin-inspect:
         specifier: 11.3.3
         version: 11.3.3(vite@8.0.0-beta.14(@types/node@25.2.3)(esbuild@0.27.4))
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../../../$CONFIG
@@ -457,6 +568,9 @@ importers:
       ~nodejs:
         specifier: 'workspace:'
         version: link:../../../libs/envs/nodejs
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../../../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../../../libs/types
@@ -466,9 +580,15 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types

@@ -25,7 +25,7 @@ export interface ProgressTracker<
   update: (x: Current) => this;
 }
 
-export const calc = $clamp<"progress">()(0, 1);
+export const calc = /* @__PURE__ */ $clamp<"progress">()(0, 1);
 
 export const $progress = <Total extends number, Units = "", Current extends number = Total>(
   total: Total,

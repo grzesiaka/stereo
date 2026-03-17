@@ -14,7 +14,8 @@
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
     "dev$": "turbo run dev --filter='vite-plugin-write-to-disk'...",
-    "build$": "turbo run build --filter='vite-plugin-write-to-disk'..."
+    "build$": "turbo run build --filter='vite-plugin-write-to-disk'...",
+    "test": "vitest test --passWithNoTests"
   },
   "devDependencies": {
     "vite": "catalog:",

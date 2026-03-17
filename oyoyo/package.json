@@ -12,7 +12,7 @@
     "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='oyoyo'...",
     "build$": "turbo run build --filter='oyoyo'...",
-    "test": "vitest ./test"
+    "test": "vitest test --passWithNoTests"
   },
   "dependencies": {},
   "devDependencies": {

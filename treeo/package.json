@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
     "dev": "pnpm build --watch",
-    "test": "vitest src",
+    "test": "vitest test --passWithNoTests",
     "dev$": "turbo run dev --filter='treeo'...",
     "build$": "turbo run build --filter='treeo'..."
   },

@@ -22,8 +22,11 @@ const setDefaults = (root: string, files: string[]) => {
         "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json");
     !pkg.scripts.dev && (pkg.scripts.dev = "pnpm build --watch");
 
-    !pkg.scripts.dev$ && (pkg.scripts.dev$ = `turbo run dev --filter='${pkg.name}'...`);
-    !pkg.scripts.build$ && (pkg.scripts.build$ = `turbo run build --filter='${pkg.name}'...`);
+    pkg.scripts.dev$ = `turbo run dev --filter='${pkg.name}'...`;
+    pkg.scripts.build$ = `turbo run build --filter='${pkg.name}'...`;
+
+    !pkg.scripts.test && (pkg.scripts.test = "vitest test --passWithNoTests");
+
     !pkg.exports &&
       (pkg.exports = {
         ".": "./out/index.mjs",

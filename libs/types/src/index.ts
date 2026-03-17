@@ -29,7 +29,7 @@ export type ARR1<X = any, R = X> = readonly [X, ...R[]];
 /**
  * Function with optional attached information
  */
-export type Fn<I extends ARR = ARR, O = unknown, E = {}> = (E extends string ? { name: E } : {}) & ((...i: I) => O);
+export type Fn<I extends ARR = ARR, O = unknown, E = {}> = (E extends string ? { Id: E } : {}) & ((...i: I) => O);
 
 /**
  * Function with 0 parameters or a single optional parameter
