@@ -1,6 +1,6 @@
 import { describe } from "~testing";
 
-import { toObject } from "../out/pairs.mjs";
+import { toObject } from "../src/pairs";
 
 describe(toObject, ({ eq }) => ({
   empty: () => eq(toObject([]), {}),

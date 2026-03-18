@@ -1,6 +1,7 @@
 import { describe } from "~testing";
-import AO from "../out/index.mjs";
 import { __, a } from "~js";
+
+import AO from "../src";
 
 const ex = [
   { id: "A", v: "a" },

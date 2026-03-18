@@ -1,9 +1,9 @@
 import { describe } from "~testing";
 
-import { IN } from "../out/I.mjs";
-import { F } from "../out/F.mjs";
-import { S } from "../out/S.mjs";
-import { UP } from "../out/meta.mjs";
+import { IN } from "../src/I";
+import { F } from "../src/F";
+import { S } from "../src/S";
+import { UP } from "../src/meta";
 import { __ } from "~js";
 
 describe(IN, ({ eq, res }) => ({

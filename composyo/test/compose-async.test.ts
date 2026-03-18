@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
-
-import c from "../out/compose-async.mjs";
 import { __ } from "~js";
+
+import c from "../src/compose-async";
 
 const P = <X>(x: X) => Promise.resolve(x);
 const IP = (x: number) => P(x + 1);

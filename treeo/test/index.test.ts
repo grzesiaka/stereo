@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { L, cmdify, eXe, mapTree, tree2vks } from ".";
+import { L, cmdify, eXe, mapTree, tree2vks } from "../src";
 
 const t = {
   a: "B",

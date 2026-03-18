@@ -1,6 +1,6 @@
 import { describe } from "~testing";
 
-import V from "../out/var.mjs";
+import V from "../src/var";
 
 describe(V, ({ eq, res }) => ({
   no_context: () => {

@@ -276,6 +276,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../../$CONFIG
+      ~js:
+        specifier: 'workspace:'
+        version: link:../js
       ~testing:
         specifier: 'workspace:'
         version: link:../testing

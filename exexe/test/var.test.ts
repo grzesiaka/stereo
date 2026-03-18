@@ -1,6 +1,6 @@
 import { describe as dt } from "~testing";
 
-import V from "../out/var.mjs";
+import V from "../src/var";
 import { __ } from "~js";
 
 dt("Var / default context", ({ eq, res }) => ({

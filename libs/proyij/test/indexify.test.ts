@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import byId from "../out/indexify.mjs";
+import byId from "../src/indexify";
 
 const objs = [{ id: "A", name: "00" }, { value: "?" }, { id: "B", name: "11" }] as const;
 

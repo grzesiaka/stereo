@@ -1,6 +1,6 @@
 import { describe } from "~testing";
 
-import IN from "../out/i.mjs";
+import IN from "../src/i";
 
 describe(IN, ({ eq, res }) => ({
   no_context: () => {

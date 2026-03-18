@@ -8,9 +8,10 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "ci": "pnpm build --affected && pnpm test --affected",
+    "ci": "pnpm build --affected && pnpm test-ci",
     "build": "turbo run build --ui=stream",
-    "test": "CI=true turbo run test --ui=stream",
+    "test": "vitest --project unit",
+    "test-ci": "CI=true turbo run test --affected --ui=stream -- --project unit/out",
     "dev": "turbo run dev --ui=tui",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",

@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
-
-import p from "../out/pipe.mjs";
 import { __ } from "~js";
+
+import p from "../src/pipe";
 
 describe("p / pipe", () => {
   test("0-16", () => {

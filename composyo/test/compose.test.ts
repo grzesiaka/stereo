@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
-
-import o from "../out/compose.mjs";
 import { __ } from "~js";
+
+import o from "../src/compose";
 
 describe("c / compose", () => {
   const L = { L: "L" as const };

@@ -1,6 +1,6 @@
 import { describe } from "~testing";
 
-import EM from "../out/e.mjs";
+import EM from "../src/e";
 
 describe(EM, ({ eq, res }) => ({
   no_context: () => {

@@ -1,10 +1,10 @@
 import { describe } from "~testing";
 
-import V from "../out/event.mjs";
+import Ev from "../src/event";
 
-describe(V, ({ eq, res }) => ({
+describe(Ev, ({ eq, res }) => ({
   no_context: () => {
-    const { I, O } = V<number>()();
+    const { I, O } = Ev<number>()();
     const r = res<number>();
 
     I(0);
@@ -17,7 +17,7 @@ describe(V, ({ eq, res }) => ({
   },
 
   string_context: () => {
-    const { I, O } = V<number>()("L");
+    const { I, O } = Ev<number>()("L");
 
     eq(I.Id, "L");
     eq(O.Id, "L");
@@ -34,7 +34,7 @@ describe(V, ({ eq, res }) => ({
   },
 
   object_context: () => {
-    const { I, O } = V<number>()({ "?": 1 });
+    const { I, O } = Ev<number>()({ "?": 1 });
 
     eq(I["?"], 1);
     eq(O["?"], 1);

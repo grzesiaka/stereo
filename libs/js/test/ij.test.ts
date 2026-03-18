@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import ij from "../out/ij.mjs";
+import ij from "../src/ij";
 
 const __ = void 0;
 
