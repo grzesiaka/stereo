@@ -7,12 +7,14 @@ describe(V, ({ eq, res }) => ({
     const { I, O } = V(1);
     const r = res<number>();
 
+    eq(O(), 1);
     I(0);
     const d = O(r.add);
     I(1);
     I(2);
     d();
     I(3);
+    eq(O(), 3);
     r.eq([0, 1, 2]);
   },
 
@@ -24,12 +26,14 @@ describe(V, ({ eq, res }) => ({
 
     const r = res<number>();
 
+    eq(O(), 1);
     I(0);
     const d = O(r.add);
     I(1);
     I(2);
     d();
     I(3);
+    eq(O(), 3);
     r.eq([0, 1, 2]);
   },
 

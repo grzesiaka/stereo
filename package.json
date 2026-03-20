@@ -19,7 +19,7 @@
     "lint:fix": "oxlint --fix",
     "postinstall": "node ./\\$CONFIG/src/set-defaults.ts",
     "clear-all": "node ./\\$CONFIG/src/clear-all.ts",
-    "refresh": "pnpm clear-all && pnpm install && pnpm build && pnpm test"
+    "refresh": "pnpm clear-all && pnpm install && pnpm build && pnpm test-ci"
   },
   "devDependencies": {
     "oxfmt": "0.24.0",

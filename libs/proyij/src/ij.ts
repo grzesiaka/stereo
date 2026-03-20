@@ -1,17 +1,15 @@
-import { ARR } from "~types";
-
-type __<X = never> = X | undefined;
+import { ARR, __ } from "~types";
 
 // TODO ij-deep for deeply nested projections if needed
 
 type ij_Project1<K extends __<PropertyKey>, Xs> = Xs extends readonly [infer I, ...infer R]
   ? K extends PropertyKey
-    ? [I extends { [k in K]: infer X } ? X : unknown, ...ij_Project1<K, R>]
+    ? [I extends { readonly [k in K]: infer X } ? X : unknown, ...ij_Project1<K, R>]
     : [I, ...ij_Project1<K, R>]
   : [];
 
 type ij_Item<ij, Item> = ij extends readonly [infer I, ...infer J]
-  ? [I extends PropertyKey ? (Item extends { [i in I]: infer X } ? X : unknown) : Item, ...ij_Item<J, Item>]
+  ? [I extends PropertyKey ? (Item extends { readonly [i in I]: infer X } ? X : unknown) : Item, ...ij_Item<J, Item>]
   : [];
 
 type ij_Project_<ij, Xs extends ARR> = Xs extends readonly [infer I, ...infer R]

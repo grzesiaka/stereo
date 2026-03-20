@@ -161,6 +161,12 @@ importers:
 
   ioioy:
     devDependencies:
+      arrobje:
+        specifier: 'workspace:'
+        version: link:../libs/arrobje
+      proyij:
+        specifier: 'workspace:'
+        version: link:../libs/proyij
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
