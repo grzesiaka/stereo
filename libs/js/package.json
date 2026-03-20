@@ -5,7 +5,7 @@
   "sideEffects": false,
   "exports": {
     ".": "./out/index.mjs",
-    "./*": "./out/*"
+    "./*": "./out/*.mjs"
   },
   "scripts": {
     "dev": "pnpm build --watch",
