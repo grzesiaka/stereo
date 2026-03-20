@@ -15,6 +15,7 @@
     "test": "vitest test --passWithNoTests"
   },
   "devDependencies": {
+    "proyij": "workspace:",
     "~js": "workspace:"
   }
 }

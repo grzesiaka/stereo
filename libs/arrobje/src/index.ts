@@ -1,11 +1,7 @@
 import { __, ARR } from "~types";
 import { Simplify } from "type-fest";
-import { ij_Project } from "~js/ij.mjs";
+import { ij_Project, KeyValues$Object } from "proyij";
 import { a } from "~js";
-
-export type KeyValues$Object<Xs> = Xs extends readonly [[infer K, infer V], ...infer R]
-  ? (K extends PropertyKey ? { [k in K]: V } : {}) & KeyValues$Object<R>
-  : {};
 
 export type ArrObje<
   Xs extends ARR,
