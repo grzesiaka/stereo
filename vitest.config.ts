@@ -16,9 +16,7 @@ export default defineProject({
             {
               find: /src/,
               replacement: "out",
-              customResolver: (a, b, c) => {
-                return a === "../out" ? "../out/index.mjs" : `${a}.mjs`;
-              },
+              customResolver: (p) => (p === "../out" ? "../out/index.mjs" : p.endsWith(".mjs") ? p : `${p}.mjs`),
             },
           ],
         },

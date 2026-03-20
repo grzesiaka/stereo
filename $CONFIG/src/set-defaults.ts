@@ -30,8 +30,10 @@ const setDefaults = (root: string, files: string[]) => {
     !pkg.exports &&
       (pkg.exports = {
         ".": "./out/index.mjs",
-        "./*": "./out/*",
+        "./*": "./out/*.mjs",
       });
+
+    pkg.exports["./*"] = "./out/*.mjs";
 
     !("sideEffects" in pkg) && (pkg.sideEffects = false);
 

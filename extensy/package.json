@@ -9,7 +9,7 @@
   "main": "./out/index.js",
   "exports": {
     ".": "./out/index.mjs",
-    "./*": "./out/*"
+    "./*": "./out/*.mjs"
   },
   "scripts": {
     "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",

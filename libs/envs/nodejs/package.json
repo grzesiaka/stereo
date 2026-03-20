@@ -5,7 +5,7 @@
   "sideEffects": false,
   "exports": {
     ".": "./out/index.js",
-    "./*": "./out/*"
+    "./*": "./out/*.mjs"
   },
   "scripts": {
     "build": "tsc -p node_modules/~cfg/tsconfig.build.json",

@@ -8,7 +8,7 @@
       "types": "./out/index.d.ts",
       "default": "./out/index.js"
     },
-    "./*": "./out/*"
+    "./*": "./out/*.mjs"
   },
   "scripts": {
     "build": "vite build",
