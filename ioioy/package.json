@@ -15,7 +15,6 @@
     "test": "vitest --passWithNoTests"
   },
   "devDependencies": {
-    "arrobje": "workspace:",
     "proyij": "workspace:",
     "~js": "workspace:"
   }

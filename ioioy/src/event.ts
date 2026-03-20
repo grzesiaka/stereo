@@ -1,16 +1,17 @@
 import { __, Cb } from "~js";
-import cId from "~js/ctxid";
+import cId, { CtxIdConstraint } from "~js/ctxid";
 import { IO } from "./io";
 
-export type Event<Ctx = unknown, X = unknown> = IO<X, X, __, Ctx> & { OO: Set<Cb<X>> };
+export type Event<Ctx extends CtxIdConstraint = __, X = unknown> = IO<X, X, __, Ctx> & { OO: Set<Cb<X>> };
 
 export const Event =
   <X>() =>
-  <const Ctx>(L?: Ctx): Event<Ctx, X> => {
+  <const Ctx extends CtxIdConstraint = __>(L?: Ctx): Event<Ctx, X> => {
     const $ = {
       OO: new Set<Cb<X>>(),
-      I: cId((x: X) => ($.OO.forEach((c) => c(x)), x), L, { V: __ }),
-      O: cId((c?: Cb<X>) => (!c ? $.I.V : ($.OO.add(c), () => $.OO.delete(c))), L),
+      X: __,
+      I: cId((x: X) => ($.OO.forEach((c) => c(x)), x), L),
+      O: cId((c?: Cb<X>) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
     } as Event<Ctx, X>;
     return $;
   };

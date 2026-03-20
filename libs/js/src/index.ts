@@ -38,6 +38,19 @@ export const a = Object.assign;
  */
 export const u = <X extends object, Y>(x: X, $: (x: X) => Y) => a(x, $(x));
 
+export type Entry<T> = [keyof T, T[keyof T]];
+
+/** Maps object respecting it structure */
+export const mb =
+  <O extends {}, X>(f: (v: Entry<O>[1], k: Entry<O>[0]) => X) =>
+  (O: O) => {
+    const r = {} as { [K in keyof O]: X };
+    for (const k in O) {
+      r[k] = f(O[k], k);
+    }
+    return r as { [K in keyof O]: X };
+  };
+
 export interface WithOP<OP_ID extends string, Params> {
   __: OP<OP_ID, Params>;
 }
