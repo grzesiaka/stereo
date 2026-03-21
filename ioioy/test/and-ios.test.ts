@@ -1,9 +1,9 @@
 import { describe } from "~testing";
+import { __ } from "~js";
 
-import A from "../src/and";
+import A from "../src/and-ios";
 import V from "../src/var";
 import E from "../src/event";
-import { __ } from "~js";
 
 describe(A, ({ eq, res }) => ({
   empty: () => {

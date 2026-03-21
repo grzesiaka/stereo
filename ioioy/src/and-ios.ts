@@ -5,6 +5,7 @@ import cId, { type CtxIdConstraint } from "~js/ctxid";
 
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
+import D, { type Disposyo } from "disposyo";
 import { mb } from "~js";
 
 export type AND_I<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "I"], IOs$FlatTypes<IOs>>>>;
@@ -19,16 +20,17 @@ export type AND_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = IdIOs>
 > & {
   OO: Set<Cb<AND_O<IOs>>>;
   IOs: IOs;
+  D: Disposyo<Dispose[]>;
   ById: IOsById<IOs>;
 };
 
-export const And =
+export const AndIOs =
   <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
   <const IOs extends IdIOs>(IOs: IOs): AND_IOs<Ctx, IOs> => {
     let updating = false;
     let O = {} as AND_O<IOs>;
 
-    let handleEmit = (x: any) => {
+    const handleEmit = (x: any) => {
       if ($._Fired) {
         mb((_, k) => $._Fired!.add(k))(x);
         if ($._Fired!.size === IOs.length) {
@@ -50,15 +52,15 @@ export const And =
       O: cId((c: Cb<any>) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
       OO: new Set(),
       IOs,
-      _OO: [] as Dispose[],
+      D: D(),
       get X() {
         return mb((v) => (v as IO).X)($.ById);
       },
-    } as AND_IOs<Ctx, IOs> & { X: AND_X<IOs>; _OO: Dispose[]; _Fired?: Set<PropertyKey> };
+    } as AND_IOs<Ctx, IOs> & { X: AND_X<IOs>; _Fired?: Set<PropertyKey> };
     $.ById = iosById(IOs, (io, id) =>
-      $._OO.push(io.O((x) => (((O as any)[id] = x), !updating && handleEmit({ id: x })))),
+      $.D.__[1].push(io.O((x) => (((O as any)[id] = x), !updating && handleEmit({ id: x })))),
     );
     return $;
   };
 
-export default And;
+export default AndIOs;

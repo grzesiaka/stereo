@@ -1,8 +1,8 @@
 import { describe } from "~testing";
-
-import A from "../src/var-and";
-import V from "../src/var";
 import { __ } from "~js";
+
+import A from "../src/and-vars";
+import V from "../src/var";
 
 describe(A, ({ eq, res }) => ({
   empty: () => {

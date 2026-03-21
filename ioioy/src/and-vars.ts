@@ -20,19 +20,17 @@ export type AND_VARs<Ctx extends CtxIdConstraint = __, IOs extends IdVars = IdVa
   OO: Set<Cb<VAR_AND_X<IOs>>>;
   IOs: IOs;
   ById: IOsById<IOs>;
+  D: Disposyo<Dispose[]>;
 };
 
 export const AndVars =
   <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
   <const IOs extends IdVars>(IOs: IOs): AND_VARs<Ctx, IOs> => {
     let updating = false;
-    let O = {} as VAR_AND_X<IOs>;
-
-    let handleEmit = () => {};
     const $ = {
       I: cId((x: Partial<VAR_AND_X<IOs>>) => {
         updating = true;
-        mb((v, k) => ((O[k] = v), ($.ById[k] as IO).I(v)))(x);
+        mb((v, k) => ($.ById[k] as IO).I(v))(x);
         updating = false;
         handleEmit();
         return x;
@@ -44,12 +42,12 @@ export const AndVars =
       OO: new Set(),
       IOs,
       D: D(),
-    } as AND_VARs<Ctx, IOs> & { X: VAR_AND_X<IOs>; D: Disposyo<Dispose[]> };
-    $.ById = iosById(IOs, (io, id) => $.D.__[1].push(io.O((x) => (((O as any)[id] = x), !updating && handleEmit()))));
-    handleEmit = () => {
-      $.OO.forEach((c) => c(O));
-    };
-    handleEmit();
+    } as AND_VARs<Ctx, IOs> & { X: VAR_AND_X<IOs> };
+
+    let handleEmit = () => {}; // no-op before initial register phase not completed
+    $.ById = iosById(IOs, (io) => $.D.__[1].push(io.O(() => !updating && handleEmit())));
+    handleEmit = () => $.OO.forEach((c) => c($.X));
+    handleEmit(); // initial emit
     return $;
   };
 
