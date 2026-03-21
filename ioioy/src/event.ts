@@ -10,7 +10,7 @@ export const Event =
     const $ = {
       OO: new Set<Cb<X>>(),
       X: __,
-      I: cId((x: X) => ($.OO.forEach((c) => c(x)), x), L),
+      I: (x: X) => ($.OO.forEach((c) => c(x)), x),
       O: cId((c?: Cb<X>) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
     } as Event<Ctx, X>;
     return $;

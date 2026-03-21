@@ -7,7 +7,7 @@ export type Var<Ctx extends CtxIdConstraint = __, X = unknown> = IO<X, X, X, Ctx
 export const Var = <X, const Ctx extends CtxIdConstraint = __>(X: X, L?: Ctx): Var<Ctx, X> => {
   const $ = {
     X: X,
-    I: cId((x: X) => (($.X = x), $.OO.forEach((c) => c(x)), x), L),
+    I: (x: X) => (($.X = x), $.OO.forEach((c) => c(x)), x),
     O: cId((c?: Cb<X>) => (!c ? $.X : ($.OO.add(c), c($.X), () => $.OO.delete(c))), L),
     OO: new Set<Cb<X>>(),
   } as Var<Ctx, X> & { X: X };

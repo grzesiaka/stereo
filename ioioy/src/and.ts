@@ -4,7 +4,7 @@ import { __, Cb, Dispose } from "~types";
 import cId, { type CtxIdConstraint } from "~js/ctxid";
 
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";
-import byId, { type IOsById } from "./by-id";
+import iosById, { type IOsById } from "./ios-by-id";
 import { mb } from "~js";
 
 export type AND_I<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "I"], IOs$FlatTypes<IOs>>>>;
@@ -55,7 +55,9 @@ export const And =
         return mb((v) => (v as IO).X)($.ById);
       },
     } as AND_IOs<Ctx, IOs> & { X: AND_X<IOs>; _OO: Dispose[]; _Fired?: Set<PropertyKey> };
-    $.ById = byId(IOs, (io, id) => $._OO.push(io.O((x) => (((O as any)[id] = x), !updating && handleEmit({ id: x })))));
+    $.ById = iosById(IOs, (io, id) =>
+      $._OO.push(io.O((x) => (((O as any)[id] = x), !updating && handleEmit({ id: x })))),
+    );
     return $;
   };
 

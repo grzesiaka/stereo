@@ -13,6 +13,7 @@ describe(A, ({ eq, res }) => ({
   single: () => {
     const a = A("AND")([V("", "str"), V(0, { Id: "num" }), E<1>()("eve")]);
     eq(a.X, { str: "", num: 0, eve: __ });
+    eq(a.O.Id, "AND");
     const r = res<unknown>();
     a.O(r.add);
     r.eq([]);

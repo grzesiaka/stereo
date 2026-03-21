@@ -19,7 +19,6 @@ describe(Ev, ({ eq, res }) => ({
   string_context: () => {
     const { I, O } = Ev<number>()("L");
 
-    eq(I.Id, "L");
     eq(O.Id, "L");
 
     const r = res<number>();
@@ -36,7 +35,6 @@ describe(Ev, ({ eq, res }) => ({
   object_context: () => {
     const { I, O } = Ev<number>()({ "?": 1 });
 
-    eq(I["?"], 1);
     eq(O["?"], 1);
 
     const r = res<number>();
