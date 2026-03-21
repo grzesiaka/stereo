@@ -1,0 +1,21 @@
+{
+  "name": "disposyo",
+  "version": "1.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./out/index.mjs",
+    "./*": "./out/*.mjs"
+  },
+  "scripts": {
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
+    "dev$": "turbo run dev --filter='disposyo'...",
+    "build$": "turbo run build --filter='disposyo'...",
+    "test": "vitest test --passWithNoTests"
+  },
+  "devDependencies": {
+    "treeo": "workspace:",
+    "~js": "workspace:"
+  }
+}
