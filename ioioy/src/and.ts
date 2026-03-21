@@ -28,7 +28,7 @@ export const And =
     let updating = false;
     let O = {} as AND_O<IOs>;
 
-    const handleEmit = (x: any) => {
+    let handleEmit = (x: any) => {
       if ($._Fired) {
         mb((_, k) => $._Fired!.add(k))(x);
         if ($._Fired!.size === IOs.length) {
