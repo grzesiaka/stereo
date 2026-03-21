@@ -1,4 +1,5 @@
-// export * from "./num/index.js";
+export * from "./if";
+export * from "./num/index";
 export * from "~types";
 
 /**
