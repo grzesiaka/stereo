@@ -8,29 +8,28 @@ import { mb } from "~js";
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
 
-export type AND_I<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "I"], IOs$FlatTypes<IOs>>>>;
-export type AND_O<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "O"], IOs$FlatTypes<IOs>>>>;
-export type AND_X<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
+export type And_I<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "I"], IOs$FlatTypes<IOs>>>>;
+export type And_O<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "O"], IOs$FlatTypes<IOs>>>>;
+export type And_X<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
 
-export type AND_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = IdIOs> = IO<
-  Partial<AND_I<IOs>>,
-  AND_O<IOs>,
-  AND_X<IOs>,
+export interface And_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = IdIOs> extends IO<
+  Partial<And_I<IOs>>,
+  And_O<IOs>,
+  And_X<IOs>,
   Ctx
-> & {
-  OO: Set<Cb<AND_O<IOs>>>;
-  IOs: IOs;
-  ById: IOsById<IOs>;
+> {
+  OO: Set<Cb<And_O<IOs>>>;
+  IOs: IOs & { $: IOsById<IOs> };
   D: Disposyo<Dispose[]>;
-};
+}
 
 export const AndIOs =
   <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
-  <const IOs extends IdIOs>(IOs: IOs): AND_IOs<Ctx, IOs> => {
+  <const IOs extends IdIOs>(IOs: IOs): And_IOs<Ctx, IOs> => {
     let updating = false;
-    let O = {} as AND_O<IOs>;
+    let O = {} as And_O<IOs>;
 
-    let handleEmit = (x?: Partial<AND_I<IOs>>) => {
+    let handleEmit = (x?: Partial<And_I<IOs>>) => {
       mb((_, k) => $._Fired!.add(k))(x!);
       if ($._Fired!.size === IOs.length) {
         delete $._Fired; // once all IOs emitted at least one, the AndIOs starts emitting
@@ -39,24 +38,24 @@ export const AndIOs =
       }
     };
     const $ = {
-      I: cId((x: Partial<AND_I<IOs>>) => {
+      I: (x: Partial<And_I<IOs>>) => {
         updating = true;
-        mb((v, k) => ((O[k] = v), ($.ById[k] as IO).I(v)))(x);
+        mb((v, k) => ((O[k] = v), ($.IOs.$[k] as IO).I(v)))(x);
         updating = false;
         handleEmit(x);
         return x;
-      }, L),
+      },
       O: cId((c: Cb) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
       OO: new Set(),
       IOs,
       D: D(),
       get X() {
-        return mb((v) => (v as IO).X)($.ById);
+        return mb((v) => (v as IO).X)($.IOs.$);
       },
       _Fired: new Set(),
-    } as AND_IOs<Ctx, IOs> & { X: AND_X<IOs>; _Fired?: Set<PropertyKey> };
-    $.ById = iosById(IOs, (io, id) =>
-      $.D.__[1].push(io.O((x) => (((O as any)[id] = x), !updating && handleEmit({ [id]: x } as Partial<AND_I<IOs>>)))),
+    } as And_IOs<Ctx, IOs> & { X: And_X<IOs>; _Fired?: Set<PropertyKey> };
+    $.IOs.$ = iosById(IOs, (io, id) =>
+      $.D.__[1].push(io.O((x) => (((O as any)[id] = x), !updating && handleEmit({ [id]: x } as Partial<And_I<IOs>>)))),
     );
     return $;
   };

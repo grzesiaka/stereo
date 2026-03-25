@@ -58,7 +58,7 @@ export interface WithOP<OP_ID extends string, Params> {
 
 export type OP<OP_ID extends string = string, Params = unknown> = [OP_ID, Params];
 /**
- * Tags a result of operation with operation id and operation paramss
+ * Tags a result of operation with operation id and operation params
  *
  * @param operation_id id of the operation
  * @param operation_params params of the operation
