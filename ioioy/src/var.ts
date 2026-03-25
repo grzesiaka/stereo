@@ -3,7 +3,7 @@ import cId, { CtxIdConstraint } from "~js/ctxid";
 import { IO } from "./io";
 import { ARR } from "~types";
 
-export type Var<Ctx extends CtxIdConstraint = __, X = unknown> = IO<X, X, X, Ctx> & { OO: Set<Cb<X>> };
+export type Var<Ctx extends CtxIdConstraint = __, X = unknown, IX = X> = IO<IX, X, X, Ctx, IX> & { OO: Set<Cb<X>> };
 
 export type IdVar = Var<any, any> & { O: { Id: string } };
 export type IdVars = ARR<IdVar>;

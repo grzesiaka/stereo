@@ -20,7 +20,7 @@ describe(A, ({ eq, res }) => ({
     r.eq([{ str: "", num: 0, bool: true }]);
     a.IOs.$.bool.I(true);
     r.last(2)({ str: "", num: 0, bool: true });
-    a.I_({ str: "S", num: 1 });
+    a.I({ str: "S", num: 1 });
     r.last(3)({ str: "S", num: 1, bool: true });
     eq(a.IOs.$.str.X, "S");
     eq(a.IOs.$.num.X, 1);

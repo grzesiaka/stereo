@@ -13,10 +13,9 @@ export type And_Vars_X<IOs extends IdVars> = Simplify<KeyValues$Object<ij_Projec
 
 export interface And_Vars<Ctx extends CtxIdConstraint = __, IOs extends IdVars = IdVars> extends Var<
   Ctx,
-  And_Vars_X<IOs>
+  And_Vars_X<IOs>,
+  Partial<And_Vars_X<IOs>>
 > {
-  /** Partial input */
-  I_: <const X extends Partial<And_Vars_X<IOs>>>(x: X) => X;
   IOs: IOs & { $: IOsById<IOs> };
   D: Disposyo<Dispose[]>;
 }
@@ -33,8 +32,7 @@ export const AndVars =
       return x;
     };
     const $ = {
-      I: I as And_Vars<Ctx, IOs>["I"],
-      I_: I,
+      I,
       get X() {
         return mb((v) => (v as IO).X)($.IOs.$);
       },
