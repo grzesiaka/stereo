@@ -8,11 +8,11 @@ import CTX, { type CtxIdConstraint } from "~js/ctxid";
  * There is a special `.X` property that can be read synchronously and may provide additional information about process internal state.
  * `Ctx` is extra description of the process, and is present on both `.I` and `.O`. If `Ctx` is a PropertyKey it will be present as `{ Id: Ctx }`.
  */
-export type IO<I = any, O = any, X = any, Ctx extends CtxIdConstraint = CtxIdConstraint, OI = I> = {
+export interface IO<I = any, O = any, X = any, Ctx extends CtxIdConstraint = CtxIdConstraint, OI = I> {
   I: Fn<[I], OI>;
   O: OUT<O, Ctx, X>;
-  readonly X: X; // as observed from outside
-};
+  readonly X: X; // readonly when access from outside;
+}
 
 export type OUT<O, Ctx extends CtxIdConstraint, X> = Fn<[], X> & Fn<[Cb<O>], Dispose> & CTX<Ctx>;
 
@@ -27,7 +27,13 @@ export type IO$Id<io> = io extends { readonly O: { readonly Id: infer Id } } ? I
 export type IdIOs = ARR<IdIO>;
 export type IOs = ARR<IO>;
 
-export type IO_FlatTypes<IO> = { I: IO$I<IO>; O: IO$O<IO>; X: IO$X<IO>; Id: IO$Id<IO>; IO: IO };
+export interface IO_FlatTypes<IO> {
+  I: IO$I<IO>;
+  O: IO$O<IO>;
+  X: IO$X<IO>;
+  Id: IO$Id<IO>;
+  IO: IO;
+}
 export type IOs$FlatTypes<IOs> = IOs extends readonly [infer H, ...infer R]
   ? [IO_FlatTypes<H>, ...IOs$FlatTypes<R>]
   : [];
