@@ -12,7 +12,8 @@
     "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
     "dev$": "turbo run dev --filter='~nodejs'...",
     "build$": "turbo run build --filter='~nodejs'...",
-    "test": "vitest test --passWithNoTests"
+    "test": "vitest test --passWithNoTests",
+    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
     "@types/node": "catalog:"

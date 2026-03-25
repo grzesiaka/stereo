@@ -12,7 +12,8 @@
     "build": "tsdown ./src/*.ts  --unbundle --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
     "test": "vitest test --passWithNoTests",
     "dev$": "turbo run dev --filter='~js'...",
-    "build$": "turbo run build --filter='~js'..."
+    "build$": "turbo run build --filter='~js'...",
+    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
     "~testing": "workspace:",

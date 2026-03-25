@@ -15,7 +15,8 @@
     "dev": "vite dev",
     "dev$": "turbo run dev --filter='vite-plugin-write-to-disk-example'...",
     "build$": "turbo run build --filter='vite-plugin-write-to-disk-example'...",
-    "test": "echo \"nothing to test\""
+    "test": "echo \"nothing to test\"",
+    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
   "dependencies": {
     "extensy": "workspace:",

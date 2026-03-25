@@ -12,7 +12,8 @@
     "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='taskyo'...",
     "build$": "turbo run build --filter='taskyo'...",
-    "test": "vitest test --passWithNoTests"
+    "test": "vitest test --passWithNoTests",
+    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
   "dependencies": {
     "~js": "workspace:"

@@ -12,7 +12,8 @@
     "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='ioioy'...",
     "build$": "turbo run build --filter='ioioy'...",
-    "test": "vitest --passWithNoTests"
+    "test": "vitest --passWithNoTests",
+    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
     "disposyo": "workspace:",

@@ -12,6 +12,7 @@
     "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='~types'...",
     "build$": "turbo run build --filter='~types'...",
-    "test": "vitest test --passWithNoTests"
+    "test": "vitest test --passWithNoTests",
+    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   }
 }

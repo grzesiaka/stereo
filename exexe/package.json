@@ -12,7 +12,8 @@
     "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='exexe'...",
     "test": "vitest test --passWithNoTests",
-    "build$": "turbo run build --filter='exexe'..."
+    "build$": "turbo run build --filter='exexe'...",
+    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
   "dependencies": {
     "oyoyo": "workspace:*",

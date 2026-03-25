@@ -12,7 +12,8 @@
     "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='disposyo'...",
     "build$": "turbo run build --filter='disposyo'...",
-    "test": "vitest test --passWithNoTests"
+    "test": "vitest test --passWithNoTests",
+    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
     "treeo": "workspace:",
