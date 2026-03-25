@@ -1,0 +1,17 @@
+{
+  "name": "txtxt",
+  "version": "1.0.0-alpha.0",
+  "scripts": {
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
+    "dev$": "turbo run dev --filter='txtxt'...",
+    "build$": "turbo run build --filter='txtxt'...",
+    "test": "vitest test --passWithNoTests"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./out/index.mjs",
+    "./*": "./out/*.mjs"
+  },
+  "sideEffects": false
+}

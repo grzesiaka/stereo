@@ -144,6 +144,21 @@ importers:
         specifier: 'workspace:'
         version: link:../libs/types
 
+  ififify:
+    devDependencies:
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
+
   ioioy:
     devDependencies:
       disposyo:
@@ -262,6 +277,21 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
+  libs/numyo:
+    devDependencies:
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
+
   libs/proyij:
     devDependencies:
       composyo:
@@ -295,6 +325,21 @@ importers:
       ~testing:
         specifier: 'workspace:'
         version: 'link:'
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
+
+  libs/txtxt:
+    devDependencies:
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../$CONFIG
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../testing
       ~types:
         specifier: 'workspace:'
         version: link:../types
@@ -1646,10 +1691,6 @@ packages:
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
-  tinyexec@1.0.2:
-    resolution: {integrity: sha512-W/KYk+NFhkmsYpuHq5JykngiOCnxeVL8v8dFnqxSD8qEEdRfXk1SDM6JzNqcERbcGYj9tMrDQBYV9cjgnunFIg==}
-    engines: {node: '>=18'}
-
   tinyexec@1.0.4:
     resolution: {integrity: sha512-u9r3uZC0bdpGOXtlxUIdwf9pkmvhqJdrVCH9fapQtgy/OeTTMZ1nqH7agtvEfmGui6e1XxjcdrlxvxJvc3sMqw==}
     engines: {node: '>=18'}
@@ -2746,8 +2787,6 @@ snapshots:
 
   tinybench@2.9.0: {}
 
-  tinyexec@1.0.2: {}
-
   tinyexec@1.0.4: {}
 
   tinyglobby@0.2.15:
@@ -2910,7 +2949,7 @@ snapshots:
       picomatch: 4.0.3
       std-env: 3.10.0
       tinybench: 2.9.0
-      tinyexec: 1.0.2
+      tinyexec: 1.0.4
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
       vite: 7.3.1(@types/node@25.2.3)(lightningcss@1.31.1)
