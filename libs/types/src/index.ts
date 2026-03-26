@@ -1,3 +1,5 @@
+export * from "./type-fest";
+
 /**
  *  Potential / Hole / Future
  *

@@ -14,5 +14,8 @@
     "build$": "turbo run build --filter='~types'...",
     "test": "vitest test --passWithNoTests",
     "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "dependencies": {
+    "type-fest": "catalog:"
   }
 }
