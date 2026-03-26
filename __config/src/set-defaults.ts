@@ -52,7 +52,7 @@ const setDefaults = (root: string, files: string[]) => {
   }
 };
 
-const skip = new Set(["$CONFIG", "node_modules", "src", "out"]);
+const skip = new Set(["__config", "node_modules", "src", "out"]);
 
 const handleDown = (path: string, isRoot: boolean) => {
   readdir(path, (err, files) => {

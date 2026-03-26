@@ -1,5 +1,5 @@
 export * from "./if";
-export * from "./num/index";
+export * from "./num";
 export * from "~types";
 
 /**
