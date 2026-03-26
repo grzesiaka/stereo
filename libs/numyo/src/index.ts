@@ -1,1 +1,1 @@
-export default "numyo"
+export * from "./base/index";

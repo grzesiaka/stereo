@@ -1,18 +1,21 @@
 {
   "name": "numyo",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./out/index.mjs",
+    "./*": "./out/*.mjs"
+  },
   "scripts": {
-    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "build": "tsdown ./src/*.ts --unbundle  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
     "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='numyo'...",
     "build$": "turbo run build --filter='numyo'...",
     "test": "vitest test --passWithNoTests",
     "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
-  "type": "module",
-  "exports": {
-    ".": "./out/index.mjs",
-    "./*": "./out/*.mjs"
-  },
-  "sideEffects": false
+  "devDependencies": {
+    "ts-arithmetic": "0.1.1"
+  }
 }

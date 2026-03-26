@@ -279,6 +279,9 @@ importers:
 
   libs/numyo:
     devDependencies:
+      ts-arithmetic:
+        specifier: 0.1.1
+        version: 0.1.1
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
@@ -345,6 +348,10 @@ importers:
         version: link:../types
 
   libs/types:
+    dependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.4.4
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -1715,6 +1722,9 @@ packages:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
 
+  ts-arithmetic@0.1.1:
+    resolution: {integrity: sha512-3VqgsRgzaYfj+zKWn+7O66ifHwbOOnT2BoOrHwdEUBz7az0DetoZOS20+juNJh1klgzvWEi2Qxden41pomOUAQ==}
+
   tsdown@0.21.4:
     resolution: {integrity: sha512-Q/kBi8SXkr4X6JI/NAZKZY1UuiEcbuXtIskL4tZCsgpDiEPM/2W6lC+OonNA31S+V3KsWedFvbFDBs23hvt+Aw==}
     engines: {node: '>=20.19.0'}
@@ -2801,6 +2811,8 @@ snapshots:
   totalist@3.0.1: {}
 
   tree-kill@1.2.2: {}
+
+  ts-arithmetic@0.1.1: {}
 
   tsdown@0.21.4(typescript@5.9.3):
     dependencies:
