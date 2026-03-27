@@ -546,6 +546,15 @@ importers:
         specifier: 'workspace:'
         version: link:../libs/types
 
+  unitoy:
+    devDependencies:
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../__config
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
+
   vite-plugins/vite-plugin-write-to-disk:
     devDependencies:
       vite:
