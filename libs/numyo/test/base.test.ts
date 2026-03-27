@@ -3,6 +3,7 @@ import { Tagged } from "~types";
 
 import sum from "../src/base/sum";
 import add from "../src/base/add";
+import subtract from "../src/base/subtract";
 import product from "../src/base/product";
 import multiply from "../src/base/multiply";
 
@@ -13,6 +14,8 @@ describe(sum, ({ eq }) => ({
   1: () => eq(sum([1]), 1),
   2: () => eq(sum([1, 1]), 2),
   4: () => eq(sum([2, 2, 2, 2]), 8),
+  // oxlint-disable-next-line typescript/prefer-as-const
+  "0.1+0.2=0.3": () => eq(sum([0.1, 0.2]), 0.30000000000000004 as 0.3),
   "number[]": () => eq(sum([1, 1] as number[]), 2),
 }));
 
@@ -30,6 +33,13 @@ describe(add, ({ eq }) => ({
   "1+1=2": () => eq(add(1, 1), 2),
   "tagged+untagged=tagged": () => eq(add(t(2), 2), t(4)),
   "tagged+tagged=tagged": () => eq(add(t(2), t(2)), t(4)),
+}));
+
+describe(subtract, ({ eq }) => ({
+  "1-1=0": () => eq(subtract(1, 1), 0),
+  "1-2=-1": () => eq(subtract(1, 2), -1),
+  "1-(-2)=3": () => eq(subtract(1, -2), 3),
+  tagged: () => eq(subtract(t(5), t(2.3)), t(2.7)),
 }));
 
 describe(product, ({ eq }) => ({
