@@ -7,7 +7,8 @@ import subtract from "../src/base/subtract";
 import product from "../src/base/product";
 import multiply from "../src/base/multiply";
 
-const t = <const X, T extends PropertyKey = "num">(x: X, _ = "num" as T) => x as Tagged<X, T>;
+const t = <const X, const T extends PropertyKey = "num", const M = never>(x: X, _ = "num" as T, _m = undefined as M) =>
+  x as Tagged<X, T, M>;
 
 describe(sum, ({ eq }) => ({
   0: () => eq(sum([]), 0),
@@ -26,7 +27,7 @@ describe("sum/tagged", ({ eq }) => ({
   // all tags are collected - probably not ideal for summing, but could be beneficial when parsing
   multi_tagged: () => eq(sum([t(1, "1"), t(2, "2"), t(3, "3")]), t<6, "1" | "2" | "3">(6)),
   "Tagged<number, 'num'>[]": () => eq(sum([t<number>(1), 1]), t(2)),
-  "Tagged<number, 'num' | 'other'>[]": () => eq(sum([t<number>(1), t(1, "other")]), t<number, "num" | "other">(2)),
+  "Tagged<number, 'num' | 'other'>[]": () => eq(sum([t<number>(1), t(1, "other", "o")]), t(2)),
 }));
 
 describe(add, ({ eq }) => ({

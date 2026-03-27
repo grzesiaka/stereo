@@ -1,6 +1,6 @@
 {
   "name": "numyo",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.5",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -20,6 +20,6 @@
   },
   "peerDependencies": {
     "ts-arithmetic": "^0.1.1",
-    "type-fest": "^5.4.4"
+    "type-fest": "catalog:"
   }
 }

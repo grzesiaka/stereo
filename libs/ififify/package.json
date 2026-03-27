@@ -14,5 +14,8 @@
     "build$": "turbo run build --filter='ififify'...",
     "test": "vitest test --passWithNoTests",
     "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "dependencies": {
+    "numyo": "workspace:"
   }
 }

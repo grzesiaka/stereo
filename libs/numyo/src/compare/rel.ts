@@ -52,5 +52,5 @@ export default {
   "<=": lte,
   ">": gt,
   ">=": gte,
-  "?": compare,
+  "<=>": compare,
 };
