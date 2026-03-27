@@ -1,6 +1,6 @@
 {
   "name": "numyo",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -15,7 +15,8 @@
     "test": "vitest test --passWithNoTests",
     "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
-  "devDependencies": {
-    "ts-arithmetic": "0.1.1"
+  "peerDependencies": {
+    "ts-arithmetic": "^0.1.1",
+    "type-fest": "^5.4.4"
   }
 }
