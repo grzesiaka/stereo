@@ -4,7 +4,37 @@ import { Tagged } from "~types";
 import min from "../src/compare/min";
 import max from "../src/compare/max";
 
+import { compare, lt, lte, gt, gte } from "../src/compare/rel";
+
 const t = <const X, T extends PropertyKey = "num">(x: X, _ = "num" as T) => x as Tagged<X, T>;
+
+describe("compare", ({ eq }) => ({
+  compare: () => {
+    eq(compare(0, 0), 0);
+    eq(compare(0, -1), 1);
+    eq(compare(-2, -1), -1);
+  },
+  "<": () => {
+    eq(lt(0, 0), 0);
+    eq(lt(0, -1), 0);
+    eq(lt(-2, -1), 1);
+  },
+  "<=": () => {
+    eq(lte(0, 0), 1);
+    eq(lte(0, -1), 0);
+    eq(lte(-2, -1), 1);
+  },
+  ">": () => {
+    eq(gt(0, 0), 0);
+    eq(gt(0, -1), 1);
+    eq(gt(-2, -1), 0);
+  },
+  ">=": () => {
+    eq(gte(0, 0), 1);
+    eq(gte(0, -1), 1);
+    eq(gte(-2, -1), 0);
+  },
+}));
 
 describe(min, ({ eq }) => ({
   0: () => {

@@ -3,7 +3,7 @@ import { UnwrapTagged } from "type-fest";
 import { GetTagMetadata, GetTagName, Tagged } from "~types";
 import { sum } from "./sum";
 
-type TaggedNegate<N extends Tagged<number>> = Tagged<
+export type TaggedNegate<N extends Tagged<number>> = Tagged<
   Negate<UnwrapTagged<N> & number>,
   GetTagName<N>,
   GetTagMetadata<N, GetTagName<N>>
