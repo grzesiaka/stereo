@@ -6,15 +6,29 @@ type ij_Project1<K extends __<PropertyKey>, Xs> = Xs extends readonly [infer I, 
   ? K extends PropertyKey
     ? [I extends { readonly [k in K]: infer X } ? X : unknown, ...ij_Project1<K, R>]
     : [I, ...ij_Project1<K, R>]
-  : [];
+  : Xs extends []
+    ? []
+    : Xs extends ARR<infer X>
+      ? K extends keyof X
+        ? ARR<X[K]>
+        : __ extends K
+          ? ARR<X>
+          : ARR<unknown>
+      : never;
 
 type ij_Item<ij, Item> = ij extends readonly [infer I, ...infer J]
-  ? [I extends PropertyKey ? (Item extends { readonly [i in I]: infer X } ? X : unknown) : Item, ...ij_Item<J, Item>]
+  ? Item extends any
+    ? [I extends PropertyKey ? (Item extends { readonly [i in I]: infer X } ? X : unknown) : Item, ...ij_Item<J, Item>]
+    : never
   : [];
 
 type ij_Project_<ij, Xs extends ARR> = Xs extends readonly [infer I, ...infer R]
   ? [ij_Item<ij, I>, ...ij_Project_<ij, R>]
-  : [];
+  : Xs extends []
+    ? []
+    : Xs extends ARR<infer X>
+      ? ARR<ij_Item<ij, X>>
+      : never;
 
 export type ij_Project<ij extends ARR, Xs extends ARR> = ij extends readonly [infer K extends __<PropertyKey>]
   ? ij_Project1<K, Xs>
