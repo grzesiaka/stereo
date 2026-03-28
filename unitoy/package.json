@@ -14,5 +14,8 @@
     "build$": "turbo run build --filter='unityo'...",
     "test": "vitest test --passWithNoTests",
     "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "peerDependencies": {
+    "type-fest": "catalog:"
   }
 }

@@ -566,6 +566,10 @@ importers:
         version: link:../libs/types
 
   unitoy:
+    dependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.4.4
     devDependencies:
       vitest:
         specifier: 'catalog:'

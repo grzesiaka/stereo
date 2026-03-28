@@ -6,9 +6,20 @@ import V from "../src/var";
 import E from "../src/event";
 
 describe(A, ({ eq, res }) => ({
-  empty: () => {
-    const and = A("")([]);
+  empty_no_context: () => {
+    const and = A()([]);
     eq(and.X, {});
+  },
+  empty_id_context: () => {
+    const and = A("id")([]);
+    eq(and.X, {});
+    eq(and.O.Id, "id");
+  },
+  empty_object_context: () => {
+    const and = A({ Id: "id", Extra: 0 })([]);
+    eq(and.X, {});
+    eq(and.O.Id, "id");
+    eq(and.O.Extra, 0);
   },
   single: () => {
     const a = A("AND")([V("", "str"), V(0, { Id: "num" }), E<1>()("eve")]);
