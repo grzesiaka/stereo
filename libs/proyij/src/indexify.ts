@@ -5,9 +5,9 @@ export type Indexify<X, K extends PropertyKey> = X extends readonly [infer H, ..
   : {};
 
 /** Picks a name for tuple items upon which an object is formed */
-const indexify =
+export const indexify =
   <K extends PropertyKey = "id">(k = "id" as K) =>
   <A extends ARR>(a: A) =>
     a.reduce((a, x) => (k in x && (a[x[k]] = x), a), {} as Indexify<A, K>) as Indexify<A, K>;
 
-export { indexify, indexify as default };
+export default indexify;
