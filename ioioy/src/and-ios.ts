@@ -3,7 +3,7 @@ import { __, Cb, Dispose } from "~types";
 import type { ij_Project, KeyValues$Object } from "proyij";
 import cId, { type CtxIdConstraint } from "~js/ctxid";
 import D, { type Disposyo } from "disposyo";
-import { mb } from "~js";
+import { mb, OP, WithOP } from "~js";
 
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
@@ -12,14 +12,10 @@ export type And_I<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id
 export type And_O<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "O"], IOs$FlatTypes<IOs>>>>;
 export type And_X<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
 
-export interface And_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = IdIOs> extends IO<
-  Partial<And_I<IOs>>,
-  And_O<IOs>,
-  And_X<IOs>,
-  Ctx
-> {
+export interface And_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = IdIOs>
+  extends WithOP<"oll", IOs>, IO<Partial<And_I<IOs>>, And_O<IOs>, And_X<IOs>, Ctx> {
   OO: Set<Cb<And_O<IOs>>>;
-  IOs: IOs & { $: IOsById<IOs> };
+  IOs: IOsById<IOs>;
   D: Disposyo<Dispose[]>;
 }
 
@@ -37,24 +33,23 @@ export const AndIOs =
         handleEmit();
       }
     };
-    const $ = {
+    const $ = OP("oll")(IOs)({
       I: (x: Partial<And_I<IOs>>) => {
         updating = true;
-        mb((v, k) => ((O[k] = v), ($.IOs.$[k] as IO).I(v)))(x);
+        mb((v, k) => ((O[k] = v), ($.IOs[k] as IO).I(v)))(x);
         updating = false;
         handleEmit(x);
         return x;
       },
       O: cId((c: Cb) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
       OO: new Set(),
-      IOs,
       D: D(),
       get X() {
-        return mb((v) => (v as IO).X)($.IOs.$);
+        return mb((v) => (v as IO).X)($.IOs);
       },
       _Fired: new Set(),
-    } as And_IOs<Ctx, IOs> & { X: And_X<IOs>; _Fired?: Set<PropertyKey> };
-    $.IOs.$ = iosById(IOs, (io, id) =>
+    }) as And_IOs<Ctx, IOs> & { X: And_X<IOs>; _Fired?: Set<PropertyKey> };
+    $.IOs = iosById(IOs, (io, id) =>
       $.D.__[1].push(io.O((x) => (((O as any)[id] = x), !updating && handleEmit({ [id]: x } as Partial<And_I<IOs>>)))),
     );
     return $;

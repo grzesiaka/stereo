@@ -1,7 +1,7 @@
-import { ij_Project, KeyValues$Object } from "proyij";
-import { IdIOs, IOs$FlatTypes } from "./io";
+import { IdIOs, IO$Id } from "./io";
 
-export type IOsById<IOs extends IdIOs> = KeyValues$Object<ij_Project<["Id", "IO"], IOs$FlatTypes<IOs>>>;
+export type IOsById<IOs extends IdIOs, X = IOs[number]> =
+  IO$Id<X> extends PropertyKey ? { [K in IO$Id<X>]: Extract<X, { O: { Id: K } }> } : never;
 
 /**
  * Creates an object from an array of IOs each with `Id`, by using `Id` as the key.

@@ -5,18 +5,15 @@ import cId, { type CtxIdConstraint } from "~js/ctxid";
 
 import type { IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
-import { mb } from "~js";
+import { mb, OP, WithOP } from "~js";
 import D, { type Disposyo } from "disposyo";
 import type { IdVars, Var } from "./var";
 
 export type And_Vars_X<IOs extends IdVars> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
 
-export interface And_Vars<Ctx extends CtxIdConstraint = __, IOs extends IdVars = IdVars> extends Var<
-  Ctx,
-  And_Vars_X<IOs>,
-  Partial<And_Vars_X<IOs>>
-> {
-  IOs: IOs & { $: IOsById<IOs> };
+export interface And_Vars<Ctx extends CtxIdConstraint = __, IOs extends IdVars = IdVars>
+  extends WithOP<"sone", IOs>, Var<Ctx, And_Vars_X<IOs>, Partial<And_Vars_X<IOs>>> {
+  IOs: IOsById<IOs>;
   D: Disposyo<Dispose[]>;
 }
 
@@ -26,24 +23,23 @@ export const AndVars =
     let updating = false;
     const I = (x: Partial<And_Vars_X<IOs>>) => {
       updating = true;
-      mb((v, k) => ($.IOs.$[k] as IO).I(v))(x);
+      mb((v, k) => ($.IOs[k] as IO).I(v))(x);
       updating = false;
       handleEmit();
       return x;
     };
-    const $ = {
+    const $ = OP("sone")(IOs)({
       I,
       get X() {
-        return mb((v) => (v as IO).X)($.IOs.$);
+        return mb((v) => (v as IO).X)($.IOs);
       },
       O: cId((c: Cb<any>) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
       OO: new Set(),
-      IOs,
       D: D(),
-    } as And_Vars<Ctx, IOs> & { X: And_Vars_X<IOs> };
+    }) as And_Vars<Ctx, IOs> & { X: And_Vars_X<IOs> };
 
     let handleEmit = () => {}; // no-op before initial register phase not completed
-    $.IOs.$ = iosById(IOs, (io) => $.D.__[1].push(io.O(() => !updating && handleEmit())));
+    $.IOs = iosById(IOs, (io) => $.D.__[1].push(io.O(() => !updating && handleEmit())));
     handleEmit = () => $.OO.forEach((c) => c($.X));
     handleEmit(); // initial emit
     return $;

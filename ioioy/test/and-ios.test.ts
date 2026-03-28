@@ -28,13 +28,13 @@ describe(A, ({ eq, res }) => ({
     const r = res<unknown>();
     a.O(r.add);
     r.eq([]);
-    a.IOs.$.eve.I(1);
+    a.IOs.eve.I(1);
     r.eq([{ str: "", num: 0, eve: 1 }]);
-    a.IOs.$.eve.I(1);
+    a.IOs.eve.I(1);
     r.last(2)({ str: "", num: 0, eve: 1 });
     a.I({ str: "S", num: 1 });
     r.last(3)({ str: "S", num: 1, eve: 1 });
-    eq(a.IOs.$.str.X, "S");
-    eq(a.IOs.$.num.X, 1);
+    eq(a.IOs.str.X, "S");
+    eq(a.IOs.num.X, 1);
   },
 }));
