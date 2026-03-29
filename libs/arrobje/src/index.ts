@@ -10,8 +10,19 @@ export type ArrObje<
   AnchorK extends PropertyKey | null = "$",
 > = ij_Project<[ValueK], Xs> &
   (AnchorK extends string
-    ? { [A in AnchorK]: Simplify<KeyValues$Object<ij_Project<[IdK, ValueK], Xs>>> }
-    : Simplify<KeyValues$Object<ij_Project<[IdK, ValueK], Xs>>>);
+    ? {
+        [A in AnchorK]: Simplify<
+          //  ij_Project<[IdK, ValueK], Xs>;
+          KeyValues$Object<
+            ij_Project<[IdK, ValueK], Xs> extends ARR<readonly [any, any]> ? ij_Project<[IdK, ValueK], Xs> : never
+          >
+        >;
+      }
+    : Simplify<
+        KeyValues$Object<
+          ij_Project<[IdK, ValueK], Xs> extends ARR<readonly [any, any]> ? ij_Project<[IdK, ValueK], Xs> : never
+        >
+      >);
 
 const $ =
   <IdK extends PropertyKey = "id", ValueK extends __<PropertyKey> = __, AnchorK extends string | null = "$">(
