@@ -16,7 +16,8 @@
     "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
   "dependencies": {
-    "oyoyo": "workspace:*",
-    "~js": "workspace:*"
+    "ioioy": "workspace:",
+    "oyoyo": "workspace:",
+    "~js": "workspace:"
   }
 }
