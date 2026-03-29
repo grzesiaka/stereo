@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import Inspect from "vite-plugin-inspect";
-import WriteToDisk from "../src";
+import WriteToDisk from "vite-plugin-write-to-disk";
 
 import $ from "~nodejs";
 
