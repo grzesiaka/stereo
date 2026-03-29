@@ -10,6 +10,7 @@
   "scripts": {
     "ci": "pnpm build --affected && pnpm test-ci",
     "build": "turbo run build --ui=stream",
+    "tsc": "turbo run tsc --ui=stream -- --noEmit",
     "test": "vitest --project unit",
     "test-ci": "CI=true turbo run test --affected --ui=stream -- --project unit/out",
     "dev": "turbo run dev --ui=tui",
@@ -19,7 +20,7 @@
     "lint:fix": "oxlint --fix",
     "postinstall": "node ./__config/src/set-defaults.ts",
     "clear-all": "node ./__config/src/clear-all.ts",
-    "refresh": "pnpm clear-all && pnpm install && pnpm build && pnpm test-ci"
+    "refresh": "pnpm clear-all && pnpm install && pnpm tsc && pnpm build && pnpm test-ci"
   },
   "devDependencies": {
     "oxfmt": "0.24.0",

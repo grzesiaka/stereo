@@ -247,15 +247,6 @@ importers:
         specifier: 'workspace:'
         version: link:../../types
 
-  libs/expresyo:
-    devDependencies:
-      ~cfg:
-        specifier: 'workspace:'
-        version: link:../../__config
-      ~types:
-        specifier: 'workspace:'
-        version: link:../types
-
   libs/ififify:
     dependencies:
       numyo:
@@ -397,6 +388,21 @@ importers:
       ~types:
         specifier: 'workspace:'
         version: 'link:'
+
+  libs/xpresyo:
+    devDependencies:
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../__config
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
 
   oformo:
     dependencies:

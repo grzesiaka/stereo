@@ -9,7 +9,9 @@
     "~types#build": {
       "outputs": []
     },
-    "tsc": {},
+    "tsc": {
+      "dependsOn": ["^build"]
+    },
     "test": {
       "dependsOn": ["build"]
     },

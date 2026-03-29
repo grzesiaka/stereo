@@ -11,6 +11,6 @@
     "noUnusedParameters": true,
     "noUnusedLocals": true
   },
-  "include": ["${configDir}/../../src"],
+  "include": ["${configDir}/../../src", "${configDir}/../../test"],
   "exclude": ["${configDir}/../../src/**/*.test.ts"]
 }
