@@ -24,15 +24,21 @@
     "refresh": "pnpm clear-all && pnpm install && pnpm tsc && pnpm build && pnpm test-ci"
   },
   "devDependencies": {
-    "oxfmt": "0.24.0",
-    "oxlint": "1.39.0",
-    "tsdown": "0.21.4",
-    "turbo": "2.7.5",
+    "oxfmt": "0.42.0",
+    "oxlint": "1.57.0",
+    "tsdown": "0.21.7",
+    "turbo": "2.8.21",
     "type-fest": "catalog:",
     "typescript": "6.0.2"
   },
   "engines": {
     "node": ">=22.18.0"
   },
-  "packageManager": "pnpm@10.29.1"
+  "packageManager": "pnpm@10.29.1",
+  "dependencies": {
+    "vitest": "catalog:",
+    "~cfg": "workspace:^",
+    "~testing": "workspace:^",
+    "~types": "workspace:^"
+  }
 }
