@@ -37,4 +37,39 @@ describe(I, ({ eq, res }) => ({
     i.I(["Ev1", 2]);
     r.last(2)(["Ev1", 2]);
   },
+
+  array: () => {
+    const IOs = {
+      B: E.B("B"),
+      S: E.S("S"),
+      N: E.N("N"),
+    };
+    const vs = [IOs.B, IOs.S, IOs.N];
+    const i = I("[B,S,N]")(vs);
+    eq(i.IOs, IOs);
+    eq(i.O.Id, "[B,S,N]");
+    eq(i.$1, IOs.B);
+    const r = res();
+    i.O(r.add);
+    r.last(0);
+    i.I(["B", true]);
+    i.I(["S", ""]);
+    i.I(["N", 0]);
+    r.eq([
+      ["B", true],
+      ["S", ""],
+      ["N", 0],
+    ]);
+    // IOs.B is not observed by i; not sure if this is always desired -- if needed, could be controlled by an option
+    IOs.B.I(false);
+    r.len(3);
+
+    // IOs.N is observed by i
+    IOs.N.I(1);
+    r.last(4)(["N", 1]);
+
+    // IOs.S is not observed by i
+    IOs.S.I("");
+    r.len(4);
+  },
 }));

@@ -36,4 +36,8 @@ export interface IO_FlatTypes<IO> {
 }
 export type IOs$FlatTypes<IOs> = IOs extends readonly [infer H, ...infer R]
   ? [IO_FlatTypes<H>, ...IOs$FlatTypes<R>]
-  : [];
+  : IOs extends []
+    ? []
+    : IOs extends ReadonlyArray<infer X>
+      ? ReadonlyArray<X extends any ? IO_FlatTypes<X> : never>
+      : never;
