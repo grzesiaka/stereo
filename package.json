@@ -8,9 +8,10 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "ci": "pnpm tsc --affected && pnpm build --affected && pnpm test-ci",
+    "ci": "pnpm tsc-ci && pnpm build --affected && pnpm test-ci",
     "build": "turbo run build --ui=stream",
     "tsc": "turbo run tsc --ui=stream -- --noEmit",
+    "tsc-ci": "turbo run tsc --affected --ui=stream -- --noEmit",
     "test": "vitest --project unit",
     "test-ci": "CI=true turbo run test --affected --ui=stream -- --project unit/out",
     "dev": "turbo run dev --ui=tui",
