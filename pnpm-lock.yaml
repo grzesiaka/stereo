@@ -247,6 +247,15 @@ importers:
         specifier: 'workspace:'
         version: link:../../types
 
+  libs/expresyo:
+    devDependencies:
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../__config
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
+
   libs/ififify:
     dependencies:
       numyo:

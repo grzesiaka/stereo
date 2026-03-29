@@ -1,0 +1,18 @@
+{
+  "name": "xpresyo",
+  "version": "1.0.0-alpha.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./out/index.mjs",
+    "./*": "./out/*.mjs"
+  },
+  "scripts": {
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
+    "dev$": "turbo run dev --filter='xpresyo'...",
+    "build$": "turbo run build --filter='xpresyo'...",
+    "test": "vitest test --passWithNoTests",
+    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+  }
+}
