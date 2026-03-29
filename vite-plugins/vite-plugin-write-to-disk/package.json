@@ -1,18 +1,16 @@
 {
   "name": "vite-plugin-write-to-disk",
   "version": "1.0.0-alpha.0",
+  "type": "module",
   "sideEffects": false,
   "main": "./out/index.ts",
   "exports": {
-    ".": {
-      "types": "./out/index.d.ts",
-      "default": "./out/index.js"
-    },
+    ".": "./out/index.mjs",
     "./*": "./out/*.mjs"
   },
   "scripts": {
-    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='vite-plugin-write-to-disk'...",
     "build$": "turbo run build --filter='vite-plugin-write-to-disk'...",
     "test": "vitest test --passWithNoTests",
@@ -21,6 +19,5 @@
   "devDependencies": {
     "vite": "catalog:",
     "~nodejs": "workspace:"
-  },
-  "type": "module"
+  }
 }

@@ -107,11 +107,14 @@ importers:
 
   exexe:
     dependencies:
+      ioioy:
+        specifier: 'workspace:'
+        version: link:../ioioy
       oyoyo:
-        specifier: workspace:*
+        specifier: 'workspace:'
         version: link:../oyoyo
       ~js:
-        specifier: workspace:*
+        specifier: 'workspace:'
         version: link:../libs/js
     devDependencies:
       vitest:

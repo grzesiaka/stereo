@@ -1,1 +1,3 @@
-export default globalThis;
+const $ = globalThis;
+
+export { $, $ as default };

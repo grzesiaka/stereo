@@ -1,3 +1,5 @@
 import "../node_modules/@types/web/index.d.ts";
 
-export default globalThis;
+const $ = globalThis;
+
+export { $, $ as default };

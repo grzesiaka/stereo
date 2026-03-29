@@ -4,12 +4,12 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": "./out/index.js",
+    ".": "./out/index.mjs",
     "./*": "./out/*.mjs"
   },
   "scripts": {
-    "build": "tsc -p node_modules/~cfg/tsconfig.build.json",
-    "dev": "tsc --watch -p node_modules/~cfg/tsconfig.build.json",
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='~dom'...",
     "build$": "turbo run build --filter='~dom'...",
     "test": "vitest test --passWithNoTests",
