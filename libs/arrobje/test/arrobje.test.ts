@@ -49,6 +49,6 @@ describe(AO, ({ eq }) => ({
         { key: "C", value: "c" },
       ]),
       a(["a", "b", "c"] as ["a", "b", "c"], { __: { A: "a", B: "b", C: "c" } } as const),
-    ); //
+    );
   },
 }));

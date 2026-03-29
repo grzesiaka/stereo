@@ -23,6 +23,5 @@
     "noEmit": true,
     "noUnusedParameters": false,
     "noUnusedLocals": false
-  },
-  "include": ["${configDir}/src", "${configDir}/test", "${configDir}/*.ts"]
+  }
 }

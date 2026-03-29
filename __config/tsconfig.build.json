@@ -2,6 +2,7 @@
   "extends": "./tsconfig.dev.json",
   "compilerOptions": {
     // it is assumed to use this config from project's node_modules/dev
+    "rootDir": "${configDir}/../../",
     "outDir": "${configDir}/../../out",
     "paths": {
       "@": ["${configDir}/../../src"],
@@ -10,7 +11,5 @@
     "noEmit": false,
     "noUnusedParameters": true,
     "noUnusedLocals": true
-  },
-  "include": ["${configDir}/../../src", "${configDir}/../../test"],
-  "exclude": ["${configDir}/../../src/**/*.test.ts"]
+  }
 }
