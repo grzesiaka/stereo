@@ -4,8 +4,7 @@ import { IO } from "./io";
 
 export type Event<Ctx extends CtxIdConstraint = __, X = unknown> = IO<X, X, __, Ctx> & { OO: Set<Cb<X>> };
 
-export const Event =
-  <X>() =>
+export const Event = (<X>() =>
   <const Ctx extends CtxIdConstraint = __>(L?: Ctx): Event<Ctx, X> => {
     const $ = {
       OO: new Set<Cb<X>>(),
@@ -13,6 +12,12 @@ export const Event =
       O: cId((c?: Cb<X>) => (!c ? __ : ($.OO.add(c), () => $.OO.delete(c))), L),
     } as Event<Ctx, X>;
     return $;
-  };
+  }) as (<X>() => <const Ctx extends CtxIdConstraint = __>(L?: Ctx) => Event<Ctx, X>) & {
+  B: <const Ctx extends CtxIdConstraint = __>(L?: Ctx) => Event<Ctx, boolean>;
+  N: <const Ctx extends CtxIdConstraint = __>(L?: Ctx) => Event<Ctx, number>;
+  S: <const Ctx extends CtxIdConstraint = __>(L?: Ctx) => Event<Ctx, string>;
+};
+
+Event.B = Event.N = Event.S = Event<any>();
 
 export default Event;
