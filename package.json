@@ -23,6 +23,12 @@
     "clear-all": "node ./__config/src/clear-all.ts",
     "refresh": "pnpm clear-all && pnpm install && pnpm tsc && pnpm build && pnpm test-ci"
   },
+  "dependencies": {
+    "vitest": "catalog:",
+    "~cfg": "workspace:^",
+    "~testing": "workspace:^",
+    "~types": "workspace:^"
+  },
   "devDependencies": {
     "oxfmt": "0.42.0",
     "oxlint": "1.57.0",
@@ -34,11 +40,5 @@
   "engines": {
     "node": ">=22.18.0"
   },
-  "packageManager": "pnpm@10.33.0",
-  "dependencies": {
-    "vitest": "catalog:",
-    "~cfg": "workspace:^",
-    "~testing": "workspace:^",
-    "~types": "workspace:^"
-  }
+  "packageManager": "pnpm@10.33.0"
 }

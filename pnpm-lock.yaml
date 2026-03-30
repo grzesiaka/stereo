@@ -251,6 +251,15 @@ importers:
         specifier: 'workspace:'
         version: link:../../types
 
+  libs/idyo:
+    devDependencies:
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../__config
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
+
   libs/ififify:
     dependencies:
       numyo:
@@ -318,6 +327,15 @@ importers:
       ~testing:
         specifier: 'workspace:'
         version: link:../testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
+
+  libs/objoy:
+    devDependencies:
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../__config
       ~types:
         specifier: 'workspace:'
         version: link:../types
@@ -504,17 +522,22 @@ importers:
         version: link:../libs/types
 
   statree:
-    dependencies:
-      ~js:
-        specifier: 'workspace:'
-        version: link:../libs/js
     devDependencies:
+      ioioy:
+        specifier: 'workspace:'
+        version: link:../ioioy
+      treeo:
+        specifier: 'workspace:'
+        version: link:../treeo
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
+      ~js:
+        specifier: 'workspace:'
+        version: link:../libs/js
       ~testing:
         specifier: 'workspace:'
         version: link:../libs/testing
