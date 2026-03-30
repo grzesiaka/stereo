@@ -8,7 +8,7 @@ import { __ } from "jsyoyo";
 describe(I, ({ eq, res }) => ({
   empty: () => {
     const i = I()([]);
-    eq(i.__, ["1of", []]);
+    eq(i.__, ["1OF", []]);
   },
 
   single_var: () => {

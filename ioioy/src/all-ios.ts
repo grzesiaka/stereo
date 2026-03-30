@@ -14,7 +14,7 @@ export type And_O<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id
 export type And_X<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
 
 export interface And_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = IdIOs>
-  extends WithOP<"oll", IOs>, IO<Partial<And_I<IOs>>, And_O<IOs>, And_X<IOs>, Ctx> {
+  extends WithOP<"OLL", IOs>, IO<Partial<And_I<IOs>>, And_O<IOs>, And_X<IOs>, Ctx> {
   OO: Set<Cb<And_O<IOs>>>;
   IOs: IOsById<IOs>;
   D: Disposyo<Dispose[]>;
@@ -34,7 +34,7 @@ export const AndIOs =
         handleEmit();
       }
     };
-    const $ = OP("oll")(IOs)({
+    const $ = OP("OLL")(IOs)({
       I: (x: Partial<And_I<IOs>>) => {
         updating = true;
         mb((v, k) => ((O[k] = v), ($.IOs[k] as IO).I(v)))(x);

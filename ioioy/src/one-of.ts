@@ -12,7 +12,7 @@ export type OneOf_O<IOs extends IdIOs> = ij_Project<["Id", "O"], IOs$FlatTypes<I
 export type OneOf_X<IOs extends IdIOs> = ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>[number];
 
 export interface OneOf_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = IdIOs>
-  extends WithOP<"1of", IOs>, IO<OneOf_I<IOs>, OneOf_O<IOs>, OneOf_X<IOs>, Ctx> {
+  extends WithOP<"1OF", IOs>, IO<OneOf_I<IOs>, OneOf_O<IOs>, OneOf_X<IOs>, Ctx> {
   $1: IOs[number];
   OO: Set<Cb<OneOf_O<IOs>>>;
   IOs: IOsById<IOs>;
@@ -35,7 +35,7 @@ export const OneOf =
       $.$1.I(x[1]);
       return x;
     };
-    const $ = OP("1of")(IOs)({
+    const $ = OP("1OF")(IOs)({
       I,
       get X() {
         return [$.$1.O.Id, $.$1.X];

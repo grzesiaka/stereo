@@ -6,19 +6,23 @@ import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
 import type { IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
 import { mb } from "jsyoyo";
-import { OP, WithOP } from "xpresyo";
+import { OP } from "xpresyo";
 import D, { type Disposyo } from "disposyo";
 import type { IdVars, Var } from "./var";
 
 export type And_Vars_X<IOs extends IdVars> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
 
-export interface And_Vars<Ctx extends CtxIdConstraint = __, IOs extends IdVars = IdVars>
-  extends WithOP<"sone", IOs>, Var<Ctx, And_Vars_X<IOs>, Partial<And_Vars_X<IOs>>> {
+export interface And_Vars<Ctx extends CtxIdConstraint = __, IOs extends IdVars = IdVars> extends Var<
+  Ctx,
+  And_Vars_X<IOs>,
+  Partial<And_Vars_X<IOs>>,
+  IOs
+> {
   IOs: IOsById<IOs>;
   D: Disposyo<Dispose[]>;
 }
 
-export const AndVars =
+export const Vars =
   <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
   <const IOs extends IdVars>(IOs: IOs): And_Vars<Ctx, IOs> => {
     let updating = false;
@@ -29,7 +33,7 @@ export const AndVars =
       handleEmit();
       return x;
     };
-    const $ = OP("sone")(IOs)({
+    const $ = OP("VR")(IOs)({
       I,
       get X() {
         return mb((v) => (v as IO).X)($.IOs);
@@ -46,4 +50,4 @@ export const AndVars =
     return $;
   };
 
-export default AndVars;
+export default Vars;
