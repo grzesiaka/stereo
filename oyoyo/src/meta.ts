@@ -1,4 +1,4 @@
-import { Cb, a, Fn$O, u } from "~js";
+import { Cb, a, Fn$O, u } from "jsyoyo";
 import { yR, yR2R, yR2X } from "./0";
 
 export const UP =

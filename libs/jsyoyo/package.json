@@ -8,11 +8,17 @@
     "./*": "./out/*.mjs"
   },
   "scripts": {
-    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
     "dev": "pnpm build --watch",
+    "build": "tsdown ./src/*.ts  --unbundle --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "test": "vitest test --passWithNoTests",
     "dev$": "turbo run dev --filter='jsyoyo'...",
     "build$": "turbo run build --filter='jsyoyo'...",
-    "test": "vitest test --passWithNoTests",
     "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "devDependencies": {
+    "ififify": "workspace:",
+    "objoy": "workspace:",
+    "~testing": "workspace:",
+    "~types": "workspace:"
   }
 }

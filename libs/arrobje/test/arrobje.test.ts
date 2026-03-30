@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import { __, a } from "~js";
+import { __, a } from "jsyoyo";
 
 import AO from "../src";
 

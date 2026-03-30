@@ -4,7 +4,7 @@ import { IN } from "../src/I";
 import { F } from "../src/F";
 import { S } from "../src/S";
 import { UP } from "../src/meta";
-import { __ } from "~js";
+import { __ } from "jsyoyo";
 
 describe(IN, ({ eq, res }) => ({
   no_id: () => {

@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import { __ } from "~js";
+import { __ } from "jsyoyo";
 
 import disposyo from "../src/index";
 

@@ -1,1 +1,1 @@
-export default "ififify";
+export * from "./if-array";

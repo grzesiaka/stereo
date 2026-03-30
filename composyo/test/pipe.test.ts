@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { __ } from "~js";
+import { __ } from "jsyoyo";
 
 import p from "../src/pipe";
 

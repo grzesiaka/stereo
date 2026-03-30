@@ -17,6 +17,6 @@
   },
   "devDependencies": {
     "composyo": "workspace:",
-    "~js": "workspace:"
+    "jsyoyo": "workspace:"
   }
 }

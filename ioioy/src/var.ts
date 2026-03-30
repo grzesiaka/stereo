@@ -1,5 +1,5 @@
-import { __, Cb } from "~js";
-import cId, { CtxIdConstraint } from "~js/ctxid";
+import { __, Cb } from "jsyoyo";
+import cId, { CtxIdConstraint } from "jsyoyo/ctxid";
 import { IO } from "./io";
 import { ARR } from "~types";
 

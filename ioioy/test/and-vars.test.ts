@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import { __ } from "~js";
+import { __ } from "jsyoyo";
 
 import A from "../src/and-vars";
 import V from "../src/var";

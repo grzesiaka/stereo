@@ -1,6 +1,6 @@
 import o, { Compose } from "composyo/o";
 import c, { ComposeAsync } from "composyo/c";
-import { __, Fn, Fn1, id, Fn$O, Fn$I, $$, a } from "~js";
+import { __, Fn, Fn1, id, Fn$O, Fn$I, $$, a } from "jsyoyo";
 import { yR, yR2X, yR_Base } from "./0";
 
 const FL: FilterMapLOp = yR(

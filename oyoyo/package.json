@@ -19,8 +19,8 @@
   "devDependencies": {
     "@vitest/coverage-v8": "catalog:",
     "composyo": "workspace:",
+    "jsyoyo": "workspace:",
     "type-fest": "catalog:",
-    "vitest": "catalog:",
-    "~js": "workspace:"
+    "vitest": "catalog:"
   }
 }

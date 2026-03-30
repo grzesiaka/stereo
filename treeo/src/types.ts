@@ -1,5 +1,5 @@
 import type * as TF from "type-fest";
-import { ARR, Fn, Fn0 } from "~js";
+import { ARR, Fn, Fn0 } from "jsyoyo";
 
 export type Tree<X = unknown> = X | { [k: string]: Tree<X> };
 export type Tree$X<T> = T extends Tree<infer X> ? X : never;

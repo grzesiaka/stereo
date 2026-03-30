@@ -3,7 +3,7 @@ import { describe } from "~testing";
 import I from "../src/one-of";
 import V from "../src/var";
 import E from "../src/event";
-import { __ } from "~js";
+import { __ } from "jsyoyo";
 
 describe(I, ({ eq, res }) => ({
   empty: () => {

@@ -1,8 +1,8 @@
 import { type Tree } from "treeo/types";
 import forEach from "treeo/map";
-import { ARR, OP } from "~js/index";
-// import iA from "~js/if/if-array"; // TODO - tsdown does not emit types for the default export :/
-import { ifArray } from "~js";
+import { ARR, OP } from "jsyoyo/index";
+// import iA from "jsyoyo/if/if-array"; // TODO - tsdown does not emit types for the default export :/
+import { ifArray } from "jsyoyo";
 
 export type Dispose = () => void;
 

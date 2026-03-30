@@ -16,7 +16,7 @@
     "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
-    "treeo": "workspace:",
-    "~js": "workspace:"
+    "jsyoyo": "workspace:",
+    "treeo": "workspace:"
   }
 }

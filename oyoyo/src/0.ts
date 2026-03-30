@@ -1,4 +1,4 @@
-import { __, ARR, id, WithOP, OP, Cb, Disposable } from "~js";
+import { __, ARR, id, WithOP, OP, Cb, Disposable } from "jsyoyo";
 import p from "composyo/p";
 
 /**

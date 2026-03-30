@@ -3,7 +3,7 @@ export * from "./reduce";
 export * from "./types";
 
 // import type * as TF from "type-fest";
-// import { ARR, Fn, Fn$I, Fn0 } from "~js";
+// import { ARR, Fn, Fn$I, Fn0 } from "jsyoyo";
 
 // export const tree2vks = <T extends Tree>(t: T): Tree$ValueKeyPairs<T>[] =>
 //   reduceTree(t)([] as Tree$ValueKeyPairs<T>[], (x, vk) => x.push(vk));

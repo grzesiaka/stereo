@@ -1,5 +1,5 @@
-import { __, Cb } from "~js";
-import cId, { CtxIdConstraint } from "~js/ctxid";
+import { __, Cb } from "jsyoyo";
+import cId, { CtxIdConstraint } from "jsyoyo/ctxid";
 import { IO } from "./io";
 
 export type Event<Ctx extends CtxIdConstraint = __, X = unknown> = IO<X, X, __, Ctx> & { OO: Set<Cb<X>> };

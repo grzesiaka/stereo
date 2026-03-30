@@ -1,4 +1,4 @@
-import { __ } from "~js";
+import { __ } from "jsyoyo";
 
 /**
  * A sequence of transformation applied to a starting value
