@@ -2,7 +2,7 @@ import { __, Cb, Dispose } from "~types";
 import type { ij_Project } from "proyij";
 import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
 import D, { type Disposyo } from "disposyo";
-import { OP, WithOP } from "jsyoyo";
+import { OP, WithOP } from "xpresyo";
 
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";

@@ -21,6 +21,7 @@
     "composyo": "workspace:",
     "jsyoyo": "workspace:",
     "type-fest": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "xpresyo": "workspace:"
   }
 }

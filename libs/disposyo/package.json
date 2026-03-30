@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "jsyoyo": "workspace:",
-    "treeo": "workspace:"
+    "treeo": "workspace:",
+    "xpresyo": "workspace:"
   }
 }

@@ -82,6 +82,7 @@ describe(F, ({ eq }) => ({
     x.p.p.i(1);
     x.p.p.i(2);
 
+    // keep ticking
     await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();

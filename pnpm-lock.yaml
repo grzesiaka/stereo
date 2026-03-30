@@ -95,6 +95,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      xpresyo:
+        specifier: 'workspace:'
+        version: link:../libs/xpresyo
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -162,6 +165,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      xpresyo:
+        specifier: 'workspace:'
+        version: link:../libs/xpresyo
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -219,6 +225,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      xpresyo:
+        specifier: 'workspace:'
+        version: link:../xpresyo
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -431,6 +440,9 @@ importers:
 
   libs/xpresyo:
     devDependencies:
+      objoy:
+        specifier: 'workspace:'
+        version: link:../objoy
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
@@ -495,6 +507,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      xpresyo:
+        specifier: 'workspace:'
+        version: link:../libs/xpresyo
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config

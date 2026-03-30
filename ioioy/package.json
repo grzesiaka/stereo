@@ -18,6 +18,7 @@
   "devDependencies": {
     "disposyo": "workspace:",
     "jsyoyo": "workspace:",
-    "proyij": "workspace:"
+    "proyij": "workspace:",
+    "xpresyo": "workspace:"
   }
 }
