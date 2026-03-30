@@ -1,0 +1,18 @@
+{
+  "name": "collecyo",
+  "version": "1.0.0-alpha.0",
+  "scripts": {
+    "build": "tsdown ./src/*.ts  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
+    "dev$": "turbo run dev --filter='collecyo'...",
+    "build$": "turbo run build --filter='collecyo'...",
+    "test": "vitest test --passWithNoTests",
+    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./out/index.mjs",
+    "./*": "./out/*.mjs"
+  },
+  "sideEffects": false
+}
