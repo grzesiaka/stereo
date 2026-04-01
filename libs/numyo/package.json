@@ -5,7 +5,11 @@
   "sideEffects": false,
   "exports": {
     ".": "./out/index.mjs",
-    "./*": "./out/*.mjs"
+    "./*": "./out/*.mjs",
+    "./base": "./out/base/index.mjs",
+    "./base/*": "./out/base/*.mjs",
+    "./compare": "./out/compare/index.mjs",
+    "./compare/*": "./out/compare/*.mjs"
   },
   "scripts": {
     "build": "tsdown ./src/*.ts --unbundle  --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",

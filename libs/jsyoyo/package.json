@@ -6,7 +6,9 @@
   "exports": {
     ".": "./out/index.mjs",
     "./*": "./out/*.mjs",
-    "./parse/*": "./out/parse/*.mjs"
+    "./parse/*": "./out/parse/*.mjs",
+    "./num": "./out/num/index.mjs",
+    "./num/*": "./out/num/*.mjs"
   },
   "scripts": {
     "dev": "pnpm build --watch",

@@ -14,7 +14,7 @@ catalogs:
       version: 4.0.18
     type-fest:
       specifier: ^5.5.0
-      version: 5.4.4
+      version: 5.5.0
     vite:
       specifier: 8.0.0-beta.14
       version: 8.0.0-beta.14

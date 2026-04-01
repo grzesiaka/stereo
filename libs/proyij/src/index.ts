@@ -1,3 +1,4 @@
-export * from "./ij";
-export * from "./indexify";
-export * from "./pairs";
+
+export * from "./ij"
+export * from "./indexify"
+export * from "./pairs"

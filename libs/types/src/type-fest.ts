@@ -1,4 +1,5 @@
 import { Tagged as TF_Tagged, UnwrapTagged, GetTagMetadata as TF_GetTagMetadata } from "type-fest";
+export * from "./type-fest";
 
 export type Tagged<T = unknown, TagName extends PropertyKey = PropertyKey, Meta = any> = TF_Tagged<T, TagName, Meta>;
 export type UnwrapTaggedIfNeeded<T> = T extends Tagged ? UnwrapTagged<T> : T;

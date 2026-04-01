@@ -1,4 +1,4 @@
-import { __ } from "@";
+import { __ } from "./deps";
 import { Tagged } from "type-fest";
 
 export type Predicate<I = any> = (i: I) => boolean;

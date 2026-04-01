@@ -1,3 +1,5 @@
-export * from "./compose";
-export * from "./compose-async";
-export * from "./pipe";
+
+export * from "./1"
+export * from "./compose-async"
+export * from "./compose"
+export * from "./pipe"

@@ -1,4 +1,4 @@
-import { __, Cb, is } from "jsyoyo";
+import { __, Cb, is_fun } from "jsyoyo";
 import cId, { CtxIdConstraint } from "jsyoyo/ctxid";
 import { IO } from "./io";
 import { ARR } from "~types";
@@ -26,7 +26,7 @@ Var.$ =
 Var.$L =
   <const Ctx extends CtxIdConstraint = __>(L = __ as Ctx) =>
   <X>(x: X | ((L: Ctx) => X)) =>
-    is.fun(x) ? Var(x(L), L) : Var(x, L);
+    is_fun(x) ? Var(x(L), L) : Var(x, L);
 Var.B = Var.$(false);
 Var.N = Var.$(0);
 Var.S = Var.$("");
