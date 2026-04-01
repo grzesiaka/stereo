@@ -19,9 +19,10 @@
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "postinstall": "node ./__config/src/set-defaults.ts",
+    "set-defaults": "node ./__config/src/set-defaults.ts",
     "clear-all": "node ./__config/src/clear-all.ts",
-    "refresh": "pnpm clear-all && pnpm install && pnpm lint && pnpm tsc && pnpm build && pnpm test-ci"
+    "set-exports": "node ./__config/src/set-exports.ts",
+    "refresh": "pnpm clear-all && pnpm install && pnpm set-defaults && pnpm lint && pnpm set-exports && pnpm tsc && pnpm build && pnpm test-ci"
   },
   "dependencies": {
     "vitest": "catalog:",

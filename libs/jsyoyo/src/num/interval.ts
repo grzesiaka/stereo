@@ -8,6 +8,7 @@ export type IntervalTagMeta<
   FromSymbol extends "[" | ")" = "[",
 > = `${FromSymbol}${From}.${By}.${To}${ToSymbol}`;
 
+/* @__NO_SIDE_EFFECTS__ */
 export const $clamp =
   <K extends PropertyKey>() =>
   <Min extends number, Max extends number>(min: Min, max: Max) =>
