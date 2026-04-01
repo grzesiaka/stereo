@@ -8,7 +8,7 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "ci": "pnpm tsc-ci && pnpm build --affected && pnpm test-ci",
+    "ci": "pnpm lint && pnpm tsc-ci && pnpm build --affected && pnpm test-ci",
     "build": "turbo run build --ui=stream",
     "tsc": "turbo run tsc --ui=stream -- --noEmit",
     "tsc-ci": "turbo run tsc --affected --ui=stream -- --noEmit",
@@ -21,7 +21,7 @@
     "lint:fix": "oxlint --fix",
     "postinstall": "node ./__config/src/set-defaults.ts",
     "clear-all": "node ./__config/src/clear-all.ts",
-    "refresh": "pnpm clear-all && pnpm install && pnpm tsc && pnpm build && pnpm test-ci"
+    "refresh": "pnpm clear-all && pnpm install && pnpm lint && pnpm tsc && pnpm build && pnpm test-ci"
   },
   "dependencies": {
     "vitest": "catalog:",

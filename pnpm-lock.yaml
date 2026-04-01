@@ -14,7 +14,7 @@ catalogs:
       version: 4.0.18
     type-fest:
       specifier: ^5.5.0
-      version: 5.5.0
+      version: 5.4.4
     vite:
       specifier: 8.0.0-beta.14
       version: 8.0.0-beta.14
@@ -239,11 +239,10 @@ importers:
         version: link:../types
 
   libs/envs/dom:
-    dependencies:
+    devDependencies:
       '@types/web':
         specifier: 0.0.336
         version: 0.0.336
-    devDependencies:
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
@@ -559,6 +558,9 @@ importers:
       jsyoyo:
         specifier: 'workspace:'
         version: link:../libs/jsyoyo
+      treeo:
+        specifier: 'workspace:'
+        version: link:../treeo
     devDependencies:
       vitest:
         specifier: 'catalog:'

@@ -15,7 +15,7 @@
     "test": "vitest test --passWithNoTests",
     "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
   },
-  "dependencies": {
+  "devDependencies": {
     "@types/web": "0.0.336"
   }
 }

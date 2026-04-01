@@ -1,4 +1,4 @@
 {
   "extends": "./node_modules/~cfg/tsconfig.dev.json",
-  "compilerOptions": { "lib": ["ES2020", "DOM"] }
+  "compilerOptions": { "lib": ["ES2020"], "types": ["web"] }
 }
