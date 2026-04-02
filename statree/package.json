@@ -13,7 +13,7 @@
     "dev$": "turbo run dev --filter='statree'...",
     "build$": "turbo run build --filter='statree'...",
     "test": "vitest test --passWithNoTests",
-    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "dependencies": {
     "jsyoyo": "workspace:",

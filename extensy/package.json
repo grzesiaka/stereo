@@ -17,7 +17,7 @@
     "dev$": "turbo run dev --filter='extensy'...",
     "build$": "turbo run build --filter='extensy'...",
     "test": "vitest test --passWithNoTests",
-    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
     "vite": "catalog:"

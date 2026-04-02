@@ -1,7 +1,7 @@
+export * from "./typebox/index"
 
 export * from "./all-ios"
 export * from "./event"
-export * from "./guard"
 export * from "./io"
 export * from "./ios-by-id"
 export * from "./one-of"

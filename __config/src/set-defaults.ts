@@ -25,7 +25,7 @@ const setDefaults = (root: string, files: string[]) => {
     !pkg.scripts.build$ && (pkg.scripts.build$ = `turbo run build --filter='${pkg.name}'...`);
 
     !pkg.scripts.test && (pkg.scripts.test = "vitest test --passWithNoTests");
-    !pkg.scripts.tsc && (pkg.scripts.tsc = "tsc -p node_modules/~cfg/tsconfig.build.json");
+    pkg.scripts.tsc = "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json";
 
     !pkg.exports &&
       (pkg.exports = {

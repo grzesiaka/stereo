@@ -7,7 +7,7 @@
     "dev$": "turbo run dev --filter='txtxt'...",
     "build$": "turbo run build --filter='txtxt'...",
     "test": "vitest test --passWithNoTests",
-    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "type": "module",
   "exports": {

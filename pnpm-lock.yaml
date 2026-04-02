@@ -14,7 +14,10 @@ catalogs:
       version: 4.0.18
     type-fest:
       specifier: ^5.5.0
-      version: 5.5.0
+      version: 5.4.4
+    typebox:
+      specifier: 1.1.9
+      version: 1.1.9
     vite:
       specifier: 8.0.0-beta.14
       version: 8.0.0-beta.14
@@ -162,6 +165,9 @@ importers:
       proyij:
         specifier: 'workspace:'
         version: link:../libs/proyij
+      typebox:
+        specifier: 'catalog:'
+        version: 1.1.9
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
@@ -1951,6 +1957,9 @@ packages:
     resolution: {integrity: sha512-PlBfpQwiUvGViBNX84Yxwjsdhd1TUlXr6zjX7eoirtCPIr08NAmxwa+fcYBTeRQxHo9YC9wwF3m9i700sHma8g==}
     engines: {node: '>=20'}
 
+  typebox@1.1.9:
+    resolution: {integrity: sha512-Bqdf4iLNO4pnVePdQkzkvnEFxz4Htn5g7nVBGIpNC1rDq5ye/qxXytJPgmT+7MRKJ3k03RTNU03wtJj4V9SJzA==}
+
   typescript@6.0.2:
     resolution: {integrity: sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ==}
     engines: {node: '>=14.17'}
@@ -3063,6 +3072,8 @@ snapshots:
   type-fest@5.5.0:
     dependencies:
       tagged-tag: 1.0.0
+
+  typebox@1.1.9: {}
 
   typescript@6.0.2: {}
 

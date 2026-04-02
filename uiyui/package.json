@@ -13,6 +13,6 @@
     "dev$": "turbo run dev --filter='uiyui'...",
     "build$": "turbo run build --filter='uiyui'...",
     "test": "vitest test --passWithNoTests",
-    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   }
 }

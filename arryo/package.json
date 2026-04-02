@@ -13,6 +13,6 @@
     "dev$": "turbo run dev --filter='arryo'...",
     "build$": "turbo run build --filter='arryo'...",
     "test": "vitest test --passWithNoTests",
-    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   }
 }

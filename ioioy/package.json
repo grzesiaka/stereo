@@ -5,7 +5,9 @@
   "sideEffects": false,
   "exports": {
     ".": "./out/index.mjs",
-    "./*": "./out/*.mjs"
+    "./*": "./out/*.mjs",
+    "./typebox": "./out/typebox/index.mjs",
+    "./typebox/*": "./out/typebox/*.mjs"
   },
   "scripts": {
     "build": "tsdown ./src/*.ts ./src/*/*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
@@ -13,12 +15,16 @@
     "dev$": "turbo run dev --filter='ioioy'...",
     "build$": "turbo run build --filter='ioioy'...",
     "test": "vitest --passWithNoTests",
-    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
     "disposyo": "workspace:",
     "jsyoyo": "workspace:",
     "proyij": "workspace:",
+    "typebox": "catalog:",
     "xpresyo": "workspace:"
+  },
+  "peerDependencies": {
+    "typebox": "catalog:"
   }
 }

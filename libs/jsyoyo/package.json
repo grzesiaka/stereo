@@ -17,7 +17,7 @@
     "test": "vitest test --passWithNoTests",
     "dev$": "turbo run dev --filter='jsyoyo'...",
     "build$": "turbo run build --filter='jsyoyo'...",
-    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
     "ififify": "workspace:",

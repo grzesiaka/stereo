@@ -13,6 +13,6 @@
     "dev$": "turbo run dev --filter='specyo'...",
     "build$": "turbo run build --filter='specyo'...",
     "test": "vitest test --passWithNoTests",
-    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   }
 }

@@ -13,7 +13,7 @@
     "dev$": "turbo run dev --filter='oyoyo'...",
     "build$": "turbo run build --filter='oyoyo'...",
     "test": "vitest test --passWithNoTests",
-    "tsc": "tsc -p node_modules/~cfg/tsconfig.build.json"
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "dependencies": {},
   "devDependencies": {
