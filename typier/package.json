@@ -1,0 +1,18 @@
+{
+  "name": "typeyer",
+  "version": "1.0.0-alpha.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./out/index.mjs",
+    "./*": "./out/*.mjs"
+  },
+  "scripts": {
+    "build": "tsdown ./src/*.ts ./src/*/*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "dev": "pnpm build --watch",
+    "dev$": "turbo run dev --filter='typeyer'...",
+    "build$": "turbo run build --filter='typeyer'...",
+    "test": "vitest test --passWithNoTests",
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
+  }
+}
