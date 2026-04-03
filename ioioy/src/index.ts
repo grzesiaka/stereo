@@ -1,4 +1,3 @@
-export * from "./typebox/index"
 
 export * from "./all-ios"
 export * from "./event"

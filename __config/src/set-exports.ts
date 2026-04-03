@@ -14,8 +14,12 @@ const prepareIndices = async (root: string, withDirs: boolean): Promise<[string,
   }
   const indexContent = sub
     .map((f) => `export * from ".${f[0].replace(path(), "").replace(/\.ts$/, "")}"`)
-    .concat("")
-    .concat(files.map((f) => `export * from "./${f}"`))
+    .concat(sub.length ? [""] : [])
+    .concat(
+      files.map((f) =>
+        f === "_default" ? `\nimport X from "./_default";\nexport default X;` : `export * from "./${f}"`,
+      ),
+    )
     .join("\n")
     .concat("\n");
   return [[path("index.ts"), indexContent], ...sub];

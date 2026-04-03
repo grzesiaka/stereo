@@ -2,7 +2,7 @@
   "name": "libyo",
   "version": "1.0.0-alpha.0",
   "scripts": {
-    "build": "tsdown ./src/*.ts ./src/*/*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
     "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='libyo'...",
     "build$": "turbo run build --filter='libyo'...",

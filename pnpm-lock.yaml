@@ -14,7 +14,7 @@ catalogs:
       version: 4.0.18
     type-fest:
       specifier: ^5.5.0
-      version: 5.4.4
+      version: 5.5.0
     typebox:
       specifier: 1.1.9
       version: 1.1.9
@@ -615,6 +615,27 @@ importers:
       type-fest:
         specifier: 'catalog:'
         version: 5.4.4
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../__config
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
+
+  typier:
+    devDependencies:
+      jsyoyo:
+        specifier: 'workspace:'
+        version: link:../libs/jsyoyo
+      typebox:
+        specifier: 'catalog:'
+        version: 1.1.9
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
