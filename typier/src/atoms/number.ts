@@ -1,5 +1,5 @@
-import { Number, TNumberOptions } from "typebox";
-import { AtomWithInfo, createAtom, $Atom } from "./_";
+import type { TNumberOptions } from "typebox";
+import { $Atom, createAtom } from "./_";
 import { __ } from "~types";
 import { a } from "objoy";
 
@@ -7,46 +7,51 @@ type Option$Min<O extends TNumberOptions> = O extends { minimum: infer Min exten
   ? `[${Min},`
   : O extends { exclusiveMinimum: infer Min extends number }
     ? `(${Min},`
-    : "(-inf,";
-type Option$Max<O extends TNumberOptions> = O extends { minimum: infer Max extends number }
+    : "(-∞,";
+type Option$Max<O extends TNumberOptions> = O extends { maximum: infer Max extends number }
   ? `${Max}]`
   : O extends { exclusiveMaximum: infer Max extends number }
     ? `${Max})`
-    : "+inf)";
-type Options$MultipleOf<O extends TNumberOptions> = O extends {
+    : "∞)";
+type Options$MultipleOf<O extends TNumberOptions, Prefix extends string = ""> = O extends {
   multipleOf: infer N extends number;
 }
-  ? `/${N}`
+  ? `${Prefix}x${N}`
   : "";
+type RangeKeys = keyof Pick<TNumberOptions, "minimum" | "maximum" | "exclusiveMinimum" | "exclusiveMaximum">;
 type Option$TagInfo<O extends TNumberOptions> =
-  | O["minimum"]
-  | O["maximum"]
-  | O["exclusiveMinimum"]
-  | O["exclusiveMaximum"] extends number
-  ? `${Option$Min<O>}${Option$Max<O>} ${Options$MultipleOf<O>}`
-  : Options$MultipleOf<O> extends ""
-    ? __
-    : Options$MultipleOf<O>;
+  Extract<keyof O, RangeKeys> extends never
+    ? Options$MultipleOf<O> extends ""
+      ? __
+      : Options$MultipleOf<O>
+    : `${Option$Min<O>}${Option$Max<O>}${Options$MultipleOf<O, " ">}`;
 
-type Num<Schema extends TNumberOptions, Tag extends string, Key extends string> = AtomWithInfo<
-  Schema & { "~kind": "Unsafe" },
+export type Num<Schema extends TNumberOptions, Tag extends string, Key extends string> = $Atom<
+  Schema,
   number,
   Tag,
   Key,
   Option$TagInfo<Schema>
 >;
 
-export const Num = <
-  OptionsOrDefault extends TNumberOptions | number,
-  O extends TNumberOptions = OptionsOrDefault extends number ? { default: OptionsOrDefault } : OptionsOrDefault,
->(
-  optionsOrDefault = {} as OptionsOrDefault,
-): $Atom<O & { "~kind": "Unsafe" }, number, Option$TagInfo<O>> =>
+export const Num: <const OptionsOrDefault extends TNumberOptions | number>(
+  optionsOrDefault?: OptionsOrDefault,
+) => <Tag extends string, Key extends string = Tag>(
+  Tag: Tag,
+  Key?: Key,
+) => Num<
+  TNumberOptions | number extends OptionsOrDefault
+    ? {}
+    : OptionsOrDefault extends number
+      ? { default: OptionsOrDefault }
+      : OptionsOrDefault,
+  Tag,
+  Key
+> = (optionsOrDefault?) =>
   createAtom(
     a(
       {
         type: "number",
-        "~kind": "Unsafe",
       },
       typeof optionsOrDefault === "number" ? { default: optionsOrDefault } : optionsOrDefault,
     ),
