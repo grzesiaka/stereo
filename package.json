@@ -25,6 +25,7 @@
     "refresh": "pnpm clear-all && pnpm install && pnpm set-defaults && pnpm lint && pnpm set-exports && pnpm tsc && pnpm build && pnpm test-ci"
   },
   "dependencies": {
+    "stereo": "link:",
     "vitest": "catalog:",
     "~cfg": "workspace:^",
     "~testing": "workspace:^",

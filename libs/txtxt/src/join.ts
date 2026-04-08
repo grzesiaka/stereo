@@ -8,8 +8,6 @@ export type Join<Parts extends readonly Txt[], Separator extends Txt = ""> = Par
       ? `${S}${Separator}${Join<R, Separator>}`
       : string;
 
-type J = Join<[1], "">;
-
 export const join =
   <const Separator extends string>(separator = "" as Separator) =>
   <const Parts extends readonly Txt[]>(parts: Parts) =>

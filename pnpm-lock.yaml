@@ -31,6 +31,9 @@ importers:
 
   .:
     dependencies:
+      stereo:
+        specifier: 'link:'
+        version: 'link:'
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
@@ -71,21 +74,6 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: 'link:'
-      ~types:
-        specifier: 'workspace:'
-        version: link:../libs/types
-
-  arryo:
-    devDependencies:
-      vitest:
-        specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
-      ~cfg:
-        specifier: 'workspace:'
-        version: link:../__config
-      ~testing:
-        specifier: 'workspace:'
-        version: link:../libs/testing
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -205,6 +193,21 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
+  libs/arryo:
+    devDependencies:
+      vitest:
+        specifier: 'catalog:'
+        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../__config
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
+
   libs/collecyo:
     devDependencies:
       vitest:
@@ -301,12 +304,18 @@ importers:
 
   libs/jsyoyo:
     devDependencies:
+      arryo:
+        specifier: 'workspace:'
+        version: link:../arryo
       ififify:
         specifier: 'workspace:'
         version: link:../ififify
       objoy:
         specifier: 'workspace:'
         version: link:../objoy
+      txtxt:
+        specifier: 'workspace:'
+        version: link:../txtxt
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
@@ -633,9 +642,6 @@ importers:
       jsyoyo:
         specifier: 'workspace:'
         version: link:../libs/jsyoyo
-      objoy:
-        specifier: 'workspace:'
-        version: link:../libs/objoy
       type-fest:
         specifier: 'catalog:'
         version: 5.5.0
