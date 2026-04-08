@@ -3,18 +3,18 @@ import { $Atom, createAtom } from "./_";
 import { __ } from "~types";
 import { a } from "jsyoyo";
 
-type Option$Min<O extends TNumberOptions> = O extends { minimum: infer Min extends number }
+type Option$Min<O extends TNumberOptions> = O extends { minimum: infer Min extends number | bigint }
   ? `[${Min},`
-  : O extends { exclusiveMinimum: infer Min extends number }
+  : O extends { exclusiveMinimum: infer Min extends number | bigint }
     ? `(${Min},`
     : "(-∞,";
-type Option$Max<O extends TNumberOptions> = O extends { maximum: infer Max extends number }
+type Option$Max<O extends TNumberOptions> = O extends { maximum: infer Max extends number | bigint }
   ? `${Max}]`
-  : O extends { exclusiveMaximum: infer Max extends number }
+  : O extends { exclusiveMaximum: infer Max extends number | bigint }
     ? `${Max})`
     : "∞)";
 type Options$MultipleOf<O extends TNumberOptions, Prefix extends string = ""> = O extends {
-  multipleOf: infer N extends number;
+  multipleOf: infer N extends number | bigint;
 }
   ? `${Prefix}x${N}`
   : "";
@@ -52,6 +52,29 @@ export const Num: <const OptionsOrDefault extends TNumberOptions | number>(
     a(
       {
         type: "number",
+      },
+      typeof optionsOrDefault === "number" ? { default: optionsOrDefault } : optionsOrDefault,
+    ),
+  ) as never;
+
+export const Int: <const OptionsOrDefault extends TNumberOptions | number>(
+  optionsOrDefault?: OptionsOrDefault,
+) => <Tag extends string, Key extends string = Tag>(
+  Tag: Tag,
+  Key?: Key,
+) => Num<
+  TNumberOptions | number extends OptionsOrDefault
+    ? {}
+    : OptionsOrDefault extends number
+      ? { default: OptionsOrDefault }
+      : OptionsOrDefault,
+  Tag,
+  Key
+> = (optionsOrDefault?) =>
+  createAtom(
+    a(
+      {
+        type: "integer",
       },
       typeof optionsOrDefault === "number" ? { default: optionsOrDefault } : optionsOrDefault,
     ),
