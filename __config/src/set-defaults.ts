@@ -7,6 +7,13 @@ const tsconfig = `{
 }
 `;
 
+const testIndex = `import { describe } from '~testing'
+import * as I from '../src/index'
+
+describe('', ({ eq }) => ({
+}))
+`;
+
 const setDefaults = (root: string, files: string[]) => {
   const pkgPath = resolve(root, "package.json");
   readFile(pkgPath, { encoding: "utf-8" }, (_, data) => {
@@ -43,6 +50,12 @@ const setDefaults = (root: string, files: string[]) => {
   if (!files.includes("src")) {
     mkdir(resolve(root, "src"), () => {
       writeFile(resolve(root, "src/index.ts"), `export default "${root.split("/").pop()}"`, {}, () => 1);
+    });
+  }
+
+  if (!files.includes("test")) {
+    mkdir(resolve(root, "test"), () => {
+      writeFile(resolve(root, "test/index.test.ts"), testIndex, {}, () => 1);
     });
   }
 
