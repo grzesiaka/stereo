@@ -1,7 +1,7 @@
 import type { TNumberOptions } from "typebox";
 import { $Atom, createAtom } from "./_";
 import { __ } from "~types";
-import { a } from "objoy";
+import { a } from "jsyoyo";
 
 type Option$Min<O extends TNumberOptions> = O extends { minimum: infer Min extends number }
   ? `[${Min},`

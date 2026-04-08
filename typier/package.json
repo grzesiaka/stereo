@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "jsyoyo": "workspace:",
-    "objoy": "workspace:",
     "type-fest": "catalog:",
     "typebox": "catalog:"
   },
