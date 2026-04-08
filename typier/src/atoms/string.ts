@@ -32,7 +32,7 @@ type Option$TagInfo<O extends TStringOptions> = Join<
 
 export type Str<Schema extends TStringOptions, Tag extends string, Key extends string> = $Atom<
   Schema,
-  number,
+  string,
   Tag,
   Key,
   Option$TagInfo<Schema>

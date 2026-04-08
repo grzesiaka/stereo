@@ -54,6 +54,6 @@ export const createAtom =
       ...S,
       ...((Key[0] === "?" ? { "~optional": true } : {}) as {}),
       Tag,
-      Key: Key.replace(/^\?/, ""),
+      Key: Key.replace(/^\?/, "") || (Key ? Tag : ""),
       $: (Key: string) => createAtom(S)(Tag, Key === "?" ? `?${Tag}` : Key),
     }) as never;

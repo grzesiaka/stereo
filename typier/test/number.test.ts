@@ -1,4 +1,3 @@
-// oxlint-disable no-undef
 import { describe } from "~testing";
 import { Check } from "typebox/value";
 

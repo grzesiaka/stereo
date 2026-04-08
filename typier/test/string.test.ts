@@ -6,7 +6,7 @@ import { Str } from "../src/atoms/index";
 
 describe(Str, ({ eq }) => ({
   empty_schema: () => {
-    const n = Str()("str");
+    const n = Str()("str", "?");
     eq(n.Tag, "str");
     eq(n.Key, n.Tag);
     eq(Check(n, ""), true);
