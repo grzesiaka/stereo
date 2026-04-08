@@ -1,1 +1,1 @@
-export default "txtxt"
+export * from "./join"
