@@ -7,40 +7,40 @@ import { Str } from "../src/atoms/index";
 describe(Str, ({ eq }) => ({
   empty_schema: () => {
     const n = Str()("str", "?");
-    eq(n.Tag, "str");
-    eq(n.Key, n.Tag);
+    eq(n.$TYP, "str");
+    eq(n.$KEY, n.$TYP);
     eq(Check(n, ""), true);
     eq(Check(n, 0), false);
 
     const emptyKey = n.$("");
-    eq(emptyKey.Tag, "str");
-    eq(emptyKey.Key, "");
+    eq(emptyKey.$TYP, "str");
+    eq(emptyKey.$KEY, "");
     eq(Check(emptyKey, ""), true);
     eq(Check(emptyKey, 0), false);
 
     const emptyOptionalKey = n.$("?");
-    eq(emptyOptionalKey.Tag, "str");
-    eq(emptyOptionalKey.Key, "str");
+    eq(emptyOptionalKey.$TYP, "str");
+    eq(emptyOptionalKey.$KEY, "str");
     eq(Check(emptyOptionalKey, ""), true);
     eq(Check(emptyOptionalKey, 0), false);
 
     const reKey = n.$("k");
-    eq(reKey.Tag, "str");
-    eq(reKey.Key, "k");
+    eq(reKey.$TYP, "str");
+    eq(reKey.$KEY, "k");
     eq(Check(reKey, ""), true);
     eq(Check(reKey, 0), false);
 
     const reKeyO = n.$("?k");
-    eq(reKeyO.Tag, "str");
-    eq(reKeyO.Key, "k");
+    eq(reKeyO.$TYP, "str");
+    eq(reKeyO.$KEY, "k");
     eq(Check(reKeyO, ""), true);
     eq(Check(reKeyO, 0), false);
   },
 
   min_max_length: () => {
     const n = Str({ minLength: 2, maxLength: 4 })("str");
-    eq(n.Tag, "str");
-    eq(n.Key, n.Tag);
+    eq(n.$TYP, "str");
+    eq(n.$KEY, n.$TYP);
     eq(Check(n, "22"), true);
     eq(Check(n, 0), false);
     eq(Check(n, ""), false);
@@ -49,8 +49,8 @@ describe(Str, ({ eq }) => ({
 
   pattern: () => {
     const n = Str({ pattern: "abc" })("str");
-    eq(n.Tag, "str");
-    eq(n.Key, n.Tag);
+    eq(n.$TYP, "str");
+    eq(n.$KEY, n.$TYP);
     eq(Check(n, "abc"), true);
     eq(Check(n, "ZabcZ"), true);
     eq(Check(n, ""), false);
@@ -59,8 +59,8 @@ describe(Str, ({ eq }) => ({
 
   format: () => {
     const n = Str({ format: "date" })("str");
-    eq(n.Tag, "str");
-    eq(n.Key, n.Tag);
+    eq(n.$TYP, "str");
+    eq(n.$KEY, n.$TYP);
     eq(Check(n, "2026-04-08"), true);
     eq(Check(n, "0000-12-31"), true);
     eq(Check(n, ""), false);

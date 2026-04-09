@@ -1,59 +1,55 @@
 import { __, Tagged, WithTag } from "~types";
+import { TypierBase as AtomBase } from "../types";
 
-export interface AtomBase<Tag extends string = string, Key extends string = Tag> {
-  Tag: Tag;
-  Key: Key;
-}
-
-export type Rekey<Schema extends object, Type, Tag extends string = string, TagInfo = __> = <K extends string>(
+export type Rekey<Schema extends object, Type, $TYP extends string = string, $META = __> = <K extends string>(
   key: K,
-) => $Atom<Schema, Type, Tag, K, TagInfo>;
+) => $Atom<Schema, Type, $TYP, K, $META>;
 
 export type Atom<
   Schema extends object,
   Type,
-  Tag extends string = string,
-  Key extends string = Tag,
-  TagInfo = __,
+  $TYP extends string = string,
+  $KEY extends string = $TYP,
+  $META = __,
 > = Schema &
-  AtomBase<Tag, Key> & {
+  AtomBase<$TYP, $KEY> & {
     "~kind": "Unsafe";
-    "~hint": __ extends TagInfo ? WithTag<Type, Tag> : Tagged<Type, Tag, TagInfo>;
-    $: Rekey<Schema, Type, Tag, TagInfo>;
+    "~hint": __ extends $META ? WithTag<Type, $TYP> : Tagged<Type, $TYP, $META>;
+    $: Rekey<Schema, Type, $TYP, $META>;
   };
 
-export type Atom0<Schema extends object, Type, Tag extends string = string, Key extends string = Tag> = Atom<
+export type Atom0<Schema extends object, Type, $TYP extends string = string, $KEY extends string = $TYP> = Atom<
   Schema,
   Type,
-  Tag,
-  Key
+  $TYP,
+  $KEY
 >;
 
 export type $Atom<
   Schema extends object,
   Type,
-  Tag extends string,
-  Key extends string,
-  TagInfo,
-> = Key extends `?${infer K}`
-  ? __ extends TagInfo
-    ? Atom0<Schema & { "~optional": true }, Type, Tag, K extends "" ? Tag : K>
-    : Atom<Schema & { "~optional": true }, Type, Tag, K extends "" ? Tag : K, TagInfo>
-  : __ extends TagInfo
-    ? Atom0<Schema, Type, Tag, Key>
-    : Atom<Schema, Type, Tag, Key, TagInfo>;
+  $TYP extends string,
+  $KEY extends string,
+  $META,
+> = $KEY extends `?${infer K}`
+  ? __ extends $META
+    ? Atom0<Schema & { "~optional": true }, Type, $TYP, K extends "" ? $TYP : K>
+    : Atom<Schema & { "~optional": true }, Type, $TYP, K extends "" ? $TYP : K, $META>
+  : __ extends $META
+    ? Atom0<Schema, Type, $TYP, $KEY>
+    : Atom<Schema, Type, $TYP, $KEY, $META>;
 
 export const createAtom =
-  <Schema extends object, Type, TagInfo>(S: Schema) =>
-  <Tag extends string, Key extends string = Tag>(
-    Tag: Tag,
-    Key = Tag as any as Key,
-  ): $Atom<Schema, Type, Tag, Key, TagInfo> =>
+  <Schema extends object, Type, $META>(S: Schema) =>
+  <$TYP extends string, $KEY extends string = $TYP>(
+    $TYP: $TYP,
+    $KEY = $TYP as any as $KEY,
+  ): $Atom<Schema, Type, $TYP, $KEY, $META> =>
     ({
       "~kind": "Unsafe",
       ...S,
-      ...((Key[0] === "?" ? { "~optional": true } : {}) as {}),
-      Tag,
-      Key: Key.replace(/^\?/, "") || (Key ? Tag : ""),
-      $: (Key: string) => createAtom(S)(Tag, Key === "?" ? `?${Tag}` : Key),
+      ...(($KEY[0] === "?" ? { "~optional": true } : {}) as {}),
+      $TYP,
+      $KEY: $KEY.replace(/^\?/, "") || ($KEY ? $TYP : ""),
+      $: ($KEY: string) => createAtom(S)($TYP, $KEY === "?" ? `?${$TYP}` : $KEY),
     }) as never;

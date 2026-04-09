@@ -7,9 +7,9 @@ import { a } from "jsyoyo";
 export type Enum<
   Enums extends ARR<TEnumValue>,
   Options extends TSchemaOptions,
-  Tag extends string,
-  Key extends string,
-> = $Atom<Options & { enum: Enums }, Enums[number], Tag, Key, Enums>;
+  $TYP extends string,
+  $KEY extends string,
+> = $Atom<Options & { enum: Enums }, Enums[number], $TYP, $KEY, Enums>;
 
 type CreateEnum = <
   const Enums extends ARR<TEnumValue>,
@@ -17,7 +17,7 @@ type CreateEnum = <
 >(
   enums: Enums,
   options?: Options,
-) => <Tag extends string, Key extends string = Tag>(Tag: Tag, Key?: Key) => Enum<Enums, Options, Tag, Key>;
+) => <$TYP extends string, $KEY extends string = $TYP>($TYP: $TYP, $KEY?: $KEY) => Enum<Enums, Options, $TYP, $KEY>;
 
 export const Enum: CreateEnum = (enums, options?) =>
   createAtom(

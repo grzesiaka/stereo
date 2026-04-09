@@ -25,32 +25,32 @@ type Options$Format<O extends TStringOptions> = O extends { readonly format: inf
     : "<>"
   : "";
 
-type Option$TagInfo<O extends TStringOptions> = Join<
+type Option$$META<O extends TStringOptions> = Join<
   Remove<[Options$Length<O>, Options$Pattern<O>, Options$Format<O>], "">,
   " "
 >;
 
-export type Str<Schema extends TStringOptions, Tag extends string, Key extends string> = $Atom<
+export type Str<Schema extends TStringOptions, $TYP extends string, $KEY extends string> = $Atom<
   Schema,
   string,
-  Tag,
-  Key,
-  Option$TagInfo<Schema>
+  $TYP,
+  $KEY,
+  Option$$META<Schema>
 >;
 
 export const Str: <const OptionsOrDefault extends TStringOptions | number>(
   optionsOrDefault?: OptionsOrDefault,
-) => <Tag extends string, Key extends string = Tag>(
-  Tag: Tag,
-  Key?: Key,
+) => <$TYP extends string, $KEY extends string = $TYP>(
+  $TYP: $TYP,
+  $KEY?: $KEY,
 ) => Str<
   TStringOptions | number extends OptionsOrDefault
     ? {}
     : OptionsOrDefault extends number
       ? { default: OptionsOrDefault }
       : OptionsOrDefault,
-  Tag,
-  Key
+  $TYP,
+  $KEY
 > = (optionsOrDefault?) =>
   createAtom(
     a(
