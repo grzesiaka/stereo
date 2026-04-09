@@ -35,18 +35,18 @@ export type Str<Schema extends TStringOptions, $TYP extends string, $KEY extends
   string,
   $TYP,
   $KEY,
-  Option$$META<Schema>
+  Option$$META<Schema> extends "" ? __ : Option$$META<Schema>
 >;
 
-export const Str: <const OptionsOrDefault extends TStringOptions | number>(
+export const Str: <const OptionsOrDefault extends TStringOptions | string>(
   optionsOrDefault?: OptionsOrDefault,
 ) => <$TYP extends string, $KEY extends string = $TYP>(
   $TYP: $TYP,
   $KEY?: $KEY,
 ) => Str<
-  TStringOptions | number extends OptionsOrDefault
+  TStringOptions | string extends OptionsOrDefault
     ? {}
-    : OptionsOrDefault extends number
+    : OptionsOrDefault extends string
       ? { default: OptionsOrDefault }
       : OptionsOrDefault,
   $TYP,

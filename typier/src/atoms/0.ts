@@ -1,7 +1,7 @@
 import { __, Tagged, WithTag } from "~types";
 import { type TypierBase as AtomBase } from "../0";
 
-export type Rekey<Schema extends object, Type, $TYP extends string = string, $META = __> = <K extends string>(
+type Rekey<Schema extends object, Type, $TYP extends string = string, $META = __> = <const K extends string>(
   key: K,
 ) => $Atom<Schema, Type, $TYP, K, $META>;
 
@@ -41,7 +41,7 @@ export type $Atom<
 
 export const createAtom =
   <Schema extends object, Type, $META>(S: Schema) =>
-  <$TYP extends string, $KEY extends string = $TYP>(
+  <const $TYP extends string, const $KEY extends string = $TYP>(
     $TYP: $TYP,
     $KEY = $TYP as any as $KEY,
   ): $Atom<Schema, Type, $TYP, $KEY, $META> =>

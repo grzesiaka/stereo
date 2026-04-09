@@ -14,7 +14,7 @@ catalogs:
       version: 4.0.18
     type-fest:
       specifier: ^5.5.0
-      version: 5.4.4
+      version: 5.5.0
     typebox:
       specifier: 1.1.9
       version: 1.1.9
@@ -642,6 +642,9 @@ importers:
       jsyoyo:
         specifier: 'workspace:'
         version: link:../libs/jsyoyo
+      proyij:
+        specifier: 'workspace:'
+        version: link:../libs/proyij
       type-fest:
         specifier: 'catalog:'
         version: 5.5.0

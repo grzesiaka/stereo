@@ -3,7 +3,7 @@ import { __ } from "~types";
 /**
  * A type definition
  */
-export interface TypierBase<$TYP extends string, $KEY extends string = $TYP> {
+export interface TypierBase<$TYP extends string = string, $KEY extends string = $TYP> {
   /**
    * Unique identifier of the type
    */
@@ -14,7 +14,7 @@ export interface TypierBase<$TYP extends string, $KEY extends string = $TYP> {
   $KEY: $KEY;
 }
 
-export type Rekey<Schema extends object, $TYP extends string = string> = <K extends string>(
+type Rekey<Schema extends object, $TYP extends string = string> = <const K extends string>(
   key: K,
 ) => $Compound<Schema, $TYP, K>;
 

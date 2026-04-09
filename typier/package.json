@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "jsyoyo": "workspace:",
+    "proyij": "workspace:",
     "type-fest": "catalog:",
     "typebox": "catalog:"
   },

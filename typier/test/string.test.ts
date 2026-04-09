@@ -66,4 +66,11 @@ describe(Str, ({ eq }) => ({
     eq(Check(n, ""), false);
     eq(Check(n, "ab c"), false);
   },
+
+  default: () => {
+    const n = Str("def")("str");
+    eq(n.$TYP, "str");
+    eq(n.$KEY, n.$TYP);
+    eq(n.default, "def");
+  },
 }));
