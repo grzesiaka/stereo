@@ -1,5 +1,5 @@
 import { __, Tagged, WithTag } from "~types";
-import { TypierBase as AtomBase } from "../types";
+import { type TypierBase as AtomBase } from "../0";
 
 export type Rekey<Schema extends object, Type, $TYP extends string = string, $META = __> = <K extends string>(
   key: K,

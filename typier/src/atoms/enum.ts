@@ -1,7 +1,7 @@
 // import { Simplify } from "type-fest"; // TODO it actually makes the type less readable
 import { Enum as _Enum, TEnumValue, TSchemaOptions } from "typebox/type";
 import { ARR } from "~types";
-import { createAtom, $Atom } from "./_";
+import { createAtom, $Atom } from "./0";
 import { a } from "jsyoyo";
 
 export type Enum<

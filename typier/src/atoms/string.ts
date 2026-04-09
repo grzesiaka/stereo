@@ -1,5 +1,5 @@
 import type { TStringOptions } from "typebox";
-import { $Atom, createAtom } from "./_";
+import { $Atom, createAtom } from "./0";
 import { __ } from "~types";
 import { a } from "jsyoyo";
 import type { Remove, Join } from "jsyoyo";
