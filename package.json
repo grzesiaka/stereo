@@ -13,7 +13,7 @@
     "tsc": "turbo run tsc --ui=stream -- --noEmit",
     "tsc-ci": "turbo run tsc --affected --ui=stream -- --noEmit",
     "test": "vitest --project unit",
-    "test-ci": "CI=true turbo run test --affected --ui=stream -- --project unit/out",
+    "test-ci": "CI=true turbo run test-ci --affected --ui=stream",
     "dev": "turbo run dev --ui=tui",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",

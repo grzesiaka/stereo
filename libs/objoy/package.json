@@ -3,10 +3,11 @@
   "version": "1.0.0-alpha.0",
   "scripts": {
     "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "build$": "turbo run build --filter='objoy'...",
     "dev": "pnpm build --watch",
     "dev$": "turbo run dev --filter='objoy'...",
-    "build$": "turbo run build --filter='objoy'...",
-    "test": "vitest test --passWithNoTests",
+    "test": "vitest test --passWithNoTests --project unit",
+    "test-ci": "vitest test --passWithNoTests --project unit/out",
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "type": "module",

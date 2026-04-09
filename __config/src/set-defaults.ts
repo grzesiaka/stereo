@@ -14,6 +14,12 @@ describe('', ({ eq }) => ({
 }))
 `;
 
+const azKeysOrder = (obj: object) =>
+  Object.keys(obj)
+    .sort()
+    // @ts-expect-error
+    .reduce((a, k) => ((a[k] = obj[k]), a), {});
+
 const setDefaults = (root: string, files: string[]) => {
   const pkgPath = resolve(root, "package.json");
   readFile(pkgPath, { encoding: "utf-8" }, (_, data) => {
@@ -24,23 +30,25 @@ const setDefaults = (root: string, files: string[]) => {
     pkg.scripts = pkg.scripts || {};
     pkg.type = "module";
 
-    pkg.scripts.build =
-      "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json";
+    !pkg.scripts.build &&
+      (pkg.scripts.build =
+        "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json");
     !pkg.scripts.dev && (pkg.scripts.dev = "pnpm build --watch");
 
     !pkg.scripts.dev$ && (pkg.scripts.dev$ = `turbo run dev --filter='${pkg.name}'...`);
     !pkg.scripts.build$ && (pkg.scripts.build$ = `turbo run build --filter='${pkg.name}'...`);
 
-    !pkg.scripts.test && (pkg.scripts.test = "vitest test --passWithNoTests");
+    !pkg.scripts.test && (pkg.scripts.test = "vitest test --passWithNoTests --project unit");
+    !pkg.scripts["test-ci"] && (pkg.scripts["test-ci"] = "vitest test --passWithNoTests --project unit/out");
     pkg.scripts.tsc = "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json";
+
+    pkg.scripts = azKeysOrder(pkg.scripts);
 
     !pkg.exports &&
       (pkg.exports = {
         ".": "./out/index.mjs",
         "./*": "./out/*.mjs",
       });
-
-    pkg.exports["./*"] = "./out/*.mjs";
 
     !("sideEffects" in pkg) && (pkg.sideEffects = false);
 

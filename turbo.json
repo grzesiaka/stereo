@@ -16,6 +16,9 @@
     "test": {
       "dependsOn": ["build"]
     },
+    "test-ci": {
+      "dependsOn": ["build"]
+    },
     "dev": {
       "persistent": true,
       "cache": false
