@@ -1,2 +1,5 @@
 export * from "./0"
+export * from "./array"
 export * from "./object"
+export * from "./tuple"
+export * from "./union"

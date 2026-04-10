@@ -27,6 +27,8 @@ export const Obj = <const Parts extends ObjectParts, const Options extends TObje
 ) =>
   createCompound({
     ...options,
+    ype: "object",
+    "~kind": "Object",
     $PARTS: parts,
     properties: indexify("$KEY")(parts),
     required: parts.flatMap((p) => ((p as any)["~optional"] ? [] : [p.$KEY])),

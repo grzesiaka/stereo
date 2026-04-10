@@ -1,8 +1,11 @@
+import { Simplify } from "type-fest";
 import { ARR } from "~types";
 
-export type Indexify<X, K extends PropertyKey> = X extends readonly [infer H, ...infer R]
+export type _Indexify<X, K extends PropertyKey> = X extends readonly [infer H, ...infer R]
   ? (H extends { readonly [k in K]: infer I } ? (I extends PropertyKey ? { [i in I]: H } : {}) : {}) & Indexify<R, K>
   : {};
+
+export type Indexify<X, K extends PropertyKey> = Simplify<_Indexify<X, K>>;
 
 /** Picks a name for each item. The name becomes a key the item value in a newly formed object. */
 export const indexify =

@@ -1,4 +1,5 @@
 export * from "./0"
+export * from "./bool"
 export * from "./enum"
 export * from "./number"
 export * from "./string"
