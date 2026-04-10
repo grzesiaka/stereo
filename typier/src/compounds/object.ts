@@ -1,5 +1,6 @@
 import { TObjectOptions, TObject } from "typebox";
-import { createCompound, $Compound, TypierBase } from "./0";
+import { createCompound, $Compound } from "./0";
+import { TypierBase } from "../0";
 import { Indexify, indexify } from "proyij";
 
 export type ObjectParts = readonly TypierBase[];
