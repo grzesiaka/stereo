@@ -1,9 +1,9 @@
 import { __, Tagged, WithTag } from "~types";
-import { type TypierBase as AtomBase } from "../0";
+import { resolveKey, ResolveKey, type TypierBase as AtomBase } from "../0";
 
-type Rekey<Schema extends object, Type, $TYP extends string = string, $META = __> = <const K extends string>(
+type Rekey<Schema extends object, Type, $TYP extends string, $KEY extends string, $META> = <const K extends string>(
   key: K,
-) => $Atom<Schema, Type, $TYP, K, $META>;
+) => $Atom<Schema, Type, $TYP, ResolveKey<$KEY, K>, $META>;
 
 export type Atom<
   Schema extends object,
@@ -15,7 +15,7 @@ export type Atom<
   AtomBase<$TYP, $KEY> & {
     "~kind": "Unsafe";
     "~hint": __ extends $META ? WithTag<Type, $TYP> : Tagged<Type, $TYP, $META>;
-    $: Rekey<Schema, Type, $TYP, $META>;
+    $: Rekey<Schema, Type, $TYP, $KEY, $META>;
   };
 
 export type Atom0<Schema extends object, Type, $TYP extends string = string, $KEY extends string = $TYP> = Atom<
@@ -51,5 +51,5 @@ export const createAtom =
       ...(($KEY[0] === "?" ? { "~optional": true } : {}) as {}),
       $TYP,
       $KEY: $KEY.replace(/^\?/, "") || ($KEY ? $TYP : ""),
-      $: ($KEY: string) => createAtom(S)($TYP, $KEY === "?" ? `?${$TYP}` : $KEY),
+      $: ($NEW_KEY: string) => createAtom(S)($TYP, resolveKey($KEY, $NEW_KEY)),
     }) as never;

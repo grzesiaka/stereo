@@ -18,7 +18,7 @@ describe(Str, ({ eq }) => ({
     eq(Check(emptyKey, ""), true);
     eq(Check(emptyKey, 0), false);
 
-    const emptyOptionalKey = n.$("?");
+    const emptyOptionalKey = emptyKey.$("?");
     eq(emptyOptionalKey.$TYP, "str");
     eq(emptyOptionalKey.$KEY, "str");
     eq(Check(emptyOptionalKey, ""), true);
