@@ -21,7 +21,7 @@ export type Obj<
     $KEY
   >;
 
-export const Obj = <const Parts extends ObjectParts, const Options extends TObjectOptions>(
+export const $Obj = <const Parts extends ObjectParts, const Options extends TObjectOptions>(
   parts: Parts,
   options?: Options,
 ) =>
@@ -37,3 +37,7 @@ export const Obj = <const Parts extends ObjectParts, const Options extends TObje
     $KEY?: $KEY,
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
   ) => Obj<Parts, TObjectOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
+
+export const Obj = <const Parts extends ObjectParts>(...parts: Parts) => $Obj(parts);
+Obj.$ = $Obj;
+export default Obj;

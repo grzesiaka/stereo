@@ -6,7 +6,7 @@ import { Obj } from "../src/compounds/object";
 
 describe(Obj, ({ eq }) => ({
   empty: () => {
-    const o = Obj([])("");
+    const o = Obj()("");
     eq(o.$TYP, "");
     eq(o.$KEY, "");
     eq(o.$PARTS, []);
@@ -15,7 +15,7 @@ describe(Obj, ({ eq }) => ({
   },
   one: () => {
     const p = [Str("")("1")] as const;
-    const o = Obj(p)("1", "?");
+    const o = Obj.$(p)("1", "?");
     eq(o.$TYP, "1");
     eq(o.$KEY, "1");
     eq(o.$PARTS, p);
@@ -27,7 +27,7 @@ describe(Obj, ({ eq }) => ({
   },
   one_optional: () => {
     const p = [Str("")("1", "?")] as const;
-    const o = Obj(p)("1", "?");
+    const o = Obj(...p)("1", "?");
     eq(o.$TYP, "1");
     eq(o.$KEY, "1");
     eq(o.$PARTS, p);
@@ -39,8 +39,8 @@ describe(Obj, ({ eq }) => ({
   },
   nested: () => {
     const p = [Str()("S"), Num()("N"), Enum([0, 1])("E")] as const;
-    const s = Obj(p);
-    const o = Obj([s("R"), s("O", "?")])("nested");
+    const s = Obj.$(p);
+    const o = Obj(s("R"), s("O", "?"))("nested");
 
     eq(o.$TYP, "nested");
     eq(o.$KEY, "nested");
@@ -50,7 +50,6 @@ describe(Obj, ({ eq }) => ({
 
     eq(Check(o, { R: { S: "", N: 0, E: 1 }, O: {} }), false);
     eq(Check(o, {}), false);
-
     // type _O = Static<typeof o>;
   },
 }));

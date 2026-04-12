@@ -23,8 +23,8 @@ describe(Arr, ({ eq }) => ({
 
   nested_object: () => {
     const p = [Str()("S"), Num()("N"), Enum([0, 1])("E")] as const;
-    const s = Obj(p);
-    const o = Obj([s("R"), s("O", "?")])("obj");
+    const s = Obj.$(p);
+    const o = Obj(s("R"), s("O", "?"))("obj");
     const a = Arr(o)("nested", "yo");
 
     eq(a.$TYP, "nested");
@@ -37,7 +37,5 @@ describe(Arr, ({ eq }) => ({
     eq(Check(a, [{ R: { S: "", N: 0, E: 1 }, O: {} }]), false);
     eq(Check(a, [{}]), false);
     eq(Check(a, 1), false);
-
-    //type _O = Static<typeof a>;
   },
 }));
