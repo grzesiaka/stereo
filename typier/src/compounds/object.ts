@@ -1,4 +1,4 @@
-import { TObjectOptions, TObject } from "typebox";
+import { TObjectOptions, TObject, TProperties } from "typebox";
 import { createCompound, $Compound } from "./0";
 import { TypierBase } from "../0";
 import { Indexify, indexify } from "proyij";
@@ -10,7 +10,7 @@ export type Obj<
   Options extends TObjectOptions,
   $TYP extends string,
   $KEY extends string,
-> = TObject<Indexify<Parts, "$KEY">> &
+> = TObject<Indexify<Parts, "$KEY"> extends TProperties ? Indexify<Parts, "$KEY"> : never> &
   $Compound<
     Options & {
       type: "object";

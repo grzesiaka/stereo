@@ -2,7 +2,7 @@ import { describe } from "~testing";
 import { Check } from "typebox/value";
 
 import { Num, Str, Enum } from "../src/atoms/index";
-import { Arr, Obj } from "../src/compounds";
+import { Arr, Obj } from "../src/compounds/index";
 
 describe(Arr, ({ eq }) => ({
   primitive: () => {
