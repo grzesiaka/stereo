@@ -34,6 +34,11 @@ export type Num<Schema extends TNumberOptions, $TYP extends string, $KEY extends
   Option$$META<Schema>
 >;
 
+/**
+ * Create Number atom
+ * @param optionsOrDefault
+ * @returns
+ */
 export const Num: <const OptionsOrDefault extends TNumberOptions | number>(
   optionsOrDefault?: OptionsOrDefault,
 ) => <$TYP extends string, $KEY extends string = $TYP>(

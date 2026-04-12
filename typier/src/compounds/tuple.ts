@@ -17,7 +17,12 @@ export type Tup<
     $TYP,
     $KEY
   >;
-
+/**
+ * Create Tuple compound
+ * @param items
+ * @param options
+ * @returns
+ */
 export const $Tup = <const Items extends TSchema[], const Options extends TTupleOptions>(
   items: Items,
   options?: Options,
@@ -34,7 +39,12 @@ export const $Tup = <const Items extends TSchema[], const Options extends TTuple
     $KEY?: $KEY,
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
   ) => Tup<Items, TTupleOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
-
+/**
+ * Create Tuple compound with no options.
+ * Use `.$` for full constructor
+ * @param items
+ * @returns
+ */
 export const Tup = <const Items extends TSchema[]>(...items: Items) => $Tup(items);
 Tup.$ = $Tup;
 export default Tup;

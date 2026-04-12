@@ -11,6 +11,11 @@ export type Bool<Schema extends TSchemaOptions, $TYP extends string, $KEY extend
   __
 >;
 
+/**
+ * Create a boolean atom
+ * @param optionsOrDefault
+ * @returns
+ */
 export const Bool: <const OptionsOrDefault extends TSchemaOptions | boolean>(
   optionsOrDefault?: OptionsOrDefault,
 ) => <$TYP extends string, $KEY extends string = $TYP>(

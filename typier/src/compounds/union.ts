@@ -16,6 +16,12 @@ export type Uni<
     $KEY
   >;
 
+/**
+ * Create Union compound
+ * @param anyOf
+ * @param options
+ * @returns
+ */
 export const $Uni = <const AnyOf extends TSchema[], const Options extends TSchemaOptions>(
   anyOf: AnyOf,
   options?: Options,
@@ -29,7 +35,12 @@ export const $Uni = <const AnyOf extends TSchema[], const Options extends TSchem
     $KEY?: $KEY,
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
   ) => Uni<AnyOf, TSchemaOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
-
+/**
+ * Create Union compound with no options.
+ * Use `.$` for full constructor
+ * @param anyOf
+ * @returns
+ */
 export const Uni = <const AnyOf extends TSchema[]>(...anyOf: AnyOf) => $Uni(anyOf);
 Uni.$ = $Uni;
 Uni._ = <const AnyOf extends TSchema[]>(...anyOf: AnyOf) => $Uni([...anyOf, Null()]);

@@ -35,6 +35,12 @@ type CreateConst = <const Value extends ConstConstraint, const Options extends T
   $KEY?: $KEY,
 ) => Const<Value, TSchemaOptions extends Options ? {} : Options, $TYP, $KEY>;
 
+/**
+ * Create Const / Literal atom
+ * @param value
+ * @param options
+ * @returns
+ */
 export const Const: CreateConst = (value, options?) =>
   createAtom(
     a(

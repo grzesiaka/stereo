@@ -16,6 +16,12 @@ export type Arr<
     $KEY
   >;
 
+/**
+ * Create Array compound
+ * @param items
+ * @param options
+ * @returns
+ */
 export const Arr = <const Items extends TSchema, const Options extends TArrayOptions>(
   items: Items,
   options?: Options,
@@ -30,3 +36,5 @@ export const Arr = <const Items extends TSchema, const Options extends TArrayOpt
     $KEY?: $KEY,
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
   ) => Arr<Items, TArrayOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
+
+export default Arr;

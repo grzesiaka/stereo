@@ -38,6 +38,11 @@ export type Str<Schema extends TStringOptions, $TYP extends string, $KEY extends
   Option$$META<Schema> extends "" ? __ : Option$$META<Schema>
 >;
 
+/**
+ * Create String atom
+ * @param optionsOrDefault
+ * @returns
+ */
 export const Str: <const OptionsOrDefault extends TStringOptions | string>(
   optionsOrDefault?: OptionsOrDefault,
 ) => <$TYP extends string, $KEY extends string = $TYP>(

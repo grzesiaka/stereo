@@ -22,6 +22,12 @@ type CreateEnum = <
   $KEY?: $KEY,
 ) => Enum<Enums, TSchemaOptions & { default?: Enums[number] } extends Options ? {} : Options, $TYP, $KEY>;
 
+/**
+ * Create Enum atom
+ * @param enums
+ * @param options
+ * @returns
+ */
 export const Enum: CreateEnum = (enums, options?) =>
   createAtom(
     a(
