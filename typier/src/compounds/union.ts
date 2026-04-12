@@ -28,3 +28,5 @@ export const Uni = <const AnyOf extends TSchema[], const Options extends TSchema
     $KEY?: $KEY,
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
   ) => Uni<AnyOf, TSchemaOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
+
+export default Uni;

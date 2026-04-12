@@ -9,7 +9,7 @@ export type Enum<
   Options extends TSchemaOptions,
   $TYP extends string,
   $KEY extends string,
-> = $Atom<Options & { enum: Enums }, Enums[number], $TYP, $KEY, Enums>;
+> = $Atom<Options & { enum: Enums }, Enums[number], $TYP, $KEY, "<enum>">;
 
 type CreateEnum = <
   const Enums extends ARR<TEnumValue>,
