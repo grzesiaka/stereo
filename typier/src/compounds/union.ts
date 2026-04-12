@@ -1,5 +1,6 @@
 import { TUnion, TSchema, TSchemaOptions } from "typebox";
 import { createCompound, $Compound } from "./0";
+import { Null } from "../atoms";
 
 export type Uni<
   Items extends TSchema[],
@@ -15,7 +16,7 @@ export type Uni<
     $KEY
   >;
 
-export const Uni = <const AnyOf extends TSchema[], const Options extends TSchemaOptions>(
+export const $Uni = <const AnyOf extends TSchema[], const Options extends TSchemaOptions>(
   anyOf: AnyOf,
   options?: Options,
 ) =>
@@ -28,5 +29,9 @@ export const Uni = <const AnyOf extends TSchema[], const Options extends TSchema
     $KEY?: $KEY,
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
   ) => Uni<AnyOf, TSchemaOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
+
+export const Uni = <const AnyOf extends TSchema[]>(...anyOf: AnyOf) => $Uni(anyOf);
+Uni.$ = $Uni;
+Uni._ = <const AnyOf extends TSchema[]>(...anyOf: AnyOf) => $Uni([Null(), ...anyOf]);
 
 export default Uni;
