@@ -32,6 +32,6 @@ export const $Uni = <const AnyOf extends TSchema[], const Options extends TSchem
 
 export const Uni = <const AnyOf extends TSchema[]>(...anyOf: AnyOf) => $Uni(anyOf);
 Uni.$ = $Uni;
-Uni._ = <const AnyOf extends TSchema[]>(...anyOf: AnyOf) => $Uni([Null(), ...anyOf]);
+Uni._ = <const AnyOf extends TSchema[]>(...anyOf: AnyOf) => $Uni([...anyOf, Null()]);
 
 export default Uni;

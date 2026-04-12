@@ -34,7 +34,7 @@ describe(Uni, ({ eq }) => ({
   null: () => {
     const s = Str()("");
     const u = Uni._(s)("orNull");
-    eq(u.anyOf, [Null(), s]);
+    eq(u.anyOf, [s, Null()]);
 
     eq(Check(u, null), true);
     eq(Check(u, ""), true);
