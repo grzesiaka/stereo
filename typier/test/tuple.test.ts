@@ -6,7 +6,7 @@ import { Tup, Arr } from "../src/compounds/index";
 
 describe(Tup, ({ eq }) => ({
   empty: () => {
-    const t = Tup([])("", "?");
+    const t = Tup()("", "?");
     eq(t.$TYP, "");
     eq(t.$KEY, "");
     eq(t["~optional"], true);
@@ -18,7 +18,7 @@ describe(Tup, ({ eq }) => ({
   pair: () => {
     const p = Str({ minLength: 1 })("1");
     const a = Arr(p, { minItems: 1 })("1", "?");
-    const t = Tup([p, a])("2");
+    const t = Tup.$([p, a])("2");
     eq(t.$TYP, "2");
     eq(t.$KEY, "2");
     eq(t.items, [p, a]);

@@ -18,7 +18,7 @@ export type Tup<
     $KEY
   >;
 
-export const Tup = <const Items extends TSchema[], const Options extends TTupleOptions>(
+export const $Tup = <const Items extends TSchema[], const Options extends TTupleOptions>(
   items: Items,
   options?: Options,
 ) =>
@@ -34,3 +34,7 @@ export const Tup = <const Items extends TSchema[], const Options extends TTupleO
     $KEY?: $KEY,
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
   ) => Tup<Items, TTupleOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
+
+export const Tup = <const Items extends TSchema[]>(...items: Items) => $Tup(items);
+Tup.$ = $Tup;
+export default Tup;
