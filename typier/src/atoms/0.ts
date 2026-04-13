@@ -1,5 +1,6 @@
 import { __, Tagged, WithTag } from "~types";
-import { resolveKey, ResolveKey, type TypierBase as AtomBase } from "../0";
+import { TypierBase } from "../0";
+import { resolveKey, ResolveKey } from "../_";
 
 type Rekey<Schema extends object, Type, $TYP extends string, $KEY extends string, $META> = <const K extends string>(
   key: K,
@@ -12,7 +13,7 @@ export type Atom<
   $KEY extends string = $TYP,
   $META = __,
 > = Schema &
-  AtomBase<$TYP, $KEY> & {
+  TypierBase<$TYP, $KEY> & {
     "~kind": "Unsafe";
     "~hint": __ extends $META ? WithTag<Type, $TYP> : Tagged<Type, $TYP, $META>;
     $: Rekey<Schema, Type, $TYP, $KEY, $META>;

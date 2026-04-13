@@ -1,4 +1,5 @@
-import { resolveKey, ResolveKey, TypierBase } from "../0";
+import { TypierBase } from "../0";
+import { resolveKey, ResolveKey } from "../_";
 import { __ } from "~types";
 
 type Rekey<Schema extends object, $TYP extends string, $KEY extends string> = <const K extends string>(
