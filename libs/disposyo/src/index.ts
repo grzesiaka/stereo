@@ -1,4 +1,4 @@
-import { type Tree } from "treeo/types";
+import { type TreeOrLeaves } from "treeo/types";
 import forEach from "treeo/map";
 import { ARR } from "~types";
 import { OP } from "xpresyo";
@@ -7,7 +7,7 @@ import { ifArray } from "jsyoyo";
 
 export type Dispose = () => void;
 
-export type Tree_of_Disposable = Tree<Dispose | ARR<Dispose>>;
+export type Tree_of_Disposable = TreeOrLeaves<Dispose | ARR<Dispose>>;
 
 export type Disposyo<T extends Tree_of_Disposable = Tree_of_Disposable> = Dispose & { __: OP<"0", T> };
 

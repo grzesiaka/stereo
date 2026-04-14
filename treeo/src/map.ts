@@ -1,7 +1,7 @@
-import { MapTree, Tree, Tree$ValueKeyPairs } from "./types";
+import { MapTree, TreeOrLeaves, Tree$ValueKeyPairs } from "./types";
 
 export const map =
-  <T extends Tree>(t: T, ks = "") =>
+  <T extends TreeOrLeaves>(t: T, ks = "") =>
   <X>(f: (vk: Tree$ValueKeyPairs<T>) => X): MapTree<T, X> => {
     if (typeof t === "object" && !Array.isArray(t) && t !== null) {
       return Object.entries(t).reduce((a, [k, v]) => {
