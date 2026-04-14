@@ -1,3 +1,4 @@
+import { Simplify } from "type-fest";
 import { __, Tagged, WithTag } from "~types";
 import { TypierBase } from "../0";
 import { resolveKey, ResolveKey } from "../_";
@@ -34,8 +35,8 @@ export type $Atom<
   $META,
 > = $KEY extends `?${infer K}`
   ? __ extends $META
-    ? Atom0<Schema & { "~optional": true }, Type, $TYP, K extends "" ? $TYP : K>
-    : Atom<Schema & { "~optional": true }, Type, $TYP, K extends "" ? $TYP : K, $META>
+    ? Atom0<Simplify<Schema & { "~optional": true }>, Type, $TYP, K extends "" ? $TYP : K>
+    : Atom<Simplify<Schema & { "~optional": true }>, Type, $TYP, K extends "" ? $TYP : K, $META>
   : __ extends $META
     ? Atom0<Schema, Type, $TYP, $KEY>
     : Atom<Schema, Type, $TYP, $KEY, $META>;
