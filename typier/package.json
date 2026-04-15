@@ -1,6 +1,6 @@
 {
   "name": "typier",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -10,8 +10,6 @@
     "./atoms/*": "./out/atoms/*.mjs",
     "./compounds": "./out/compounds/index.mjs",
     "./compounds/*": "./out/compounds/*.mjs",
-    "./domain": "./out/domain/index.mjs",
-    "./domain/*": "./out/domain/*.mjs",
     "./init": "./out/init/index.mjs",
     "./init/*": "./out/init/*.mjs",
     "./utils": "./out/utils/index.mjs",
