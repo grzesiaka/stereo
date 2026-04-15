@@ -1,8 +1,7 @@
 import { describe } from "~testing";
 import { Decode, Encode, Check } from "typebox/value";
-import { Unsafe } from "typebox";
 
-import { Codec, Num, Arr, Int, Uni } from "../src";
+import { Codec, Arr, Int } from "../src";
 
 describe(Codec, ({ eq }) => ({
   Date: () => {
@@ -10,7 +9,7 @@ describe(Codec, ({ eq }) => ({
     const DateCodec = Codec(
       rawDate,
       (v) => new Date(v),
-      (d) => d.getTime(),
+      (d) => d.getTime() as never,
     )("date");
     const date = Decode(DateCodec, 0);
     eq(date.toJSON(), "1970-01-01T00:00:00.000Z");
@@ -24,7 +23,7 @@ describe(Codec, ({ eq }) => ({
     const codec = Codec(
       bytes,
       (a) => new Uint8ClampedArray(a),
-      (a) => [...a],
+      (a) => [...a] as never,
     )("Uint8ClampedArray");
     const audio = Decode(codec, [-1, 0, 256]);
     eq([...audio], [0, 0, 255]);

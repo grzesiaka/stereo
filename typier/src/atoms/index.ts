@@ -1,6 +1,5 @@
 export * from "./0"
 export * from "./bool"
-export * from "./codec"
 export * from "./const"
 export * from "./enum"
 export * from "./null"
