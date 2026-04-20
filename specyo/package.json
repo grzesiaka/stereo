@@ -15,5 +15,8 @@
     "test": "vitest test --passWithNoTests --project unit",
     "test-ci": "vitest test --passWithNoTests --project unit/out",
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "devDependencies": {
+    "typier": "workspace:"
   }
 }
