@@ -24,7 +24,9 @@ compose.$ = compose.$$();
 
 export default compose;
 
-type $$Compose = <R>() => <const L = __>(L?: L) => (<X>() => Compose<X, L, R>) & (<const X>(x: X) => Compose<X, L, R>);
+type $$Compose = <R>() => <const L = __>(
+  L?: L,
+) => (<X>() => Compose<X | undefined, L, R>) & (<const X>(x: X) => Compose<X, L, R>);
 
 export type Compose<X, L = undefined, cR = unknown> = (() => X) &
   (<const R extends cR>(f0: (x: $$<X>, L: L) => R) => (...x: FLIP<X>) => R) &

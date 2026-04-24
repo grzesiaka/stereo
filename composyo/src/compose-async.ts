@@ -38,7 +38,7 @@ export type oResult<X, ACC extends ARR = []> = Promise<RR<X, ACC>>;
 
 export type $$ComposeAsync = <R>() => <L = __>(
   L?: L,
-) => (<X>() => ComposeAsync<__ extends X ? X : __<X>, L, R>) & (<const X>(x: X) => ComposeAsync<X, L, R>);
+) => (<X>() => ComposeAsync<X | undefined, L, R>) & (<const X>(x: X) => ComposeAsync<X, L, R>);
 
 export type ComposeAsync<X, L = undefined, cR = unknown> = (() => X) &
   (<const R extends cR | Promise<cR>>(f0: (x: $$<X>, L: L) => R) => (...x: FLIP<X>) => oResult<[$$<X>, R]>) &
