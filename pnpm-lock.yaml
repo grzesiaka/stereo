@@ -555,6 +555,9 @@ importers:
 
   specyo:
     devDependencies:
+      typier:
+        specifier: 'workspace:'
+        version: link:../typier
       vitest:
         specifier: 'catalog:'
         version: 4.0.18(@types/node@25.2.3)(lightningcss@1.31.1)
