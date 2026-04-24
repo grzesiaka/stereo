@@ -1,13 +1,14 @@
 {
   "name": "composyo",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "type": "module",
   "sideEffects": false,
   "exports": {
     ".": "./out/index.mjs",
     "./*": "./out/*.mjs",
-    "./o": "./out/compose.mjs",
     "./c": "./out/compose-async.mjs",
+    "./o": "./out/compose.mjs",
+    "./m": "./out/compose-merge.mjs",
     "./p": "./out/pipe.mjs"
   },
   "scripts": {
