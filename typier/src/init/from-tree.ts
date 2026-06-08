@@ -10,7 +10,7 @@ import { Fn$O } from "~types";
 type Leaf = <$TYP extends string, $KEY extends string = $TYP>(
   $TYP: $TYP,
   $KEY?: $KEY,
-) => $Atom<any, any, $TYP, $KEY, any> | $Compound<any, $TYP, $KEY>;
+) => $Atom<any, any, $TYP, $KEY, any> | $Compound<any, $TYP, any>;
 
 type ToTypier<T, P extends readonly string[] = []> = T extends Leaf
   ? Fn$O<T> extends $Atom<infer S, infer T, string, string, infer M>

@@ -9,4 +9,4 @@ import O from "./compounds/object";
 import T from "./compounds/tuple";
 import U from "./compounds/union";
 
-export { B, C, E, N, S, A, O, T, U };
+export { B, C, E, S, N, A, O, T, U };
