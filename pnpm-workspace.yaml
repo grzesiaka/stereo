@@ -6,10 +6,15 @@ catalog:
   "@types/chrome": 0.1.36
   "@types/node": 25.2.3
   "@vitest/coverage-v8": 4.0.18
-  type-fest: ^5.5.0
+  oxfmt: 0.53.0
+  oxlint: 1.68.0
+  tsdown: 0.21.10 # 0.22.[0-2] seem broken
+  turbo: 2.9.16
+  type-fest: 5.7.0
   typebox: 1.1.9
-  vite: 8.0.0-beta.14
-  vitest: 4.0.18
+  typescript: 6.0.3
+  vite: 8.0.16
+  vitest: 4.1.8
 
 catalogMode: strict
 ignoreScripts: true

@@ -111,17 +111,9 @@
   },
   "settings": {
     "jsx-a11y": {
-      "polymorphicPropName": null,
+      // "polymorphicPropName": null,
       "components": {},
       "attributes": {}
-    },
-    "next": {
-      "rootDir": []
-    },
-    "react": {
-      "formComponents": [],
-      "linkComponents": [],
-      "version": null
     },
     "jsdoc": {
       "ignorePrivate": false,
@@ -139,5 +131,5 @@
   },
   "env": {},
   "globals": {},
-  "ignorePatterns": []
+  "ignorePatterns": ["node_modules/"]
 }

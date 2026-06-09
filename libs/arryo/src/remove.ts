@@ -6,11 +6,9 @@ export type Remove<A extends readonly any[], E> = A extends readonly []
       : [Head, ...Remove<Tail, E>]
     : Array<Exclude<A[number], E>>;
 
-const remove =
+export const remove =
   <const E, const S = E>(E: E[], S = new Set<S>(E as never as S[])) =>
   <const A extends readonly any[]>(A: A) =>
     A.filter((item) => !S.has(item)) as Remove<A, S>;
-
-remove([1, 2]);
 
 export default remove;
