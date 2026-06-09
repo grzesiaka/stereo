@@ -2,7 +2,7 @@ import { TUnion, TSchema, TSchemaOptions } from "typebox";
 import { createCompound, $Compound } from "./0";
 import { Null } from "../atoms";
 
-export type Uni<
+export type UNION<
   Items extends TSchema[],
   Options extends TSchemaOptions,
   $TYP extends string,
@@ -34,7 +34,7 @@ export const $Uni = <const AnyOf extends TSchema[], const Options extends TSchem
     $TYP: $TYP,
     $KEY?: $KEY,
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
-  ) => Uni<AnyOf, TSchemaOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
+  ) => UNION<AnyOf, TSchemaOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
 /**
  * Create Union compound with no options.
  * Use `.$` for full constructor

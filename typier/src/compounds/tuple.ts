@@ -1,7 +1,7 @@
 import { TTupleOptions, TTuple, TSchema } from "typebox";
 import { createCompound, $Compound } from "./0";
 
-export type Tup<
+export type TUPLE<
   Items extends TSchema[],
   Options extends TTupleOptions,
   $TYP extends string,
@@ -38,7 +38,7 @@ export const $Tup = <const Items extends TSchema[], const Options extends TTuple
     $TYP: $TYP,
     $KEY?: $KEY,
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
-  ) => Tup<Items, TTupleOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
+  ) => TUPLE<Items, TTupleOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
 /**
  * Create Tuple compound with no options.
  * Use `.$` for full constructor

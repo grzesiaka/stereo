@@ -3,10 +3,10 @@ import { createCompound, $Compound } from "./0";
 import { TypierBase } from "../0";
 import { Indexify, indexify } from "proyij";
 
-export type ObjectParts = readonly TypierBase[];
+export type OBJECT_PARTS = readonly TypierBase[];
 
-export type Obj<
-  Parts extends ObjectParts,
+export type OBJECT<
+  Parts extends OBJECT_PARTS,
   Options extends TObjectOptions,
   $TYP extends string,
   $KEY extends string,
@@ -27,7 +27,7 @@ export type Obj<
  * @param options
  * @returns
  */
-export const $Obj = <const Parts extends ObjectParts, const Options extends TObjectOptions>(
+export const $Obj = <const Parts extends OBJECT_PARTS, const Options extends TObjectOptions>(
   parts: Parts,
   options?: Options,
 ) =>
@@ -42,7 +42,7 @@ export const $Obj = <const Parts extends ObjectParts, const Options extends TObj
     $TYP: $TYP,
     $KEY?: $KEY,
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
-  ) => Obj<Parts, TObjectOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
+  ) => OBJECT<Parts, TObjectOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
 
 /**
  * Create Object compound with no options.
@@ -50,6 +50,6 @@ export const $Obj = <const Parts extends ObjectParts, const Options extends TObj
  * @param parts
  * @returns
  */
-export const Obj = <const Parts extends ObjectParts>(...parts: Parts) => $Obj(parts);
+export const Obj = <const Parts extends OBJECT_PARTS>(...parts: Parts) => $Obj(parts);
 Obj.$ = $Obj;
 export default Obj;

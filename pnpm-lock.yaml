@@ -686,6 +686,10 @@ importers:
         version: link:../libs/types
 
   uiyui:
+    dependencies:
+      typier:
+        specifier: workspace:*
+        version: link:../typier
     devDependencies:
       vitest:
         specifier: 'catalog:'

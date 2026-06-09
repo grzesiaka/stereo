@@ -3,7 +3,7 @@ import { $Atom, createAtom } from "./0";
 import { __ } from "~types";
 import { a } from "jsyoyo";
 
-export type Bool<Schema extends TSchemaOptions, $TYP extends string, $KEY extends string> = $Atom<
+export type BOOL<Schema extends TSchemaOptions, $TYP extends string, $KEY extends string> = $Atom<
   Schema,
   boolean,
   $TYP,
@@ -21,7 +21,7 @@ export const Bool: <const OptionsOrDefault extends TSchemaOptions | boolean>(
 ) => <$TYP extends string, $KEY extends string = $TYP>(
   $TYP: $TYP,
   $KEY?: $KEY,
-) => Bool<
+) => BOOL<
   TSchemaOptions | boolean extends OptionsOrDefault
     ? {}
     : OptionsOrDefault extends boolean

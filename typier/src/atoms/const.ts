@@ -11,7 +11,7 @@ type ConstConstraint$Typeof<C> = C extends string
       ? "boolean"
       : never;
 
-export type Const<
+export type CONST<
   Value extends ConstConstraint,
   Options extends TSchemaOptions,
   $TYP extends string,
@@ -33,7 +33,7 @@ type CreateConst = <const Value extends ConstConstraint, const Options extends T
 ) => <$TYP extends string, $KEY extends string = $TYP>(
   $TYP: $TYP,
   $KEY?: $KEY,
-) => Const<Value, TSchemaOptions extends Options ? {} : Options, $TYP, $KEY>;
+) => CONST<Value, TSchemaOptions extends Options ? {} : Options, $TYP, $KEY>;
 
 /**
  * Create Const / Literal atom

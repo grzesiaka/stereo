@@ -30,7 +30,7 @@ type Option$$META<O extends TStringOptions> = Join<
   " "
 >;
 
-export type Str<Schema extends TStringOptions, $TYP extends string, $KEY extends string> = $Atom<
+export type STRING<Schema extends TStringOptions, $TYP extends string, $KEY extends string> = $Atom<
   Schema,
   string,
   $TYP,
@@ -48,7 +48,7 @@ export const Str: <const OptionsOrDefault extends TStringOptions | string>(
 ) => <$TYP extends string, $KEY extends string = $TYP>(
   $TYP: $TYP,
   $KEY?: $KEY,
-) => Str<
+) => STRING<
   TStringOptions | string extends OptionsOrDefault
     ? {}
     : OptionsOrDefault extends string

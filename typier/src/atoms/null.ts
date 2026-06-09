@@ -1,10 +1,10 @@
-export type Null = {
+export type NULL = {
   type: "null";
 };
 
 export const Null = () =>
   ({
     type: "null",
-  }) as Null;
+  }) as NULL;
 
 export default Null;

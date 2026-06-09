@@ -4,7 +4,7 @@ import { ARR } from "~types";
 import { createAtom, $Atom } from "./0";
 import { a } from "jsyoyo";
 
-export type Enum<
+export type ENUM<
   Enums extends ARR<TEnumValue>,
   Options extends TSchemaOptions,
   $TYP extends string,
@@ -20,7 +20,7 @@ type CreateEnum = <
 ) => <$TYP extends string, $KEY extends string = $TYP>(
   $TYP: $TYP,
   $KEY?: $KEY,
-) => Enum<Enums, TSchemaOptions & { default?: Enums[number] } extends Options ? {} : Options, $TYP, $KEY>;
+) => ENUM<Enums, TSchemaOptions & { default?: Enums[number] } extends Options ? {} : Options, $TYP, $KEY>;
 
 /**
  * Create Enum atom

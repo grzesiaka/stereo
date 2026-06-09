@@ -26,7 +26,7 @@ type Option$$META<O extends TNumberOptions> =
       : Options$MultipleOf<O>
     : `${Option$Min<O>}${Option$Max<O>}${Options$MultipleOf<O, " ">}`;
 
-export type Num<Schema extends TNumberOptions, $TYP extends string, $KEY extends string> = $Atom<
+export type NUMBER<Schema extends TNumberOptions, $TYP extends string, $KEY extends string> = $Atom<
   Schema,
   number,
   $TYP,
@@ -44,7 +44,7 @@ export const Num: <const OptionsOrDefault extends TNumberOptions | number>(
 ) => <$TYP extends string, $KEY extends string = $TYP>(
   $TYP: $TYP,
   $KEY?: $KEY,
-) => Num<
+) => NUMBER<
   TNumberOptions | number extends OptionsOrDefault
     ? {}
     : OptionsOrDefault extends number
@@ -67,7 +67,7 @@ export const Int: <const OptionsOrDefault extends TNumberOptions | number>(
 ) => <$TYP extends string, $KEY extends string = $TYP>(
   $TYP: $TYP,
   $KEY?: $KEY,
-) => Num<
+) => NUMBER<
   TNumberOptions | number extends OptionsOrDefault
     ? {}
     : OptionsOrDefault extends number
