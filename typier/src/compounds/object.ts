@@ -12,11 +12,12 @@ export type OBJECT<
   $KEY extends string,
 > = TObject<Indexify<Parts, "$KEY"> extends TProperties ? Indexify<Parts, "$KEY"> : never> &
   $Compound<
-    Options & {
-      type: "object";
-      "~kind": "Object";
-      $PARTS: Parts;
-    },
+    TObject<Indexify<Parts, "$KEY"> extends TProperties ? Indexify<Parts, "$KEY"> : never> &
+      Options & {
+        type: "object";
+        "~kind": "Object";
+        $PARTS: Parts;
+      },
     $TYP,
     $KEY
   >;

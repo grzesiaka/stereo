@@ -8,12 +8,13 @@ export type TUPLE<
   $KEY extends string,
 > = TTuple<Items> &
   $Compound<
-    Options & {
-      type: "array";
-      "~kind": "Tuple";
-      minItems: Items["length"];
-      additionalItems: false;
-    },
+    TTuple<Items> &
+      Options & {
+        type: "array";
+        "~kind": "Tuple";
+        minItems: Items["length"];
+        additionalItems: false;
+      },
     $TYP,
     $KEY
   >;
@@ -45,6 +46,6 @@ export const $Tup = <const Items extends TSchema[], const Options extends TTuple
  * @param items
  * @returns
  */
-export const Tup = <const Items extends TSchema[]>(...items: Items) => $Tup(items);
+export const Tup = <const Items extends [TSchema, ...TSchema[]]>(...items: Items) => $Tup(items);
 Tup.$ = $Tup;
 export default Tup;

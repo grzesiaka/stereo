@@ -9,9 +9,10 @@ export type UNION<
   $KEY extends string,
 > = TUnion<Items> &
   $Compound<
-    Options & {
-      "~kind": "Union";
-    },
+    TUnion<Items> &
+      Options & {
+        "~kind": "Union";
+      },
     $TYP,
     $KEY
   >;

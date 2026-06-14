@@ -8,10 +8,11 @@ export type ARRAY<
   $KEY extends string,
 > = TArray<Items> &
   $Compound<
-    Options & {
-      type: "array";
-      "~kind": "Array";
-    },
+    TArray<Items> &
+      Options & {
+        type: "array";
+        "~kind": "Array";
+      },
     $TYP,
     $KEY
   >;
