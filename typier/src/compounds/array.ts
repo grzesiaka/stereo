@@ -1,5 +1,5 @@
-import { TArrayOptions, TArray, TSchema } from "typebox";
-import { createCompound, $Compound } from "./0";
+import { TArrayOptions, TArray } from "typebox";
+import { createCompound, TSchema, $Compound } from "./0";
 
 export type ARRAY<
   Items extends TSchema,

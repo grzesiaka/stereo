@@ -2,6 +2,8 @@ import { TypierBase } from "../0";
 import { resolveKey, ResolveKey } from "../_";
 import { __ } from "~types";
 
+export type { TSchema } from "../0";
+
 type Rekey<Schema extends object, $TYP extends string, $KEY extends string> = <const K extends string>(
   key: K,
 ) => $Compound<Schema, $TYP, ResolveKey<$KEY, K>>;

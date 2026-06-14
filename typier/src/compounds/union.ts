@@ -1,5 +1,5 @@
-import { TUnion, TSchema, TSchemaOptions } from "typebox";
-import { createCompound, $Compound } from "./0";
+import { TUnion, TSchemaOptions } from "typebox";
+import { createCompound, $Compound, TSchema } from "./0";
 import { Null } from "../atoms";
 
 export type UNION<

@@ -1,5 +1,5 @@
-import { TTupleOptions, TTuple, TSchema } from "typebox";
-import { createCompound, $Compound } from "./0";
+import { TTupleOptions, TTuple } from "typebox";
+import { createCompound, $Compound, TSchema } from "./0";
 
 export type TUPLE<
   Items extends TSchema[],
@@ -46,6 +46,6 @@ export const $Tup = <const Items extends TSchema[], const Options extends TTuple
  * @param items
  * @returns
  */
-export const Tup = <const Items extends [TSchema, ...TSchema[]]>(...items: Items) => $Tup(items);
+export const Tup = <const Items extends TSchema[]>(...items: Items) => $Tup(items);
 Tup.$ = $Tup;
 export default Tup;
