@@ -27,9 +27,7 @@
   "devDependencies": {
     "jsyoyo": "workspace:",
     "proyij": "workspace:",
-    "treeo": "workspace:",
-    "type-fest": "catalog:",
-    "typebox": "catalog:"
+    "treeo": "workspace:"
   },
   "peerDependencies": {
     "type-fest": "catalog:",

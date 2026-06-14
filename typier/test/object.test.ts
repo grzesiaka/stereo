@@ -2,6 +2,7 @@ import { describe } from "~testing";
 import { Check } from "typebox/value";
 
 import { Num, Str, Enum } from "../src/atoms/index";
+import { Tup } from "../src/compounds/tuple";
 import { Obj } from "../src/compounds/object";
 
 describe(Obj, ({ eq }) => ({

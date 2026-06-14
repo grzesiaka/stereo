@@ -1,8 +1,9 @@
 import { describe } from "~testing";
-import { Check } from "typebox/value";
+import { Check, Parse } from "typebox/value";
 
 import { Str } from "../src/atoms/index";
 import { Tup, Arr } from "../src/compounds/index";
+import { Tagged } from "~types";
 
 describe(Tup, ({ eq }) => ({
   empty: () => {
@@ -22,6 +23,12 @@ describe(Tup, ({ eq }) => ({
     eq(t.$TYP, "2");
     eq(t.$KEY, "2");
     eq(t.items, [p, a]);
+    type _1 = Tagged<string, "1", "1<=length">;
+
+    const X = Parse(t, ["1", ["1"]]);
+    eq(X, ["1", ["1"]] as [_1, [_1]]);
+    // this looks like a Typebox error; `a` / last position is optional
+    // eq(Parse(t, ["1"]), ["1"] as [_1]);
 
     eq(Check(t, ["1", ["1"]]), true);
     // this looks like a Typebox error; `a` / last position is optional
