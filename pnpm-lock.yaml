@@ -100,7 +100,7 @@ importers:
         version: link:../libs/jsyoyo
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       xpresyo:
         specifier: 'workspace:'
         version: link:../libs/xpresyo
@@ -110,6 +110,30 @@ importers:
       ~testing:
         specifier: 'workspace:'
         version: link:../libs/testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
+
+  examples:
+    devDependencies:
+      ioioy:
+        specifier: 'workspace:'
+        version: link:../ioioy
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      typier:
+        specifier: 'workspace:'
+        version: link:../typier
+      vite:
+        specifier: 'catalog:'
+        version: 8.0.16(@types/node@25.2.3)(esbuild@0.27.4)
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../__config
+      ~dom:
+        specifier: 'workspace:'
+        version: link:../libs/envs/dom
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -128,7 +152,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -146,7 +170,7 @@ importers:
         version: 8.0.16(@types/node@25.2.3)(esbuild@0.27.4)
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -173,7 +197,7 @@ importers:
         version: 1.1.9
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       xpresyo:
         specifier: 'workspace:'
         version: link:../libs/xpresyo
@@ -197,7 +221,7 @@ importers:
         version: link:../proyij
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -212,7 +236,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -227,7 +251,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -248,7 +272,7 @@ importers:
         version: link:../../treeo
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       xpresyo:
         specifier: 'workspace:'
         version: link:../xpresyo
@@ -269,7 +293,7 @@ importers:
         version: 0.0.336
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../../__config
@@ -287,7 +311,7 @@ importers:
         version: 25.2.3
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../../__config
@@ -306,7 +330,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -333,7 +357,7 @@ importers:
         version: link:../txtxt
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -348,7 +372,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -370,7 +394,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -385,7 +409,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -406,7 +430,7 @@ importers:
         version: link:../jsyoyo
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -437,7 +461,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -456,7 +480,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -474,7 +498,7 @@ importers:
         version: link:../objoy
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -493,7 +517,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -508,7 +532,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -557,7 +581,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -575,7 +599,7 @@ importers:
         version: link:../typier
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -597,7 +621,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -619,7 +643,7 @@ importers:
         version: 5.7.0
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -644,7 +668,7 @@ importers:
         version: 5.7.0
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -675,7 +699,7 @@ importers:
         version: link:../treeo
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -694,7 +718,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -713,7 +737,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -728,7 +752,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@25.2.3)(lightningcss@1.32.0)
+        version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -1890,11 +1914,6 @@ packages:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
 
-  nanoid@3.3.11:
-    resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
-
   nanoid@3.3.12:
     resolution: {integrity: sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -1939,20 +1958,12 @@ packages:
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
-  picomatch@4.0.3:
-    resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
-    engines: {node: '>=12'}
-
   picomatch@4.0.4:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
   postcss@8.5.15:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
-    engines: {node: ^10 || ^12 || >=14}
-
-  postcss@8.5.8:
-    resolution: {integrity: sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==}
     engines: {node: ^10 || ^12 || >=14}
 
   quansync@1.0.0:
@@ -2959,10 +2970,6 @@ snapshots:
 
   expect-type@1.3.0: {}
 
-  fdir@6.5.0(picomatch@4.0.3):
-    optionalDependencies:
-      picomatch: 4.0.3
-
   fdir@6.5.0(picomatch@4.0.4):
     optionalDependencies:
       picomatch: 4.0.4
@@ -3062,8 +3069,6 @@ snapshots:
     dependencies:
       semver: 7.8.2
 
-  nanoid@3.3.11: {}
-
   nanoid@3.3.12: {}
 
   obug@2.1.1: {}
@@ -3120,19 +3125,11 @@ snapshots:
 
   picocolors@1.1.1: {}
 
-  picomatch@4.0.3: {}
-
   picomatch@4.0.4: {}
 
   postcss@8.5.15:
     dependencies:
       nanoid: 3.3.12
-      picocolors: 1.1.1
-      source-map-js: 1.2.1
-
-  postcss@8.5.8:
-    dependencies:
-      nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -3257,8 +3254,8 @@ snapshots:
 
   tinyglobby@0.2.15:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
 
   tinyglobby@0.2.17:
     dependencies:
@@ -3338,9 +3335,9 @@ snapshots:
       esbuild: 0.27.4
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
-      postcss: 8.5.8
+      postcss: 8.5.15
       rollup: 4.60.0
-      tinyglobby: 0.2.15
+      tinyglobby: 0.2.17
     optionalDependencies:
       '@types/node': 25.2.3
       fsevents: 2.3.3

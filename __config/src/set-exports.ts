@@ -45,7 +45,7 @@ const setExports = (root: string) => {
   );
 };
 
-const skip = new Set(["__config", "node_modules", "out", "LICENSE", "vite-plugins"]);
+const skip = new Set(["__config", "node_modules", "out", "LICENSE", "vite-plugins", "examples"]);
 
 const handleDown = (path: string, isRoot: boolean) => {
   readdir(path).then((files) => {

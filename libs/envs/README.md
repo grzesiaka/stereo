@@ -1,0 +1,1 @@
+I do not want the global scope to be polluted with unwanted stuff. The way Typescript works and the types for common environments are declared makes it very hard. Most likely altering the source types declaration is the the only option. It is quite fragile though.
