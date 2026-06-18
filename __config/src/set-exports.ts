@@ -5,7 +5,9 @@ import { resolve } from "node:path";
 const prepareIndices = async (root: string, withDirs: boolean): Promise<[string, string][]> => {
   const path = (...sub: string[]) => resolve(root, ...sub);
   const dir = await readdir(path());
-  const files = dir.filter((x) => x.endsWith(".ts") && x !== "index.ts").map((f) => f.replace(/\.ts$/, ""));
+  const files = dir
+    .filter((x) => x.endsWith(".ts") && x !== "index.ts" && !x.startsWith("_"))
+    .map((f) => f.replace(/\.ts$/, ""));
   let sub = [] as [string, string][];
   if (withDirs) {
     sub = await Promise.all(
@@ -45,7 +47,7 @@ const setExports = (root: string) => {
   );
 };
 
-const skip = new Set(["__config", "node_modules", "out", "LICENSE", "vite-plugins", "examples"]);
+const skip = new Set(["__config", "node_modules", "out", "LICENSE", "vite-plugins", "examples", "extra"]);
 
 const handleDown = (path: string, isRoot: boolean) => {
   readdir(path).then((files) => {
