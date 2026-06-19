@@ -14,7 +14,9 @@ export interface IO<I = any, O = any, X = any, Ctx extends CtxIdConstraint = Ctx
   readonly X: X; // readonly when access from outside;
 }
 
-export type OUT<O, Ctx extends CtxIdConstraint, X> = Fn<[], X> & Fn<[Cb<O>], Dispose> & CTX<Ctx>;
+export type OUT<O, Ctx extends CtxIdConstraint, X> = Fn<[], X> &
+  Fn<[Cb<O>, skipInitial?: boolean | 1], Dispose> &
+  CTX<Ctx>;
 
 export type IdIO = IO & { O: { Id: string } };
 

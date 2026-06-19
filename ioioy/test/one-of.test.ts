@@ -38,11 +38,21 @@ describe(I, ({ eq, res }) => ({
     r.last(2)(["Ev1", 2]);
   },
 
+  tuple: () => {
+    const ios = [E.N("Num"), V.S("Str")] as const;
+    const i = I("Tuple")(ios);
+    eq(i.$1, ios[0]);
+    eq(i.X, ["Num", __]);
+    i.I(["Str", "1"]);
+    eq(i.$1, ios[1]);
+    eq(i.X, ["Str", "1"]);
+  },
+
   array: () => {
     const IOs = {
       B: E.B("B"),
       S: E.S("S"),
-      N: E.N("N"),
+      N: V.N("N"),
     };
     const vs = [IOs.B, IOs.S, IOs.N];
     const i = I("[B,S,N]")(vs);
@@ -53,20 +63,25 @@ describe(I, ({ eq, res }) => ({
     i.O(r.add);
     r.last(0);
     i.I(["B", true]);
+    eq(i.X, ["B", __]);
     i.I(["S", ""]);
-    i.I(["N", 0]);
+    eq(i.X, ["S", __]);
+    i.I(["N", 1]);
+    eq(i.X, ["N", 1]);
     r.eq([
       ["B", true],
       ["S", ""],
-      ["N", 0],
+      ["N", 1],
     ]);
+
     // IOs.B is not observed by i; not sure if this is always desired -- if needed, could be controlled by an option
     IOs.B.I(false);
     r.len(3);
 
     // IOs.N is observed by i
-    IOs.N.I(1);
-    r.last(4)(["N", 1]);
+    IOs.N.I(2);
+    r.last(4)(["N", 2]);
+    eq(i.X, ["N", 2]);
 
     // IOs.S is not observed by i
     IOs.S.I("");

@@ -1,5 +1,6 @@
 import { __ } from "~types";
 
+/** Used instead of Typebox's TSchema `{}` as the latter accepts `TSchema[]` as `TSchema`, which results in `unknown` inferred type */
 export interface TSchema {
   type: string;
 }

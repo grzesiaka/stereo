@@ -24,10 +24,8 @@ export const OneOf =
   <const IOs extends IdIOs>(IOs: IOs): OneOf_IOs<Ctx, IOs> => {
     const O = (io: IOs[number]) => {
       $.D();
-      if (io) {
-        $.$1 = io;
-        $.D = D([io.O((v) => $.OO.forEach((c) => c([$.$1.O.Id, v])))]);
-      }
+      $.$1 = io;
+      $.D = D([io.O((v) => $.OO.forEach((c) => c([$.$1.O.Id, v])), 1)]);
     };
     const I = (x: OneOf_I<IOs>) => {
       const k = x[0] as keyof typeof $.IOs;
@@ -44,8 +42,8 @@ export const OneOf =
       OO: new Set(),
       D: D(),
     }) as OneOf_IOs<Ctx, IOs> & { X: OneOf_X<IOs> };
-    $.IOs = iosById(IOs); // not sure if needed
-    IOs[0] && O(IOs[0]); // allow specifying initial selection (if needed; actually one can always pass something like never as 0th IO)
+    $.IOs = iosById(IOs);
+    IOs[0] && O(IOs[0]);
     return $;
   };
 

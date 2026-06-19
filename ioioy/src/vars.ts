@@ -33,6 +33,7 @@ export const Vars =
       handleEmit();
       return x;
     };
+    const handleEmit = () => $.OO.forEach((c) => c($.X));
     const $ = OP("VR")(IOs)({
       I,
       get X() {
@@ -42,11 +43,7 @@ export const Vars =
       OO: new Set(),
       D: D(),
     }) as And_Vars<Ctx, IOs> & { X: And_Vars_X<IOs> };
-
-    let handleEmit = () => {}; // no-op before initial register phase not completed
-    $.IOs = iosById(IOs, (io) => $.D.__[1].push(io.O(() => !updating && handleEmit())));
-    handleEmit = () => $.OO.forEach((c) => c($.X));
-    handleEmit(); // initial emit
+    $.IOs = iosById(IOs, (io) => $.D.__[1].push(io.O(() => !updating && handleEmit(), 1)));
     return $;
   };
 
