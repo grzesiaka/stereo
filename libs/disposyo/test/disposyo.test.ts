@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 import { __ } from "jsyoyo";
 
-import disposyo from "../src/index";
+import disposyo, { DISPOSE } from "../src/index";
 
 describe(disposyo, ({ eq, res }) => ({
   empty: () => {
@@ -46,5 +46,15 @@ describe(disposyo, ({ eq, res }) => ({
     eq(d.__, ["0", t]);
     d();
     r.eq(["fn", 0, 1, "fn/deep", 0, 1]);
+  },
+
+  with_target: () => {
+    let done = false;
+    const t = disposyo(() => (done = true), {});
+    eq(!!t[DISPOSE], true);
+    eq(done, false);
+    t[DISPOSE]();
+    // @ts-expect-error weirdly TS treats done as `false`
+    eq(done, true);
   },
 }));
