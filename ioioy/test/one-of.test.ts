@@ -54,7 +54,7 @@ describe(I, ({ eq, res }) => ({
       S: E.S("S"),
       N: V.N("N"),
     };
-    const vs = [IOs.B, IOs.S, IOs.N];
+    const vs = Object.values(IOs);
     const i = I("[B,S,N]")(vs);
     eq(i.IOs, IOs);
     eq(i.O.Id, "[B,S,N]");

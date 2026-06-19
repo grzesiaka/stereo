@@ -1,7 +1,7 @@
 import { __, Cb, Dispose } from "~types";
 import type { ij_Project } from "proyij";
 import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
-import D, { type Disposyo } from "disposyo";
+import D, { DISPOSE, type Disposyo } from "disposyo";
 import { OP, WithOP } from "xpresyo";
 
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";
@@ -16,16 +16,16 @@ export interface OneOf_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs =
   $1: IOs[number];
   OO: Set<Cb<OneOf_O<IOs>>>;
   IOs: IOsById<IOs>;
-  D: Disposyo<Dispose[]>;
+  [DISPOSE]: Disposyo<Dispose[]>;
 }
 
 export const OneOf =
   <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
   <const IOs extends IdIOs>(IOs: IOs): OneOf_IOs<Ctx, IOs> => {
     const O = (io: IOs[number]) => {
-      $.D();
       $.$1 = io;
-      $.D = D([io.O((v) => $.OO.forEach((c) => c([$.$1.O.Id, v])), 1)]);
+      $[DISPOSE]();
+      $[DISPOSE] = D(io.O((v) => $.OO.forEach((c) => c([$.$1.O.Id, v])), 1));
     };
     const I = (x: OneOf_I<IOs>) => {
       const k = x[0] as keyof typeof $.IOs;
@@ -40,7 +40,7 @@ export const OneOf =
       },
       O: cId((c: Cb<any>) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
       OO: new Set(),
-      D: D(),
+      [DISPOSE]: D() as Disposyo<Dispose[]>,
     }) as OneOf_IOs<Ctx, IOs> & { X: OneOf_X<IOs> };
     $.IOs = iosById(IOs);
     IOs[0] && O(IOs[0]);

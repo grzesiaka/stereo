@@ -6,7 +6,7 @@ import disposyo, { DISPOSE } from "../src/index";
 describe(disposyo, ({ eq, res }) => ({
   empty: () => {
     const d = disposyo({});
-    eq(d.__, ["0", {}]);
+    eq(d.__, {});
     d();
   },
 
@@ -14,7 +14,7 @@ describe(disposyo, ({ eq, res }) => ({
     const r = res();
     const add = () => r.add(0);
     const d = disposyo(add);
-    eq(d.__, ["0", add]);
+    eq(d.__, add);
     d();
     r.eq([0]);
   },
@@ -24,7 +24,7 @@ describe(disposyo, ({ eq, res }) => ({
     const add0 = () => r.add(0);
     const add1 = () => r.add(1);
     const d = disposyo([add0, add1]);
-    eq(d.__, ["0", [add0, add1]]);
+    eq(d.__, [add0, add1]);
     d();
     r.eq([0, 1]);
   },
@@ -43,7 +43,7 @@ describe(disposyo, ({ eq, res }) => ({
     };
 
     const d = disposyo(t);
-    eq(d.__, ["0", t]);
+    eq(d.__, t);
     d();
     r.eq(["fn", 0, 1, "fn/deep", 0, 1]);
   },

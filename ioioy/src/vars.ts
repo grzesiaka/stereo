@@ -7,7 +7,7 @@ import type { IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
 import { mb } from "jsyoyo";
 import { OP } from "xpresyo";
-import D, { type Disposyo } from "disposyo";
+import D, { DISPOSE, type Disposyo } from "disposyo";
 import type { IdVars, Var } from "./var";
 
 export type And_Vars_X<IOs extends IdVars> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
@@ -19,7 +19,7 @@ export interface And_Vars<Ctx extends CtxIdConstraint = __, IOs extends IdVars =
   IOs
 > {
   IOs: IOsById<IOs>;
-  D: Disposyo<Dispose[]>;
+  [DISPOSE]: Disposyo<Dispose[]>;
 }
 
 export const Vars =
@@ -41,9 +41,9 @@ export const Vars =
       },
       O: cId((c: Cb<any>) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
       OO: new Set(),
-      D: D(),
+      [DISPOSE]: D() as Disposyo<Dispose[]>,
     }) as And_Vars<Ctx, IOs> & { X: And_Vars_X<IOs> };
-    $.IOs = iosById(IOs, (io) => $.D.__[1].push(io.O(() => !updating && handleEmit(), 1)));
+    $.IOs = iosById(IOs, (io) => $[DISPOSE].__.push(io.O(() => !updating && handleEmit(), 1)));
     return $;
   };
 
