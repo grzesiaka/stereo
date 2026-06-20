@@ -25,9 +25,9 @@ describe(A, ({ eq, res }) => ({
     eq(a.X, { str: "", num: 0, bool: false });
     eq(a.O.Id, "AND");
     const r = res<unknown>();
-    a.O(r.add);
     r.eq([]);
     a.IOs.bool.I(true);
+    const stopObserving = a.O(r.add);
     r.eq([{ str: "", num: 0, bool: true }]);
     a.IOs.bool.I(true);
     r.last(2)({ str: "", num: 0, bool: true });
@@ -36,5 +36,9 @@ describe(A, ({ eq, res }) => ({
     eq(a.IOs.str.X, "S");
     eq(a.IOs.num.X, 1);
     eq(a.IOs.bool.X, true);
+
+    stopObserving();
+    a.I({ str: "SS", num: 2 });
+    r.last(3)({ str: "S", num: 1, bool: true });
   },
 }));

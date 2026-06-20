@@ -38,7 +38,13 @@ export const OneOf =
       get X() {
         return [$.$1.O.Id, $.$1.X];
       },
-      O: cId((c: Cb<any>) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
+
+      O: cId(
+        // @ts-expect-error ???  // @ts-expect-error ???
+        // oxlint-disable-next-line no-unused-vars apparently skipInitial is not used; seems to be a bug in oxc
+        (c: Cb<any>, skipInitial = true) => (!c ? $.X : ($.OO.add(c), !skipInitial && c($.X), () => $.OO.delete(c))),
+        L,
+      ),
       OO: new Set(),
       [DISPOSE]: D() as Disposyo<Dispose[]>,
     }) as OneOf_IOs<Ctx, IOs> & { X: OneOf_X<IOs> };

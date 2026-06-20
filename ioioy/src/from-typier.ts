@@ -3,7 +3,7 @@ import V, { type Var } from "./var";
 import Vs, { type And_Vars } from "./vars";
 import OneOf, { type OneOf_IOs } from "./one-of";
 import { __ } from "~types";
-import { Parse } from "typebox/value";
+import { IdIOs } from "./io";
 
 export const TYPIER: unique symbol = Symbol.for("TYPIER");
 
@@ -22,13 +22,13 @@ export type FromTypier<T> = T extends readonly unknown[]
         { Id: T["$KEY"]; [TYPIER]: T },
         (T extends { "~hint": infer X } ? X : TR.Static<T>) | WithUndefinedIfOptionalOrNoDefault<T>
       >
-    : T extends TR.OBJECT<infer Parts, any, any, infer Key>
+    : T extends { type: "object"; $PARTS: infer Parts; $KEY: infer Key extends string }
       ? And_Vars<
           {
             Id: Key;
             [TYPIER]: T;
           },
-          TypierArrayToIO<Parts>
+          TypierArrayToIO<Parts> extends IdIOs ? TypierArrayToIO<Parts> : []
         >
       : T extends TR.UNION<infer Items, any, any, infer Key>
         ? OneOf_IOs<
@@ -46,37 +46,18 @@ export type FromTypier<T> = T extends readonly unknown[]
           : never;
 
 export const fromTypier = <T extends TR.ATOM | TR.COMPOUND | TR.$Atom>(t: T): FromTypier<T> => {
+  const L = {
+    Id: t.$KEY,
+    [TYPIER]: t,
+  };
   switch (t.type) {
     case "object":
-      return 1 as any;
+      // @ts-expect-error return type + t.$PARTS
+      return Vs(L)(t.$PARTS.map(fromTypier));
     case "union":
-      return 2 as any;
+      // @ts-expect-error return type + t.anyOf
+      return OneOf(L)(t.anyOf.map(fromTypier));
     default:
-      return V((t as any).default, { Id: t.$KEY, [TYPIER]: t }) as any;
+      return V((t as any).default, L) as never;
   }
 };
-
-const TY = TR.fromTree({
-  B: TR.B(true),
-  N: TR.N(),
-  Str: TR.S({ minLength: 5 }),
-  Str2: TR.S({}),
-});
-
-const b = fromTypier(TY.B);
-
-const c = b.X;
-const fb = (b: boolean) => 1;
-fb(b.X);
-const s = fromTypier(TY.Str);
-const n = fromTypier(TR.N(1)("num", "?"));
-const a = fromTypier(TR.A(TY.B)("A"));
-
-const U = TR.U(TY.B, TY.N)("UNI");
-const u = fromTypier(U);
-// u.I();
-const O = TR.O(TY.B, TY.N, TY.Str)("O");
-const X = fromTypier(O);
-
-const z = Parse(O, 1);
-X.I({ B: z.B });

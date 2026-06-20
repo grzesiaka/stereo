@@ -3,16 +3,16 @@ import type { ij_Project, KeyValues$Object } from "proyij";
 import { __, Cb, Dispose } from "~types";
 import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
 
-import type { IO, IOs$FlatTypes } from "./io";
+import type { IO, IOs$FlatTypes, IdIOs } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
 import { mb } from "jsyoyo";
 import { OP } from "xpresyo";
 import D, { DISPOSE, type Disposyo } from "disposyo";
-import type { IdVars, Var } from "./var";
+import type { Var } from "./var";
 
-export type And_Vars_X<IOs extends IdVars> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
+export type And_Vars_X<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
 
-export interface And_Vars<Ctx extends CtxIdConstraint = __, IOs extends IdVars = IdVars> extends Var<
+export interface And_Vars<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = IdIOs> extends Var<
   Ctx,
   And_Vars_X<IOs>,
   Partial<And_Vars_X<IOs>>,
@@ -24,7 +24,7 @@ export interface And_Vars<Ctx extends CtxIdConstraint = __, IOs extends IdVars =
 
 export const Vars =
   <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
-  <const IOs extends IdVars>(IOs: IOs): And_Vars<Ctx, IOs> => {
+  <const IOs extends IdIOs>(IOs: IOs): And_Vars<Ctx, IOs> => {
     let updating = false;
     const I = (x: Partial<And_Vars_X<IOs>>) => {
       updating = true;
@@ -39,7 +39,12 @@ export const Vars =
       get X() {
         return mb((v) => (v as IO).X)($.IOs);
       },
-      O: cId((c: Cb<any>) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
+      O: cId(
+        // @ts-expect-error ???
+        // oxlint-disable-next-line no-unused-vars apparently skipInitial is not used; seems to be a bug in oxc
+        (c?: Cb<any>, skipInitial = false) => (!c ? $.X : ($.OO.add(c), !skipInitial && c($.X), () => $.OO.delete(c))),
+        L,
+      ),
       OO: new Set(),
       [DISPOSE]: D() as Disposyo<Dispose[]>,
     }) as And_Vars<Ctx, IOs> & { X: And_Vars_X<IOs> };
