@@ -182,6 +182,10 @@ importers:
         version: link:../libs/types
 
   ioioy:
+    dependencies:
+      typier:
+        specifier: 'workspace:'
+        version: link:../typier
     devDependencies:
       disposyo:
         specifier: 'workspace:'

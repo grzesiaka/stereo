@@ -4,7 +4,7 @@ import { Null } from "../atoms";
 
 export type UNION<
   Items extends TSchema[] = TSchema[],
-  Options extends TSchemaOptions = TSchemaOptions,
+  Options extends TSchemaOptions = {},
   $TYP extends string = string,
   $KEY extends string = string,
 > = TUnion<Items> &

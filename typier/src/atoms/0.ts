@@ -28,11 +28,11 @@ export type Atom0<Schema extends object, Type, $TYP extends string = string, $KE
 >;
 
 export type $Atom<
-  Schema extends object,
-  Type,
-  $TYP extends string,
-  $KEY extends string,
-  $META,
+  Schema extends object = {},
+  Type = any,
+  $TYP extends string = string,
+  $KEY extends string = string,
+  $META = any,
 > = $KEY extends `?${infer K}`
   ? __ extends $META
     ? Atom0<Simplify<Schema & { "~optional": true }>, Type, $TYP, K extends "" ? $TYP : K>

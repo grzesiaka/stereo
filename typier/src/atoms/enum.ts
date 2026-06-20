@@ -6,7 +6,7 @@ import { a } from "jsyoyo";
 
 export type ENUM<
   Enums extends ARR<TEnumValue> = ARR<TEnumValue>,
-  Options extends TSchemaOptions = TSchemaOptions,
+  Options extends TSchemaOptions = {},
   $TYP extends string = string,
   $KEY extends string = string,
 > = $Atom<Options & { enum: Enums }, Enums[number], $TYP, $KEY, "<enum>"> & { type: "enum" };

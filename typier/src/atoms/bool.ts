@@ -4,7 +4,7 @@ import { __ } from "~types";
 import { a } from "jsyoyo";
 
 export type BOOL<
-  Schema extends TSchemaOptions = TSchemaOptions,
+  Schema extends TSchemaOptions = {},
   $TYP extends string = string,
   $KEY extends string = string,
 > = $Atom<Schema, boolean, $TYP, $KEY, __> & { type: "boolean" };

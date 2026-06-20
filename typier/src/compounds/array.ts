@@ -3,7 +3,7 @@ import { createCompound, TSchema, $Compound } from "./0";
 
 export type ARRAY<
   Items extends TSchema = TSchema,
-  Options extends TArrayOptions = TArrayOptions,
+  Options extends TArrayOptions = {},
   $TYP extends string = string,
   $KEY extends string = string,
 > = TArray<Items> &

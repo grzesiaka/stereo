@@ -13,7 +13,7 @@ type ConstConstraint$Typeof<C> = C extends string
 
 export type CONST<
   Value extends ConstConstraint = ConstConstraint,
-  Options extends TSchemaOptions = TSchemaOptions,
+  Options extends TSchemaOptions = {},
   $TYP extends string = string,
   $KEY extends string = string,
 > = $Atom<

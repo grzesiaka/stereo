@@ -27,7 +27,7 @@ type Option$$META<O extends TNumberOptions> =
     : `${Option$Min<O>}${Option$Max<O>}${Options$MultipleOf<O, " ">}`;
 
 export type NUMBER<
-  Schema extends TNumberOptions = TNumberOptions,
+  Schema extends TNumberOptions = {},
   $TYP extends string = string,
   $KEY extends string = string,
 > = $Atom<Schema, number, $TYP, $KEY, Option$$META<Schema>> & { type: "number" };

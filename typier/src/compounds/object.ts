@@ -7,7 +7,7 @@ export type OBJECT_PARTS = readonly TypierBase[];
 
 export type OBJECT<
   Parts extends OBJECT_PARTS = OBJECT_PARTS,
-  Options extends TObjectOptions = TObjectOptions,
+  Options extends TObjectOptions = {},
   $TYP extends string = string,
   $KEY extends string = string,
 > = TObject<Indexify<Parts, "$KEY"> extends TProperties ? Indexify<Parts, "$KEY"> : never> &
@@ -34,7 +34,7 @@ export const $Obj = <const Parts extends OBJECT_PARTS, const Options extends TOb
 ) =>
   createCompound({
     ...options,
-    ype: "object",
+    type: "object",
     "~kind": "Object",
     $PARTS: parts,
     properties: indexify("$KEY")(parts),
@@ -42,6 +42,7 @@ export const $Obj = <const Parts extends OBJECT_PARTS, const Options extends TOb
   } as any) as <const $TYP extends string, const $KEY extends string = $TYP>(
     $TYP: $TYP,
     $KEY?: $KEY,
+    // (below remark might have something to do with the String index signature present on TSchema)
     // this type gymnastics is kind of weird; not sure if there is some regression in TS 6.x
   ) => OBJECT<Parts, TObjectOptions extends Options ? {} : Options, $TYP, string extends $KEY ? $TYP : $KEY>;
 

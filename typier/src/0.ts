@@ -20,6 +20,6 @@ export interface TypierBase<$TYP extends string = string, $KEY extends string = 
   $KEY: $KEY;
 }
 
-export type Static<T extends TSchema, WithOptions extends boolean = false> =
+export type Static<T extends TSchema, WithOptions extends boolean = true> =
   | TBStatic<T>
   | (WithOptions extends false ? never : T extends { "~optional": true } ? __ : never);
