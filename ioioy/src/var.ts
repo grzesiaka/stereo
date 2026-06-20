@@ -7,7 +7,7 @@ import { OP, WithOP } from "xpresyo";
 export type Var<Ctx extends CtxIdConstraint = __, X = unknown, IX = X, Params = __> = IO<IX, X, X, Ctx, IX> &
   WithOP<"VR", Params> & { OO: Set<Cb<X>> };
 
-export type IdVar = Var<any, any> & { O: { Id: string } };
+export type IdVar = Var<any, any, any, any> & { O: { Id: string } };
 export type IdVars = ARR<IdVar>;
 
 export const Var = <X, const Ctx extends CtxIdConstraint = __>(X: X, L?: Ctx): Var<Ctx, X> => {

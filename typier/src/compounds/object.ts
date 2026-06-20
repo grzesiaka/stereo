@@ -7,7 +7,7 @@ export type OBJECT_PARTS = readonly TypierBase[];
 
 export type OBJECT<
   Parts extends OBJECT_PARTS = OBJECT_PARTS,
-  Options extends TObjectOptions = {},
+  Options extends TObjectOptions = { required?: any },
   $TYP extends string = string,
   $KEY extends string = string,
 > = TObject<Indexify<Parts, "$KEY"> extends TProperties ? Indexify<Parts, "$KEY"> : never> &
