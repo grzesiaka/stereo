@@ -2,10 +2,10 @@ import { TTupleOptions, TTuple } from "typebox";
 import { createCompound, $Compound, TSchema } from "./0";
 
 export type TUPLE<
-  Items extends TSchema[],
-  Options extends TTupleOptions,
-  $TYP extends string,
-  $KEY extends string,
+  Items extends TSchema[] = TSchema[],
+  Options extends TTupleOptions = TTupleOptions,
+  $TYP extends string = string,
+  $KEY extends string = string,
 > = TTuple<Items> &
   $Compound<
     TTuple<Items> &

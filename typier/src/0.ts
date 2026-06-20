@@ -1,3 +1,4 @@
+import { Static as TBStatic } from "typebox";
 import { __ } from "~types";
 
 /** Used instead of Typebox's TSchema `{}` as the latter accepts `TSchema[]` as `TSchema`, which results in `unknown` inferred type */
@@ -18,3 +19,7 @@ export interface TypierBase<$TYP extends string = string, $KEY extends string = 
    */
   $KEY: $KEY;
 }
+
+export type Static<T extends TSchema, WithOptions extends boolean = false> =
+  | TBStatic<T>
+  | (WithOptions extends false ? never : T extends { "~optional": true } ? __ : never);

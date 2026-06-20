@@ -30,13 +30,11 @@ type Option$$META<O extends TStringOptions> = Join<
   " "
 >;
 
-export type STRING<Schema extends TStringOptions, $TYP extends string, $KEY extends string> = $Atom<
-  Schema,
-  string,
-  $TYP,
-  $KEY,
-  Option$$META<Schema> extends "" ? __ : Option$$META<Schema>
->;
+export type STRING<
+  Schema extends TStringOptions = TStringOptions,
+  $TYP extends string = string,
+  $KEY extends string = string,
+> = $Atom<Schema, string, $TYP, $KEY, Option$$META<Schema> extends "" ? __ : Option$$META<Schema>> & { type: "string" };
 
 /**
  * Create String atom

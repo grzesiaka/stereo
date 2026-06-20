@@ -6,10 +6,10 @@ import { Indexify, indexify } from "proyij";
 export type OBJECT_PARTS = readonly TypierBase[];
 
 export type OBJECT<
-  Parts extends OBJECT_PARTS,
-  Options extends TObjectOptions,
-  $TYP extends string,
-  $KEY extends string,
+  Parts extends OBJECT_PARTS = OBJECT_PARTS,
+  Options extends TObjectOptions = TObjectOptions,
+  $TYP extends string = string,
+  $KEY extends string = string,
 > = TObject<Indexify<Parts, "$KEY"> extends TProperties ? Indexify<Parts, "$KEY"> : never> &
   $Compound<
     TObject<Indexify<Parts, "$KEY"> extends TProperties ? Indexify<Parts, "$KEY"> : never> &

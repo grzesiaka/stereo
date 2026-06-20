@@ -3,13 +3,11 @@ import { $Atom, createAtom } from "./0";
 import { __ } from "~types";
 import { a } from "jsyoyo";
 
-export type BOOL<Schema extends TSchemaOptions, $TYP extends string, $KEY extends string> = $Atom<
-  Schema,
-  boolean,
-  $TYP,
-  $KEY,
-  __
->;
+export type BOOL<
+  Schema extends TSchemaOptions = TSchemaOptions,
+  $TYP extends string = string,
+  $KEY extends string = string,
+> = $Atom<Schema, boolean, $TYP, $KEY, __> & { type: "boolean" };
 
 /**
  * Create a boolean atom

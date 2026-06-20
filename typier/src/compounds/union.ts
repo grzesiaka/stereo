@@ -3,14 +3,15 @@ import { createCompound, $Compound, TSchema } from "./0";
 import { Null } from "../atoms";
 
 export type UNION<
-  Items extends TSchema[],
-  Options extends TSchemaOptions,
-  $TYP extends string,
-  $KEY extends string,
+  Items extends TSchema[] = TSchema[],
+  Options extends TSchemaOptions = TSchemaOptions,
+  $TYP extends string = string,
+  $KEY extends string = string,
 > = TUnion<Items> &
   $Compound<
     TUnion<Items> &
       Options & {
+        type: "union";
         "~kind": "Union";
       },
     $TYP,
@@ -30,6 +31,7 @@ export const $Uni = <const AnyOf extends TSchema[], const Options extends TSchem
   createCompound({
     ...options,
     anyOf,
+    type: "union",
     "~kind": "Union",
   } as any) as <const $TYP extends string, const $KEY extends string = $TYP>(
     $TYP: $TYP,

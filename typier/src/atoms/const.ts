@@ -12,10 +12,10 @@ type ConstConstraint$Typeof<C> = C extends string
       : never;
 
 export type CONST<
-  Value extends ConstConstraint,
-  Options extends TSchemaOptions,
-  $TYP extends string,
-  $KEY extends string,
+  Value extends ConstConstraint = ConstConstraint,
+  Options extends TSchemaOptions = TSchemaOptions,
+  $TYP extends string = string,
+  $KEY extends string = string,
 > = $Atom<
   Options & {
     type: ConstConstraint$Typeof<Value>;
@@ -25,7 +25,7 @@ export type CONST<
   $TYP,
   $KEY,
   undefined
->;
+> & { type: "string" | "number" | "boolean" };
 
 type CreateConst = <const Value extends ConstConstraint, const Options extends TSchemaOptions>(
   value: Value,

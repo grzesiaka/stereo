@@ -2,10 +2,10 @@ import { TArrayOptions, TArray } from "typebox";
 import { createCompound, TSchema, $Compound } from "./0";
 
 export type ARRAY<
-  Items extends TSchema,
-  Options extends TArrayOptions,
-  $TYP extends string,
-  $KEY extends string,
+  Items extends TSchema = TSchema,
+  Options extends TArrayOptions = TArrayOptions,
+  $TYP extends string = string,
+  $KEY extends string = string,
 > = TArray<Items> &
   $Compound<
     TArray<Items> &

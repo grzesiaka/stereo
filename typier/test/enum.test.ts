@@ -3,6 +3,7 @@ import { Object } from "typebox";
 import { Check } from "typebox/value";
 
 import { Enum } from "../src/atoms/enum";
+import { Static } from "../src";
 
 describe(Enum, ({ eq }) => ({
   empty: () => {
@@ -21,6 +22,7 @@ describe(Enum, ({ eq }) => ({
     eq(Check(e, 1), true);
     eq(Check(Object({ one: e }, {}), true));
     eq(Check(e, void 0), false);
+    type E = Static<typeof e>;
   },
   two: () => {
     const e = Enum([1, "2"])("12").$("?one2");
@@ -33,5 +35,6 @@ describe(Enum, ({ eq }) => ({
     eq(Check(e, "1"), false);
     eq(Check(e, 2), false);
     eq(Check(e, void 0), false);
+    type E = Static<typeof e>;
   },
 }));
