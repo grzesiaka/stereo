@@ -87,4 +87,30 @@ describe(I, ({ eq, res }) => ({
     IOs.S.I("");
     r.len(4);
   },
+
+  nullable: () => {
+    const ios = [E.N("Num"), V.S("Str")] as const;
+    const i = I("Tuple")(ios, null, undefined);
+
+    const r = res();
+    i.O(r.add);
+    eq(r.items, []);
+
+    eq(i.$1, ios[0]);
+    eq(i.X, ["Num", __]);
+
+    i.I(undefined);
+    eq(i.$1, undefined);
+    eq(i.X, undefined);
+    i.I(null);
+    eq(i.$1, null);
+    eq(i.X, null);
+    r.eq([undefined, null]);
+
+    i.I(["Str", "1"]);
+    r.last(3)(["Str", "1"]);
+
+    eq(i.$1, ios[1]);
+    eq(i.X, ["Str", "1"]);
+  },
 }));

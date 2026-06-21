@@ -25,7 +25,7 @@ export const Vars =
   <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
   <const IOs extends IdIOs, NullableValues extends ARR<__ | null> = []>(
     IOs: IOs,
-    ..._extra: NullableValues
+    ..._nullable: NullableValues
   ): And_Vars<Ctx, IOs, NullableValues> => {
     let updating = false;
     const nullable = [] as [NullableValues[number]?];

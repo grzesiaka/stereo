@@ -1,4 +1,4 @@
-import { __, Cb, Dispose } from "~types";
+import { __, ARR, Cb, Dispose } from "~types";
 import type { ij_Project } from "proyij";
 import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
 import D, { DISPOSE, type Disposyo } from "disposyo";
@@ -11,32 +11,58 @@ export type OneOf_I<IOs extends IdIOs> = ij_Project<["Id", "I"], IOs$FlatTypes<I
 export type OneOf_O<IOs extends IdIOs> = ij_Project<["Id", "O"], IOs$FlatTypes<IOs>>[number];
 export type OneOf_X<IOs extends IdIOs> = ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>[number];
 
-export interface OneOf_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = IdIOs>
-  extends WithOP<"1OF", IOs>, IO<OneOf_I<IOs>, OneOf_O<IOs>, OneOf_X<IOs>, Ctx> {
-  $1: IOs[number];
-  OO: Set<Cb<OneOf_O<IOs>>>;
+export interface OneOf_IOs<
+  Ctx extends CtxIdConstraint = __,
+  IOs extends IdIOs = IdIOs,
+  NullableValues extends ARR<__ | null> = [],
+>
+  extends
+    WithOP<"1OF", IOs>,
+    IO<
+      OneOf_I<IOs> | NullableValues[number],
+      OneOf_O<IOs> | NullableValues[number],
+      OneOf_X<IOs> | NullableValues[number],
+      Ctx
+    > {
+  $1: IOs[number] | NullableValues[number];
+  OO: Set<Cb<OneOf_O<IOs> | NullableValues[number]>>;
   IOs: IOsById<IOs>;
-  [DISPOSE]: Disposyo<Dispose[]>;
+  [DISPOSE]: Disposyo<Dispose[]> | Dispose;
 }
 
 export const OneOf =
   <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
-  <const IOs extends IdIOs>(IOs: IOs): OneOf_IOs<Ctx, IOs> => {
-    const O = (io: IOs[number]) => {
+  <const IOs extends IdIOs, NullableValues extends ARR<__ | null> = []>(
+    IOs: IOs,
+    ..._nullable: NullableValues
+  ): OneOf_IOs<Ctx, IOs, NullableValues> => {
+    const nullable = [] as [NullableValues[number]?];
+    const O = (io: IOs[number] | NullableValues[number]) => {
       $.$1 = io;
       $[DISPOSE]();
-      $[DISPOSE] = D(io.O((v) => $.OO.forEach((c) => c([$.$1.O.Id, v])), 1));
+      if (!io) {
+        nullable[0] = io;
+        $[DISPOSE] = () => 0;
+        return $.OO.forEach((c) => c(io));
+      }
+      nullable.pop();
+      const Id = io.O.Id;
+      $[DISPOSE] = D(io.O((v) => $.OO.forEach((c) => c([Id, v])), 1));
     };
-    const I = (x: OneOf_I<IOs>) => {
+    const I = (x: OneOf_I<IOs> | NullableValues[number]) => {
+      if (!x) {
+        O(x);
+        return x;
+      }
       const k = x[0] as keyof typeof $.IOs;
-      k !== $.$1.O.Id && O($.IOs[k]);
-      $.$1.I(x[1]);
+      k !== $.$1?.O.Id && O($.IOs[k]);
+      $.$1!.I(x[1]);
       return x;
     };
     const $ = OP("1OF")(IOs)({
       I,
       get X() {
-        return [$.$1.O.Id, $.$1.X];
+        return nullable.length ? nullable[0] : [$.$1!.O.Id, $.$1!.X];
       },
 
       O: cId(
@@ -47,7 +73,7 @@ export const OneOf =
       ),
       OO: new Set(),
       [DISPOSE]: D() as Disposyo<Dispose[]>,
-    }) as OneOf_IOs<Ctx, IOs> & { X: OneOf_X<IOs> };
+    }) as OneOf_IOs<Ctx, IOs, NullableValues> & { X: OneOf_X<IOs> | NullableValues[number] };
     $.IOs = iosById(IOs);
     IOs[0] && O(IOs[0]);
     return $;
