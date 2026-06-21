@@ -31,13 +31,14 @@ export type FromTypier<T> = T extends readonly unknown[]
           TypierArrayToIO<Parts> extends IdIOs ? TypierArrayToIO<Parts> : [],
           Optional extends true ? [undefined] : []
         >
-      : T extends TR.UNION<infer Items, any, any, infer Key>
+      : T extends { type: "union"; anyOf: infer Items; $KEY: infer Key extends string; "~optional"?: infer Optional }
         ? OneOf_IOs<
             {
               Id: Key;
               [TYPIER]: T;
             },
-            TypierArrayToIO<Items>
+            TypierArrayToIO<Items>,
+            Optional extends true ? [undefined] : []
           >
         : never;
 

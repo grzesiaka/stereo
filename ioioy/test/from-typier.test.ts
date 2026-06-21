@@ -48,10 +48,10 @@ describe($, ({ eq }) => ({
     eq($U.X, ["Str", "333" as any]);
   },
   nested: () => {
-    const _O2 = TR.O(O.$("_1"), O.$("?_2"))("O2");
+    const _O2 = TR.O(O.$("_1"), O.$("?_2"), U.$("U1"), U.$("?U2"))("O2");
     const O2 = $(_O2);
-    eq(O2.X, { _1: init, _2: init });
-    O2.I({ _2: __ });
-    eq(O2.X, { _1: init, _2: __ });
+    eq(O2.X, { _1: init, _2: init, U1: ["B", ok.B], U2: ["B", ok.B] });
+    O2.I({ _2: __, U1: ["Str", "4444" as any], U2: __ });
+    eq(O2.X, { _1: init, _2: __, U1: ["Str", "4444" as any], U2: __ });
   },
 }));
