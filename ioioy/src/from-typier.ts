@@ -22,13 +22,14 @@ export type FromTypier<T> = T extends readonly unknown[]
         { Id: T["$KEY"]; [TYPIER]: T },
         (T extends { "~hint": infer X } ? X : TR.Static<T>) | WithUndefinedIfOptionalOrNoDefault<T>
       >
-    : T extends { type: "object"; $PARTS: infer Parts; $KEY: infer Key extends string }
+    : T extends { type: "object"; $PARTS: infer Parts; $KEY: infer Key extends string; "~optional"?: infer Optional }
       ? And_Vars<
           {
             Id: Key;
             [TYPIER]: T;
           },
-          TypierArrayToIO<Parts> extends IdIOs ? TypierArrayToIO<Parts> : []
+          TypierArrayToIO<Parts> extends IdIOs ? TypierArrayToIO<Parts> : [],
+          Optional extends true ? [undefined] : []
         >
       : T extends TR.UNION<infer Items, any, any, infer Key>
         ? OneOf_IOs<
@@ -38,12 +39,7 @@ export type FromTypier<T> = T extends readonly unknown[]
             },
             TypierArrayToIO<Items>
           >
-        : T extends TR.$Atom
-          ? Var<
-              { Id: T["$KEY"]; [TYPIER]: T },
-              (T extends { "~hint": infer X } ? X : TR.Static<T>) | WithUndefinedIfOptionalOrNoDefault<T>
-            >
-          : never;
+        : never;
 
 export const fromTypier = <T extends TR.ATOM | TR.COMPOUND | TR.$Atom>(t: T): FromTypier<T> => {
   const L = {

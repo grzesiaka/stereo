@@ -52,7 +52,6 @@ describe($, ({ eq }) => ({
     const O2 = $(_O2);
     eq(O2.X, { _1: init, _2: init });
     O2.I({ _2: __ });
-    // @ts-expect-error TODO fix it most likely issue in typier
     eq(O2.X, { _1: init, _2: __ });
   },
 }));

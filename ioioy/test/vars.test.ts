@@ -41,4 +41,30 @@ describe(A, ({ eq, res }) => ({
     a.I({ str: "SS", num: 2 });
     r.last(3)({ str: "S", num: 1, bool: true });
   },
+
+  nullable: () => {
+    const a = A("AND")([V("", "str"), V(0, { Id: "num" }), V(false, "bool")], null, undefined);
+    eq(a.X, { str: "", num: 0, bool: false });
+    eq(a.O.Id, "AND");
+    const r = res<unknown>();
+    r.eq([]);
+    a.IOs.bool.I(true);
+    const stopObserving = a.O(r.add);
+    r.eq([{ str: "", num: 0, bool: true }]);
+    a.IOs.bool.I(true);
+    r.last(2)({ str: "", num: 0, bool: true });
+
+    a.I(null);
+    r.last(3)(null);
+
+    a.I({ str: "S", num: 1 });
+    r.last(4)({ str: "S", num: 1, bool: true });
+    eq(a.IOs.str.X, "S");
+    eq(a.IOs.num.X, 1);
+    eq(a.IOs.bool.X, true);
+
+    stopObserving();
+    a.I({ str: "SS", num: 2 });
+    r.last(4)({ str: "S", num: 1, bool: true });
+  },
 }));
