@@ -53,6 +53,7 @@ export const Vars =
         return nullable.length ? nullable[0] : mb((v) => (v as IO).X)($.IOs);
       },
       O: cId(
+        // @ts-expect-error upon `pnpm refresh` it is reported; but sometimes in IDE it disappears
         // oxlint-disable-next-line no-unused-vars apparently skipInitial is not used; seems to be a bug in oxc
         (c?: Cb<any>, skipInitial = false) => (!c ? $.X : ($.OO.add(c), !skipInitial && c($.X), () => $.OO.delete(c))),
         L,
