@@ -22,7 +22,7 @@ describe(A, ({ eq, res }) => ({
     eq(and.O.Extra, 0);
   },
   single: () => {
-    const a = A("AND")([V("", "str"), V(0, { Id: "num" }), E<1>()("eve")]);
+    const a = A("AND")([V("", "str"), V(0, { Id: "num" }), E<1 | 2>()("eve")]);
     eq(a.X, { str: "", num: 0, eve: __ });
     eq(a.O.Id, "AND");
     const r = res<unknown>();
@@ -30,11 +30,13 @@ describe(A, ({ eq, res }) => ({
     r.eq([]);
     a.IOs.eve.I(1);
     r.eq([{ str: "", num: 0, eve: 1 }]);
-    a.IOs.eve.I(1);
-    r.last(2)({ str: "", num: 0, eve: 1 });
+    a.IOs.eve.I(2);
+    r.last(2)({ str: "", num: 0, eve: 2 });
     a.I({ str: "S", num: 1 });
-    r.last(3)({ str: "S", num: 1, eve: 1 });
+    r.last(3)({ str: "S", num: 1, eve: 2 });
+    eq(a.X, { str: "S", num: 1, eve: __ }); // events are not stored
     eq(a.IOs.str.X, "S");
     eq(a.IOs.num.X, 1);
+    eq(a.IOs.eve.X, __);
   },
 }));
