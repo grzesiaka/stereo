@@ -2,7 +2,7 @@ import * as TR from "typier";
 import V, { type Var } from "./var";
 import Vs, { type And_Vars } from "./vars";
 import OneOf, { type OneOf_IOs } from "./one-of";
-import { __ } from "~types";
+import { __, ARR } from "~types";
 import { IdIOs } from "./io";
 
 export const TYPIER: unique symbol = Symbol.for("TYPIER");
@@ -13,7 +13,11 @@ type WithUndefinedIfOptionalOrNoDefault<T> = T extends { "~optional": true }
     ? never
     : __;
 
-type TypierArrayToIO<T> = T extends readonly [infer H, ...infer R] ? [FromTypier<H>, ...TypierArrayToIO<R>] : [];
+type TypierArrayToIO<T> = T extends readonly [infer H, ...infer R]
+  ? H extends { type: "null" }
+    ? TypierArrayToIO<R>
+    : [FromTypier<H>, ...TypierArrayToIO<R>]
+  : [];
 
 export type FromTypier<T> = T extends readonly unknown[]
   ? TypierArrayToIO<T>
@@ -31,14 +35,19 @@ export type FromTypier<T> = T extends readonly unknown[]
           TypierArrayToIO<Parts> extends IdIOs ? TypierArrayToIO<Parts> : [],
           Optional extends true ? [undefined] : []
         >
-      : T extends { type: "union"; anyOf: infer Items; $KEY: infer Key extends string; "~optional"?: infer Optional }
+      : T extends {
+            type: "union";
+            anyOf: infer Items extends ARR;
+            $KEY: infer Key extends string;
+            "~optional"?: infer Optional;
+          }
         ? OneOf_IOs<
             {
               Id: Key;
               [TYPIER]: T;
             },
             TypierArrayToIO<Items>,
-            Optional extends true ? [undefined] : []
+            [...(Optional extends true ? [undefined] : []), ...({ type: "null" } extends Items[number] ? [null] : [])]
           >
         : never;
 
@@ -52,8 +61,12 @@ export const fromTypier = <T extends TR.ATOM | TR.COMPOUND | TR.$Atom>(t: T): Fr
       // @ts-expect-error return type + t.$PARTS
       return Vs(L)(t.$PARTS.map(fromTypier));
     case "union":
-      // @ts-expect-error return type + t.anyOf
-      return OneOf(L)(t.anyOf.map(fromTypier));
+      // @ts-expect-error  t.anyOf
+      const r = OneOf(L)(t.anyOf.flatMap((i) => (i.type === "null" ? [] : fromTypier(i))));
+      // @ts-expect-error  t.anyOf
+      t.anyOf[0]?.type === "null" && r.I(null);
+      // @ts-expect-error return type
+      return r;
     default:
       return V((t as any).default, L) as never;
   }

@@ -36,7 +36,7 @@ export const OneOf =
     IOs: IOs,
     ..._nullable: NullableValues
   ): OneOf_IOs<Ctx, IOs, NullableValues> => {
-    const nullable = [] as [NullableValues[number]?];
+    const nullable = (IOs.length ? [] : [void 0]) as [NullableValues[number]?];
     const O = (io: IOs[number] | NullableValues[number]) => {
       $.$1 = io;
       $[DISPOSE]();

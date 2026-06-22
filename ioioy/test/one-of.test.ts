@@ -9,6 +9,7 @@ describe(I, ({ eq, res }) => ({
   empty: () => {
     const i = I()([]);
     eq(i.__, ["1OF", []]);
+    eq(i.X, __ as never);
   },
 
   single_var: () => {

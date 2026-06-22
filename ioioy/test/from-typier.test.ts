@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 import * as TR from "typier";
 import { Parse } from "typebox/value";
-import { fromTypier as $ } from "../src";
+import { fromTypier as $, TYPIER } from "../src";
 import { __ } from "jsyoyo";
 
 const T0 = TR.fromTree({
@@ -20,7 +20,7 @@ const init = {
   Str2: ok.Str2,
 };
 
-describe($, ({ eq }) => ({
+describe($, ({ eq, res }) => ({
   init: () => {
     eq(ok, { B: true, N: 0, Str: "22", Str2: "" } as never);
   },
@@ -41,11 +41,40 @@ describe($, ({ eq }) => ({
     $O.I(ok);
     eq($O.X, ok);
   },
+
+  union_empty: () => {
+    const $U = $(TR.U()("[]"));
+    eq($U.X, __ as never);
+  },
+
   union: () => {
     const $U = $(U);
     eq($U.X, ["B", ok.B]);
     $U.I(["Str", "333" as any]);
     eq($U.X, ["Str", "333" as any]);
+  },
+
+  union_with_null: () => {
+    const _U = TR.U(TR.Null(), T0.B, TR.Null())("UNI");
+    const U = $(_U);
+
+    eq(U.O[TYPIER], _U);
+    eq(Object.keys(U.IOs), ["B"]);
+    U.IOs.B.O[TYPIER] = T0.B;
+
+    const r = res();
+    U.O(r.add);
+    r.eq([]);
+    eq(U.X, null);
+    eq(U.$1, null);
+
+    U.I(["B", false as any]);
+    eq(U.$1, U.IOs.B);
+    U.IOs.B.I(ok.B);
+    eq(U.$1, U.IOs.B);
+    U.I(null);
+    eq(U.$1, null);
+    r.eq([["B", false], ["B", true], null]);
   },
   nested: () => {
     const _O2 = TR.O(O.$("_1"), O.$("?_2"), U.$("U1"), U.$("?U2"))("O2");
