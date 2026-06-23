@@ -497,9 +497,15 @@ importers:
 
   libs/xpresyo:
     devDependencies:
+      jsyoyo:
+        specifier: 'workspace:'
+        version: link:../jsyoyo
       objoy:
         specifier: 'workspace:'
         version: link:../objoy
+      treeo:
+        specifier: 'workspace:'
+        version: link:../../treeo
       vitest:
         specifier: 'catalog:'
         version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
