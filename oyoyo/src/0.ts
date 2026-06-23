@@ -1,5 +1,5 @@
 import { __, ARR, id, Cb, Disposable } from "jsyoyo";
-import { WithOP, OP } from "xpresyo";
+import { WithOP, OP } from "jsyoyo";
 import p from "composyo/p";
 
 /**

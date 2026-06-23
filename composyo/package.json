@@ -22,7 +22,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "jsyoyo": "workspace:",
-    "xpresyo": "workspace:"
+    "jsyoyo": "workspace:"
   }
 }

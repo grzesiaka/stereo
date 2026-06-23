@@ -6,7 +6,7 @@ import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
 import type { IO, IOs$FlatTypes, IdIOs } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
 import { __, mb } from "jsyoyo";
-import { OP } from "xpresyo";
+import { OP } from "jsyoyo";
 import D, { DISPOSE, type Disposyo } from "disposyo";
 import type { Var } from "./var";
 

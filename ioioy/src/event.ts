@@ -1,7 +1,7 @@
 import { __, Cb } from "jsyoyo";
 import cId, { CtxIdConstraint } from "jsyoyo/ctxid";
 import { IO } from "./io";
-import { OP, WithOP } from "xpresyo";
+import { OP, WithOP } from "jsyoyo";
 
 export type Event<Ctx extends CtxIdConstraint = __, X = unknown> = IO<X, X, __, Ctx> &
   WithOP<"EV", Ctx> & { OO: Set<Cb<X>> };

@@ -1,5 +1,5 @@
 import { $$, __, ARR, FLIP, Fn } from "jsyoyo";
-import { OP } from "xpresyo";
+import { OP } from "jsyoyo";
 import { Simplify } from "type-fest";
 
 /** Compose and merge

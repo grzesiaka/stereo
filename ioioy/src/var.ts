@@ -2,7 +2,7 @@ import { __, Cb, is_fun } from "jsyoyo";
 import cId, { CtxIdConstraint } from "jsyoyo/ctxid";
 import { IO } from "./io";
 import { ARR } from "~types";
-import { OP, WithOP } from "xpresyo";
+import { OP, WithOP } from "jsyoyo";
 
 export type Var<Ctx extends CtxIdConstraint = __, X = unknown, IX = X, Params = __> = IO<IX, X, X, Ctx, IX> &
   WithOP<"VR", Params> & { OO: Set<Cb<X>> };

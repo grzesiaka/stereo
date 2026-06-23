@@ -1,5 +1,5 @@
 import { $$, __, ARR, FLIP, Fn } from "jsyoyo";
-import { OP } from "xpresyo";
+import { OP } from "jsyoyo";
 
 export const composeAsync =
   <X, L = __, R = unknown>(x: X, L = __ as L, _?: R): ComposeAsync<X, L, R> =>

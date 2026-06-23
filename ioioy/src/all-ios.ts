@@ -4,7 +4,7 @@ import type { ij_Project, KeyValues$Object } from "proyij";
 import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
 import D, { DISPOSE, type Disposyo } from "disposyo";
 import { mb } from "jsyoyo";
-import { OP, WithOP } from "xpresyo";
+import { OP, WithOP } from "jsyoyo";
 
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";

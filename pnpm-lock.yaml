@@ -101,9 +101,6 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))
-      xpresyo:
-        specifier: 'workspace:'
-        version: link:../libs/xpresyo
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
