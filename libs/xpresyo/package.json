@@ -17,6 +17,8 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
-    "objoy": "workspace:"
+    "objoy": "workspace:",
+    "treeo": "workspace:",
+    "txtxt": "workspace:"
   }
 }
