@@ -2,8 +2,16 @@ import type { ARR } from "jsyoyo";
 import { map, Tree_of_Functions, Tree$Values } from "treeo";
 import { Fn, Fn$I, Fn$O_Recursive } from "~types";
 
-export type Command<T> =
-  Fn$O_Recursive<Tree$Values<T>> extends readonly [infer K, infer Ps, any] ? [K, Ps, ARR<Command<T>>] : T;
+type CommandLeaf<T> = Extract<Fn$O_Recursive<Tree$Values<T>>, readonly [any, any]>;
+
+// an auxiliary type to force union distribution
+type CommandNodeMap<U, T, Extra> = U extends readonly [infer K, infer Ps, any]
+  ? [K, Ps, (CommandNode<T, Extra> | Extra)[]]
+  : never;
+
+type CommandNode<T, Extra> = CommandNodeMap<Fn$O_Recursive<Tree$Values<T>>, T, Extra>;
+
+export type Command<T> = CommandLeaf<T> | CommandNode<T, CommandLeaf<T>>;
 
 type CommandLeafBase<K extends string = string, Params extends ARR = ARR> = [K, Params];
 type CommandBase<

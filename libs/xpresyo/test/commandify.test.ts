@@ -60,11 +60,11 @@ describe(commandify, ({ eq }) => ({
       "c.d",
       ["D"],
       [
-        ["a", ["A"], []],
+        ["a", ["A"], [["c.d", ["D"], []]]],
         ["b", ["B"], []],
       ],
     ] as const satisfies Command<typeof F>;
 
-    eq(F.c.d("D")(F.a("A")(), F.b("B")()), r);
+    eq(F.c.d("D")(F.a("A")(F.c.d("D")()), F.b("B")()), r);
   },
 }));
