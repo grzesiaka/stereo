@@ -6,7 +6,7 @@ type CommandLeaf<T> = Extract<Fn$O_Recursive<Tree$Values<T>>, readonly [any, any
 
 // an auxiliary type to force union distribution
 type CommandNodeMap<U, T, Extra> = U extends readonly [infer K, infer Ps, any]
-  ? [K, Ps, (CommandNode<T, Extra> | Extra)[]]
+  ? [K, Ps, ARR<CommandNode<T, Extra> | Extra>]
   : never;
 
 type CommandNode<T, Extra> = CommandNodeMap<Fn$O_Recursive<Tree$Values<T>>, T, Extra>;
@@ -27,7 +27,7 @@ export type CommandifyLeaves<T, P extends string = ""> = T extends Fn
 export const commandifyLeaves = <T extends Tree_of_Functions>(fns: T) =>
   map(fns)(([_, k]) => (...ps: any) => [k, ps]) as CommandifyLeaves<T>;
 
-export type Commandify<T, Constraint, P extends string = ""> = T extends Fn
+export type Commandify<T, Constraint = CommandBase, P extends string = ""> = T extends Fn
   ? <I extends Fn$I<T>>(...I: I) => <const K extends ARR<Constraint>>(...kids: K) => [P, I, K]
   : { [K in keyof T & string]: Commandify<T[K], Constraint, "" extends P ? `${K}` : `${P}.${K}`> };
 

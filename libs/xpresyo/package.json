@@ -16,6 +16,9 @@
     "test-ci": "vitest test --passWithNoTests --project unit/out",
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
+  "peerDependencies": {
+    "type-fest": "catalog:"
+  },
   "devDependencies": {
     "jsyoyo": "workspace:",
     "objoy": "workspace:",
