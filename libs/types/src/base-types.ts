@@ -56,6 +56,11 @@ export type Fn$I<F> = F extends Fn<infer I> ? I : never;
 export type Fn$O<F> = F extends Fn<any, infer O> ? O : never;
 
 /**
+ * Curried function to its output
+ */
+export type Fn$O_Recursive<F> = F extends Fn<any, infer O> ? Fn$O_Recursive<O> : F;
+
+/**
  * Dispose
  */
 export type Dispose = () => void;
