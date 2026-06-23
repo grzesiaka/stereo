@@ -2,7 +2,6 @@ import { Get } from "type-fest";
 
 import { a, ARR, Fn, Fn$O } from "jsyoyo";
 import { Tree$Values, Tree_of_Functions } from "treeo";
-import { WithOP, type OP } from "jsyoyo";
 
 import { commandify, commandifyLeaves, Command, Commandify, CommandifyLeaves } from "./commandify";
 
@@ -16,15 +15,21 @@ const get = (op: string, x: object) => {
   return i;
 };
 
-export type Interpret<
-  Nodes,
-  Leaves,
-  AST extends Command<Commandify<Nodes> & CommandifyLeaves<Leaves>>,
-> = AST extends readonly [infer K extends string, infer Ps extends ARR, unknown?]
+type InterpretArr<Nodes, Leaves, AST> = AST extends readonly [infer H, ...infer R]
+  ? [Interpret<Nodes, Leaves, H>, ...InterpretArr<Nodes, Leaves, R>]
+  : [];
+
+export type Interpret<Nodes, Leaves, AST> = AST extends readonly [infer K extends string, infer Ps extends ARR]
   ? Get<Nodes & Leaves, K> extends Fn<ARR, infer O>
-    ? O & WithOP<K, Ps>
-    : ["?", Get<Nodes & Leaves, K>]
-  : never;
+    ? O & { __: [K, Ps] }
+    : ["ERROR: MISSING FUNCTION", K]
+  : AST extends readonly [infer K extends string, infer Ps extends ARR, infer R]
+    ? Get<Nodes & Leaves, K> extends Fn<ARR, infer O>
+      ? O & { __: [K, Ps, Interpret<Nodes, Leaves, R>] }
+      : ["ERROR: MISSING FUNCTION", K]
+    : AST extends ARR
+      ? InterpretArr<Nodes, Leaves, AST>
+      : never;
 
 export const expressify =
   <Nodes extends Tree_of_Functions, Leaves extends Tree_of_Functions = {}>(nodes: Nodes, leaves = {} as Leaves) =>
@@ -34,8 +39,12 @@ export const expressify =
       const [op, ps, ks] = ast;
       const f = get(op, nodes) || get(op, leaves);
       const x = f(...ps);
-      const kx = (ks || []).map(run);
-      kx.length && $(x, kx);
+      x.__ = [op, ps];
+      if (ks) {
+        const kx = ks.map(run);
+        $(x, kx as never);
+        x.__.push(kx);
+      }
       return x as Interpret<Nodes, Leaves, T>;
     };
     return {

@@ -493,6 +493,10 @@ importers:
         version: 'link:'
 
   libs/xpresyo:
+    dependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.7.0
     devDependencies:
       jsyoyo:
         specifier: 'workspace:'
