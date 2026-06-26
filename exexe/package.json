@@ -19,6 +19,7 @@
   "dependencies": {
     "ioioy": "workspace:",
     "jsyoyo": "workspace:",
-    "oyoyo": "workspace:"
+    "oyoyo": "workspace:",
+    "xpresyo": "workspace:"
   }
 }

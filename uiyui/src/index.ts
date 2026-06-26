@@ -1,1 +1,2 @@
-export default "uiyui";
+export * from "./html"
+export * from "./svg"

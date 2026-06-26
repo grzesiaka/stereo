@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev$": "turbo run dev --filter='~examples'...",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -12,6 +13,7 @@
     "ioioy": "workspace:",
     "typescript": "catalog:",
     "typier": "workspace:",
+    "uiyui": "workspace:",
     "vite": "catalog:",
     "~dom": "workspace:"
   }
