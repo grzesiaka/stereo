@@ -1,6 +1,3 @@
 {
-  "compilerOptions": {
-    "lib": ["DOM"]
-  },
-  "extends": "./node_modules/~cfg/tsconfig.dev.json"
+  "extends": "./node_modules/~cfg/tsconfig.dev.web.json"
 }

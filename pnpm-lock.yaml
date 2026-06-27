@@ -649,7 +649,7 @@ importers:
         specifier: 'workspace:'
         version: link:../libs/types
 
-  svgyo:
+  svgyoyo:
     devDependencies:
       vitest:
         specifier: 'catalog:'

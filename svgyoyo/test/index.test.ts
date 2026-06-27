@@ -1,5 +1,6 @@
-import { describe } from '~testing'
-import * as I from '../src/index'
+import { describe } from "~testing";
+import * as I from "../src/index";
 
-describe('', ({ eq }) => ({
-}))
+describe("", ({ eq }) => ({
+  empty: () => eq(I, I),
+}));

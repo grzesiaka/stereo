@@ -11,6 +11,7 @@ const testIndex = `import { describe } from '~testing'
 import * as I from '../src/index'
 
 describe('', ({ eq }) => ({
+  empty: () => eq(I,I);
 }))
 `;
 
@@ -19,6 +20,9 @@ const azKeysOrder = (obj: object) =>
     .sort()
     // @ts-expect-error
     .reduce((a, k) => ((a[k] = obj[k]), a), {});
+
+const pkg_to_tsconfig = (pkg: { $kind?: "web" | "" }) =>
+  `node_modules/~cfg/tsconfig.build.${pkg.$kind ? `${pkg.$kind}.` : ""}json`;
 
 const setDefaults = (root: string, files: string[]) => {
   const pkgPath = resolve(root, "package.json");
@@ -31,8 +35,7 @@ const setDefaults = (root: string, files: string[]) => {
     pkg.type = "module";
 
     !pkg.scripts.build &&
-      (pkg.scripts.build =
-        "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json");
+      (pkg.scripts.build = `tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig ${pkg_to_tsconfig(pkg)}`);
     !pkg.scripts.dev && (pkg.scripts.dev = "pnpm build --watch");
 
     !pkg.scripts.dev$ && (pkg.scripts.dev$ = `turbo run dev --filter='${pkg.name}'...`);
@@ -40,7 +43,7 @@ const setDefaults = (root: string, files: string[]) => {
 
     !pkg.scripts.test && (pkg.scripts.test = "vitest test --passWithNoTests --project unit");
     !pkg.scripts["test-ci"] && (pkg.scripts["test-ci"] = "vitest test --passWithNoTests --project unit/out");
-    pkg.scripts.tsc = "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json";
+    pkg.scripts.tsc = `tsc --noEmit -p ${pkg_to_tsconfig(pkg)}`;
 
     pkg.scripts = azKeysOrder(pkg.scripts);
 
