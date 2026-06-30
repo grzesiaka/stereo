@@ -20,13 +20,15 @@
     "test-ci": "vitest test --passWithNoTests --project unit/out",
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.web.json"
   },
+  "devDependencies": {
+    "@types/web": "catalog:"
+  },
   "peerDependencies": {
+    "ioioy": "workspace:",
     "jsyoyo": "workspace:*",
+    "txtxt": "workspace:*",
     "type-fest": "catalog:",
     "typier": "workspace:*"
   },
-  "$kind": "web",
-  "devDependencies": {
-    "@types/web": "catalog:"
-  }
+  "$kind": "web"
 }

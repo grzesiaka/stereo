@@ -16,12 +16,22 @@ const p = html.p({
   },
 });
 
-const i = html.input({
-  value: "value",
-});
+const i = html.input(
+  {
+    value: "value",
+  },
+  { className: "klassName", classList: ["klassList"], props: {} },
+);
 
 i.setAttribute("value", "over");
 
 const a = html.a({ innerText: "LINK", href: `/#${Date.now()}/#abc` });
-$.document.body.append(p.$EL, i.$EL, a.$EL);
+$.document.body.append(p.$.EL, i.$.EL, a.$.EL);
 $.console.log(p, i, i.defaultValue, a);
+
+//window.i = i;
+$.console.log(i.$(), i.$("classList"), i.$());
+
+// const div = html.div({}, { ok: "", abc: "", cde: "" });
+const arr = html.div({}, ["a", "b"]);
+arr.$.VAR;
