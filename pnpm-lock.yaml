@@ -747,9 +747,15 @@ importers:
 
   uiyui:
     dependencies:
+      ioioy:
+        specifier: 'workspace:'
+        version: link:../ioioy
       jsyoyo:
         specifier: workspace:*
         version: link:../libs/jsyoyo
+      txtxt:
+        specifier: workspace:*
+        version: link:../libs/txtxt
       type-fest:
         specifier: 'catalog:'
         version: 5.7.0

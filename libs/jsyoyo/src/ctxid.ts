@@ -1,7 +1,6 @@
 import { Simplify } from "type-fest";
 import { __ } from "~types";
-
-import { a } from ".";
+import { a } from "objoy";
 
 export type CtxIdConstraint = __ | PropertyKey | { Id?: PropertyKey; [k: PropertyKey]: unknown };
 
