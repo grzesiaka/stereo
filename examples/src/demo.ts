@@ -6,7 +6,7 @@ import { $ } from "~dom";
 
 $.console.log("OK", TYP, IO, $);
 
-import { html } from "uiyui";
+import { htmlProxy as html } from "uiyui";
 
 const p = html.p({
   innerText: "abc",
@@ -23,6 +23,5 @@ const i = html.input({
 i.setAttribute("value", "over");
 
 const a = html.a({ innerText: "LINK", href: `/#${Date.now()}/#abc` });
-
-$.document.body.append(p, i, a);
-$.console.log(p, i, a);
+$.document.body.append(p.$EL, i.$EL, a.$EL);
+$.console.log(p, i, i.defaultValue, a);

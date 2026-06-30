@@ -1,5 +1,6 @@
 export * from "./all-ios"
 export * from "./event"
+export * from "./from-object"
 export * from "./from-typier"
 export * from "./io"
 export * from "./ios-by-id"

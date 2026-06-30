@@ -43,7 +43,8 @@ describe(A, ({ eq, res }) => ({
   },
 
   nullable: () => {
-    const a = A("AND")([V("", "str"), V(0, { Id: "num" }), V(false, "bool")], null, undefined);
+    const parts = [V("", "str"), V(0, { Id: "num" }), V(false, "bool")];
+    const a = A("AND")(parts, null, undefined);
     eq(a.X, { str: "", num: 0, bool: false });
     eq(a.O.Id, "AND");
     const r = res<unknown>();
