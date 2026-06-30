@@ -1,2 +1,3 @@
-export * from "./html"
-export * from "./svg"
+export * from "./html/index"
+export * from "./svg/index"
+

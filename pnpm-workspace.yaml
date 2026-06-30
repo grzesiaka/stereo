@@ -5,6 +5,7 @@ blockExoticSubdeps: true
 catalog:
   "@types/chrome": 0.1.36
   "@types/node": 25.2.3
+  '@types/web': 0.0.336
   "@vitest/coverage-v8": 4.0.18
   oxfmt: 0.53.0
   oxlint: 1.68.0

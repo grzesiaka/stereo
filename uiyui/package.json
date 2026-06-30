@@ -5,7 +5,11 @@
   "sideEffects": false,
   "exports": {
     ".": "./out/index.mjs",
-    "./*": "./out/*.mjs"
+    "./*": "./out/*.mjs",
+    "./html": "./out/html/index.mjs",
+    "./html/*": "./out/html/*.mjs",
+    "./svg": "./out/svg/index.mjs",
+    "./svg/*": "./out/svg/*.mjs"
   },
   "scripts": {
     "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.web.json",
@@ -18,7 +22,11 @@
   },
   "peerDependencies": {
     "jsyoyo": "workspace:*",
+    "type-fest": "catalog:",
     "typier": "workspace:*"
   },
-  "$kind": "web"
+  "$kind": "web",
+  "devDependencies": {
+    "@types/web": "catalog:"
+  }
 }

@@ -9,6 +9,9 @@ catalogs:
     '@types/node':
       specifier: 25.2.3
       version: 25.2.3
+    '@types/web':
+      specifier: 0.0.336
+      version: 0.0.336
     '@vitest/coverage-v8':
       specifier: 4.0.18
       version: 4.0.18
@@ -747,10 +750,16 @@ importers:
       jsyoyo:
         specifier: workspace:*
         version: link:../libs/jsyoyo
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.7.0
       typier:
         specifier: workspace:*
         version: link:../typier
     devDependencies:
+      '@types/web':
+        specifier: 'catalog:'
+        version: 0.0.336
       vitest:
         specifier: 'catalog:'
         version: 4.1.8(@types/node@25.2.3)(vite@8.0.16(@types/node@25.2.3)(esbuild@0.27.4))

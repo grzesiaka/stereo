@@ -23,7 +23,7 @@ type SVGElements = {
   readonly [K in SVGTag]: (opt: RemapOptions<SVGElementTagNameMap[K]>) => SVGElementTagNameMap[K];
 };
 
-export const svg = new Proxy(
+export const svgProxy = new Proxy(
   {},
   {
     get: (_, p: SVGTag) => (opt: any) => {
@@ -35,6 +35,4 @@ export const svg = new Proxy(
   },
 ) as SVGElements;
 
-export default svg;
-
-svg.circle({});
+export default svgProxy;
