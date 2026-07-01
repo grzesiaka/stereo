@@ -20,7 +20,7 @@ const i = html.input(
   {
     value: "value",
   },
-  { className: "klassName", classList: ["klassList"], props: {} },
+  { className: "klassName", classList: ["klassList"], props: { defaultValue: "propsik" } },
 );
 
 i.setAttribute("value", "over");
@@ -29,9 +29,14 @@ const a = html.a({ innerText: "LINK", href: `/#${Date.now()}/#abc` });
 $.document.body.append(p.$.EL, i.$.EL, a.$.EL);
 $.console.log(p, i, i.defaultValue, a);
 
-//window.i = i;
+// @ts-expect-error
+// oxlint-disable-next-line no-undef
+window.i = i;
 $.console.log(i.$(), i.$("classList"), i.$());
 
 // const div = html.div({}, { ok: "", abc: "", cde: "" });
 const arr = html.div({}, ["a", "b"]);
-arr.$.VAR;
+arr.$.VAR.X;
+arr.$("b");
+arr.$("a");
+arr.$("a");

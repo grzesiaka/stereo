@@ -1,4 +1,4 @@
-import { a, k1, Split, ObjectFromStrings } from "jsyoyo";
+import { a, k1, Split, ObjectFromStrings, ifArray, fromStrings, mb } from "jsyoyo";
 import { __, ARR } from "~types";
 import { Var } from "ioioy";
 
@@ -35,48 +35,84 @@ type HTMLPolyElement<
   Vs extends Variants = Variants,
 > = HTMLImprovedElement<T> & {
   $: {
-    <K extends keyof Vs | undefined>(...[key]: [K] | []): K extends keyof Vs ? HTMLPolyElement<T, O, Vs> : keyof Vs;
+    <K extends keyof NormalizeVariants<Vs> | undefined>(
+      ...[key]: [K] | []
+    ): K extends keyof Vs ? HTMLPolyElement<T, O, Vs> : keyof Vs;
     VAR: Var<{ IANTS: NormalizeVariants<Vs> }, keyof NormalizeVariants<Vs>>;
   };
 };
 
 type HTMLElements = {
-  readonly [K in HTMLTag]: <const O extends WriteableProps<K>, const Vs extends Variants<K> | undefined = undefined>(
+  readonly [K in HTMLTag]: <
+    const O extends WriteableProps<K> | string,
+    const Vs extends Variants<K> | undefined = undefined,
+  >(
     opt?: O,
     variants?: Vs,
-  ) => Vs extends Variants ? HTMLPolyElement<K, O, Vs> : HTMLImprovedElement<K>;
+  ) => Vs extends Variants<K> ? HTMLPolyElement<K, O, Vs> : HTMLImprovedElement<K>;
 };
 
-const applyProps = (el: HTMLImprovedElement, props: WriteableProps) => 1;
+const applyProps = (el: HTMLElement) => (props: WriteableProps) => {
+  const { style, dataset, classList, ...rest } = props;
+  a(el, rest);
+  a(el.style, style);
+  a(el.dataset, dataset);
+  if (classList) {
+    el.classList.add(...classList);
+  }
+  return el;
+};
 
 const switchVariant = <Vs extends Variants>(next: keyof Vs, el: HTMLPolyElement) => {
-  const current = el.$.VAR.O.IANTS[el.$.VAR.X];
-
-  applyProps(el, el.$.VAR.O.IANTS[next] as WriteableProps);
+  const currentKey = el.$.VAR.X;
+  const current = el.$.VAR.O.IANTS[currentKey];
+  const EL = el.$.EL;
+  EL.classList.remove(currentKey, ...((current as any).classList || []));
+  EL.classList.add(next as string);
+  console.log(currentKey, "--->", next);
+  applyProps(el.$.EL)(el.$.VAR.O.IANTS[next] as WriteableProps);
 };
+
+const normalizeVariants = (vs: Variants): NormalizeVariants<Variants> =>
+  ifArray(
+    vs,
+    (vs) => normalizeVariants(fromStrings(vs)),
+    (vs) =>
+      mb((v: Variant) =>
+        ifArray(
+          v,
+          (v) => ({
+            classList: v,
+          }),
+          (v) =>
+            typeof v === "string"
+              ? {
+                  classList: v.split(" "),
+                }
+              : v,
+        ),
+      )(vs),
+  );
 
 export const htmlProxy = new Proxy(
   {},
   {
     get: (_, p: HTMLTag) => (opt: any, vars: any) => {
       // oxlint-disable-next-line no-undef
-      const $ = a(document.createElement(p), opt);
-      opt.style && a($.style, opt.style);
+      const props = applyProps(document.createElement(p));
+      const $ = props(opt) as any as HTMLPolyElement & { $: any };
 
       if (vars) {
-        const v = Var(k1(vars), { IANTS: vars });
-        $.$ = (...k: any[]) => (k.length ? (v.I(k[0]), $) : $.VAR.X);
-        $.VAR = v;
-        v.O((x) => {
-          console.log("--->", x);
-          switchVariant(x, $);
-        });
+        const vs = normalizeVariants(vars);
+        const v = Var(k1(vs), { IANTS: vs });
+        $.$ = (...k: any[]) => (k.length ? (v.I(k[0]), $) : $.$.VAR.X);
+        $.$.VAR = v;
+        $.$.EL = $;
+        v.O((x) => switchVariant(x as any, $));
       } else {
         $.$ = {};
       }
-
       $.$.EL = $;
-
       return $;
     },
   },
@@ -109,5 +145,9 @@ type DataPropertiesKeys<T> = {
 type WritableDataProperties<T> = Pick<T, DataPropertiesKeys<T>>;
 
 type WritableHTMLElementData<E> = Partial<
-  WritableDataProperties<E> & { style: Partial<CSSStyleDeclaration>; classList: readonly string[] }
+  WritableDataProperties<E> & {
+    style: Partial<CSSStyleDeclaration>;
+    classList: readonly string[];
+    dataset: Record<string, string>;
+  }
 >;
