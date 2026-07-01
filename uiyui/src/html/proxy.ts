@@ -6,9 +6,10 @@ type HTMLTag = keyof HTMLElementTagNameMap;
 type WriteableProps<K extends HTMLTag = HTMLTag> = WritableHTMLElementData<HTMLElementTagNameMap[K]>;
 
 type Variant<K extends HTMLTag = HTMLTag> = string | ARR<string> | WriteableProps<K>;
-type Variants<K extends HTMLTag = HTMLTag> = ARR<string> | Record<string, Variant<K>>;
-type NormalizeVariants<Vs extends Variants> =
-  Vs extends ARR<string>
+type Variants<K extends HTMLTag = HTMLTag> = string | ARR<string> | Record<string, Variant<K>>;
+type NormalizeVariants<Vs extends Variants> = Vs extends string
+  ? NormalizeVariants<Split<Vs, " ">>
+  : Vs extends ARR<string>
     ? NormalizeVariants<ObjectFromStrings<Vs>>
     : {
         [K in keyof Vs]: Vs[K] extends string
@@ -25,15 +26,17 @@ type DenoiseHTMLElementKeys<T> = {
 }[keyof T];
 type DenoiseHTMLElement<T> = Pick<T, DenoiseHTMLElementKeys<T>>;
 
-type HTMLImprovedElement<K extends HTMLTag = HTMLTag> = DenoiseHTMLElement<HTMLElementTagNameMap[K]> & {
+type HTMLImprovedElement<K extends HTMLTag = HTMLTag, O extends WriteableProps<K> | string = {}> = DenoiseHTMLElement<
+  HTMLElementTagNameMap[K]
+> & {
   $: { EL: HTMLElementTagNameMap[K] };
-};
+} & (O extends string ? { id: O } : O);
 
 type HTMLPolyElement<
   T extends HTMLTag = HTMLTag,
-  O = unknown,
+  O extends WriteableProps<T> | string = {},
   Vs extends Variants = Variants,
-> = HTMLImprovedElement<T> & {
+> = HTMLImprovedElement<T, O> & {
   $: {
     <K extends keyof NormalizeVariants<Vs> | undefined>(
       ...[key]: [K] | []
@@ -49,7 +52,7 @@ type HTMLElements = {
   >(
     opt?: O,
     variants?: Vs,
-  ) => Vs extends Variants<K> ? HTMLPolyElement<K, O, Vs> : HTMLImprovedElement<K>;
+  ) => Vs extends Variants<K> ? HTMLPolyElement<K, O, Vs> : HTMLImprovedElement<K, O>;
 };
 
 const applyProps = (el: HTMLElement) => (props: WriteableProps) => {
@@ -78,20 +81,22 @@ const normalizeVariants = (vs: Variants): NormalizeVariants<Variants> =>
     vs,
     (vs) => normalizeVariants(fromStrings(vs)),
     (vs) =>
-      mb((v: Variant) =>
-        ifArray(
-          v,
-          (v) => ({
-            classList: v,
-          }),
-          (v) =>
-            typeof v === "string"
-              ? {
-                  classList: v.split(" "),
-                }
-              : v,
-        ),
-      )(vs),
+      typeof vs === "string"
+        ? normalizeVariants(fromStrings(vs.split(" ")))
+        : mb((v: Variant) =>
+            ifArray(
+              v,
+              (v) => ({
+                classList: v,
+              }),
+              (v) =>
+                typeof v === "string"
+                  ? {
+                      classList: v.split(" "),
+                    }
+                  : v,
+            ),
+          )(vs),
   );
 
 export const htmlProxy = new Proxy(

@@ -35,8 +35,32 @@ window.i = i;
 $.console.log(i.$(), i.$("classList"), i.$());
 
 // const div = html.div({}, { ok: "", abc: "", cde: "" });
-const arr = html.div({}, ["a", "b"]);
+const arr = html.div({ textContent: "abc" }, ["a", "b"]);
 arr.$.VAR.X;
 arr.$("b");
 arr.$("a");
 arr.$("a");
+
+const btn = html.button("save", ["idle", "sending", "error"]);
+const btn2 = html.button("load", {
+  idle: {
+    textContent: "idle",
+  },
+  loading: {
+    textContent: "loading",
+  },
+  loaded: {
+    textContent: "loaded",
+  },
+});
+
+btn2.$.EL.onclick = () => {
+  btn2.$("loading");
+  btn2.textContent = "loading";
+  $.setTimeout(() => {
+    btn2.$("loaded");
+    btn2.textContent = "loaded";
+  }, 2000);
+};
+
+$.document.body.append(arr.$.EL, btn.$.EL, btn2.$.EL);
