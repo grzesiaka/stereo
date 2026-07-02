@@ -75,6 +75,14 @@ btn2.onclick = () => {
   }, 2000);
 };
 
+const d = btn2.$.on({
+  click(p) {
+    $.console.log("CLICK", this, p);
+    d();
+  },
+  focus: (ev) => $.console.log("FOCUS", this, ev),
+});
+
 $.console.log(btn.tagName);
 const tarea = html.textarea("abc");
 

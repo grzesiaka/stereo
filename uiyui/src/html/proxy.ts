@@ -1,4 +1,4 @@
-import { a, k1, Split, ObjectFromStrings, ifArray, fromStrings, mb } from "jsyoyo";
+import { a, k1, Split, ObjectFromStrings, ifArray, fromStrings, mb, Fn } from "jsyoyo";
 import { __, ARR } from "~types";
 import { Var } from "ioioy";
 
@@ -26,25 +26,37 @@ type NormalizeVariants<Vs extends Variants> = Vs extends string
 // }[keyof T];
 // type DenoiseHTMLElement<T> = Pick<T, DenoiseHTMLElementKeys<T>>;
 
+type EventsNames<El> = { [K in keyof El]: K extends `on${infer Ev}` ? Ev : never }[keyof El];
+type EventsHandlersAll<El> = {
+  [K in EventsNames<El>]: El[`on${K}` & keyof El] extends Fn | null
+    ? (this: El, ev: Parameters<NonNullable<El[`on${K}` & keyof El]>>[0]) => void
+    : never;
+};
+type EventsHandlers<El> = Partial<EventsHandlersAll<El>>;
+
 type HTMLImprovedElement<
   K extends HTMLTag = HTMLTag,
   O extends WriteableProps<K> | string = {},
 > = HTMLElementTagNameMap[K] & {
   $(p: WriteableProps<K>): HTMLImprovedElement<K, O>;
-} & (O extends string ? { id: O } : O);
+} & (O extends string ? { id: O } : O) & { $: { on: (hs: EventsHandlers<HTMLImprovedElement<K, O>>) => () => void } };
 
 type HTMLPolyElement<
   T extends HTMLTag = HTMLTag,
   O extends WriteableProps<T> | string = {},
   Vs extends Variants = Variants,
-> = HTMLImprovedElement<T, O> & {
-  $: {
-    <K extends keyof NormalizeVariants<Vs> | undefined>(
-      ...[key]: [K] | []
-    ): K extends keyof Vs ? HTMLPolyElement<T, O, Vs> : keyof Vs;
-    VAR: Var<{ IANTS: NormalizeVariants<Vs> }, keyof NormalizeVariants<Vs>>;
+> = HTMLElementTagNameMap[T] & {
+  $(p: WriteableProps<T>): HTMLPolyElement<T, O, Vs>;
+} & (O extends string ? { id: O } : O) & {
+    $: { on: (hs: EventsHandlers<HTMLPolyElement<T, O, Vs>>) => () => void };
+  } & {
+    $: {
+      <K extends keyof NormalizeVariants<Vs> | undefined>(
+        ...[key]: [K] | []
+      ): K extends keyof Vs ? HTMLPolyElement<T, O, Vs> : keyof Vs;
+      VAR: Var<{ IANTS: NormalizeVariants<Vs> }, keyof NormalizeVariants<Vs>>;
+    };
   };
-};
 
 type HTMLElements = {
   readonly [K in HTMLTag]: <
@@ -120,6 +132,11 @@ export const htmlProxy = new Proxy(
       }
 
       opt && $.$(typeof opt === "string" ? { id: opt } : opt);
+
+      $.$.on = (hs) => {
+        mb((cb, k) => $.addEventListener(k, cb))(hs);
+        return () => mb((cb, k) => $.removeEventListener(k, cb))(hs);
+      };
       return $;
     },
   },
