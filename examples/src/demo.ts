@@ -8,6 +8,8 @@ $.console.log("OK", TYP, IO, $);
 
 import { htmlProxy as html } from "uiyui";
 
+const { br } = html;
+
 const p = html.p({
   innerText: "abc",
   className: "abc cde",
@@ -26,7 +28,7 @@ const i = html.input(
 i.setAttribute("value", "over");
 
 const a = html.a({ innerText: "LINK", href: `/#${Date.now()}/#abc` });
-$.document.body.append(p.$.EL, i.$.EL, a.$.EL);
+$.document.body.append(p, i, a);
 $.console.log(p, i, i.defaultValue, a);
 
 // @ts-expect-error
@@ -54,7 +56,17 @@ const btn2 = html.button("load", {
   },
 });
 
-btn2.$.EL.onclick = () => {
+btn.$({ textContent: "idle" });
+btn.onclick = () => {
+  btn.$("sending");
+  btn.textContent = "sending";
+  $.setTimeout(() => {
+    btn.$("error");
+    btn.$({ textContent: "error" });
+  }, 2000);
+};
+
+btn2.onclick = () => {
   btn2.$("loading");
   btn2.textContent = "loading";
   $.setTimeout(() => {
@@ -63,4 +75,13 @@ btn2.$.EL.onclick = () => {
   }, 2000);
 };
 
-$.document.body.append(arr.$.EL, btn.$.EL, btn2.$.EL);
+$.console.log(btn.tagName);
+const tarea = html.textarea("abc");
+
+tarea.$({
+  contentEditable: "false",
+});
+
+$.document.body.append(btn, btn2, br(), tarea, tarea, tarea);
+
+$.console.log($.document.createElement("BUTTON").tagName);

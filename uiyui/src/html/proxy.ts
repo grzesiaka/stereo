@@ -21,15 +21,16 @@ type NormalizeVariants<Vs extends Variants> = Vs extends string
             : Vs[K];
       };
 
-type DenoiseHTMLElementKeys<T> = {
-  [K in keyof T]-?: K extends `${Uppercase<string>}${string}` | `on${string}` | `aria${string}` ? never : K;
-}[keyof T];
-type DenoiseHTMLElement<T> = Pick<T, DenoiseHTMLElementKeys<T>>;
+// type DenoiseHTMLElementKeys<T> = {
+//   [K in keyof T]-?: K extends `${Uppercase<string>}${string}` | `on${string}` | `aria${string}` ? never : K;
+// }[keyof T];
+// type DenoiseHTMLElement<T> = Pick<T, DenoiseHTMLElementKeys<T>>;
 
-type HTMLImprovedElement<K extends HTMLTag = HTMLTag, O extends WriteableProps<K> | string = {}> = DenoiseHTMLElement<
-  HTMLElementTagNameMap[K]
-> & {
-  $: { EL: HTMLElementTagNameMap[K] };
+type HTMLImprovedElement<
+  K extends HTMLTag = HTMLTag,
+  O extends WriteableProps<K> | string = {},
+> = HTMLElementTagNameMap[K] & {
+  $(p: WriteableProps<K>): HTMLImprovedElement<K, O>;
 } & (O extends string ? { id: O } : O);
 
 type HTMLPolyElement<
@@ -47,7 +48,7 @@ type HTMLPolyElement<
 
 type HTMLElements = {
   readonly [K in HTMLTag]: <
-    const O extends WriteableProps<K> | string,
+    const O extends WriteableProps<K> | string = {},
     const Vs extends Variants<K> | undefined = undefined,
   >(
     opt?: O,
@@ -69,11 +70,9 @@ const applyProps = (el: HTMLElement) => (props: WriteableProps) => {
 const switchVariant = <Vs extends Variants>(next: keyof Vs, el: HTMLPolyElement) => {
   const currentKey = el.$.VAR.X;
   const current = el.$.VAR.O.IANTS[currentKey];
-  const EL = el.$.EL;
-  EL.classList.remove(currentKey, ...((current as any).classList || []));
-  EL.classList.add(next as string);
-  console.log(currentKey, "--->", next);
-  applyProps(el.$.EL)(el.$.VAR.O.IANTS[next] as WriteableProps);
+  el.classList.remove(currentKey, ...((current as any).classList || []));
+  el.classList.add(next as string);
+  applyProps(el)(el.$.VAR.O.IANTS[next] as WriteableProps);
 };
 
 const normalizeVariants = (vs: Variants): NormalizeVariants<Variants> =>
@@ -104,20 +103,23 @@ export const htmlProxy = new Proxy(
   {
     get: (_, p: HTMLTag) => (opt: any, vars: any) => {
       // oxlint-disable-next-line no-undef
-      const props = applyProps(document.createElement(p));
-      const $ = props(opt) as any as HTMLPolyElement & { $: any };
+      const $ = document.createElement(p) as HTMLPolyElement;
+
+      if (!vars) {
+        // @ts-expect-error
+        $.$ = applyProps($);
+      }
 
       if (vars) {
         const vs = normalizeVariants(vars);
         const v = Var(k1(vs), { IANTS: vs });
-        $.$ = (...k: any[]) => (k.length ? (v.I(k[0]), $) : $.$.VAR.X);
+        // @ts-expect-error
+        $.$ = (k) => (k === void 0 ? $.$.VAR.X : (typeof k === "string" ? v.I(k) : applyProps($)(k), $));
         $.$.VAR = v;
-        $.$.EL = $;
         v.O((x) => switchVariant(x as any, $));
-      } else {
-        $.$ = {};
       }
-      $.$.EL = $;
+
+      opt && $.$(typeof opt === "string" ? { id: opt } : opt);
       return $;
     },
   },
