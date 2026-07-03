@@ -1,5 +1,6 @@
-import { __, Cb, Fn, Dispose, ARR } from "jsyoyo";
+import { __, Cb, Fn, ARR } from "jsyoyo";
 import CTX, { type CtxIdConstraint } from "jsyoyo/ctxid";
+import type { Dispose } from "disposyo";
 
 /**
  * IO - a process

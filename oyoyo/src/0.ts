@@ -1,4 +1,4 @@
-import { __, ARR, id, Cb, Disposable } from "jsyoyo";
+import { __, ARR, id, Cb } from "jsyoyo";
 import { WithOP, OP } from "jsyoyo";
 import p from "composyo/p";
 
@@ -62,7 +62,7 @@ export interface WithPrevious<P = unknown> {
  *
  * **default (not-present)**: `never`
  */
-export interface Completable<Z> extends Disposable {
+export interface Completable<Z> {
   z: Promise<Z>;
 }
 

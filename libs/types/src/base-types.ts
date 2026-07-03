@@ -60,34 +60,9 @@ export type Fn$O<F> = F extends Fn<any, infer O> ? O : never;
  */
 export type Fn$O_Recursive<F> = F extends Fn<any, infer O> ? Fn$O_Recursive<O> : F;
 
-/**
- * Dispose
- */
-export type Dispose = () => void;
+export type IfEquals<X, Y, A = X, B = never> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B;
 
-/** Disposable */
-export interface Disposable {
-  (): void;
-}
-
-export type MakeUndefinedParamsOptional<X> = X extends readonly [infer H, ...infer R]
-  ? undefined extends H
-    ? [H?, ...MakeUndefinedParamsOptional<R>]
-    : X extends readonly [(infer H)?, ...infer R]
-      ? [H?, ...MakeUndefinedParamsOptional<R>]
-      : [H, ...MakeUndefinedParamsOptional<R>]
-  : [];
-
-type OptionalOrUndefinedKeys<T> = {
-  [K in keyof T]-?: {} extends Pick<T, K> ? K : undefined extends T[K] ? K : never;
+export type WritableKeys<T> = {
+  [K in keyof T]-?: IfEquals<{ [P in K]: T[P] }, { -readonly [P in K]: T[P] }, K>;
 }[keyof T];
-
-type _FlipProperties<T> = {
-  [K in keyof T as K extends OptionalOrUndefinedKeys<T> ? never : K]+?: T[K];
-} & {
-  [K in keyof T as K extends OptionalOrUndefinedKeys<T> ? K : never]-?: Exclude<T[K], undefined>;
-} & {};
-
-export type FlipOptionalAndRequiredProperties<T> = {
-  [K in keyof _FlipProperties<T>]: _FlipProperties<T>[K];
-} & {};

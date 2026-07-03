@@ -1,7 +1,7 @@
-import { __, ARR, Cb, Dispose } from "~types";
+import { __, ARR, Cb } from "~types";
 import type { ij_Project } from "proyij";
 import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
-import D, { DISPOSE, type Disposyo } from "disposyo";
+import D, { DISPOSE, type Disposyo, Dispose } from "disposyo";
 import { OP, WithOP } from "jsyoyo";
 
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";

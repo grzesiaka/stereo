@@ -1,4 +1,4 @@
-import { a, k1, Split, ObjectFromStrings, ifArray, fromStrings, mb, Fn } from "jsyoyo";
+import { a, k1, Split, ObjectFromStrings, ifArray, fromStrings, mb, Fn, WritableKeys } from "jsyoyo";
 import { __, ARR } from "~types";
 import { Var } from "ioioy";
 
@@ -143,12 +143,6 @@ export const htmlProxy = new Proxy(
 ) as HTMLElements;
 
 export default htmlProxy;
-
-type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B;
-
-type WritableKeys<T> = {
-  [K in keyof T]-?: IfEquals<{ [P in K]: T[P] }, { -readonly [P in K]: T[P] }, K>;
-}[keyof T];
 
 type SkipPrefix = "aria" | "innerHTML" | "outer";
 
