@@ -38,7 +38,6 @@ $.console.log(i.$(), i.$("classList"), i.$());
 
 // const div = html.div({}, { ok: "", abc: "", cde: "" });
 const arr = html.div({ textContent: "abc" }, ["a", "b"]);
-arr.$.VAR.X;
 arr.$("b");
 arr.$("a");
 arr.$("a");
@@ -68,10 +67,9 @@ btn.onclick = () => {
 
 btn2.onclick = () => {
   btn2.$("loading");
-  btn2.textContent = "loading";
+
   $.setTimeout(() => {
     btn2.$("loaded");
-    btn2.textContent = "loaded";
   }, 2000);
 };
 
