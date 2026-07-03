@@ -8,3 +8,5 @@ extra/
 
 .npmrc
 .DS_Store
+
+scripts/*.json

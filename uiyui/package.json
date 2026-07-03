@@ -31,5 +31,8 @@
     "typier": "workspace:*",
     "xpresyo": "workspace:*"
   },
-  "$kind": "web"
+  "$kind": "web",
+  "dependencies": {
+    "@types/node": "catalog:"
+  }
 }

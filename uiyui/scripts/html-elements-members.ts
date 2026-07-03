@@ -81,12 +81,12 @@ const output: Output = {
   warnings,
 };
 
-const json = `${JSON.stringify(output, null, 2)}\n`;
+const jsonTs = `export default ${JSON.stringify(output, null, 2)} as const\n`;
 
 if (args.outPath) {
-  await writeFile(args.outPath, json, "utf8");
+  await writeFile(args.outPath, jsonTs, "utf8");
 } else {
-  process.stdout.write(json);
+  process.stdout.write(jsonTs);
 }
 
 // ---------------------------------------------------------------------------

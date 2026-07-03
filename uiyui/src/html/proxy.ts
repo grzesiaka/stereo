@@ -1,9 +1,28 @@
-import { a, k1, Split, ObjectFromStrings, ifArray, fromStrings, mb, Fn, WritableKeys } from "jsyoyo";
+import { a, k1, Split, ObjectFromStrings, ifArray, fromStrings, mb, Fn } from "jsyoyo";
 import { __, ARR } from "~types";
+import type TR from "./web-types";
+
+type T = typeof TR;
+// type C = T["HTMLElement"]["data_writable"][number];
 
 type HTMLTag = keyof HTMLElementTagNameMap;
 // TOOD this is kind of backwards - just generate slimmer api surface area based on @types/web/index.d.ts
-type WriteableProps<K extends HTMLTag = HTMLTag> = WritableHTMLElementData<HTMLElementTagNameMap[K]>;
+// type WriteableProps<K extends HTMLTag = HTMLTag> = WritableHTMLElementData<HTMLElementTagNameMap[K]>;
+type WriteablePropsKeys<K extends HTMLTag = HTMLTag> =
+  | T["HTMLElement"]["data_writable"][number]
+  | (K extends keyof T["elements"]
+      ? T["elements"][K] extends { data_writable: infer D extends readonly any[] }
+        ? D[number]
+        : never
+      : never);
+
+// const x = "" as WriteablePropsKeys<"video">;
+
+type WriteableProps<K extends HTMLTag = HTMLTag> = Partial<Pick<HTMLElementTagNameMap[K], WriteablePropsKeys<K>>> & {
+  style?: Partial<CSSStyleDeclaration>;
+  classList?: readonly string[];
+  dataset?: Record<string, string>;
+};
 
 type State<K extends HTMLTag = HTMLTag> = string | ARR<string> | WriteableProps<K>;
 type StatesRaw<K extends HTMLTag = HTMLTag> = string | ARR<string> | Record<string, State<K>>;
@@ -40,18 +59,20 @@ export type HTMLImprovedElement<
 export type HTMLPolyElement<
   T extends HTMLTag = HTMLTag,
   O extends WriteableProps<T> | string = {},
-  Vs extends StatesRaw = StatesRaw,
-> = HTMLElementTagNameMap[T] & {
-  $(p: WriteableProps<T>): HTMLPolyElement<T, O, Vs>;
-} & (O extends string ? { id: O } : O) & {
-    $: { on: (hs: EventsHandlers<HTMLPolyElement<T, O, Vs>>, opt?: boolean | EventListenerOptions) => () => void };
-  } & {
-    $: {
-      <K extends keyof States<Vs> | undefined>(
-        ...[key]: [K] | []
-      ): K extends keyof Vs ? HTMLPolyElement<T, O, Vs> : keyof Vs;
-    };
-  };
+  Vs extends StatesRaw | undefined = StatesRaw | undefined,
+> = undefined extends StatesRaw
+  ? HTMLImprovedElement<T, O>
+  : HTMLElementTagNameMap[T] & {
+      $(p: WriteableProps<T>): HTMLPolyElement<T, O, Vs>;
+    } & (O extends string ? { id: O } : O) & {
+        $: { on: (hs: EventsHandlers<HTMLPolyElement<T, O, Vs>>, opt?: boolean | EventListenerOptions) => () => void };
+      } & {
+        $: {
+          <K extends keyof States<Exclude<Vs, undefined>> | undefined>(
+            ...[key]: [K] | []
+          ): K extends keyof Vs ? HTMLPolyElement<T, O, Vs> : keyof Vs;
+        };
+      };
 
 type HTMLElements = {
   readonly [K in HTMLTag]: <
@@ -60,7 +81,9 @@ type HTMLElements = {
   >(
     opt?: O,
     States?: Vs,
-  ) => Vs extends StatesRaw<K> ? HTMLPolyElement<K, O, Vs> : HTMLImprovedElement<K, O>;
+  ) => HTMLPolyElement<K, O, Vs>;
+
+  // Vs extends StatesRaw<K> ? HTMLPolyElement<K, O, Vs> : HTMLImprovedElement<K, O>;
 };
 
 const applyProps = (el: HTMLElement) => (props: WriteableProps) => {
@@ -143,31 +166,31 @@ export const htmlProxy = new Proxy(
 
 export default htmlProxy;
 
-type SkipPrefix = "aria" | "innerHTML" | "outer";
+// type SkipPrefix = "aria" | "innerHTML" | "outer";
 
-type SkipKeys =
-  | `${SkipPrefix}${string}`
-  | "nodeValue"
-  | "style" // must be partial
-  | "classList"; /* readonly but not marked in TS as such */
-type DataPropertiesKeys<T> = {
-  // methods & callbacks
-  [K in WritableKeys<T>]: T[K] extends ((...args: any[]) => any) | null | undefined
-    ? never
-    : K extends SkipKeys
-      ? never
-      : K;
-}[WritableKeys<T>];
+// type SkipKeys =
+//   | `${SkipPrefix}${string}`
+//   | "nodeValue"
+//   | "style" // must be partial
+//   | "classList"; /* readonly but not marked in TS as such */
+// type DataPropertiesKeys<T> = {
+//   // methods & callbacks
+//   [K in WritableKeys<T>]: T[K] extends ((...args: any[]) => any) | null | undefined
+//     ? never
+//     : K extends SkipKeys
+//       ? never
+//       : K;
+// }[WritableKeys<T>];
 
-type WritableDataProperties<T> = Pick<T, DataPropertiesKeys<T>>;
+// type WritableDataProperties<T> = Pick<T, DataPropertiesKeys<T>>;
 
-type WritableHTMLElementData<E> = Partial<
-  WritableDataProperties<E> & {
-    style: Partial<CSSStyleDeclaration>;
-    classList: readonly string[];
-    dataset: Record<string, string>;
-  }
->;
+// type WritableHTMLElementData<E> = Partial<
+//   WritableDataProperties<E> & {
+//     style: Partial<CSSStyleDeclaration>;
+//     classList: readonly string[];
+//     dataset: Record<string, string>;
+//   }
+// >;
 
 // type DenoiseHTMLElementKeys<T> = {
 //   [K in keyof T]-?: K extends `${Uppercase<string>}${string}` | `on${string}` | `aria${string}` ? never : K;
