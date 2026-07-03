@@ -44,7 +44,7 @@ export type HTMLPolyElement<
 > = HTMLElementTagNameMap[T] & {
   $(p: WriteableProps<T>): HTMLPolyElement<T, O, Vs>;
 } & (O extends string ? { id: O } : O) & {
-    $: { on: (hs: EventsHandlers<HTMLPolyElement<T, O, Vs>>) => () => void };
+    $: { on: (hs: EventsHandlers<HTMLPolyElement<T, O, Vs>>, opt?: boolean | EventListenerOptions) => () => void };
   } & {
     $: {
       <K extends keyof States<Vs> | undefined>(
@@ -132,8 +132,8 @@ export const htmlProxy = new Proxy(
 
       opt && $.$(typeof opt === "string" ? { id: opt } : opt);
 
-      $.$.on = (hs) => {
-        mb((cb, k) => $.addEventListener(k, cb))(hs);
+      $.$.on = (hs, opt) => {
+        mb((cb, k) => $.addEventListener(k, cb, opt))(hs);
         return () => mb((cb, k) => $.removeEventListener(k, cb))(hs);
       };
       return $;
