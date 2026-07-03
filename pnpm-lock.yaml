@@ -762,6 +762,9 @@ importers:
       typier:
         specifier: workspace:*
         version: link:../typier
+      xpresyo:
+        specifier: workspace:*
+        version: link:../libs/xpresyo
     devDependencies:
       '@types/web':
         specifier: 'catalog:'

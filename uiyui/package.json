@@ -28,7 +28,8 @@
     "jsyoyo": "workspace:*",
     "txtxt": "workspace:*",
     "type-fest": "catalog:",
-    "typier": "workspace:*"
+    "typier": "workspace:*",
+    "xpresyo": "workspace:*"
   },
   "$kind": "web"
 }
