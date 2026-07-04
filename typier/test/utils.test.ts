@@ -46,11 +46,10 @@ describe(Codec, ({ eq }) => ({
     eq(Check(codec, new Uint32Array()), false);
 
     const audio = Decode(codec, [0, 0, 255]);
+    // raw -> audio
     eq(new Uint8Array([0, 0, 255]), audio);
-    const E = Encode(codec, audio);
-    const D = Decode(codec, [0, 0, 255]);
-    // @ts-expect-error Problem when upgraded to typybox 1.1.29 https://github.com/sinclairzx81/typebox/pull/1583/changes#diff-cc290089a8bc84adce4f21cd55190fe469e5088215edda947c28ce435a5658dbL44-R45
-    eq(E, D);
+    // audio -> raw
+    eq(Encode(codec, audio), new Uint8Array([0, 0, 255]) as WithTag<Uint8Array<ArrayBuffer>, "Uint8[]">);
   },
 }));
 
@@ -82,6 +81,7 @@ describe(InstanceOf, ({ eq }) => ({
 }));
 
 import { UNSAFE } from "../src";
+import { WithTag } from "~types";
 
 describe(UNSAFE, ({ eq }) => ({
   Uint8Array_or_Array: () => {
