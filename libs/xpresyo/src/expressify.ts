@@ -5,7 +5,7 @@ import { Tree$Values, Tree_of_Functions } from "treeo";
 
 import { commandify, commandifyLeaves, Command, Commandify, CommandifyLeaves } from "./commandify";
 
-// TODO imporove
+// TODO imporove: add cache
 const get = (op: string, x: object) => {
   const parts = op.split(".");
   let i = x as any;
@@ -36,7 +36,7 @@ export const expressify =
   ($: (node: Fn$O<Tree$Values<Nodes>>, kids: ARR<Fn$O<Tree$Values<Nodes | Leaves>>>) => void) => {
     const cmd = a(commandify(nodes), commandifyLeaves(leaves)) as Commandify<Nodes> & CommandifyLeaves<Leaves>;
     const run = <T extends Command<Commandify<Nodes> & CommandifyLeaves<Leaves>>>(ast: T) => {
-      const [op, ps, ks] = ast;
+      const [op, ps, ks] = typeof ast === "function" ? ast() : ast;
       const f = get(op, nodes) || get(op, leaves);
       const x = f(...ps);
       x.__ = [op, ps];

@@ -41,7 +41,7 @@ describe(commandify, ({ eq }) => ({
   },
   object: () => {
     const F = commandify({ a: (x: "A") => [x], b: (x: "B") => [x] });
-    eq(F.a("A")(F.b("B")()), ["a", ["A"], [["b", ["B"], []]]]);
+    eq(F.a("A")(F.b("B")()), ["a", ["A"], [["b", ["B"]]]]);
   },
   nested: () => {
     const F = commandify({
@@ -52,16 +52,16 @@ describe(commandify, ({ eq }) => ({
       },
     });
 
-    eq(F.a("A")(), ["a", ["A"], []]);
-    eq(F.b("B")(), ["b", ["B"], []]);
-    eq(F.c.d("D")(), ["c.d", ["D"], []]);
+    eq(F.a("A")(), ["a", ["A"]]);
+    eq(F.b("B")(), ["b", ["B"]]);
+    eq(F.c.d("D")(), ["c.d", ["D"]]);
 
     const r = [
       "c.d",
       ["D"],
       [
-        ["a", ["A"], [["c.d", ["D"], []]]],
-        ["b", ["B"], []],
+        ["a", ["A"], [["c.d", ["D"]]]],
+        ["b", ["B"]],
       ],
     ] as const satisfies Command<typeof F>;
 
