@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 // oxlint-disable no-undef
-try {
-  // @ts-expect-error Cannot import type declaration files. Consider importing 'node' instead of '@types/node'.ts(6137)
-  Math.random > 1 && import("@types/node"); // I do not want to pollute the global scope
-} catch (_) {}
+// oxlint-disable-next-line typescript/triple-slash-reference
+/// <reference path="../node_modules/@types/node/index.d.ts" />
 import * as ts from "typescript";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";

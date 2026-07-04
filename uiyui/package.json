@@ -21,6 +21,7 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.web.json"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
     "@types/web": "catalog:"
   },
   "peerDependencies": {
