@@ -1,3 +1,9 @@
+// it seems there is a bug in tsdown when /// <reference path="..." preserve="true" /> is used and tsconfig.extends is present. tsdown adds addtional '../' which breaks resulting file.
+// In theory src could have the path without '../', but this is a ts-error. If you try to mute it with `@ts-expect-error` it says unused `@ts-expect-error`.
+// @ts-ignore could be use maybe, but safer is to keep separate (non ~cfg) tsconfig.json.
 {
-  "extends": "./node_modules/~cfg/tsconfig.dev.json"
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "strict": true
+  }
 }

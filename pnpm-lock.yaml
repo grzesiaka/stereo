@@ -766,9 +766,6 @@ importers:
         specifier: workspace:*
         version: link:../libs/xpresyo
     devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 25.2.3
       '@types/web':
         specifier: 'catalog:'
         version: 0.0.336
@@ -778,6 +775,9 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
+      ~nodejs:
+        specifier: 'workspace:'
+        version: link:../libs/envs/nodejs
       ~testing:
         specifier: 'workspace:'
         version: link:../libs/testing

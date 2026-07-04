@@ -43,7 +43,7 @@ const setDefaults = (root: string, files: string[]) => {
 
     !pkg.scripts.test && (pkg.scripts.test = "vitest test --passWithNoTests --project unit");
     !pkg.scripts["test-ci"] && (pkg.scripts["test-ci"] = "vitest test --passWithNoTests --project unit/out");
-    pkg.scripts.tsc = `tsc --noEmit -p ${pkg_to_tsconfig(pkg)}`;
+    !pkg.scripts.tsc && (pkg.scripts.tsc = `tsc --noEmit -p ${pkg_to_tsconfig(pkg)}`);
 
     pkg.scripts = azKeysOrder(pkg.scripts);
 

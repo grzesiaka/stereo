@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // oxlint-disable no-undef
-// oxlint-disable-next-line typescript/triple-slash-reference
-/// <reference path="../node_modules/@types/node/index.d.ts" />
+
+import "~nodejs";
 import * as ts from "typescript";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
