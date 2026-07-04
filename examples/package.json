@@ -10,11 +10,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "ioioy": "workspace:",
+    "ioioy": "workspace:^",
     "typescript": "catalog:",
-    "typier": "workspace:",
-    "uiyui": "workspace:",
+    "typier": "workspace:^",
+    "uiyui": "workspace:^",
     "vite": "catalog:",
-    "~dom": "workspace:"
+    "~dom": "workspace:^"
   }
 }

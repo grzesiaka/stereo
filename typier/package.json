@@ -25,9 +25,9 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
-    "jsyoyo": "workspace:",
-    "proyij": "workspace:",
-    "treeo": "workspace:"
+    "jsyoyo": "workspace:^",
+    "proyij": "workspace:^",
+    "treeo": "workspace:^"
   },
   "peerDependencies": {
     "type-fest": "catalog:",

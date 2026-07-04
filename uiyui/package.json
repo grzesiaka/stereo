@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/web": "catalog:",
-    "~nodejs": "workspace:"
+    "~nodejs": "workspace:^"
   },
   "peerDependencies": {
     "ioioy": "workspace:",

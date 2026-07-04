@@ -4,17 +4,17 @@ blockExoticSubdeps: true
 
 catalog:
   "@types/chrome": 0.1.36
-  "@types/node": 25.2.3
-  "@types/web": 0.0.336
-  "@vitest/coverage-v8": 4.0.18
+  "@types/node": 26.0.1
+  "@types/web": 0.0.352
+  "@vitest/coverage-v8": 4.1.9
   oxfmt: 0.57.0
   oxlint: 1.72.0
   tsdown: 0.22.3 # 0.22.[0-2] seem broken
   turbo: 2.10.2
   type-fest: 5.7.0
-  typebox: 1.1.9
+  typebox: 1.1.28 # 1.1.29 breaks Parse typing :/
   typescript: 6.0.3
-  vite: 8.0.16
+  vite: 8.1.2
   vitest: 4.1.9
 
 catalogMode: strict

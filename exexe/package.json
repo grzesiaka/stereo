@@ -17,9 +17,9 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "dependencies": {
-    "ioioy": "workspace:",
-    "jsyoyo": "workspace:",
-    "oyoyo": "workspace:",
-    "xpresyo": "workspace:"
+    "ioioy": "workspace:^",
+    "jsyoyo": "workspace:^",
+    "oyoyo": "workspace:^",
+    "xpresyo": "workspace:^"
   }
 }

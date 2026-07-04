@@ -21,7 +21,7 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
-    "~types": "workspace:"
+    "~types": "workspace:^"
   },
   "peerDependencies": {
     "ts-arithmetic": "^0.1.1",

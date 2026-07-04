@@ -17,10 +17,10 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "dependencies": {
-    "jsyoyo": "workspace:"
+    "jsyoyo": "workspace:^"
   },
   "devDependencies": {
-    "composyo": "workspace:",
+    "composyo": "workspace:^",
     "type-fest": "catalog:"
   }
 }

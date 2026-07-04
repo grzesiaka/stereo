@@ -17,6 +17,6 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "dependencies": {
-    "numyo": "workspace:"
+    "numyo": "workspace:^"
   }
 }

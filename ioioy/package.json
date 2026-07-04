@@ -19,11 +19,11 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
-    "disposyo": "workspace:",
-    "jsyoyo": "workspace:",
-    "proyij": "workspace:",
+    "disposyo": "workspace:^",
+    "jsyoyo": "workspace:^",
+    "proyij": "workspace:^",
     "typebox": "catalog:",
-    "xpresyo": "workspace:"
+    "xpresyo": "workspace:^"
   },
   "peerDependencies": {
     "typebox": "catalog:",

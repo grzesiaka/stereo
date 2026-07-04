@@ -17,6 +17,6 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
-    "@types/web": "0.0.336"
+    "@types/web": "catalog:"
   }
 }

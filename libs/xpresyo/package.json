@@ -20,8 +20,8 @@
     "type-fest": "catalog:"
   },
   "devDependencies": {
-    "jsyoyo": "workspace:",
-    "objoy": "workspace:",
-    "treeo": "workspace:"
+    "jsyoyo": "workspace:^",
+    "objoy": "workspace:^",
+    "treeo": "workspace:^"
   }
 }
