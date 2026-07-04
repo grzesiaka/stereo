@@ -4,12 +4,6 @@
     // it is assumed to use this config from project's node_modules/dev
     "rootDir": "${configDir}/../..",
     "outDir": "${configDir}/../../out",
-    "paths": {
-      "@": ["${configDir}/../../src"],
-      "@/*": ["${configDir}/../../src/*"]
-    },
-    "skipLibCheck": true,
-    "noEmit": false,
     "noUnusedParameters": true,
     "noUnusedLocals": true
   },
