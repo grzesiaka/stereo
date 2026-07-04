@@ -10,7 +10,7 @@ catalog:
   oxfmt: 0.57.0
   oxlint: 1.72.0
   tsdown: 0.22.3 # 0.22.[0-2] seem broken
-  turbo: 2.9.16
+  turbo: 2.10.2
   type-fest: 5.7.0
   typebox: 1.1.9
   typescript: 6.0.3
