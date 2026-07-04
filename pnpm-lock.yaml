@@ -31,8 +31,8 @@ catalogs:
       specifier: 5.7.0
       version: 5.7.0
     typebox:
-      specifier: 1.1.28
-      version: 1.1.28
+      specifier: 1.1.29
+      version: 1.1.29
     typescript:
       specifier: 6.0.3
       version: 6.0.3
@@ -204,7 +204,7 @@ importers:
         version: link:../libs/proyij
       typebox:
         specifier: 'catalog:'
-        version: 1.1.28
+        version: 1.1.29
       vitest:
         specifier: 'catalog:'
         version: 4.1.8(@types/node@26.0.1)(@vitest/coverage-v8@4.1.9)(vite@8.1.2(@types/node@26.0.1)(esbuild@0.27.4))
@@ -721,7 +721,7 @@ importers:
         version: 5.7.0
       typebox:
         specifier: 'catalog:'
-        version: 1.1.28
+        version: 1.1.29
     devDependencies:
       jsyoyo:
         specifier: workspace:^
@@ -2018,8 +2018,8 @@ packages:
     resolution: {integrity: sha512-1URUxUqfHFM1c+zfSPsa3gnkO7Aq21qyH75SIduNYz4SzY964rn1X2vCMQaHSHhktiw+0kPa2iyb6PUpXqB6Vg==}
     engines: {node: '>=20'}
 
-  typebox@1.1.28:
-    resolution: {integrity: sha512-OqHTHRfBpQHWPipoeFVkNgxKjjXhGY49UgekFrOuaC9O59/Hws8KHjGa1AUfNYnxWSfuNRkTB81FAL/QbTWFrg==}
+  typebox@1.1.29:
+    resolution: {integrity: sha512-zPwgxCka1v976Zn2Hg0THUHY6JFPzbBkz12ZOZeyc/vcoeqLyeFEsXw5zGg/nMhbNE/rOEALVKRTlHIEDR3Jhw==}
 
   typescript@6.0.3:
     resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
@@ -3088,7 +3088,7 @@ snapshots:
     dependencies:
       tagged-tag: 1.0.0
 
-  typebox@1.1.28: {}
+  typebox@1.1.29: {}
 
   typescript@6.0.3: {}
 

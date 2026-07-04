@@ -47,7 +47,10 @@ describe(Codec, ({ eq }) => ({
 
     const audio = Decode(codec, [0, 0, 255]);
     eq(new Uint8Array([0, 0, 255]), audio);
-    eq(Encode(codec, audio), Decode(codec, [0, 0, 255]));
+    const E = Encode(codec, audio);
+    const D = Decode(codec, [0, 0, 255]);
+    // @ts-expect-error Problem when upgraded to typybox 1.1.29 https://github.com/sinclairzx81/typebox/pull/1583/changes#diff-cc290089a8bc84adce4f21cd55190fe469e5088215edda947c28ce435a5658dbL44-R45
+    eq(E, D);
   },
 }));
 

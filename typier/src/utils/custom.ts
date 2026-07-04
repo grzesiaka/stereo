@@ -12,8 +12,7 @@ export type Custom<T extends TSchema, X, $TYP extends string, $KEY extends strin
   "$TYP" | "$KEY" | "$"
 > &
   TRefine<{
-    "~kind": "Unsafe";
-    "~hint": __ extends $META ? WithTag<X, $TYP> : Tagged<X, $TYP, $META>;
+    "~unsafe": __ extends $META ? WithTag<X, $TYP> : Tagged<X, $TYP, $META>;
   }> &
   TypierBase<$TYP, $KEY> & {
     $: Rekey<T, X, $TYP, $KEY, $META>;
@@ -21,8 +20,8 @@ export type Custom<T extends TSchema, X, $TYP extends string, $KEY extends strin
 
 export const Custom =
   <T, S extends TSchema = {}, $META = __>(
-    refine: (v: T & Static<NoInfer<S>>) => boolean,
-    message = "Incorrect value",
+    check: (v: T & Static<NoInfer<S>>) => boolean,
+    error = () => "Incorrect value",
     Schema = {} as S,
   ) =>
   <const $TYP extends string, const $KEY extends string = $TYP>($TYP: $TYP, $KEY = $TYP as never as $KEY) =>
@@ -31,8 +30,8 @@ export const Custom =
       ...(($KEY[0] === "?" ? { "~optional": true } : {}) as {}),
       $TYP,
       $KEY: $KEY.replace(/^\?/, "") || ($KEY ? $TYP : ""),
-      "~refine": [{ refine, message }],
-      $: ($NEW_KEY: string) => Custom(refine, message, Schema)($TYP, resolveKey($KEY, $NEW_KEY)),
+      "~refine": [{ check, error }],
+      $: ($NEW_KEY: string) => Custom(check, error, Schema)($TYP, resolveKey($KEY, $NEW_KEY)),
     }) as never as Custom<S, T, $TYP, $KEY, $META>;
 
 export default Custom;

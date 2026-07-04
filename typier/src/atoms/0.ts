@@ -15,8 +15,7 @@ export type Atom<
   $META = __,
 > = Schema &
   TypierBase<$TYP, $KEY> & {
-    "~kind": "Unsafe";
-    "~hint": __ extends $META ? WithTag<Type, $TYP> : Tagged<Type, $TYP, $META>;
+    "~unsafe": __ extends $META ? WithTag<Type, $TYP> : Tagged<Type, $TYP, $META>;
     $: Rekey<Schema, Type, $TYP, $KEY, $META>;
   };
 
@@ -48,7 +47,6 @@ export const createAtom =
     $KEY = $TYP as any as $KEY,
   ): $Atom<Schema, Type, $TYP, $KEY, $META> =>
     ({
-      "~kind": "Unsafe",
       ...S,
       ...(($KEY[0] === "?" ? { "~optional": true } : {}) as {}),
       $TYP,
