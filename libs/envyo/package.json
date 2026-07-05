@@ -2,7 +2,7 @@
   "name": "envyo",
   "version": "1.0.0-alpha.0",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": true,
   "exports": {
     ".": "./out/index.mjs",
     "./*": "./out/*.mjs"

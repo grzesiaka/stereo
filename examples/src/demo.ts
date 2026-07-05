@@ -1,12 +1,14 @@
 // oxlint-disable no-undef
-import * as TYP from "typier";
-import * as IO from "ioioy";
+// import * as TYP from "typier";
+// import * as IO from "ioioy";
 
-import "envyo/web";
+import $ from "envyo/web";
 
-console.log("OK", TYP, IO);
+// console.log("OK", TYP, IO);
 
 import { htmlProxy as html } from "uiyui";
+
+$.console.log("---> wtf", html.www);
 
 const { br } = html;
 
