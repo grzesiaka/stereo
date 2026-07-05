@@ -37,17 +37,23 @@ const setExports = (root: string) => {
         .map(([p]) => p.split("src/").pop()!.replace("/index.ts", ""))
         .filter((x) => x !== "index.ts");
       const pkg = JSON.parse(_pkg);
-      pkg.exports = exports.reduce((a, n) => {
-        a[`./${n}`] = `./out/${n}/index.mjs`;
-        a[`./${n}/*`] = `./out/${n}/*.mjs`;
-        return a;
-      }, pkg.exports);
+      pkg.exports = exports.reduce(
+        (a, n) => {
+          a[`./${n}`] = `./out/${n}/index.mjs`;
+          a[`./${n}/*`] = `./out/${n}/*.mjs`;
+          return a;
+        },
+        {
+          ".": "./out/index.mjs",
+          "./*": "./out/*.mjs",
+        } as any,
+      );
       writeFile(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
     },
   );
 };
 
-const skip = new Set(["__config", "node_modules", "out", "LICENSE", "vite-plugins", "examples", "extra"]);
+const skip = new Set(["__config", "node_modules", "out", "LICENSE", "vite-plugins", "examples", "extra", "testing"]);
 
 const handleDown = (path: string, isRoot: boolean) => {
   readdir(path).then((files) => {

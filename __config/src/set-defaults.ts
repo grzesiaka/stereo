@@ -7,11 +7,11 @@ const tsconfig = `{
 }
 `;
 
-const testIndex = `import { describe } from '~testing'
-import * as I from '../src/index'
+const testIndex = `import { describe } from '~testing';
+import * as I from '../src/index';
 
 describe('', ({ eq }) => ({
-  empty: () => eq(I,I);
+  empty: () => eq(I, I),
 }))
 `;
 
