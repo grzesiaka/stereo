@@ -2,13 +2,14 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const prepareIndices = async (root: string, withDirs: boolean): Promise<[string, string][]> => {
+type PrepareIndicesResult = [string, string, { dir: string[]; files: string[] }?];
+const prepareIndices = async (root: string, withDirs: boolean): Promise<PrepareIndicesResult[]> => {
   const path = (...sub: string[]) => resolve(root, ...sub);
   const dir = await readdir(path());
   const files = dir
     .filter((x) => x.endsWith(".ts") && x !== "index.ts" && !x.startsWith("_"))
     .map((f) => f.replace(/\.ts$/, ""));
-  let sub = [] as [string, string][];
+  let sub = [] as PrepareIndicesResult[];
   if (withDirs) {
     sub = await Promise.all(
       dir.filter((t) => !t.endsWith(".ts") && !t.startsWith("_")).flatMap((sub) => prepareIndices(path(sub), false)),
@@ -24,7 +25,7 @@ const prepareIndices = async (root: string, withDirs: boolean): Promise<[string,
     )
     .join("\n")
     .concat("\n");
-  return [[path("index.ts"), indexContent], ...sub];
+  return [[path("index.ts"), indexContent, { dir, files }], ...sub];
 };
 
 const setExports = (root: string) => {
@@ -37,9 +38,16 @@ const setExports = (root: string) => {
         .map(([p]) => p.split("src/").pop()!.replace("/index.ts", ""))
         .filter((x) => x !== "index.ts");
       const pkg = JSON.parse(_pkg);
+
+      // if (pkg.name === "weweber") {
+      //   console.log(exports, indices[0]?.[2]);
+      // }
+
+      const files = indices[0]?.[2]?.files;
+
       pkg.exports = exports.reduce(
         (a, n) => {
-          a[`./${n}`] = `./out/${n}/index.mjs`;
+          !files?.includes(n) && (a[`./${n}`] = `./out/${n}/index.mjs`);
           a[`./${n}/*`] = `./out/${n}/*.mjs`;
           return a;
         },
