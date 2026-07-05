@@ -9,18 +9,9 @@ catalogs:
     '@types/node':
       specifier: 26.1.0
       version: 26.1.0
-    '@types/serviceworker':
-      specifier: 0.0.199
-      version: 0.0.199
-    '@types/sharedworker':
-      specifier: 0.0.228
-      version: 0.0.228
     '@types/web':
       specifier: 0.0.352
       version: 0.0.352
-    '@types/webworker':
-      specifier: 0.0.78
-      version: 0.0.78
     '@vitest/coverage-v8':
       specifier: 4.1.9
       version: 4.1.9
@@ -349,18 +340,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 26.1.0
-      '@types/serviceworker':
-        specifier: 'catalog:'
-        version: 0.0.199
-      '@types/sharedworker':
-        specifier: 'catalog:'
-        version: 0.0.228
       '@types/web':
         specifier: 'catalog:'
         version: 0.0.352
-      '@types/webworker':
-        specifier: 'catalog:'
-        version: 0.0.78
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -1614,17 +1596,8 @@ packages:
   '@types/node@26.1.0':
     resolution: {integrity: sha512-O0A1G3xPGy4w7AgQdAQYUlQ+BKk2Oovw8eRpofyp5KdBZULnbe+WqaOVNrm705SHphCiG4XHsACrSmPu1f+Kgw==}
 
-  '@types/serviceworker@0.0.199':
-    resolution: {integrity: sha512-F8Xa1kKQFYrc+TMhHMeKsbC2v1d8eMYJIXQqAukL4GQ+cATgFBPq+b6oHifhOwt8ZkzTdnpSyDvm6vrOBhjFsA==}
-
-  '@types/sharedworker@0.0.228':
-    resolution: {integrity: sha512-HFmX/kApY6V+O1/3UJMYRnHB+0YHcZPRCMI6E6td5zklPlvuZYXKGGNjRB3IFbEiCCoFVD0I85XLSLeq8tQzbg==}
-
   '@types/web@0.0.352':
     resolution: {integrity: sha512-UOZDC0FwpYm4zgRK/98jFGXgRirawQYN2TIkhpFbTW4dbQie/GNHJ9uMwJ/BkFxPIhgAEdkIF3AE6qNVaJn1NA==}
-
-  '@types/webworker@0.0.78':
-    resolution: {integrity: sha512-TISpM7ZZdQtlOQe8+M+qsiHWyDBfSt6Y7wBZd1Eel7n1oAM7U+BJv4RkpVYFXTgxIi0hKEv6cfr96BEpsON3+g==}
 
   '@vitest/coverage-v8@4.1.9':
     resolution: {integrity: sha512-G9/lgqibheLVBDRuya45EbsEXTYcWoSG+TLg7i2axuzx0Eq62eXn+aWXyaVdV5vKvFSWd6ywcX8hA7la9Pvu8g==}
@@ -2685,13 +2658,7 @@ snapshots:
     dependencies:
       undici-types: 8.3.0
 
-  '@types/serviceworker@0.0.199': {}
-
-  '@types/sharedworker@0.0.228': {}
-
   '@types/web@0.0.352': {}
-
-  '@types/webworker@0.0.78': {}
 
   '@vitest/coverage-v8@4.1.9(vitest@4.1.9)':
     dependencies:

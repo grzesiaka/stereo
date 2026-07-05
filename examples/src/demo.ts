@@ -4,11 +4,10 @@
 
 import $ from "envyo/web";
 
+$.s;
 // console.log("OK", TYP, IO);
 
 import { htmlProxy as html } from "uiyui";
-
-$.console.log("---> wtf", html.www);
 
 const { br } = html;
 
