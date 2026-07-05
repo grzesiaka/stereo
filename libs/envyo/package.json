@@ -18,6 +18,9 @@
   },
   "dependencies": {
     "@types/node": "catalog:",
-    "@types/web": "catalog:"
+    "@types/serviceworker": "catalog:",
+    "@types/sharedworker": "catalog:",
+    "@types/web": "catalog:",
+    "@types/webworker": "catalog:"
   }
 }
