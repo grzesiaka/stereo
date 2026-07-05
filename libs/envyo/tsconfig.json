@@ -3,6 +3,7 @@
 // @ts-ignore could be use maybe, but safer is to keep separate (non ~cfg) tsconfig.json.
 {
   "compilerOptions": {
+    "lib": ["ES2020"],
     "skipLibCheck": true,
     "strict": true
   },

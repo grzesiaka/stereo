@@ -4,7 +4,6 @@
 
 import $ from "envyo/web";
 
-$.s;
 // console.log("OK", TYP, IO);
 
 import { htmlProxy as html } from "uiyui";
