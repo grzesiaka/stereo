@@ -1,10 +1,10 @@
+// oxlint-disable no-undef
 import * as TYP from "typier";
 import * as IO from "ioioy";
 
-import "~dom";
-import { $ } from "~dom";
+import "envyo/web";
 
-$.console.log("OK", TYP, IO, $);
+console.log("OK", TYP, IO);
 
 import { htmlProxy as html } from "uiyui";
 
@@ -28,13 +28,13 @@ const i = html.input(
 i.setAttribute("value", "over");
 
 const a = html.a({ innerText: "LINK", href: `/#${Date.now()}/#abc` });
-$.document.body.append(p, i, a);
-$.console.log(p, i, i.defaultValue, a);
+document.body.append(p, i, a);
+console.log(p, i, i.defaultValue, a);
 
 // @ts-expect-error
 // oxlint-disable-next-line no-undef
 window.i = i;
-$.console.log(i.$(), i.$("classList"), i.$());
+console.log(i.$(), i.$("classList"), i.$());
 
 // const div = html.div({}, { ok: "", abc: "", cde: "" });
 const arr = html.div({ textContent: "abc" }, ["a", "b"]);
@@ -59,7 +59,7 @@ btn.$({ textContent: "idle" });
 btn.onclick = () => {
   btn.$("sending");
   btn.textContent = "sending";
-  $.setTimeout(() => {
+  setTimeout(() => {
     btn.$("error");
     btn.$({ textContent: "error" });
   }, 2000);
@@ -68,26 +68,26 @@ btn.onclick = () => {
 btn2.onclick = () => {
   btn2.$("loading");
 
-  $.setTimeout(() => {
+  setTimeout(() => {
     btn2.$("loaded");
   }, 2000);
 };
 
 const d = btn2.$.on({
   click(p) {
-    $.console.log("CLICK", this, p);
+    console.log("CLICK", this, p);
     d();
   },
-  focus: (ev) => $.console.log("FOCUS", this, ev),
+  focus: (ev) => console.log("FOCUS", this, ev),
 });
 
-$.console.log(btn.tagName);
+console.log(btn.tagName);
 const tarea = html.textarea("abc");
 
 tarea.$({
   contentEditable: "false",
 });
 
-$.document.body.append(btn, btn2, br(), tarea, tarea, tarea);
+document.body.append(btn, btn2, br(), tarea, tarea, tarea);
 
-$.console.log($.document.createElement("BUTTON").tagName);
+console.log(document.createElement("BUTTON").tagName);
