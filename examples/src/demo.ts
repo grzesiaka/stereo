@@ -2,7 +2,7 @@
 // import * as TYP from "typier";
 // import * as IO from "ioioy";
 
-import $ from "envyo/web";
+import { $ } from "weweber/web";
 
 // console.log("OK", TYP, IO);
 

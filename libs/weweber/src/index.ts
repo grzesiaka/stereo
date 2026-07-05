@@ -1,1 +1,3 @@
-export default "weweber"
+export * from "./web/index"
+
+export * from "./web"

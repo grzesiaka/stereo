@@ -10,12 +10,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "envyo": "workspace:^",
+    "weweber": "workspace:^",
     "ioioy": "workspace:^",
     "typescript": "catalog:",
     "typier": "workspace:^",
     "uiyui": "workspace:^",
-    "vite": "catalog:",
-    "~dom": "workspace:^"
+    "vite": "catalog:"
   }
 }

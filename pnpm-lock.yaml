@@ -116,9 +116,6 @@ importers:
 
   examples:
     devDependencies:
-      envyo:
-        specifier: workspace:^
-        version: link:../libs/envyo
       ioioy:
         specifier: workspace:^
         version: link:../ioioy
@@ -134,12 +131,12 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.1.2(@types/node@26.1.0)(esbuild@0.27.4)
+      weweber:
+        specifier: workspace:^
+        version: link:../libs/weweber
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
-      ~dom:
-        specifier: workspace:^
-        version: link:../libs/envs/dom
       ~types:
         specifier: 'workspace:'
         version: link:../libs/types
@@ -540,6 +537,25 @@ importers:
       ~types:
         specifier: 'workspace:'
         version: 'link:'
+
+  libs/weweber:
+    dependencies:
+      '@types/web':
+        specifier: 'catalog:'
+        version: 0.0.352
+    devDependencies:
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../__config
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../types
 
   libs/xpresyo:
     dependencies:
