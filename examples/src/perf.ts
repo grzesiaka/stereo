@@ -4,10 +4,8 @@ const perfObserver: PerformanceObserverCallback = (list, _observer) => {
   list.getEntries().forEach((entry) => {
     if (entry.entryType === "resource") {
       console.log(entry.name);
-
       return;
     }
-    console.log(entry.entryType, entry.type, entry);
     if (entry.entryType === "mark") {
       console.log(`${entry.name}'s startTime: ${entry.startTime}`);
     }

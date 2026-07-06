@@ -1,12 +1,9 @@
 // oxlint-disable no-undef
-// import * as TYP from "typier";
-// import * as IO from "ioioy";
 
-import { $ } from "weweber/web";
-
-// console.log("OK", TYP, IO);
-
+import { web } from "weweber/env-web";
 import { htmlProxy as html } from "uiyui";
+
+web.js.console.log(web.dom);
 
 const { br } = html;
 

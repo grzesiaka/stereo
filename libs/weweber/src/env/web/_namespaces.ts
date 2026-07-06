@@ -1,6 +1,3 @@
-// oxlint-disable-next-line typescript/triple-slash-reference
-/// <reference path="../../node_modules/@types/web/index.d.ts" preserve="true" />
-
 /**
  * Generated grouping of keys on `window` from:
  *   keyof (Window & typeof globalThis)
@@ -12,23 +9,23 @@
  * Master split:
  * - `direct`: developer-facing entrypoints: functions, singleton objects, static namespaces,
  *   and constructors developers commonly call intentionally.
- * - `indirect`: browser/environment-created classes and objects. This is the hide/noise bucket
+ * - `auxiliary`: browser/environment-created classes and objects. This is the hide/noise bucket
  *   for IDE discovery. When classification was doubtful, the key was moved here.
  *
  * Classification rule applied after semantic grouping:
- * - `Event`, `Error`, and PascalCase names ending in `Event` or `Error` are indirect.
+ * - `Event`, `Error`, and PascalCase names ending in `Event` or `Error` are auxiliary.
  * - `dispatchEvent` and `reportError` remain direct because they are callable methods/functions,
  *   not event/error classes.
- * - `rtc.direct` intentionally contains only `RTCPeerConnection`; the rest of RTC is indirect.
- * - HTML/SVG/WebGL constructor names are indirect: create them through document/canvas APIs.
+ * - `rtc.direct` intentionally contains only `RTCPeerConnection`; the rest of RTC is auxiliary.
+ * - HTML/SVG/WebGL constructor names are auxiliary: create them through document/canvas APIs.
  */
 
 type ECMAScriptNewerApis = "FinalizationRegistry" | "WeakRef" | "AggregateError"; // ES2020 is the baseline
 
 export type MAIN_NS = typeof directWindowGroups;
 export type MAIN_NS_KEY = keyof typeof directWindowGroups;
-export type AUX_NS = typeof indirectWindowGroups;
-export type AUX_NS_KEY = keyof typeof indirectWindowGroups;
+export type AUX_NS = typeof auxiliaryWindowGroups;
+export type AUX_NS_KEY = keyof typeof auxiliaryWindowGroups;
 
 export type WindowKey = (keyof (Window & typeof globalThis) & string) | ECMAScriptNewerApis;
 
@@ -36,7 +33,7 @@ export type DereferenceKey<K extends string> = K extends keyof (Window & typeof 
   ? (Window & typeof globalThis)[K]
   : unknown;
 
-export type WindowUsageKind = "direct" | "indirect";
+export type WindowUsageKind = "main" | "auxiliary";
 
 export type WindowGroupName =
   | "deprecated"
@@ -62,16 +59,16 @@ export type WindowGroupName =
   | "scheduling"
   | "workers"
   | "security"
-  | "devices"
+  | "nav"
   | "payment"
   | "ui"
   | "observers"
   | "rest";
 
 export const windowUsageGroups = {
-  direct: {
+  main: {
     /** Deprecated or legacy browser globals. Direct entries are callable/readable but still not recommended. */
-    deprecated: [],
+    // deprecated: [],
     /** ECMAScript language globals exposed through window/globalThis. */
     js: [
       "Array",
@@ -172,21 +169,17 @@ export const windowUsageGroups = {
     /** Core DOM tree, ranges, parsing/serialization, selection, custom elements, geometry, XPath/XSLT. */
     dom: ["customElements", "document", "DOMParser", "Text", "XMLSerializer", "XPathEvaluator", "XSLTProcessor"],
     /** HTML element constructors and related HTML collections/factories. */
-    html: [],
+    // html: [],
     /** CSSOM, constructable stylesheets, CSS Typed OM, media queries, font loading, highlights. */
-    css: [
-      "getComputedStyle",
-
-      "matchMedia",
-    ],
+    css: ["getComputedStyle", "matchMedia"],
     /** SVG element constructors and SVG value/list helper objects. */
-    svg: [],
+    // svg: [],
     /** 2D canvas, offscreen canvas, bitmap rendering, paths, and canvas metrics. */
-    canvas: ["OffscreenCanvas", "Path2D"],
+    // canvas: [],
     /** WebGL rendering contexts and WebGL resource/event constructors. */
-    webgl: [],
+    // webgl: [],
     /** WebGPU objects, constants, errors, resources, pipelines, queues, textures, and WGSL features. */
-    webgpu: [],
+    // webgpu: [],
     /** Web Audio graph, AudioContext, audio nodes, params, worklets, and audio processing helpers. */
     audio: [
       "AnalyserNode",
@@ -230,19 +223,13 @@ export const windowUsageGroups = {
     /** Clipboard, drag/drop, keyboard, mouse, pointer, touch, focus, gamepad, composition, selection input. */
     input: ["ClipboardItem", "DataTransfer", "getSelection"],
     /** Web Animations API, CSS animation/transition globals, timelines, view transitions, RAF. */
-    animation: [
-      "Animation",
-      "cancelAnimationFrame",
-      "DocumentTimeline",
-      "KeyframeEffect",
-      "requestAnimationFrame",
-      "ScrollTimeline",
-      "ViewTimeline",
-    ],
+    // animation: [],
     /** Performance timeline, observer, navigation/resource/paint/event timing, LCP. */
     performance: ["performance", "PerformanceObserver"],
     /** Timers, idle callbacks, microtasks, scheduler/task primitives, and global error reporting. */
     scheduling: [
+      "cancelAnimationFrame",
+      "requestAnimationFrame",
       "cancelIdleCallback",
       "clearInterval",
       "clearTimeout",
@@ -267,22 +254,19 @@ export const windowUsageGroups = {
       "PublicKeyCredential",
     ],
     /** Navigator-side hardware/location/device APIs: geolocation, MIDI, serial, wake lock, GPU entrypoint. */
-    devices: ["navigator"],
+    nav: ["navigator", "history", "location"],
     /** Payment Request API globals. */
     payment: ["PaymentRequest"],
     /** Window/frame/navigation/screen/dialog/scroll/resize/focus/location/history/browser-chrome globals. */
     ui: [
       "close",
       "devicePixelRatio",
-      "history",
       "innerHeight",
       "innerWidth",
-      "location",
       "open",
       "opener",
       "parent",
       "print",
-
       "resizeBy",
       "resizeTo",
       "screen",
@@ -303,9 +287,9 @@ export const windowUsageGroups = {
     /** Observer APIs: intersection, mutation, resize, reporting. */
     observers: ["IntersectionObserver", "MutationObserver", "ReportingObserver", "ResizeObserver"],
     /** Rare, vendor-prefixed, or niche globals that do not justify a larger top-level group. */
-    rest: [],
+    // rest: [],
   },
-  indirect: {
+  auxiliary: {
     /** Deprecated or legacy browser globals. Direct entries are callable/readable but still not recommended. */
     deprecated: [
       "blur",
@@ -710,6 +694,8 @@ export const windowUsageGroups = {
     ],
     /** 2D canvas, offscreen canvas, bitmap rendering, paths, and canvas metrics. */
     canvas: [
+      "OffscreenCanvas",
+      "Path2D",
       "CanvasCaptureMediaStreamTrack",
       "CanvasGradient",
       "CanvasPattern",
@@ -1041,7 +1027,17 @@ export const windowUsageGroups = {
       "WheelEvent",
     ],
     /** Web Animations API, CSS animation/transition globals, timelines, view transitions, RAF. */
-    animation: ["AnimationEffect", "AnimationTimeline", "ViewTransition", "ViewTransitionTypeSet"],
+    animation: [
+      "Animation",
+      "DocumentTimeline",
+      "KeyframeEffect",
+      "ScrollTimeline",
+      "ViewTimeline",
+      "AnimationEffect",
+      "AnimationTimeline",
+      "ViewTransition",
+      "ViewTransitionTypeSet",
+    ],
     /** Performance timeline, observer, navigation/resource/paint/event timing, LCP. */
     performance: [
       "LargestContentfulPaint",
@@ -1084,7 +1080,7 @@ export const windowUsageGroups = {
       "SubtleCrypto",
     ],
     /** Navigator-side hardware/location/device APIs: geolocation, MIDI, serial, wake lock, GPU entrypoint. */
-    devices: [
+    nav: [
       "Geolocation",
       "GeolocationCoordinates",
       "GeolocationPosition",
@@ -1132,7 +1128,6 @@ export const windowUsageGroups = {
       "toString",
       "self",
       "statusbar",
-
       "BarProp",
       "History",
       "Location",
@@ -1162,143 +1157,24 @@ export const windowUsageGroups = {
       "webkitURL",
     ],
   },
-} as const satisfies Record<WindowUsageKind, Record<WindowGroupName, readonly WindowKey[]>>;
+} as const satisfies Record<WindowUsageKind, Partial<Record<WindowGroupName, readonly WindowKey[]>>>;
 
-export const directWindowGroups = windowUsageGroups.direct;
-export const indirectWindowGroups = windowUsageGroups.indirect;
-
-export const windowGroupDescriptions = {
-  deprecated: "Deprecated or legacy browser globals. Direct entries are callable/readable but still not recommended.",
-  js: "ECMAScript language globals exposed through window/globalThis.",
-  data: "Binary/text data, files, URLs, encoding, structured clone, and image bitmap helpers.",
-  streams: "WHATWG stream primitives.",
-  net: "Network, messaging, HTTP/fetch, WebSocket, WebTransport, XHR, EventSource, and origin messaging.",
-  storage: "Storage APIs: local/session storage, IndexedDB, Cache API, cookies, file-system handles, locks.",
-  dom: "Core DOM tree, ranges, parsing/serialization, selection, custom elements, geometry, XPath/XSLT.",
-  html: "HTML element constructors and related HTML collections/factories.",
-  css: "CSSOM, constructable stylesheets, CSS Typed OM, media queries, font loading, highlights.",
-  svg: "SVG element constructors and SVG value/list helper objects.",
-  canvas: "2D canvas, offscreen canvas, bitmap rendering, paths, and canvas metrics.",
-  webgl: "WebGL rendering contexts and WebGL resource/event constructors.",
-  webgpu: "WebGPU objects, constants, errors, resources, pipelines, queues, textures, and WGSL features.",
-  audio: "Web Audio graph, AudioContext, audio nodes, params, worklets, and audio processing helpers.",
-  media: "Media capture/playback, WebCodecs, EME, MediaSource, PiP, text tracks, speech synthesis.",
-  rtc: "WebRTC transport, peer connection, tracks, RTP, SCTP, ICE, encoded frames, and RTC errors.",
-  events: "Global event handler slots plus general event constructors and event listener methods.",
-  input: "Clipboard, drag/drop, keyboard, mouse, pointer, touch, focus, gamepad, composition, selection input.",
-  animation: "Web Animations API, CSS animation/transition globals, timelines, view transitions, RAF.",
-  performance: "Performance timeline, observer, navigation/resource/paint/event timing, LCP.",
-  scheduling: "Timers, idle callbacks, microtasks, scheduler/task primitives, and global error reporting.",
-  workers: "Worker, SharedWorker, Service Worker, Worklet, Push, and Notification globals.",
-  security: "Crypto, credentials, WebAuthn, permissions, secure-context and isolation flags, CSP event.",
-  devices: "Navigator-side hardware/location/device APIs: geolocation, MIDI, serial, wake lock, GPU entrypoint.",
-  payment: "Payment Request API globals.",
-  ui: "Window/frame/navigation/screen/dialog/scroll/resize/focus/location/history/browser-chrome globals.",
-  observers: "Observer APIs: intersection, mutation, resize, reporting.",
-  rest: "Rare, vendor-prefixed, or niche globals that do not justify a larger top-level group.",
-} as const satisfies Record<WindowGroupName, string>;
-
-export const windowUsageCounts = {
-  direct: {
-    deprecated: 9,
-    js: 52,
-    data: 20,
-    streams: 3,
-    net: 12,
-    storage: 6,
-    dom: 23,
-    html: 0,
-    css: 29,
-    svg: 0,
-    canvas: 2,
-    webgl: 0,
-    webgpu: 5,
-    audio: 24,
-    media: 20,
-    rtc: 1,
-    events: 4,
-    input: 3,
-    animation: 7,
-    performance: 2,
-    scheduling: 10,
-    workers: 3,
-    security: 7,
-    devices: 1,
-    payment: 1,
-    ui: 51,
-    observers: 4,
-    rest: 0,
-  },
-  indirect: {
-    deprecated: 24,
-    js: 8,
-    data: 6,
-    streams: 8,
-    net: 10,
-    storage: 29,
-    dom: 29,
-    html: 70,
-    css: 46,
-    svg: 97,
-    canvas: 7,
-    webgl: 17,
-    webgpu: 36,
-    audio: 9,
-    media: 35,
-    rtc: 22,
-    events: 144,
-    input: 19,
-    animation: 4,
-    performance: 11,
-    scheduling: 4,
-    workers: 7,
-    security: 12,
-    devices: 17,
-    payment: 4,
-    ui: 16,
-    observers: 4,
-    rest: 6,
-  },
-  total: {
-    direct: 299,
-    indirect: 701,
-    all: 1000,
-  },
-} as const;
+export const directWindowGroups = windowUsageGroups.main;
+export const auxiliaryWindowGroups = windowUsageGroups.auxiliary;
 
 type Values<T> = T[keyof T];
 type TupleItem<T> = T extends readonly (infer I)[] ? I : never;
 
 export type DirectWindowKey = TupleItem<Values<typeof directWindowGroups>>;
-export type IndirectWindowKey = TupleItem<Values<typeof indirectWindowGroups>>;
-export type GroupedWindowKey = DirectWindowKey | IndirectWindowKey;
+export type auxiliaryWindowKey = TupleItem<Values<typeof auxiliaryWindowGroups>>;
+export type GroupedWindowKey = DirectWindowKey | auxiliaryWindowKey;
 
 export type MissingWindowKey = Exclude<WindowKey, GroupedWindowKey>;
 export type UnknownWindowKey = Exclude<GroupedWindowKey, WindowKey>;
-export type OverlappedWindowKey = Extract<DirectWindowKey, IndirectWindowKey>;
+export type OverlappedWindowKey = Extract<DirectWindowKey, auxiliaryWindowKey>;
 
 // These fail compilation if the installed DOM/lib version has drifted or the split is wrong.
 type AssertNever<T extends never> = T;
-type _AllWindowKeysAreGrouped = AssertNever<MissingWindowKey>;
-type _NoUnknownWindowKeys = AssertNever<UnknownWindowKey>;
-type _NoDirectIndirectOverlap = AssertNever<OverlappedWindowKey>;
-
-export const getWindowUsageKind = (key: WindowKey): WindowUsageKind | undefined => {
-  for (const usage of Object.keys(windowUsageGroups) as WindowUsageKind[]) {
-    const groups = windowUsageGroups[usage];
-    for (const group of Object.keys(groups) as WindowGroupName[]) {
-      if ((groups[group] as readonly string[]).includes(key)) return usage;
-    }
-  }
-  return undefined;
-};
-
-export const getWindowGroupName = (key: WindowKey): WindowGroupName | undefined => {
-  for (const usage of Object.keys(windowUsageGroups) as WindowUsageKind[]) {
-    const groups = windowUsageGroups[usage];
-    for (const group of Object.keys(groups) as WindowGroupName[]) {
-      if ((groups[group] as readonly string[]).includes(key)) return group;
-    }
-  }
-  return undefined;
-};
+export type _AllWindowKeysAreGrouped = AssertNever<MissingWindowKey>;
+export type _NoUnknownWindowKeys = AssertNever<UnknownWindowKey>;
+export type _NoDirectauxiliaryOverlap = AssertNever<OverlappedWindowKey>;

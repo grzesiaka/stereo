@@ -6,7 +6,8 @@
   "exports": {
     ".": "./out/index.mjs",
     "./*": "./out/*.mjs",
-    "./web/*": "./out/web/*.mjs"
+    "./env": "./out/env/index.mjs",
+    "./env/*": "./out/env/*.mjs"
   },
   "scripts": {
     "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out",
