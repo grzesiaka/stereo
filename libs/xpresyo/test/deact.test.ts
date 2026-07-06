@@ -3,14 +3,19 @@ import { describe } from "~testing";
 import { deact, DeAST } from "../src/deact";
 
 describe(deact, ({ eq }) => ({
-  ast: () => {
+  fn: () => {
+    const F = { f: (_: "A") => 1 };
+    const f = deact(F);
+    const ast = ["f", ["A"]] as const satisfies DeAST<typeof f>;
+    eq(ast, ["f", ["A"]]);
+  },
+  nested: () => {
     const Tree = {
-      A: (x: 1) => 2,
+      A: (_: 1) => 2,
       AA: {
-        A: (a: "a") => "B",
+        A: (_: "a") => "B",
       },
     } as const;
-    type Tree = typeof Tree;
 
     const ast = [
       "A",
@@ -20,7 +25,7 @@ describe(deact, ({ eq }) => ({
         ["AA.A", ["a"]],
         ["A", [1]],
       ],
-    ] as const satisfies DeAST<Tree>;
+    ] as const satisfies DeAST<typeof Tree>;
 
     const d = deact(Tree);
     const x = d.A(1)(d.AA.A("a")(), d.AA.A("a")(), d.A(1)());

@@ -1,10 +1,12 @@
 import { ARR, Fn, Fn$I, Fn$O } from "jsyoyo";
 import { map, Tree_of_Functions, Tree$Values } from "treeo";
 
-export type _DeAST<FnIdParams extends readonly [string, ARR]> =
-  | readonly [FnIdParams[0], FnIdParams[1]]
-  | (() => readonly [FnIdParams[0], FnIdParams[1]])
-  | readonly [FnIdParams[0], FnIdParams[1], ARR<_DeAST<FnIdParams>>];
+type _DeAST<FnIdParams extends readonly [string, ARR]> =
+  | FnIdParams
+  | (() => FnIdParams)
+  // TODO: investigate and if needed report as TS error `readonly [...FnIdParams, ARR<_DeAST<FnIdParams>]` results in circular dependency
+  //       `[FnIdParams[0], FnIdParams[1], ARR<_DeAST<FnIdParams>>]` is too loose on its own
+  | (readonly [FnIdParams[0], FnIdParams[1], ARR<_DeAST<FnIdParams>>] & readonly [...FnIdParams, unknown]);
 
 export type DeAST<T> = Deactify<T> extends [string, ARR] ? _DeAST<Deactify<T>> : never;
 
