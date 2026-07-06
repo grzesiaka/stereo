@@ -20,5 +20,8 @@
   },
   "dependencies": {
     "@types/web": "catalog:"
+  },
+  "devDependencies": {
+    "~types": "workspace:^"
   }
 }
