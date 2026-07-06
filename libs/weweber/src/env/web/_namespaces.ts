@@ -1,6 +1,6 @@
 /**
  * Generated grouping of keys on `window` from:
- *   keyof (Window & typeof globalThis)
+ *   keyof (GLOBAL)
  *
  * Source package used for extraction:
  *   @types/web@0.0.352
@@ -21,17 +21,16 @@
  */
 
 type ECMAScriptNewerApis = "FinalizationRegistry" | "WeakRef" | "AggregateError"; // ES2020 is the baseline
+type GLOBAL = Window & typeof globalThis & { [K in ECMAScriptNewerApis]: unknown };
 
-export type MAIN_NS = typeof directWindowGroups;
-export type MAIN_NS_KEY = keyof typeof directWindowGroups;
-export type AUX_NS = typeof auxiliaryWindowGroups;
+export type MAIN_NS_KEY = keyof typeof mainWindowGroups;
+export type MAIN_NS<NS extends MAIN_NS_KEY> = { [K in (typeof mainWindowGroups)[NS][number]]: GLOBAL[K] };
 export type AUX_NS_KEY = keyof typeof auxiliaryWindowGroups;
+export type AUX_NS<NS extends AUX_NS_KEY> = { [K in (typeof auxiliaryWindowGroups)[NS][number]]: GLOBAL[K] };
 
-export type WindowKey = (keyof (Window & typeof globalThis) & string) | ECMAScriptNewerApis;
+export type WindowKey = (keyof GLOBAL & string) | ECMAScriptNewerApis;
 
-export type DereferenceKey<K extends string> = K extends keyof (Window & typeof globalThis) & string
-  ? (Window & typeof globalThis)[K]
-  : unknown;
+export type DereferenceKey<K extends string> = K extends keyof GLOBAL & string ? GLOBAL[K] : unknown;
 
 export type WindowUsageKind = "main" | "auxiliary";
 
@@ -1159,13 +1158,13 @@ export const windowUsageGroups = {
   },
 } as const satisfies Record<WindowUsageKind, Partial<Record<WindowGroupName, readonly WindowKey[]>>>;
 
-export const directWindowGroups = windowUsageGroups.main;
+export const mainWindowGroups = windowUsageGroups.main;
 export const auxiliaryWindowGroups = windowUsageGroups.auxiliary;
 
 type Values<T> = T[keyof T];
 type TupleItem<T> = T extends readonly (infer I)[] ? I : never;
 
-export type DirectWindowKey = TupleItem<Values<typeof directWindowGroups>>;
+export type DirectWindowKey = TupleItem<Values<typeof mainWindowGroups>>;
 export type auxiliaryWindowKey = TupleItem<Values<typeof auxiliaryWindowGroups>>;
 export type GroupedWindowKey = DirectWindowKey | auxiliaryWindowKey;
 

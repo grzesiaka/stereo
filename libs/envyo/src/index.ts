@@ -1,5 +1,2 @@
-export * from "./all-capital"
 export * from "./node"
 export * from "./web"
-export * from "./windows-groupd-drirect-indirect"
-export * from "./windows-groups"

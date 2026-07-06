@@ -1,9 +1,15 @@
 // oxlint-disable no-undef
 
-import { web } from "weweber/env-web";
+import * as $ from "weweber/web";
 import { htmlProxy as html } from "uiyui";
 
-web.js.console.log(web.dom);
+$.Task("error", () =>
+  $.Wait(250).then(() => {
+    throw new Error("wtf");
+  }),
+);
+
+$.Task("ok", () => $.Wait(100));
 
 const { br } = html;
 

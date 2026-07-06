@@ -18,5 +18,8 @@
   },
   "dependencies": {
     "vitest": "catalog:"
+  },
+  "devDependencies": {
+    "jsdom": "catalog:"
   }
 }
