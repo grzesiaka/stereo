@@ -19,11 +19,10 @@ export type Acted<
   : AST extends ((...k: any[]) => infer FP extends DeAST<T>)
     ? Acted<T, MergeParams, FP>
     : AST extends readonly [infer FnId extends string, infer Params extends ARR, infer Kids]
-      ? Kids extends []
+      ? [] extends Kids
         ? Fn$O<Get<T, FnId>> & (MergeParams extends true ? Params[0] : {})
         : [Fn$O<Get<T, FnId>> & (MergeParams extends true ? Params[0] : {}), ActedArr<T, MergeParams, Kids>]
-      : //  ["KIDS", Kids]
-        never;
+      : never;
 
 // TODO improve: add cache + move to treeo
 const get = (op: string, x: object) => {

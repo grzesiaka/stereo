@@ -40,4 +40,35 @@ describe(deact, ({ eq }) => ({
     const x2 = A(d.A(1)(d.AA.A("a")(), d.AA.A("a"), d.A(1)()));
     eq(x2, r);
   },
+
+  merge_params: () => {
+    const Tree = {
+      A: (_: { a: "a" }) => ({ A: "A" }) as const,
+      BB: {
+        B: (_: { b: "b" }) => ({ B: "B" }) as const,
+      },
+    } as const;
+
+    const ast = [
+      "A",
+      [{ a: "a" }],
+      [
+        ["BB.B", [{ b: "b" }]],
+        ["BB.B", [{ b: "b" }]],
+        ["A", [{ a: "a" }]],
+      ],
+    ] as const satisfies DeAST<typeof Tree>;
+
+    const d = deact(Tree);
+    const x = d.A({ a: "a" })(d.BB.B({ b: "b" })(), d.BB.B({ b: "b" })(), d.A({ a: "a" })());
+    eq(ast, x);
+
+    const A = acted(Tree, true);
+    const aA = { a: "a", A: "A" };
+    const bB = { b: "b", B: "B" };
+    const r = [aA, [bB, bB, aA]] as [{ a: "a"; A: "A" }, [{ b: "b"; B: "B" }, { b: "b"; B: "B" }, { a: "a"; A: "A" }]];
+    eq(A(ast), r);
+    const x2 = A(d.A({ a: "a" })(d.BB.B({ b: "b" })(), d.BB.B({ b: "b" }), d.A({ a: "a" })()));
+    eq(r, x2);
+  },
 }));
