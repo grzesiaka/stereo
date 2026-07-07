@@ -1,30 +1,30 @@
-import { describe, test, expect } from "vitest";
+import { describe } from "~testing";
 import mapTree from "../src/map";
+import get from "../src/get";
 
-const t = {
+const tree = {
   a: "B",
   c: { d: "E", f: () => 1 as const, g: [] },
 } as const;
 
-describe("mapTree", () => {
-  test("{}", () => {
+describe("mapTree", ({ eq }) => ({
+  "{}": () => {
     const m = mapTree({})(() => 1);
-    expect(m).toEqual({});
-  });
-
-  test("count", () => {
+    eq(m, {});
+  },
+  count: () => {
     let i = 0;
-    const m = mapTree(t)(() => ++i);
-    expect(m).toEqual({ a: 1, c: { d: 2, f: 3, g: 4 } });
-  });
+    const m = mapTree(tree)(() => ++i);
+    eq(m)({ a: 1, c: { d: 2, f: 3, g: 4 } });
+  },
 
-  test("path", () => {
-    const m = mapTree(t)((x) => x[1]);
-    expect(m).toEqual({ a: "a", c: { d: "c.d", f: "c.f", g: "c.g" } });
-  });
+  path: () => {
+    const m = mapTree(tree)((x) => x[1]);
+    eq(m)({ a: "a", c: { d: "c.d", f: "c.f", g: "c.g" } });
+  },
 
-  test("switch on key", () => {
-    const m = mapTree(t)((vk) => {
+  "switch on key": () => {
+    const m = mapTree(tree)((vk) => {
       switch (vk[1]) {
         case "a":
           return vk[0];
@@ -36,9 +36,13 @@ describe("mapTree", () => {
           return "ABC";
       }
     });
-    expect(m).toEqual({ a: "B", c: { d: "D", f: 1, g: "ABC" } });
-  });
-});
+    eq(m)({ a: "B", c: { d: "D", f: 1, g: "ABC" } });
+  },
+}));
+
+describe(get, ({ eq }) => ({
+  a: () => 1,
+}));
 
 // describe("_L/context", () => {
 //   test("[]", () => {
