@@ -19,6 +19,21 @@ const res = <X>() => {
   };
 };
 
+type ErrorClass = abstract new (...args: any[]) => Error;
+const ERR = (act: () => void, err?: ErrorClass | ((e: unknown) => boolean)) => {
+  try {
+    act();
+  } catch (e) {
+    if (err && !err.name) {
+      // @ts-expect-error anonymous function expected
+      return eq(err(e), true);
+    } else {
+      return err && eq(e instanceof err, true);
+    }
+  }
+  throw new Error("INVARIANT_BROKEN::NO_ERROR_THROWN");
+};
+
 const ctx = {
   /**
    * `import * as v from "vitest"`
@@ -39,6 +54,11 @@ const ctx = {
    * Creates an array of given type, and some test helpers
    */
   res,
+
+  /**
+   * Expect to throw an error
+   */
+  ERR,
 };
 
 type Ctx = typeof ctx;
