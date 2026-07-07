@@ -1,6 +1,7 @@
 import { describe } from "~testing";
 import mapTree from "../src/map";
 import get from "../src/get";
+import { ks } from "jsyoyo";
 
 const tree = {
   a: "B",
@@ -40,8 +41,36 @@ describe("mapTree", ({ eq }) => ({
   },
 }));
 
-describe(get, ({ eq }) => ({
-  a: () => 1,
+describe(get, ({ eq, ERR }) => ({
+  "{}": () => {
+    const g = get({});
+    // @ts-expect-error non existen key (top level)
+    eq(g(""), void 0);
+
+    ERR(() => g("non.existent" as never));
+    ERR(() => g("non.existent" as never), TypeError);
+    ERR(
+      () => g("non.existent" as never),
+      (e) => e instanceof TypeError,
+    );
+  },
+
+  1: () => {
+    const g = get(tree);
+    eq(g("c.g"), tree.c.g);
+    eq(g("c.f")(), 1);
+    eq(ks(g.cache), ["c.g", "c.f"]);
+  },
+  cache: () => {
+    const a = () => 1 as const;
+    const cache = { "c.f": a };
+    const g = get(tree, cache);
+    eq(g.cache, cache);
+    eq(g("c.g"), tree.c.g);
+    eq(g("c.g"), tree.c.g);
+    eq(g("c.f") !== tree.c.f, true);
+    eq(ks(g.cache), ["c.f", "c.g"]);
+  },
 }));
 
 // describe("_L/context", () => {
