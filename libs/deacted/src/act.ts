@@ -1,38 +1,38 @@
-import { Tree_of_Functions, map } from "treeo";
-import { ARR, Fn, Fn$I, Fn$O } from "~types";
-/**
- * Maps each function in a tree to a corresponding FunctionParams => Kids => [`${function.path}`, [FunctionOutput], Kids?].
- *
- * It allows creating loose AST with open interpretation.
- *
- * @remarks
- * Unfortunately it is not possible to create a generic `act` to strictly reflect Input->Output on the type level.
- *
- * @param fns a tree full of functions
- * @returns a tree full of functions to create loose AST
- *
- *```
- * export const act = <T extends Tree_of_Functions>(fns: T) =>
- *   map(fns)(
- *     ([f, k]) =>
- *       (...ps: any[]) =>
- *       (...kids: any[]) =>
- *         // @ts-expect-error f seems not callable
- *         kids.length ? [k, [f(...ps)], kids] : [k, f(...ps)],
- *   ) as Act<T>;
- * ```
- */
-export const act = <T extends Tree_of_Functions>(fns: T) =>
-  map(fns)(
-    ([f, k]) =>
-      (...ps: any[]) =>
-      (...kids: any[]) =>
-        // @ts-expect-error f seems not callable
-        kids.length ? [k, [f(...ps)], kids] : [k, f(...ps)],
-  ) as Act<T>;
+import { get, Get, Getter, Tree_of_Functions } from "treeo";
+import { a, ARR, dethunk, Fn$O } from "jsyoyo";
+import { Deact$AST } from "./deact";
 
-export type Act<T, P extends string = ""> = T extends Fn
-  ? <I extends Fn$I<T>>(
-      ...I: I
-    ) => <const K extends ARR>(...kids: K) => K extends readonly [] ? [P, [Fn$O<T>]] : [P, [Fn$O<T>], K] // Fn$O<T> does not depend on I
-  : { [K in keyof T & string]: Act<T[K], "" extends P ? K : `${P}.${K}`> };
+type ActArr<T extends Tree_of_Functions, MergeParams extends boolean, AST> = AST extends readonly [
+  infer H extends Deact$AST<T>,
+  ...infer R,
+]
+  ? [Act<T, MergeParams, H>, ...ActArr<T, MergeParams, R>]
+  : [];
+
+export type Act<
+  T extends Tree_of_Functions,
+  MergeParams extends boolean,
+  AST extends Deact$AST<T>,
+> = AST extends readonly [infer FnId extends string, infer Params extends ARR]
+  ? Fn$O<Get<T, FnId>> & (MergeParams extends true ? Params[0] : {})
+  : AST extends ((...k: any[]) => infer FP extends Deact$AST<T>)
+    ? Act<T, MergeParams, FP>
+    : AST extends readonly [infer FnId extends string, infer Params extends ARR, infer Kids]
+      ? [] extends Kids
+        ? Fn$O<Get<T, FnId>> & (MergeParams extends true ? Params[0] : {})
+        : [Fn$O<Get<T, FnId>> & (MergeParams extends true ? Params[0] : {}), ActArr<T, MergeParams, Kids>]
+      : never;
+
+export const act =
+  <T extends Tree_of_Functions, MergeParams extends boolean = false>(
+    T: T,
+    mergeParams = false as MergeParams,
+    getter = get(T) as Getter<T>, // without `as Getter<T>` ts compiler breaks (6.0.3)
+  ) =>
+  <AST extends Deact$AST<T>>(ast: AST): Act<T, MergeParams, AST> => {
+    const [id, p, k] = dethunk(ast);
+    // @ts-expect-error getter type is strict
+    const x = getter(id)(...p);
+    const r = mergeParams ? a(x, p[0]) : x;
+    return (!k ? r : [r, (k as ARR).map((a) => act(T, mergeParams)(a))]) as any;
+  };

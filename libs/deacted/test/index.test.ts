@@ -1,15 +1,15 @@
 import { describe } from "~testing";
 
 import { deact, Deact$AST } from "../src/deact";
-import { acted } from "../src/acted";
+import { act } from "../src/act";
 
-describe(deact, ({ eq }) => ({
+describe("deact<->act", ({ eq }) => ({
   fn: () => {
     const F = { f: (_: "A") => 1 };
     const f = deact(F);
     const ast = ["f", ["A"]] as const satisfies Deact$AST<typeof f>;
     eq(ast, f.f("A")());
-    const x = acted(F)(ast);
+    const x = act(F)(ast);
     eq(x, 1);
   },
   nested: () => {
@@ -34,7 +34,7 @@ describe(deact, ({ eq }) => ({
     const x = d.A(1)(d.AA.A("a")(), d.AA.A("a")(), d.A(1)());
     eq(ast, x);
 
-    const A = acted(Tree);
+    const A = act(Tree);
     const r = [2, ["B", "B", 2]] as [2, ["B", "B", 2]];
     eq(A(ast), r);
     const x2 = A(d.A(1)(d.AA.A("a")(), d.AA.A("a"), d.A(1)()));
@@ -63,7 +63,7 @@ describe(deact, ({ eq }) => ({
     const x = d.A({ a: "a" })(d.BB.B({ b: "b" })(), d.BB.B({ b: "b" })(), d.A({ a: "a" })());
     eq(ast, x);
 
-    const A = acted(Tree, true);
+    const A = act(Tree, true);
     const aA = { a: "a", A: "A" };
     const bB = { b: "b", B: "B" };
     const r = [aA, [bB, bB, aA]] as [{ a: "a"; A: "A" }, [{ b: "b"; B: "B" }, { b: "b"; B: "B" }, { a: "a"; A: "A" }]];
