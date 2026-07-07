@@ -24,7 +24,7 @@ describe("mapTree", ({ eq }) => ({
     eq(m)({ a: "a", c: { d: "c.d", f: "c.f", g: "c.g" } });
   },
 
-  "switch on key": () => {
+  switch_on_key: () => {
     const m = mapTree(tree)((vk) => {
       switch (vk[1]) {
         case "a":
@@ -120,21 +120,4 @@ describe(get, ({ eq, ERR }) => ({
 // describe("_X/execute", () => {
 //   test("1", () => expect(eXe(() => 1)).toBe(1));
 //   test("deeper", () => expect(eXe({ a: () => 1, b: { c: () => "c" } })).toEqual({ a: 1, b: { c: "c" } }));
-// });
-
-// describe("cmdify", () => {
-//   test("simple", () => {
-//     const t = { a: (x: number) => [x, x] as [number, number], b: { c: (x: number, y: string) => `${x} !? ${y}` } };
-//     const c = cmdify(t);
-//     const r = c.a(0)(c.a(1)(), c.b.c(0, "1")());
-//     const e = [
-//       "a",
-//       [0],
-//       [
-//         ["a", [1], []],
-//         ["b.c", [0, "1"], []],
-//       ],
-//     ];
-//     expect(r).toStrictEqual(e);
-//   });
 // });

@@ -24,10 +24,15 @@ export type Acted<
       : never;
 
 export const acted =
-  <T extends Tree_of_Functions, MergeParams extends boolean = false>(T: T, mergeParams = false as MergeParams) =>
+  <T extends Tree_of_Functions, MergeParams extends boolean = false>(
+    T: T,
+    mergeParams = false as MergeParams,
+    getter = get(T),
+  ) =>
   <AST extends Deact$AST<T>>(ast: AST): Acted<T, MergeParams, AST> => {
     const [id, p, k] = dethunk(ast);
-    const x = get(id, T)(...p);
+    // @ts-expect-error getter type is strict
+    const x = getter(id)(...p);
     const r = mergeParams ? a(x, p[0]) : x;
     return (!k ? r : [r, (k as ARR).map((a) => acted(T, mergeParams)(a))]) as any;
   };
