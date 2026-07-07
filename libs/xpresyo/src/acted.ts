@@ -1,7 +1,6 @@
-import { Tree_of_Functions } from "treeo";
+import { get, Get, Tree_of_Functions } from "treeo";
 import { DeAST } from "./deact";
 import { a, ARR, dethunk, Fn$O } from "jsyoyo";
-import { Get } from "type-fest";
 
 type ActedArr<T extends Tree_of_Functions, MergeParams extends boolean, AST> = AST extends readonly [
   infer H extends DeAST<T>,
@@ -23,16 +22,6 @@ export type Acted<
         ? Fn$O<Get<T, FnId>> & (MergeParams extends true ? Params[0] : {})
         : [Fn$O<Get<T, FnId>> & (MergeParams extends true ? Params[0] : {}), ActedArr<T, MergeParams, Kids>]
       : never;
-
-// TODO improve: add cache + move to treeo
-const get = (op: string, x: object) => {
-  const parts = op.split(".");
-  let i = x as any;
-  for (const p of parts) {
-    i = i[p];
-  }
-  return i;
-};
 
 export const acted =
   <T extends Tree_of_Functions, MergeParams extends boolean = false>(T: T, mergeParams = false as MergeParams) =>
