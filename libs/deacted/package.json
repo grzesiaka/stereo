@@ -15,5 +15,9 @@
     ".": "./out/index.mjs",
     "./*": "./out/*.mjs"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "devDependencies": {
+    "jsyoyo": "workspace:^",
+    "treeo": "workspace:^"
+  }
 }
