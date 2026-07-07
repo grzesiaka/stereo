@@ -24,7 +24,7 @@ interface CliArgs {
 }
 
 interface Output {
-  source: string;
+  source?: string;
   HTMLElement: GroupedMembers;
   elements: Record<string, NullableElementOutput>;
   warnings: string[];
@@ -79,12 +79,13 @@ const output: Output = {
   warnings,
 };
 
-const json = `${JSON.stringify(output, null, 2)}\n`;
+delete output.source;
+const tsContnet = `export default ${JSON.stringify(output, null, 2)} as const\n`;
 
 if (args.outPath) {
-  await writeFile(args.outPath, json, "utf8");
+  await writeFile(args.outPath, tsContnet, "utf8");
 } else {
-  process.stdout.write(json);
+  process.stdout.write(tsContnet);
 }
 
 // ---------------------------------------------------------------------------
@@ -93,18 +94,12 @@ if (args.outPath) {
 
 function parseArgs(argv: string[]): CliArgs {
   let inputPath: string | undefined;
-  let outPath: string | undefined;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
 
     if (arg === "--input") {
       inputPath = resolveRequiredArg(argv[++i], "--input");
-      continue;
-    }
-
-    if (arg === "--out") {
-      outPath = resolveRequiredArg(argv[++i], "--out");
       continue;
     }
 
@@ -116,9 +111,11 @@ function parseArgs(argv: string[]): CliArgs {
     throw new Error(`Unknown argument: ${arg}`);
   }
 
+  const fromRoot = (...s: string[]) => resolve(import.meta.dirname, "..", ...s);
+
   return {
-    inputPath: inputPath ?? resolve(process.cwd(), "..", "node_modules", "@types", "web", "index.d.ts"),
-    outPath,
+    inputPath: inputPath ?? fromRoot("node_modules", "@types", "web", "index.d.ts"),
+    outPath: fromRoot("src/html/__members__.gen.ts"),
   };
 }
 
