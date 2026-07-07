@@ -1,4 +1,5 @@
 import { defineProject } from "vitest/config";
+import { resolve } from "node:path";
 
 export default defineProject({
   test: {
@@ -16,7 +17,11 @@ export default defineProject({
             {
               find: /src/,
               replacement: "out",
-              customResolver: (p) => (p === "../out" ? "../out/index.mjs" : p.endsWith(".mjs") ? p : `${p}.mjs`),
+              customResolver: (p, importer) => {
+                let r = p === "../out" ? "../out/index.mjs" : p.endsWith(".mjs") ? p : `${p}.mjs`;
+                r = importer ? resolve(importer, "..", r) : r; // using `@vitest-environment jsdom|happy-dom` breaks path resolution sadly :(
+                return r;
+              },
             },
           ],
         },
