@@ -1,4 +1,4 @@
-import { get, Get, Tree_of_Functions } from "treeo";
+import { get, Get, Getter, Tree_of_Functions } from "treeo";
 import { a, ARR, dethunk, Fn$O } from "jsyoyo";
 import { Deact$AST } from "./deact";
 
@@ -27,7 +27,7 @@ export const acted =
   <T extends Tree_of_Functions, MergeParams extends boolean = false>(
     T: T,
     mergeParams = false as MergeParams,
-    getter = get(T),
+    getter = get(T) as Getter<T>, // without `as Getter<T>` ts compiler breaks (6.0.3)
   ) =>
   <AST extends Deact$AST<T>>(ast: AST): Acted<T, MergeParams, AST> => {
     const [id, p, k] = dethunk(ast);
