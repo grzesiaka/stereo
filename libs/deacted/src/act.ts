@@ -23,6 +23,19 @@ export type Act<
         : [Fn$O<Get<T, FnId>> & (MergeParams extends true ? Params[0] : {}), ActArr<T, MergeParams, Kids>]
       : never;
 
+/**
+ * Based on a tree `T` full of functions creates an interpreter for AST of `Deact<T>`.
+ *
+ * @remarks
+ * Epictetus:
+ * > It's not what happens to you, but how you react to it that matters.
+ *
+ * @param T a tree full of functions
+ * @param mergeParams (optional) a flag controlling if params should be value- and type-merged with the result
+ * @param getter (optiona) a getter for values - might be handy in case of re-using the cache
+ * @returns a function accepting `AST extends Deact$AST<T>`
+ *
+ */
 export const act =
   <T extends Tree_of_Functions, MergeParams extends boolean = false>(
     T: T,
