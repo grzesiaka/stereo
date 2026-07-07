@@ -1,5 +1,2 @@
-export * from "./acted"
 export * from "./commandify"
-export * from "./de-act-ed"
-export * from "./deact"
 export * from "./expressify"
