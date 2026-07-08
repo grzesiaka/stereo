@@ -1,5 +1,7 @@
 // oxlint-disable no-undef
 
+import "weweber/web";
+
 const perfObserver: PerformanceObserverCallback = (list, _observer) => {
   list.getEntries().forEach((entry) => {
     if (entry.entryType === "resource") {

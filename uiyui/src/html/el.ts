@@ -1,14 +1,17 @@
-import { a, ARR, Fn$O, fromStrings, ifArray, k1, mb, ObjectFromStrings, Split } from "jsyoyo";
+import { a, ARR, fromStrings, ifArray, k1, mb, ObjectFromStrings, Split } from "jsyoyo";
 import type __TYPES__ from "./__members__.gen";
 
-export const $el = <T extends HTMLTag, P extends Props<T>>(tag: T, props: P) => {
+export const $el = <T extends HTMLTag, P extends Props<T>>(tag: T, props?: P) => {
   // oxlint-disable-next-line no-undef
-  const e = document.createElement(tag);
-  applyProps(e)(props);
+  const e = document.createElement(tag) as HTMLElement;
+  props && applyProps(e)(props);
   return e as never as UYElement<T, P>;
 };
 
-export type UYElement<T extends HTMLTag, P extends Props<T>> = P & { tagName: `${Uppercase<T>}` };
+export type UYElement<T extends HTMLTag, P extends Props<T>> = P & {
+  tagName: `${Uppercase<T>}`;
+  $<X extends keyof P = "id">(): HTMLElementTagNameMap[T] & { [K in X]: P[K] };
+};
 
 export const props = new Proxy(
   {},
@@ -21,8 +24,6 @@ export const props = new Proxy(
     },
   },
 ) as HTMLElementProps;
-
-type AST = Fn$O<HTMLElementProps[keyof HTMLElementProps]>;
 
 const applyProps = (el: HTMLElement) => (props: Props) => {
   const { style, dataset, classList, ...rest } = props;
@@ -133,9 +134,8 @@ type States<Vs extends StatesRaw = StatesRaw> = Vs extends string
       };
 
 declare global {
-  interface HTMLElement<States = {}> {
-    $states: States;
-    $$(): this["tagName"];
+  interface HTMLElement {
+    $(): UYElement<Lowercase<this["tagName"]> extends HTMLTag ? Lowercase<this["tagName"]> : never, {}>;
   }
 
   interface HTMLAnchorElement {
@@ -303,6 +303,6 @@ declare global {
 }
 
 // oxlint-disable-next-line no-undef
-HTMLElement.prototype.$$ = function () {
-  return this.tagName;
+HTMLElement.prototype.$ = function () {
+  return this as any;
 };

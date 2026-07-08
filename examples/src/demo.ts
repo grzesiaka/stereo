@@ -1,96 +1,101 @@
 // oxlint-disable no-undef
 
-import * as $ from "weweber/web";
-import { htmlProxy as html } from "uiyui";
+import { $el } from "uiyui/html/el";
 
-$.Task("error", () =>
-  $.Wait(250).then(() => {
-    throw new Error("wtf");
-  }),
-);
+const $btn = $el("button", { id: "btn_1" });
+const btn = $btn.$();
+const $$btn = btn.$().$().$();
 
-$.Task("ok", () => $.Wait(100));
+// import { htmlProxy as html } from "uiyui";
 
-const { br } = html;
+// $.Task("error", () =>
+//   $.Wait(250).then(() => {
+//     throw new Error("wtf");
+//   }),
+// );
 
-const p = html.p({
-  innerText: "abc",
-  className: "abc cde",
-  style: {
-    fontWeight: "bold",
-  },
-});
+// $.Task("ok", () => $.Wait(100));
 
-const i = html.input(
-  {
-    value: "value",
-  },
-  { className: "klassName", classList: ["klassList"], props: { defaultValue: "propsik" } },
-);
+// const { br } = html;
 
-i.setAttribute("value", "over");
+// const p = html.p({
+//   innerText: "abc",
+//   className: "abc cde",
+//   style: {
+//     fontWeight: "bold",
+//   },
+// });
 
-const a = html.a({ innerText: "LINK", href: `/#${Date.now()}/#abc` });
-document.body.append(p, i, a);
-console.log(p, i, i.defaultValue, a);
+// const i = html.input(
+//   {
+//     value: "value",
+//   },
+//   { className: "klassName", classList: ["klassList"], props: { defaultValue: "propsik" } },
+// );
 
-// @ts-expect-error
-// oxlint-disable-next-line no-undef
-window.i = i;
-console.log(i.$(), i.$("classList"), i.$());
+// i.setAttribute("value", "over");
 
-// const div = html.div({}, { ok: "", abc: "", cde: "" });
-const arr = html.div({ textContent: "abc" }, ["a", "b"]);
-arr.$("b");
-arr.$("a");
-arr.$("a");
+// const a = html.a({ innerText: "LINK", href: `/#${Date.now()}/#abc` });
+// document.body.append(p, i, a);
+// console.log(p, i, i.defaultValue, a);
 
-const btn = html.button("save", ["idle", "sending", "error"]);
-const btn2 = html.button("load", {
-  idle: {
-    textContent: "idle",
-  },
-  loading: {
-    textContent: "loading",
-  },
-  loaded: {
-    textContent: "loaded",
-  },
-});
+// // @ts-expect-error
+// // oxlint-disable-next-line no-undef
+// window.i = i;
+// console.log(i.$(), i.$("classList"), i.$());
 
-btn.$({ textContent: "idle" });
-btn.onclick = () => {
-  btn.$("sending");
-  btn.textContent = "sending";
-  setTimeout(() => {
-    btn.$("error");
-    btn.$({ textContent: "error" });
-  }, 2000);
-};
+// // const div = html.div({}, { ok: "", abc: "", cde: "" });
+// const arr = html.div({ textContent: "abc" }, ["a", "b"]);
+// arr.$("b");
+// arr.$("a");
+// arr.$("a");
 
-btn2.onclick = () => {
-  btn2.$("loading");
+// const btn = html.button("save", ["idle", "sending", "error"]);
+// const btn2 = html.button("load", {
+//   idle: {
+//     textContent: "idle",
+//   },
+//   loading: {
+//     textContent: "loading",
+//   },
+//   loaded: {
+//     textContent: "loaded",
+//   },
+// });
 
-  setTimeout(() => {
-    btn2.$("loaded");
-  }, 2000);
-};
+// btn.$({ textContent: "idle" });
+// btn.onclick = () => {
+//   btn.$("sending");
+//   btn.textContent = "sending";
+//   setTimeout(() => {
+//     btn.$("error");
+//     btn.$({ textContent: "error" });
+//   }, 2000);
+// };
 
-const d = btn2.$.on({
-  click(p) {
-    console.log("CLICK", this, p);
-    d();
-  },
-  focus: (ev) => console.log("FOCUS", this, ev),
-});
+// btn2.onclick = () => {
+//   btn2.$("loading");
 
-console.log(btn.tagName);
-const tarea = html.textarea("abc");
+//   setTimeout(() => {
+//     btn2.$("loaded");
+//   }, 2000);
+// };
 
-tarea.$({
-  contentEditable: "false",
-});
+// const d = btn2.$.on({
+//   click(p) {
+//     console.log("CLICK", this, p);
+//     d();
+//   },
+//   focus: (ev) => console.log("FOCUS", this, ev),
+// });
 
-document.body.append(btn, btn2, br(), tarea, tarea, tarea);
+// console.log(btn.tagName);
+// const tarea = html.textarea("abc");
 
-console.log(document.createElement("BUTTON").tagName);
+// tarea.$({
+//   contentEditable: "false",
+// });
+
+// document.body.append(btn, btn2, br(), tarea, tarea, tarea);
+
+// console.log(document.createElement("BUTTON").tagName);
