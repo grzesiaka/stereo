@@ -79,8 +79,28 @@ const output: Output = {
   warnings,
 };
 
+const multiTags = {
+  HTMLTableColElement: 'COL" | "COLGROUP',
+  HTMLQuoteElement: 'Q" | "BLOCKQUOTE',
+  HTMLTableSectionElement: 'TBODY" | "TFOOT" | "THEAD',
+  HTMLTableCellElement: 'TD" | "TH',
+  HTMLModElement: 'DEL" | "INS',
+} as Record<string, string>;
+
+const inter = Object.entries(output.elements).flatMap(([k, el]) => {
+  if (!el) return [];
+  if (!(el.data_writable.length || el.data_readonly.length || el.callbacks.length)) {
+    if (el.methods[0] !== "addEventListener" && el.methods[1] !== "removeEventListener") console.log(el);
+    return [];
+  } else {
+    return `interface ${el.interface} {
+      tagName: "${multiTags[el.interface] || k.toUpperCase()}"
+}`;
+  }
+});
+
 delete output.source;
-const tsContnet = `export default ${JSON.stringify(output, null, 2)} as const\n`;
+const tsContnet = `export default ${JSON.stringify(output, null, 2)} as const\n /*\n${inter.join("\n")}\n*/\n`;
 
 if (args.outPath) {
   await writeFile(args.outPath, tsContnet, "utf8");

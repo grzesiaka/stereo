@@ -1755,3 +1755,167 @@ export default {
   },
   "warnings": []
 } as const
+ /*
+interface HTMLAnchorElement {
+      tagName: "A"
+}
+interface HTMLAreaElement {
+      tagName: "AREA"
+}
+interface HTMLAudioElement {
+      tagName: "AUDIO"
+}
+interface HTMLBaseElement {
+      tagName: "BASE"
+}
+interface HTMLQuoteElement {
+      tagName: "Q" | "BLOCKQUOTE"
+}
+interface HTMLBodyElement {
+      tagName: "BODY"
+}
+interface HTMLButtonElement {
+      tagName: "BUTTON"
+}
+interface HTMLCanvasElement {
+      tagName: "CANVAS"
+}
+interface HTMLTableColElement {
+      tagName: "COL" | "COLGROUP"
+}
+interface HTMLTableColElement {
+      tagName: "COL" | "COLGROUP"
+}
+interface HTMLDataElement {
+      tagName: "DATA"
+}
+interface HTMLDataListElement {
+      tagName: "DATALIST"
+}
+interface HTMLModElement {
+      tagName: "DEL" | "INS"
+}
+interface HTMLDetailsElement {
+      tagName: "DETAILS"
+}
+interface HTMLDialogElement {
+      tagName: "DIALOG"
+}
+interface HTMLEmbedElement {
+      tagName: "EMBED"
+}
+interface HTMLFieldSetElement {
+      tagName: "FIELDSET"
+}
+interface HTMLFormElement {
+      tagName: "FORM"
+}
+interface HTMLIFrameElement {
+      tagName: "IFRAME"
+}
+interface HTMLImageElement {
+      tagName: "IMG"
+}
+interface HTMLInputElement {
+      tagName: "INPUT"
+}
+interface HTMLModElement {
+      tagName: "DEL" | "INS"
+}
+interface HTMLLabelElement {
+      tagName: "LABEL"
+}
+interface HTMLLegendElement {
+      tagName: "LEGEND"
+}
+interface HTMLLIElement {
+      tagName: "LI"
+}
+interface HTMLLinkElement {
+      tagName: "LINK"
+}
+interface HTMLMapElement {
+      tagName: "MAP"
+}
+interface HTMLMetaElement {
+      tagName: "META"
+}
+interface HTMLMeterElement {
+      tagName: "METER"
+}
+interface HTMLObjectElement {
+      tagName: "OBJECT"
+}
+interface HTMLOListElement {
+      tagName: "OL"
+}
+interface HTMLOptGroupElement {
+      tagName: "OPTGROUP"
+}
+interface HTMLOptionElement {
+      tagName: "OPTION"
+}
+interface HTMLOutputElement {
+      tagName: "OUTPUT"
+}
+interface HTMLProgressElement {
+      tagName: "PROGRESS"
+}
+interface HTMLQuoteElement {
+      tagName: "Q" | "BLOCKQUOTE"
+}
+interface HTMLScriptElement {
+      tagName: "SCRIPT"
+}
+interface HTMLSelectElement {
+      tagName: "SELECT"
+}
+interface HTMLSlotElement {
+      tagName: "SLOT"
+}
+interface HTMLSourceElement {
+      tagName: "SOURCE"
+}
+interface HTMLStyleElement {
+      tagName: "STYLE"
+}
+interface HTMLTableElement {
+      tagName: "TABLE"
+}
+interface HTMLTableSectionElement {
+      tagName: "TBODY" | "TFOOT" | "THEAD"
+}
+interface HTMLTableCellElement {
+      tagName: "TD" | "TH"
+}
+interface HTMLTemplateElement {
+      tagName: "TEMPLATE"
+}
+interface HTMLTextAreaElement {
+      tagName: "TEXTAREA"
+}
+interface HTMLTableSectionElement {
+      tagName: "TBODY" | "TFOOT" | "THEAD"
+}
+interface HTMLTableCellElement {
+      tagName: "TD" | "TH"
+}
+interface HTMLTableSectionElement {
+      tagName: "TBODY" | "TFOOT" | "THEAD"
+}
+interface HTMLTimeElement {
+      tagName: "TIME"
+}
+interface HTMLTitleElement {
+      tagName: "TITLE"
+}
+interface HTMLTableRowElement {
+      tagName: "TR"
+}
+interface HTMLTrackElement {
+      tagName: "TRACK"
+}
+interface HTMLVideoElement {
+      tagName: "VIDEO"
+}
+*/
