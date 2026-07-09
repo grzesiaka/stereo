@@ -5,7 +5,7 @@ import { actFn, AST1 } from "deacted";
 
 // type $PropsFn<T extends HTMLTag> = ReturnType<typeof $propsFn<T>>;
 const $propsFn =
-  <T extends HTML_Tag>(T: T) =>
+  <T extends HTML_Tag>(_: T) =>
   <const P extends Props<T> | string = {}, const SR extends StatesRaw<T> | undefined = undefined>(
     P = {} as P extends string ? P : NoExtraKeys<P, Props<T>>,
     SR?: SR,
@@ -33,8 +33,15 @@ export const $el =
 
 export type uyElement<T extends HTML_Tag = HTML_Tag, P extends Props<T, States<T>> = Props<T, States<T>>> = P & {
   tagName: `${Uppercase<T>}`;
-  $<X extends keyof P = "id">(): HTMLElementTagNameMap[T] & { [K in X]: P[K] };
+  // $<X extends keyof P = "id">(): HTMLElementTagNameMap[T] & { [K in X]: P[K] };
 };
+export type uyElement$Tag<E> = E extends uyElement<infer T extends HTML_Tag> ? T : never;
+export type uyElement$Props<E> = E extends uyElement<any, infer P> ? P : never;
+
+export const uy$html =
+  <E extends uyElement>(e: E) =>
+  <X extends keyof uyElement$Props<E> = "id">() =>
+    e as never as HTMLElementTagNameMap[uyElement$Tag<E>] & { [K in X]: uyElement$Props<E>[K] };
 
 const applyProps = (el: HTMLElement) => (props: Props) => {
   const { style, dataset, classList, ...rest } = props as Props & { tagName: any };
@@ -47,18 +54,21 @@ const applyProps = (el: HTMLElement) => (props: Props) => {
   return el;
 };
 
-const getState = <Vs extends NormalizeStates>(vs: Vs, el: HTMLElement) =>
+const getState = <Vs extends States>(vs: Vs, el: HTMLElement) =>
   (el.classList[0]! in vs ? el.classList[0] : k1(vs)) as keyof Vs & string;
 
-const switchState = <Vs extends NormalizeStates>(next: keyof Vs, vs: Vs, el: HTMLElement) => {
-  const currentKey = getState(vs, el);
-  if (currentKey !== void 0) {
-    const current = vs[currentKey];
-    el.classList.remove(currentKey, ...((current as any).classList || []));
-  }
-  el.classList.add(next as string);
-  applyProps(el)(vs[next] as Props);
-};
+export const $state =
+  <E extends uyElement & { $states: States }>(e: E) =>
+  (next: keyof E["$states"]) => {
+    const el = e as never as HTMLElement;
+    const currentKey = getState(e.$states, el);
+    if (currentKey !== void 0) {
+      const current = e.$states[currentKey];
+      el.classList.remove(currentKey, ...((current as any).classList || []));
+    }
+    el.classList.add(next as string);
+    applyProps(el)(e.$states[next as any] as Props);
+  };
 
 const normalizeStates = (vs: StatesRaw): NormalizeStates<StatesRaw> =>
   ifArray(

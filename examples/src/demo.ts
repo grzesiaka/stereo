@@ -1,6 +1,6 @@
 // oxlint-disable no-undef
 
-import { init, props as $ } from "uiyui/html";
+import { init, props as $, uy$html, $state } from "uiyui/html";
 
 const ui = $.div({ id: "root" }, "a b")(
   $.h1({ textContent: "Hey you" })(),
@@ -10,7 +10,8 @@ const ui = $.div({ id: "root" }, "a b")(
 
 const { dom, ids } = init(ui);
 
-ids.root.$();
+uy$html(ids.run)().onclick = () => $state(ids.root)(Math.random() > 0.5 ? "a" : "b");
 
 console.log(ids, dom);
-document.body.append(dom[0].$());
+const div = uy$html(dom[0])();
+document.body.append(div);
