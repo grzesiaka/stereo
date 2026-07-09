@@ -1,12 +1,14 @@
 // oxlint-disable no-undef
 
-import { $el, init, props as $, props$el } from "uiyui/html";
+import { init, props as $ } from "uiyui/html";
 
 const ui = $.div()(
   $.h1({ textContent: "Hey you" })(),
-  $.p({ textContent: "What's up?" }),
-  $.button({ textContent: "Run" }),
+  $.p({ id: "ppp", textContent: "What's up?" }),
+  $.button({ id: "run", textContent: "Run" }),
 );
 
-const el = init(ui);
-document.body.append(el[0].$());
+const { dom, ids } = init(ui);
+
+console.log(ids, dom);
+document.body.append(dom[0].$());

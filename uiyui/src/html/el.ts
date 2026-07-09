@@ -10,9 +10,8 @@ const $propsFn =
     P = {} as P extends string ? P : NoExtraKeys<P, Props<T>>,
     SR?: SR,
   ) => {
-    const p = (typeof P === "string" ? { id: P } : P) as { [TAG_NAME]: string; id: string; $states: {} };
+    const p = (typeof P === "string" ? { id: P } : P) as { id: string; $states: {} };
     SR && (p.$states = normalizeStates(SR));
-    p[TAG_NAME] = T;
     return p as never as NormalizeProps<T, P, SR>;
   };
 
@@ -23,8 +22,6 @@ export const props = new Proxy(propsFn, {
   get: (_, t: HTML_Tag) => propsFn(t),
 }) as PropsFn & PropsProxy;
 
-export const props$el = <const P extends PropsWithTag>(p: P) => $el(p[TAG_NAME])(p as NoExtraKeys<P, PropsWithTag>);
-
 export const $el =
   <T extends HTML_Tag, const P extends Props<T, States<T>> = {}>(tag: T) =>
   (props?: NoExtraKeys<P, Props<T, States<T>>>) => {
@@ -34,7 +31,7 @@ export const $el =
     return e as never as UYElement<T, P>;
   };
 
-export type UYElement<T extends HTML_Tag, P extends Props<T, States<T>>> = P & {
+export type UYElement<T extends HTML_Tag = HTML_Tag, P extends Props<T, States<T>> = Props<T, States<T>>> = P & {
   tagName: `${Uppercase<T>}`;
   $<X extends keyof P = "id">(): HTMLElementTagNameMap[T] & { [K in X]: P[K] };
 };
@@ -90,7 +87,7 @@ export type HTML_Tag = keyof HTMLElementTagNameMap;
 type TYPES = typeof __TYPES__;
 type ELEMENTS = TYPES["elements"];
 
-type HTMLTagAndProps<T extends HTML_Tag = HTML_Tag> = readonly [T, PropsWithTag<T>];
+type HTMLTagAndProps<T extends HTML_Tag = HTML_Tag> = readonly [T, Props<T>];
 export type HTML_AST = AST1<HTMLTagAndProps>;
 
 type PropsFn = <T extends HTML_Tag>(
@@ -102,12 +99,8 @@ type PropsFn = <T extends HTML_Tag>(
   ...kids: Kids
 ) => Kids extends readonly [] ? [T, NormalizeProps<T, P, SR>] : [T, NormalizeProps<T, P, SR>, Kids];
 
-const TAG_NAME: unique symbol = Symbol();
-export type TAG_NAME = typeof TAG_NAME;
 type NormalizeProps<T extends HTML_Tag, P extends Props<T> | string, SR extends StatesRaw<T> | undefined> = Simplify<
-  {
-    [TAG_NAME]: T;
-  } & (P extends string ? { id: P } : P & (SR extends StatesRaw ? { $states: NormalizeStates<SR> } : {}))
+  P extends string ? { id: P } : P & (SR extends StatesRaw ? { $states: NormalizeStates<SR> } : {})
 >;
 
 type BasePropsAll = TYPES["HTMLElement"]["data_writable"][number];
@@ -147,9 +140,7 @@ type Props<T extends HTML_Tag = HTML_Tag, S extends States<T> = {}> = Partial<Pr
         $states: S;
       });
 
-type PropsWithTag<T extends HTML_Tag = HTML_Tag, S extends States<T> = {}> = Props<T, S> & { [TAG_NAME]: T };
-
-export type HTML_Props<T extends HTML_Tag = HTML_Tag, S extends States<T> = {}> = PropsWithTag<T, S>;
+export type HTML_Props<T extends HTML_Tag = HTML_Tag, S extends States<T> = {}> = Props<T, S>;
 
 type StateRaw<K extends HTML_Tag = HTML_Tag> = string | ARR<string> | Props<K>;
 type StatesRaw<K extends HTML_Tag = HTML_Tag> = string | ARR<string> | Record<string, StateRaw<K>>;
