@@ -1,10 +1,19 @@
 // oxlint-disable no-undef
 
-import { $el } from "uiyui/html/el";
+import { $el, props, props$el } from "uiyui/html/el";
 
-const $btn = $el("button", { id: "btn_1" });
+const p = props("a")("a", "a b c");
+const a = props$el(p);
+console.log(p, a);
+
+const b = props.button({ tagName: 1 });
+
+const $btn = $el("button")({ id: "btn_1", wtf: "" });
 const btn = $btn.$();
+
 const $$btn = btn.$().$().$();
+
+console.log(btn);
 
 // import { htmlProxy as html } from "uiyui";
 

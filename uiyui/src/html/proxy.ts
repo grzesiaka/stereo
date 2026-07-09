@@ -84,7 +84,7 @@ const switchState = <Vs extends States>(next: keyof Vs, vs: Vs, el: HTMLPolyElem
     el.classList.remove(currentKey, ...((current as any).classList || []));
   }
   el.classList.add(next as string);
-  applyProps(el)(vs[next] as WriteableProps);
+  applyProps(el as HTMLElement)(vs[next] as WriteableProps);
 };
 
 const normalizeStates = (vs: StatesRaw): States<StatesRaw> =>

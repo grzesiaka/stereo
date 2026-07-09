@@ -1,32 +1,52 @@
 import { a, ARR, fromStrings, ifArray, k1, mb, ObjectFromStrings, Split } from "jsyoyo";
 import type __TYPES__ from "./__members__.gen";
+import { Simplify } from "type-fest";
 
-export const $el = <T extends HTMLTag, P extends Props<T>>(tag: T, props?: P) => {
-  // oxlint-disable-next-line no-undef
-  const e = document.createElement(tag) as HTMLElement;
-  props && applyProps(e)(props);
-  return e as never as UYElement<T, P>;
-};
+const TAG_NAME: unique symbol = Symbol();
+type NormalizeProps<T extends HTMLTag, P extends Props<T> | string, SR extends StatesRaw<T> | undefined> = Simplify<
+  {
+    [TAG_NAME]: T;
+  } & (P extends string ? { id: P } : P & (SR extends StatesRaw ? { $states: NormalizeStates<SR> } : {}))
+>;
+
+type PropsFn<T extends HTMLTag> = ReturnType<typeof propsFn<T>>;
+const propsFn =
+  <T extends HTMLTag>(T: T) =>
+  <P extends Props<T> | string = {}, SR extends StatesRaw<T> | undefined = undefined>(P = {} as P, SR?: SR) => {
+    const p = (typeof P === "string" ? { id: P } : P) as { [TAG_NAME]: any; id: any; $states: any };
+    // Apparently .$states is not present on `as NormalizeProps<T, P, StatesRaw<T>>`. Well...
+    SR && (p.$states = normalizeStates(SR));
+    p[TAG_NAME] = T;
+    return p as never as NormalizeProps<T, P, StatesRaw<T>>;
+  };
+
+export type PropsProxy = { [T in HTMLTag]: PropsFn<T> };
+export const props = new Proxy(propsFn, {
+  get: (_, t: HTMLTag) => propsFn(t),
+}) as typeof propsFn & PropsProxy;
+
+export const props$el = <P extends PropsWithTag>(p: P) => $el(p[TAG_NAME], p);
+
+type X = Props<"div">;
+const x: X = {};
+x.abc = 1;
+
+export const $el =
+  <T extends HTMLTag, P extends Props<T>>(tag: T) =>
+  (props?: P) => {
+    // oxlint-disable-next-line no-undef
+    const e = document.createElement(tag) as HTMLElement;
+    props && applyProps(e)(props);
+    return e as never as UYElement<T, P>;
+  };
 
 export type UYElement<T extends HTMLTag, P extends Props<T>> = P & {
   tagName: `${Uppercase<T>}`;
   $<X extends keyof P = "id">(): HTMLElementTagNameMap[T] & { [K in X]: P[K] };
 };
 
-export const props = new Proxy(
-  {},
-  {
-    get: (_, t: HTMLTag) => (o: string | Props, s?: StatesRaw) => {
-      return [
-        t, // TODO it might be prefix / suffix if needed to fully reflect domain
-        [typeof o === "string" ? { id: o } : o].concat(s ? [normalizeStates(s)] : ([] as any)),
-      ];
-    },
-  },
-) as HTMLElementProps;
-
 const applyProps = (el: HTMLElement) => (props: Props) => {
-  const { style, dataset, classList, ...rest } = props;
+  const { style, dataset, classList, ...rest } = props as Props & { tagName: any };
   a(el, rest);
   a(el.style, style);
   a(el.dataset, dataset);
@@ -36,10 +56,10 @@ const applyProps = (el: HTMLElement) => (props: Props) => {
   return el;
 };
 
-const getState = <Vs extends States>(vs: Vs, el: HTMLElement) =>
+const getState = <Vs extends NormalizeStates>(vs: Vs, el: HTMLElement) =>
   (el.classList[0]! in vs ? el.classList[0] : k1(vs)) as keyof Vs & string;
 
-const switchState = <Vs extends States>(next: keyof Vs, vs: Vs, el: HTMLElement) => {
+const switchState = <Vs extends NormalizeStates>(next: keyof Vs, vs: Vs, el: HTMLElement) => {
   const currentKey = getState(vs, el);
   if (currentKey !== void 0) {
     const current = vs[currentKey];
@@ -49,7 +69,7 @@ const switchState = <Vs extends States>(next: keyof Vs, vs: Vs, el: HTMLElement)
   applyProps(el)(vs[next] as Props);
 };
 
-const normalizeStates = (vs: StatesRaw): States<StatesRaw> =>
+const normalizeStates = (vs: StatesRaw): NormalizeStates<StatesRaw> =>
   ifArray(
     vs,
     (vs) => normalizeStates(fromStrings(vs)),
@@ -105,24 +125,20 @@ type PropsRequired<T extends HTMLTag = HTMLTag> = Pick<HTMLElementTagNameMap[T],
   dataset: Record<string, string>;
 };
 
-type Props<T extends HTMLTag = HTMLTag> = Partial<PropsRequired<T>>;
-
-type HTMLElementProps = {
-  readonly [K in HTMLTag]: <
-    const O extends Props<K> | string = {},
-    const Vs extends StatesRaw<K> | undefined = undefined,
-  >(
-    opt?: O,
-    states?: Vs,
-  ) => [K, [O extends string ? { id: O } : O, ...(Vs extends StatesRaw ? [States<Vs>] : [])]];
-};
+type Props<T extends HTMLTag = HTMLTag, S extends States<T> = {}> = Partial<PropsRequired<T>> &
+  (S extends {}
+    ? {}
+    : {
+        $states: S;
+      });
+type PropsWithTag<T extends HTMLTag = HTMLTag, S extends States<T> = {}> = Props<T, S> & { [TAG_NAME]: T };
 
 type StateRaw<K extends HTMLTag = HTMLTag> = string | ARR<string> | Props<K>;
 type StatesRaw<K extends HTMLTag = HTMLTag> = string | ARR<string> | Record<string, StateRaw<K>>;
-type States<Vs extends StatesRaw = StatesRaw> = Vs extends string
-  ? States<Split<Vs, " ">>
+type NormalizeStates<Vs extends StatesRaw = StatesRaw> = Vs extends string
+  ? NormalizeStates<Split<Vs, " ">>
   : Vs extends ARR<string>
-    ? States<ObjectFromStrings<Vs>>
+    ? NormalizeStates<ObjectFromStrings<Vs>>
     : {
         [K in keyof Vs]: Vs[K] extends string
           ? {
@@ -132,6 +148,7 @@ type States<Vs extends StatesRaw = StatesRaw> = Vs extends string
             ? { classList: Vs[K] }
             : Vs[K];
       };
+type States<T extends HTMLTag = HTMLTag> = Record<string, Props<T>>;
 
 declare global {
   interface HTMLElement {
