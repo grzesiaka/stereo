@@ -1,6 +1,7 @@
-import { a, ARR, fromStrings, ifArray, NoExtraKeys, k1, mb, ObjectFromStrings, Split } from "jsyoyo";
+import { a, ARR, fromStrings, ifArray, NoExtraKeys, k1, mb, ObjectFromStrings, Split, Fn$O } from "jsyoyo";
 import type __TYPES__ from "./__members__.gen";
 import { Simplify } from "type-fest";
+import { actFn } from "deacted";
 
 const TAG_NAME: unique symbol = Symbol();
 type NormalizeProps<T extends HTMLTag, P extends Props<T> | string, SR extends StatesRaw<T> | undefined> = Simplify<
@@ -9,8 +10,8 @@ type NormalizeProps<T extends HTMLTag, P extends Props<T> | string, SR extends S
   } & (P extends string ? { id: P } : P & (SR extends StatesRaw ? { $states: NormalizeStates<SR> } : {}))
 >;
 
-type PropsFn<T extends HTMLTag> = ReturnType<typeof propsFn<T>>;
-const propsFn =
+// type $PropsFn<T extends HTMLTag> = ReturnType<typeof $propsFn<T>>;
+const $propsFn =
   <T extends HTMLTag>(T: T) =>
   <const P extends Props<T> | string = {}, const SR extends StatesRaw<T> | undefined = undefined>(
     P = {} as P extends string ? P : NoExtraKeys<P, Props<T>>,
@@ -22,10 +23,20 @@ const propsFn =
     return p as never as NormalizeProps<T, P, SR>;
   };
 
-export type PropsProxy = { [T in HTMLTag]: PropsFn<T> };
+type PropsFn = <T extends HTMLTag>(
+  T: T,
+) => <const P extends Props<T> | string = {}, const SR extends StatesRaw<T> | undefined = undefined>(
+  P: P,
+  SR: SR,
+) => <Kids extends ARR>(
+  ...kids: Kids
+) => Kids extends readonly [] ? [T, NormalizeProps<T, P, SR>] : [T, NormalizeProps<T, P, SR>, Kids];
+const propsFn = actFn($propsFn) as PropsFn;
+
+export type PropsProxy = { [T in HTMLTag]: Fn$O<typeof propsFn<T>> };
 export const props = new Proxy(propsFn, {
   get: (_, t: HTMLTag) => propsFn(t),
-}) as typeof propsFn & PropsProxy;
+}) as PropsFn & PropsProxy;
 
 export const props$el = <const P extends PropsWithTag>(p: P) => $el(p[TAG_NAME])(p as NoExtraKeys<P, PropsWithTag>);
 

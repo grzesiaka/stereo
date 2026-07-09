@@ -2,12 +2,12 @@
 
 import { $el, props, props$el } from "uiyui/html/el";
 
-const p = props("a")("a", "a b c");
-const a = props$el(p);
+const p = props("a")("a", "a b c")();
+const a = props$el(p[1]);
 console.log(p, a);
 
-const b = props.button({ id: "btn" }, { a: "" });
-console.log(b, props$el(b));
+const b = props.button({ id: "btn" }, { a: "" })();
+console.log(b, props$el(b[1]));
 
 const $btn = $el("button")({ id: "" });
 const btn = $btn.$();

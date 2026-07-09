@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@types/web": "catalog:",
+    "deacted": "workspace:^",
     "~nodejs": "workspace:^"
   },
   "peerDependencies": {
