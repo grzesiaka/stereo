@@ -13,7 +13,9 @@
   "type": "module",
   "exports": {
     ".": "./out/index.mjs",
-    "./*": "./out/*.mjs"
+    "./*": "./out/*.mjs",
+    "./fn": "./out/fn/index.mjs",
+    "./fn/*": "./out/fn/*.mjs"
   },
   "sideEffects": false,
   "devDependencies": {

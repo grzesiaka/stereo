@@ -27,7 +27,7 @@ export const props = new Proxy(propsFn, {
   get: (_, t: HTMLTag) => propsFn(t),
 }) as typeof propsFn & PropsProxy;
 
-export const props$el = <const P extends PropsWithTag>(p: P) => $el(p[TAG_NAME], p as NoExtraKeys<P, PropsWithTag>);
+export const props$el = <const P extends PropsWithTag>(p: P) => $el(p[TAG_NAME])(p as NoExtraKeys<P, PropsWithTag>);
 
 export const $el =
   <T extends HTMLTag, const P extends Props<T, States<T>> = {}>(tag: T) =>

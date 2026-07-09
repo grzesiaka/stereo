@@ -1,4 +1,4 @@
-import { Fn, Fn$I, Fn$O } from "jsyoyo";
+import { Fn, Fn$I, Fn$O, id } from "jsyoyo";
 import { map, Tree_of_Functions } from "treeo";
 import { FnsTree$AST } from "./types";
 import { DeactFn, deactFn } from "./fn/deact";
@@ -25,7 +25,7 @@ import { DeactFn, deactFn } from "./fn/deact";
  *    ) as Deact<T>;
  * ```
  */
-export const deact = <T extends Tree_of_Functions>(fns: T) => map(fns)(([_, k]) => deactFn()(k)) as Deact<T>;
+export const deact = <T extends Tree_of_Functions>(fns: T) => map(fns)(([_, k]) => deactFn(id)(k)) as Deact<T>;
 
 export type Deact<T, P extends string = ""> = T extends Fn
   ? Fn$O<DeactFn<P, Fn$I<T>>>
