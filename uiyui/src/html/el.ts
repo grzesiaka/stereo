@@ -29,15 +29,14 @@ export const props = new Proxy(propsFn, {
 
 export const props$el = <const P extends PropsWithTag>(p: P) => $el(p[TAG_NAME], p as NoExtraKeys<P, PropsWithTag>);
 
-export const $el = <T extends HTMLTag, const P extends Props<T, States<T>> = {}>(
-  tag: T,
-  props?: NoExtraKeys<P, Props<T, States<T>>>,
-) => {
-  // oxlint-disable-next-line no-undef
-  const e = document.createElement(tag) as HTMLElement;
-  props && applyProps(e)(props);
-  return e as never as UYElement<T, P>;
-};
+export const $el =
+  <T extends HTMLTag, const P extends Props<T, States<T>> = {}>(tag: T) =>
+  (props?: NoExtraKeys<P, Props<T, States<T>>>) => {
+    // oxlint-disable-next-line no-undef
+    const e = document.createElement(tag) as HTMLElement;
+    props && applyProps(e)(props);
+    return e as never as UYElement<T, P>;
+  };
 
 export type UYElement<T extends HTMLTag, P extends Props<T>> = P & {
   tagName: `${Uppercase<T>}`;

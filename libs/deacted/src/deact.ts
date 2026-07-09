@@ -1,6 +1,7 @@
-import { ARR, Fn, Fn$I } from "jsyoyo";
+import { Fn, Fn$I, Fn$O } from "jsyoyo";
 import { map, Tree_of_Functions } from "treeo";
 import { FnsTree$AST } from "./types";
+import { DeactFn, deactFn } from "./fn/deact";
 
 /**
  * Maps each function in a tree to a corresponding FunctionParams => Kids => [`${function.path}`, FunctionParams, Kids?].
@@ -24,16 +25,10 @@ import { FnsTree$AST } from "./types";
  *    ) as Deact<T>;
  * ```
  */
-export const deact = <T extends Tree_of_Functions>(fns: T) =>
-  map(fns)(
-    ([_, k]) =>
-      (...ps: any[]) =>
-      (...kids: any[]) =>
-        kids.length ? [k, ps, kids] : [k, ps],
-  ) as Deact<T>;
+export const deact = <T extends Tree_of_Functions>(fns: T) => map(fns)(([_, k]) => deactFn()(k)) as Deact<T>;
 
 export type Deact<T, P extends string = ""> = T extends Fn
-  ? <I extends Fn$I<T>>(...I: I) => <const K extends ARR>(...kids: K) => K extends readonly [] ? [P, I] : [P, I, K]
+  ? Fn$O<DeactFn<P, Fn$I<T>>>
   : { [K in keyof T & string]: Deact<T[K], "" extends P ? K : `${P}.${K}`> };
 
 export type Deact$AST<T> = FnsTree$AST<Deact<T>>;

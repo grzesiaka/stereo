@@ -9,7 +9,7 @@ console.log(p, a);
 const b = props.button({ id: "btn" }, { a: "" });
 console.log(b, props$el(b));
 
-const $btn = $el("button", { id: "" });
+const $btn = $el("button")({ id: "" });
 const btn = $btn.$();
 
 const $$btn = btn.$().$().$();
