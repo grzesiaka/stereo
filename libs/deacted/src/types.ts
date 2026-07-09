@@ -8,6 +8,13 @@ export type AST<FnIdParams extends readonly [string, ARR]> =
   //       `[FnIdParams[0], FnIdParams[1], ARR<AST<FnIdParams>>]` is too loose on its own
   | (readonly [FnIdParams[0], FnIdParams[1], ARR<AST<FnIdParams>>] & readonly [...FnIdParams, unknown]);
 
+export type AST1<FnIdParams extends readonly [string, unknown]> =
+  | FnIdParams
+  | (() => FnIdParams)
+  // TODO: investigate and if needed report as TS error `readonly [...FnIdParams, ARR<AST<FnIdParams>]` results in circular dependency
+  //       `[FnIdParams[0], FnIdParams[1], ARR<AST<FnIdParams>>]` is too loose on its own
+  | (readonly [FnIdParams[0], FnIdParams[1], ARR<AST1<FnIdParams>>] & readonly [...FnIdParams, unknown]);
+
 export type FnsTree$AST<T extends Tree_of_Functions = Tree_of_Functions> =
   FnsTree$FnIdParams<T> extends [string, ARR] ? AST<FnsTree$FnIdParams<T>> : never;
 
