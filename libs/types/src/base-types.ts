@@ -66,3 +66,8 @@ export type IfEquals<X, Y, A = X, B = never> =
 export type WritableKeys<T> = {
   [K in keyof T]-?: IfEquals<{ [P in K]: T[P] }, { -readonly [P in K]: T[P] }, K>;
 }[keyof T];
+
+/**
+ * Do not allow additional keys. Needed to prevent arbitrary assignments when generic param due to TS 2.4 Weak Types.
+ */
+export type NoExtraKeys<T, Shape> = T & Record<Exclude<keyof T, keyof Shape>, never>;

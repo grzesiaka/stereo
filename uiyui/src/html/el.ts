@@ -1,4 +1,4 @@
-import { a, ARR, fromStrings, ifArray, k1, mb, ObjectFromStrings, Split } from "jsyoyo";
+import { a, ARR, fromStrings, ifArray, NoExtraKeys, k1, mb, ObjectFromStrings, Split } from "jsyoyo";
 import type __TYPES__ from "./__members__.gen";
 import { Simplify } from "type-fest";
 
@@ -13,7 +13,7 @@ type PropsFn<T extends HTMLTag> = ReturnType<typeof propsFn<T>>;
 const propsFn =
   <T extends HTMLTag>(T: T) =>
   <const P extends Props<T> | string = {}, const SR extends StatesRaw<T> | undefined = undefined>(
-    P = {} as P,
+    P = {} as P extends string ? P : NoExtraKeys<P, Props<T>>,
     SR?: SR,
   ) => {
     const p = (typeof P === "string" ? { id: P } : P) as { [TAG_NAME]: string; id: string; $states: {} };
@@ -27,9 +27,12 @@ export const props = new Proxy(propsFn, {
   get: (_, t: HTMLTag) => propsFn(t),
 }) as typeof propsFn & PropsProxy;
 
-export const props$el = <const P extends PropsWithTag>(p: P) => $el(p[TAG_NAME], p);
+export const props$el = <const P extends PropsWithTag>(p: P) => $el(p[TAG_NAME], p as NoExtraKeys<P, PropsWithTag>);
 
-export const $el = <T extends HTMLTag, const P extends Props<T, States<T>> = {}>(tag: T, props?: P) => {
+export const $el = <T extends HTMLTag, const P extends Props<T, States<T>> = {}>(
+  tag: T,
+  props?: NoExtraKeys<P, Props<T, States<T>>>,
+) => {
   // oxlint-disable-next-line no-undef
   const e = document.createElement(tag) as HTMLElement;
   props && applyProps(e)(props);

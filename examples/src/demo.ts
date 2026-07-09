@@ -6,9 +6,10 @@ const p = props("a")("a", "a b c");
 const a = props$el(p);
 console.log(p, a);
 
-const b = props.button({ tagName: 1 });
+const b = props.button({ id: "btn" }, { a: "" });
+console.log(b, props$el(b));
 
-const $btn = $el("button")({ id: "btn_1", wtf: "" });
+const $btn = $el("button", { id: "" });
 const btn = $btn.$();
 
 const $$btn = btn.$().$().$();
