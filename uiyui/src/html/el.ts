@@ -12,12 +12,14 @@ type NormalizeProps<T extends HTMLTag, P extends Props<T> | string, SR extends S
 type PropsFn<T extends HTMLTag> = ReturnType<typeof propsFn<T>>;
 const propsFn =
   <T extends HTMLTag>(T: T) =>
-  <P extends Props<T> | string = {}, SR extends StatesRaw<T> | undefined = undefined>(P = {} as P, SR?: SR) => {
-    const p = (typeof P === "string" ? { id: P } : P) as { [TAG_NAME]: any; id: any; $states: any };
-    // Apparently .$states is not present on `as NormalizeProps<T, P, StatesRaw<T>>`. Well...
+  <const P extends Props<T> | string = {}, const SR extends StatesRaw<T> | undefined = undefined>(
+    P = {} as P,
+    SR?: SR,
+  ) => {
+    const p = (typeof P === "string" ? { id: P } : P) as { [TAG_NAME]: string; id: string; $states: {} };
     SR && (p.$states = normalizeStates(SR));
     p[TAG_NAME] = T;
-    return p as never as NormalizeProps<T, P, StatesRaw<T>>;
+    return p as never as NormalizeProps<T, P, SR>;
   };
 
 export type PropsProxy = { [T in HTMLTag]: PropsFn<T> };
@@ -25,20 +27,14 @@ export const props = new Proxy(propsFn, {
   get: (_, t: HTMLTag) => propsFn(t),
 }) as typeof propsFn & PropsProxy;
 
-export const props$el = <P extends PropsWithTag>(p: P) => $el(p[TAG_NAME], p);
+export const props$el = <const P extends PropsWithTag>(p: P) => $el(p[TAG_NAME], p);
 
-type X = Props<"div">;
-const x: X = {};
-x.abc = 1;
-
-export const $el =
-  <T extends HTMLTag, P extends Props<T>>(tag: T) =>
-  (props?: P) => {
-    // oxlint-disable-next-line no-undef
-    const e = document.createElement(tag) as HTMLElement;
-    props && applyProps(e)(props);
-    return e as never as UYElement<T, P>;
-  };
+export const $el = <T extends HTMLTag, const P extends Props<T, States<T>> = {}>(tag: T, props?: P) => {
+  // oxlint-disable-next-line no-undef
+  const e = document.createElement(tag) as HTMLElement;
+  props && applyProps(e)(props);
+  return e as never as UYElement<T, P>;
+};
 
 export type UYElement<T extends HTMLTag, P extends Props<T>> = P & {
   tagName: `${Uppercase<T>}`;
@@ -109,6 +105,7 @@ type RemoveFromBaseProps =
   | "slot"
   | "spellcheck"
   | "style"
+  | "classList"
   | "translate"
   | "writingSuggestions";
 type BaseProps = Exclude<BasePropsAll, AriaProps | RemoveFromBaseProps>;
