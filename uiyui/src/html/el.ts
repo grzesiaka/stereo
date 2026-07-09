@@ -28,10 +28,10 @@ export const $el =
     // oxlint-disable-next-line no-undef
     const e = document.createElement(tag) as HTMLElement;
     props && applyProps(e)(props);
-    return e as never as UYElement<T, P>;
+    return e as never as uyElement<T, P>;
   };
 
-export type UYElement<T extends HTML_Tag = HTML_Tag, P extends Props<T, States<T>> = Props<T, States<T>>> = P & {
+export type uyElement<T extends HTML_Tag = HTML_Tag, P extends Props<T, States<T>> = Props<T, States<T>>> = P & {
   tagName: `${Uppercase<T>}`;
   $<X extends keyof P = "id">(): HTMLElementTagNameMap[T] & { [K in X]: P[K] };
 };
@@ -87,7 +87,7 @@ export type HTML_Tag = keyof HTMLElementTagNameMap;
 type TYPES = typeof __TYPES__;
 type ELEMENTS = TYPES["elements"];
 
-type HTMLTagAndProps<T extends HTML_Tag = HTML_Tag> = readonly [T, Props<T>];
+type HTMLTagAndProps<T extends HTML_Tag = HTML_Tag> = readonly [T, Props<T, States<T>>];
 export type HTML_AST = AST1<HTMLTagAndProps>;
 
 type PropsFn = <T extends HTML_Tag>(
@@ -161,7 +161,7 @@ type States<T extends HTML_Tag = HTML_Tag> = Record<string, Props<T>>;
 
 declare global {
   interface HTMLElement {
-    $(): UYElement<Lowercase<this["tagName"]> extends HTML_Tag ? Lowercase<this["tagName"]> : never, {}>;
+    $(): uyElement<Lowercase<this["tagName"]> extends HTML_Tag ? Lowercase<this["tagName"]> : never, {}>;
   }
 
   interface HTMLAnchorElement {

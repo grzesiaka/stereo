@@ -1,5 +1,5 @@
 import { dethunk } from "jsyoyo";
-import { $el, HTML_AST, HTML_Tag, HTML_Props, UYElement } from "./el";
+import { $el, HTML_AST, HTML_Tag, HTML_Props, uyElement } from "./el";
 
 // type HTML = HTML_Props | readonly [HTML_Props, ARR<HTML>?];
 
@@ -8,9 +8,9 @@ type InitHTMLs<Kids> = Kids extends readonly [infer H, ...infer R] ? [InitHTML<H
 type InitHTML<AST> = AST extends (...a: any[]) => readonly [infer T, infer P extends HTML_Props<any>, any?]
   ? InitHTML<[T, P]>
   : AST extends [infer T extends HTML_Tag, infer P extends HTML_Props<any>, infer Kids]
-    ? [UYElement<T, P>, InitHTMLs<Kids>]
+    ? [uyElement<T, P>, InitHTMLs<Kids>]
     : AST extends [infer T extends HTML_Tag, infer P extends HTML_Props<any>]
-      ? UYElement<T, P>
+      ? uyElement<T, P>
       : never;
 
 type BY_ID_ARR<Arr> = Arr extends readonly [infer H, ...infer R] ? BY_ID<H> & BY_ID_ARR<R> : {};
