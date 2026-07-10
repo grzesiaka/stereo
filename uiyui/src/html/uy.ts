@@ -1,4 +1,4 @@
-import { dethunk, NestedArrays$ValuesUnion } from "jsyoyo";
+import { dethunk, NestedArrays$ValuesUnion, Union$ObjectById } from "jsyoyo";
 import { $el, HTML_AST, HTML_Tag, HTML_Props, uyElement } from "./el";
 
 type InitHTMLs<Kids> = Kids extends readonly [infer H, ...infer R] ? [InitHTML<H>, ...InitHTMLs<R>] : [];
@@ -11,11 +11,7 @@ export type InitHTML<AST> = AST extends (...a: any[]) => readonly [infer T, infe
       ? uyElement<T, P>
       : never;
 
-export type BY_ID<T> = {
-  [Node in NestedArrays$ValuesUnion<T, { id: string }> as Node extends { id: infer Id extends string }
-    ? Id
-    : never]: Node;
-};
+export type BY_ID<T> = Union$ObjectById<NestedArrays$ValuesUnion<T, { id: string }>, "id">;
 
 const _init = <AST extends HTML_AST>(ast: AST, ids = {} as Partial<BY_ID<InitHTML<AST>>>): InitHTML<AST> => {
   const [t, p, ks] = dethunk(ast);
