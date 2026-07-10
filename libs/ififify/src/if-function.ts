@@ -7,7 +7,7 @@ import { Fn } from "~types";
  * @param n non-function path
  * @returns result of function path or non-function path depending on `x`
  */
-export const ifFunction = <X, A, O>(
+export const ifFunction = <X, A, O = Exclude<X, Fn>>(
   x: X,
   f: (a: Extract<X, Fn>) => A,
   n = ((x: X) => x) as any as (n: Exclude<X, Fn>) => O,

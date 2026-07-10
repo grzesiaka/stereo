@@ -1,4 +1,4 @@
-import { dethunk, NestedArrays$ValuesUnion, Union$ObjectById } from "jsyoyo";
+import { dethunk, ifArray, NestedArrays$ValuesUnion, Union$ObjectById } from "jsyoyo";
 import { $el, HTML_AST, HTML_Tag, HTML_Props, uyElement } from "./el";
 
 type InitHTMLs<Kids> = Kids extends readonly [infer H, ...infer R] ? [InitHTML<H>, ...InitHTMLs<R>] : [];
@@ -25,7 +25,8 @@ const _init = <AST extends HTML_AST>(ast: AST, ids = {} as Partial<BY_ID<InitHTM
   // @ts-expect-error
   e.id && (ids[e.id] = e);
   const ch = ks.map((k) => _init(k as AST, ids));
-  (e as never as HTMLElement).append(...(ch as never as HTMLElement[]));
+
+  (e as never as HTMLElement).append(...(ch as never as HTMLElement[][]).flatMap(ifArray.$((c) => c[0]!)));
   return [e, ch] as InitHTML<AST>;
 };
 
