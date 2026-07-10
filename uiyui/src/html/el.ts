@@ -32,10 +32,10 @@ export const $el =
   };
 
 export type uyElement<T extends HTML_Tag = HTML_Tag, P extends Props<T, States<T>> = Props<T, States<T>>> = P & {
-  tagName: `${Uppercase<T>}`;
+  tagName: Uppercase<T>;
   // $<X extends keyof P = "id">(): HTMLElementTagNameMap[T] & { [K in X]: P[K] };
 };
-export type uyElement$Tag<E> = E extends uyElement<infer T extends HTML_Tag> ? T : never;
+export type uyElement$Tag<E> = E extends { tagName: infer TAG extends Uppercase<HTML_Tag> } ? Lowercase<TAG> : never;
 export type uyElement$Props<E> = E extends uyElement<any, infer P> ? P : never;
 
 export const uy$html =
