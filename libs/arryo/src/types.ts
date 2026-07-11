@@ -1,3 +1,5 @@
+export type Arryo<X = unknown> = ReadonlyArray<X | Arryo<X>>;
+
 /**
  * Creates a union of all values from deeply nested arrays / tuples matching particular shape.
  *
