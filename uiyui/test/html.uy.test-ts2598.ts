@@ -1,9 +1,9 @@
 // TS-2598 Type instantiation is excessively deep and possibly infinite.ts
 //  Do not run this file; it is only to pick if ts2598 appears.
 
-import { init, props as $, uy$html, $state } from "../src/html";
+import { init, props as $, uy$html, $state, FlatAST } from "../src/html";
 
-const ui = $.div({ id: "root" }, "a b")(
+const uiAst = $.div({ id: "root" }, "a b")(
   $.h1({ textContent: "Hey you" })(),
   // $.h1({ textContent: "Hey you" })(), <---- UNCOMMENT to force ts2598
   $.p({ id: "ppp", textContent: "What's up?" }),
@@ -3966,7 +3966,7 @@ const ui = $.div({ id: "root" }, "a b")(
                         $.h1({ textContent: "Hey you" })(
                           $.h1({ textContent: "Hey you" })(
                             $.h1({ textContent: "Hey you" })(
-                              $.h1({ textContent: "Hey you" })($.dialog({ id: "dialog1" })),
+                              $.h1({ textContent: "Hey youTTT" })($.dialog({ id: "dialog1" })),
                             ),
                           ),
                         ),
@@ -3988,6 +3988,34 @@ const ui = $.div({ id: "root" }, "a b")(
   ),
 );
 
-const { ids } = init(ui);
+const uiAst2 = $.div({ id: "root" }, "a b")(
+  $.h1({ textContent: "Hey you" })(),
+  // $.h1({ textContent: "Hey you" })(), <---- UNCOMMENT to force ts2598
+  $.p({ id: "ppp", textContent: "What's up?" }),
+  $.button({ id: "run", textContent: "Run" }),
+
+  $.p({ id: "ppp", textContent: "What's up?" }),
+  $.button({ id: "run", textContent: "Run" }),
+
+  $.h1({ textContent: "Hey you" })(),
+  $.p({ id: "ppp", textContent: "What's up?" }),
+  $.button({ id: "run", textContent: "Run" }),
+
+  $.h1({ textContent: "Hey you" })(),
+  $.p({ id: "ppp", textContent: "What's up?" }),
+  $.button({ id: "run", textContent: "Run" }),
+
+  $.button({ id: "run9", textContent: "Run" }),
+
+  $.button({ id: "run99", textContent: "Run" }),
+
+  $.h1({ textContent: "Hey you--" })(),
+);
+
+type B = FlatAST<typeof uiAst>;
+const b: B = 1 as any;
+b.FN;
+
+const { ids } = init(uiAst);
 
 uy$html(ids.run)().onclick = () => $state(ids.root)(Math.random() > 0.5 ? "a" : "b");

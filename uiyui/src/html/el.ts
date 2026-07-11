@@ -98,7 +98,7 @@ type TYPES = typeof __TYPES__;
 type ELEMENTS = TYPES["elements"];
 
 type HTMLTagAndProps<T extends HTML_Tag = HTML_Tag> = readonly [T, Props<T, States<T>>];
-export type HTML_AST = AST1<HTMLTagAndProps>;
+export type HTML_AST<Extra extends readonly [string, unknown] = never> = AST1<HTMLTagAndProps | Extra>;
 
 type PropsFn = <T extends HTML_Tag>(
   T: T,
