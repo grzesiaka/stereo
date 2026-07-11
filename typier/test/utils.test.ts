@@ -1,7 +1,28 @@
 import { describe } from "~testing";
-import { Decode, Encode, Check } from "typebox/value";
+import { Decode, Encode, Check, Parse } from "typebox/value";
 
-import { Codec, Arr, Int, Uni } from "../src";
+import { Codec, Arr, Int, Uni, isTypier } from "../src";
+
+describe(isTypier, ({ eq }) => ({
+  not_typier: () => {
+    eq(isTypier(0), false);
+    eq(isTypier(null), false);
+  },
+  typier: () => {
+    const i = Int()("i") as unknown;
+    const a = Arr(
+      isTypier(i)
+        ? i
+        : (() => {
+            throw new Error("TYPIER_EXPECTED");
+          })(),
+    )("a");
+    const b = Parse(a, [0]);
+    eq(isTypier(i), true);
+    eq(isTypier(a), true);
+    eq(b, [0] as unknown[]);
+  },
+}));
 
 describe(Codec, ({ eq }) => ({
   Date: () => {

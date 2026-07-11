@@ -23,3 +23,6 @@ export interface TypierBase<$TYP extends string = string, $KEY extends string = 
 export type Static<T extends TSchema, WithOptions extends boolean = true> =
   | TBStatic<T>
   | (WithOptions extends false ? never : T extends { "~optional": true } ? __ : never);
+
+export const isTypier = (t: unknown): t is TypierBase =>
+  typeof t === "object" && t !== null && "$TYP" in t && "$KEY" in t;
