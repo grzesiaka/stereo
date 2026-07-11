@@ -1,4 +1,4 @@
-import { dethunk, ifArray, NestedArrays$ValuesUnion, Union$ObjectById } from "jsyoyo";
+import { dethunk, NestedArrays$ValuesUnion, Union$ObjectById } from "jsyoyo";
 import { $el, HTML_AST, HTML_Tag, HTML_Props, uyElement } from "./el";
 
 type InitHTMLs<Kids> = Kids extends readonly [infer H, ...infer R] ? [InitHTML<H>, ...InitHTMLs<R>] : [];
@@ -26,7 +26,10 @@ const _init = <AST extends HTML_AST>(ast: AST, ids = {} as Partial<BY_ID<InitHTM
   e.id && (ids[e.id] = e);
   const ch = ks.map((k) => _init(k as AST, ids));
 
-  (e as never as HTMLElement).append(...(ch as never as HTMLElement[][]).flatMap(ifArray.$((c) => c[0]!)));
+  (e as never as HTMLElement).append(
+    // array is actually a tuple [el, kids[]] so only parent is mounted to grandparent
+    ...(ch as never as HTMLElement[][]).flatMap((c) => (Array.isArray(c) ? c[0]! : c)),
+  );
   return [e, ch] as InitHTML<AST>;
 };
 
@@ -35,3 +38,5 @@ export const init = <AST extends HTML_AST>(ast: AST) => {
   const dom = _init(ast, ids);
   return { dom, ids } as { dom: typeof dom; ids: BY_ID<typeof dom> };
 };
+
+export const register = () => {};
