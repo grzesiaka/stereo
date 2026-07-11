@@ -1,7 +1,7 @@
 import { a, ARR, fromStrings, ifArray, NoExtraKeys, k1, mb, ObjectFromStrings, Split, Fn$O } from "jsyoyo";
 import type __TYPES__ from "./__members__.gen";
 import { Simplify } from "type-fest";
-import { actFn, AST1 } from "deacted";
+import { actedFn, AST1 } from "deacted";
 
 // type $PropsFn<T extends HTMLTag> = ReturnType<typeof $propsFn<T>>;
 const $propsFn =
@@ -15,7 +15,7 @@ const $propsFn =
     return p as never as NormalizeProps<T, P, SR>;
   };
 
-const propsFn = actFn($propsFn) as PropsFn;
+const propsFn = actedFn($propsFn) as PropsFn;
 
 export type PropsProxy = { [T in HTML_Tag]: Fn$O<typeof propsFn<T>> };
 export const props = new Proxy(propsFn, {

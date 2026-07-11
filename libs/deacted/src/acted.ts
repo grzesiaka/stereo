@@ -28,11 +28,11 @@ export const acted = <T extends Tree_of_Functions>(fns: T) =>
       (...ps: any[]) =>
       (...kids: any[]) =>
         // @ts-expect-error f seems not callable
-        kids.length ? [k, [f(...ps)], kids] : [k, f(...ps)],
+        kids.length ? [k, f(...ps), kids] : [k, f(...ps)],
   ) as Acted<T>;
 
 export type Acted<T, P extends string = ""> = T extends Fn
   ? <I extends Fn$I<T>>(
       ...I: I
-    ) => <const K extends ARR>(...kids: K) => K extends readonly [] ? [P, [Fn$O<T>]] : [P, [Fn$O<T>], K] // Fn$O<T> does not depend on I
+    ) => <const K extends ARR>(...kids: K) => K extends readonly [] ? [P, Fn$O<T>] : [P, Fn$O<T>, K] // Fn$O<T> does not depend on I
   : { [K in keyof T & string]: Acted<T[K], "" extends P ? K : `${P}.${K}`> };
