@@ -1,14 +1,14 @@
 import { dethunk, NestedArrays$ValuesUnion, Union$ObjectById } from "jsyoyo";
-import { $el, HTML_AST, HTML_Tag, HTML_Props, uyElement } from "./el";
+import { $el, HTML_AST, HTML_Tag, HTML_Props, HTMeLe } from "./el";
 
 type InitHTMLs<Kids> = Kids extends readonly [infer H, ...infer R] ? [InitHTML<H>, ...InitHTMLs<R>] : [];
 
 export type InitHTML<AST> = AST extends (...a: any[]) => readonly [infer T, infer P extends HTML_Props<any>, any?]
   ? InitHTML<[T, P]>
   : AST extends [infer T extends HTML_Tag, infer P extends HTML_Props<any>, infer Kids]
-    ? [uyElement<T, P>, InitHTMLs<Kids>]
+    ? [HTMeLe<T, P>, InitHTMLs<Kids>]
     : AST extends [infer T extends HTML_Tag, infer P extends HTML_Props<any>]
-      ? uyElement<T, P>
+      ? HTMeLe<T, P>
       : never;
 
 export type BY_ID<T> = Union$ObjectById<NestedArrays$ValuesUnion<T, { id: string }>, "id">;
@@ -33,10 +33,8 @@ const _init = <AST extends HTML_AST>(ast: AST, ids = {} as Partial<BY_ID<InitHTM
   return [e, ch] as InitHTML<AST>;
 };
 
-export const init = <AST extends HTML_AST>(ast: AST) => {
+const init = <AST extends HTML_AST>(ast: AST) => {
   const ids = {};
   const dom = _init(ast, ids);
   return { dom, ids } as { dom: typeof dom; ids: BY_ID<typeof dom> };
 };
-
-export const register = () => {};

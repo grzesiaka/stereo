@@ -28,20 +28,20 @@ export const $el =
     // oxlint-disable-next-line no-undef
     const e = document.createElement(tag) as HTMLElement;
     props && applyProps(e)(props);
-    return e as never as uyElement<T, P>;
+    return e as never as HTMeLe<T, P>;
   };
 
-export type uyElement<T extends HTML_Tag = HTML_Tag, P extends Props<T, States<T>> = Props<T, States<T>>> = P & {
+export type HTMeLe<T extends HTML_Tag = HTML_Tag, P extends Props<T, States<T>> = Props<T, States<T>>> = P & {
   tagName: Uppercase<T>;
   // $<X extends keyof P = "id">(): HTMLElementTagNameMap[T] & { [K in X]: P[K] };
 };
-export type uyElement$Tag<E> = E extends { tagName: infer TAG extends Uppercase<HTML_Tag> } ? Lowercase<TAG> : never;
-export type uyElement$Props<E> = E extends uyElement<any, infer P> ? P : never;
+export type HTMeLe$Tag<E> = E extends { tagName: infer TAG extends Uppercase<HTML_Tag> } ? Lowercase<TAG> : never;
+export type HTMeLe$Props<E> = E extends HTMeLe<any, infer P> ? P : never;
 
 export const uy$html =
-  <E extends uyElement>(e: E) =>
-  <X extends keyof uyElement$Props<E> = "id">() =>
-    e as never as HTMLElementTagNameMap[uyElement$Tag<E>] & { [K in X]: uyElement$Props<E>[K] };
+  <E extends HTMeLe>(e: E) =>
+  <X extends keyof HTMeLe$Props<E> = "id">() =>
+    e as never as HTMLElementTagNameMap[HTMeLe$Tag<E>] & { [K in X]: HTMeLe$Props<E>[K] };
 
 const applyProps = (el: HTMLElement) => (props: Props) => {
   const { style, dataset, classList, ...rest } = props as Props & { tagName: any };
@@ -58,7 +58,7 @@ const getState = <Vs extends States>(vs: Vs, el: HTMLElement) =>
   (el.classList[0]! in vs ? el.classList[0] : k1(vs)) as keyof Vs & string;
 
 export const $state =
-  <E extends uyElement & { $states: States }>(e: E) =>
+  <E extends HTMeLe & { $states: States }>(e: E) =>
   (next: keyof E["$states"]) => {
     const el = e as never as HTMLElement;
     const currentKey = getState(e.$states, el);
@@ -170,9 +170,9 @@ type NormalizeStates<Vs extends StatesRaw = StatesRaw> = Vs extends string
 type States<T extends HTML_Tag = HTML_Tag> = Record<string, Props<T>>;
 
 declare global {
-  interface HTMLElement {
-    $(): uyElement<Lowercase<this["tagName"]> extends HTML_Tag ? Lowercase<this["tagName"]> : never, {}>;
-  }
+  // interface HTMLElement {
+  //   $(): HTMeLe<Lowercase<this["tagName"]> extends HTML_Tag ? Lowercase<this["tagName"]> : never, {}>;
+  // }
 
   interface HTMLAnchorElement {
     tagName: "A";
@@ -339,6 +339,6 @@ declare global {
 }
 
 // oxlint-disable-next-line no-undef
-HTMLElement.prototype.$ = function () {
-  return this as any;
-};
+// HTMLElement.prototype.$ = function () {
+//   return this as any;
+// };
