@@ -20,9 +20,20 @@ export type Tree_of_Functions$Tree_of_Outputs_Recursive<T> = T extends { readonl
     ? ReturnType<T>
     : never;
 
-export type Tree$ValueKeyPairs<T> = { [s: string]: TreeOrLeaves<any> } extends T
+export type Tree$ValueKeyPairs<T, WithUnknownLeaves = T> = { [s: string]: TreeOrLeaves<any> } extends T
   ? [Tree$X<T>, string]
-  : { [K in TF.Paths<T, { leavesOnly: true }> & string]: [TF.Get<T, K>, K] }[TF.Paths<T, { leavesOnly: true }> &
+  : { [K in TF.Paths<WithUnknownLeaves, { leavesOnly: true }> & string]: [TF.Get<T, K>, K] }[TF.Paths<
+      WithUnknownLeaves,
+      { leavesOnly: true }
+    > &
+      string];
+
+export type Tree$KeyValuePairs<T, WithUnknownLeaves = T> = { [s: string]: TreeOrLeaves<any> } extends T
+  ? [string, Tree$X<T>]
+  : { [K in TF.Paths<WithUnknownLeaves, { leavesOnly: true }> & string]: [K, TF.Get<T, K>] }[TF.Paths<
+      WithUnknownLeaves,
+      { leavesOnly: true }
+    > &
       string];
 
 export type Tree$Values<T> = { [s: string]: TreeOrLeaves<any> } extends T
