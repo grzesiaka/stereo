@@ -20,7 +20,7 @@ const res = <X>() => {
 };
 
 type ErrorClass = abstract new (...args: any[]) => Error;
-const ERR = (act: () => void, err?: ErrorClass | ((e: unknown) => boolean)) => {
+const ERR = (act: () => void, err?: ErrorClass | ((e: unknown) => boolean)): never => {
   try {
     act();
   } catch (e) {
@@ -28,6 +28,7 @@ const ERR = (act: () => void, err?: ErrorClass | ((e: unknown) => boolean)) => {
       // @ts-expect-error anonymous function expected
       return eq(err(e), true);
     } else {
+      // @ts-expect-error not never
       return err && eq(e instanceof err, true);
     }
   }
