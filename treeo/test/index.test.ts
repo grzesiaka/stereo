@@ -1,12 +1,19 @@
 import { describe } from "~testing";
 import mapTree from "../src/map";
 import get from "../src/get";
+import flattern, { flatten } from "../src/flatten";
 import { ks } from "jsyoyo";
 
 const tree = {
   a: "B",
   c: { d: "E", f: () => 1 as const, g: [] },
 } as const;
+
+describe(flattern, ({ eq }) => ({
+  "{}": () => eq(flatten({}), {}),
+  simple: () => eq(flatten(tree), { a: "B", "c.d": "E", "c.f": tree.c.f, "c.g": [] }),
+  simple_with_acc: () => eq(flatten(tree, { acc: "!" }), { acc: "!", a: "B", "c.d": "E", "c.f": tree.c.f, "c.g": [] }),
+}));
 
 describe("mapTree", ({ eq }) => ({
   "{}": () => {
