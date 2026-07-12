@@ -21,13 +21,20 @@ export type FnsTree$AST<T extends Tree_of_Functions = Tree_of_Functions> =
 export type FnsTree$FnIdParams<T extends Tree_of_Functions = Tree_of_Functions> =
   Fn$O<Fn$O<Tree$Values<T>>> extends [...infer H, any] ? H : never;
 
-type _AST$Runner<T> = T extends (...ps: any[]) => readonly [infer T, infer P, unknown?]
-  ? [T, P]
-  : T extends readonly [infer T extends string, infer P]
-    ? [T, P]
-    : T extends readonly [infer T extends string, infer P, infer R]
-      ? [T, P] | _AST$Runner<R>
+export type AST$TagParamPairs<T> = T extends (...ps: any[]) => infer R
+  ? AST$TagParamPairs<R>
+  : T extends readonly [infer K extends string, infer P]
+    ? [K, P]
+    : T extends readonly [infer K extends string, infer P, infer R]
+      ? [K, P] | AST$TagParamPairs<R>
       : T extends readonly (infer E)[]
-        ? _AST$Runner<E>
+        ? AST$TagParamPairs<E>
         : never;
-export type AST1$Runner<T> = { [K in _AST$Runner<T>[0] & string]: Extract<_AST$Runner<T>, [K, any]>[1] };
+
+export type AST$MapByTag<T, SkipKeys = never> = {
+  [K in Exclude<AST$TagParamPairs<T>[0] & string, SkipKeys>]: (
+    param: Extract<AST$TagParamPairs<T>, [K, any]>[1],
+  ) => unknown;
+};
+
+export type AST$MapDefaultParams<T, SkipKeys = never> = Exclude<AST$TagParamPairs<T>, readonly [SkipKeys, any?, any?]>;
