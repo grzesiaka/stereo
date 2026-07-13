@@ -97,8 +97,10 @@ export type HTML_Tag = keyof HTMLElementTagNameMap;
 type TYPES = typeof __TYPES__;
 type ELEMENTS = TYPES["elements"];
 
-type HTMLTagAndProps<T extends HTML_Tag = HTML_Tag> = readonly [T, Props<T, States<T>>];
-export type HTML_AST<Extra extends readonly [string, unknown] = never> = AST1<HTMLTagAndProps | Extra>;
+export type HTMLTagAndProps<T extends HTML_Tag = HTML_Tag> = { [K in T]: readonly [K, Props<K, States<K>>] }[T];
+export type HTML_AST<Tags extends HTML_Tag = HTML_Tag, Extra extends readonly [string, unknown] = never> = AST1<
+  HTMLTagAndProps<Tags> | Extra
+>;
 
 type PropsFn = <T extends HTML_Tag>(
   T: T,

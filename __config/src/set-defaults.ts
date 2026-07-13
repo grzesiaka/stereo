@@ -29,7 +29,7 @@ const setDefaults = (root: string, files: string[]) => {
   readFile(pkgPath, { encoding: "utf-8" }, (_, data) => {
     const pkg = JSON.parse(data);
 
-    pkg.version = pkg.version || "1.0.0-alpha.0";
+    pkg.version = pkg.version || "0.0.0-alpha.0";
 
     pkg.scripts = pkg.scripts || {};
     pkg.type = "module";
