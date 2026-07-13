@@ -27,6 +27,15 @@ export type ARR<X = any> = ReadonlyArray<X>;
 export type ARR1<X = any, R = X> = readonly [X, ...R[]];
 
 /**
+ * Dictionay.
+ *
+ * An alias for Record<Key, Value>
+ *
+ * `Dict<X = any, K extends PropertyKey = string> = Record<K, X>;`
+ */
+export type Dict<X = any, K extends PropertyKey = string> = Record<K, X>;
+
+/**
  * Function with optional attached information
  */
 export type Fn<I extends ARR = ARR, O = unknown, E = {}> = (E extends string ? { Id: E } : {}) & ((...i: I) => O);
