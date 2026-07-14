@@ -4,3 +4,5 @@ import m from "./compose-merge";
 import p from "./pipe";
 
 export { c, o, m, p };
+
+export { __ } from "jsyoyo";
