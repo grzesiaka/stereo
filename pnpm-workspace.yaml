@@ -5,10 +5,10 @@ blockExoticSubdeps: true
 catalog:
   "@types/chrome": 0.1.36
   "@types/node": 26.1.0
-  '@types/serviceworker': 0.0.199
-  '@types/sharedworker': 0.0.228
+  "@types/serviceworker": 0.0.199
+  "@types/sharedworker": 0.0.228
   "@types/web": 0.0.352
-  '@types/webworker': 0.0.78
+  "@types/webworker": 0.0.78
   "@vitest/coverage-v8": 4.1.9
   jsdom: 29.1.1
   oxfmt: 0.57.0

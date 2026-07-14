@@ -13,8 +13,4 @@ export type TREExpr<TPs extends TagParam> = TREExpr1<TPs> | ARR<TREExpr1<TPs>>;
 
 export const TREExpr = <TPs extends TagParam>() => o(__ as __<TREExpr<TPs>>);
 
-const e = [] satisfies TREExpr<["a", "a"]>;
-
-const t = TREExpr<["A", "a"]>()((x) => (typeof x === "function" ? x()[1] : x[0]));
-
 export default TREExpr;

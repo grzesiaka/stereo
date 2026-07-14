@@ -1,5 +1,7 @@
 import { Arryo, Arryo$X } from "./types";
 
+// TODO: finish if needed, but arryo as such feels bit too wild: entries should be constained
+
 const _reduce =
   (p?: any) =>
   <R, A extends Arryo, I = {}, X = Arryo$X<A>>(

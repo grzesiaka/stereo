@@ -58,41 +58,17 @@ export const $astaster =
     acc = () => ({}) as () => Acc,
   ): Astaster<TPs, Map> => {
     const a: Astaster<TPs, Map> = (ast) => {
+      // @ts-ignore
+      // oxlint-disable-next-line no-undef
+      console.log(reduce, ast, acc);
       return 1 as any;
     };
     a.ast = () => a;
     a.aster = (map) => ({ ...a.MAP, ...map }) as any;
     a.MAP = map;
+
     return a;
   };
 
 export const astaster = <S extends TaggedMap, TG extends TagParam = Map$TagParam<S>>(map: S) =>
   $astaster<TG>()(map as any) as Astaster<TG, S>;
-
-const dd = { abc: (s: string) => s } satisfies TaggedMap;
-type TGdd = Map$TagParam<typeof dd>;
-const st = astaster(dd)(["abc", "abc", [["abc", ""]]]);
-
-type testTP = ["str", string] | ["num", number];
-
-const a = $astaster<testTP>()({ num: (x) => x + x })
-  .ast<["abc", number]>()
-  .aster({ str: (x) => [x, x] as [typeof x, typeof x], abc: (x) => `abc_${x}` as const });
-
-type TagParams = Astaster$TagParam<typeof a>;
-type tMap = Astaster$Map<typeof a>;
-
-const x = a([
-  "num",
-  1,
-  [
-    ["num", 2],
-    ["str", "str!"],
-    ["abc", 1],
-  ],
-]);
-
-const z = $astaster<["a", undefined] | ["b", 1]>()({ a: () => "a" });
-type UnZ = Astaster$Unhandled<typeof z>;
-
-const y = a([]);

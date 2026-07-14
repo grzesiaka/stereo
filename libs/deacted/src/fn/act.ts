@@ -31,7 +31,7 @@ export const ast1$act =
       | { [K in keyof NoInfer<Map>]: Fn$O<NoInfer<Map>[K]> }[keyof NoInfer<Map>],
   >(
     map: Map,
-    proxyMap = {} as ProxyMap,
+    // proxyMap = {} as ProxyMap,
     //   defaultMap?: DefaultMap,
   ) =>
   <Acc = {}>(reduce?: (current: Mapped, kids: ARR<Mapped>, acc: NoInfer<Acc>) => void, acc = {} as Acc) =>
@@ -42,18 +42,3 @@ export const ast1$act =
     dethunk({ map, reduce, acc });
     return dethunk(ast) as any;
   };
-
-type TP = ["a.aa", "A3"] | ["html.div", "<div />"];
-type cAST = AST1<TP>;
-const ast = ["a.aa", "A3", [["html.div", "<div />"], () => ["a.aa", "A3"]]] as const satisfies cAST;
-
-// type P = AST$MapDefaultParams<typeof ast, "a.aa">;
-
-const t = ast1$act<TP>()({ "a.aa": (x) => ({ x: `xxx${x}xxx` as const }) }, { "html.div": (x) => 1 as const })(
-  (current, kids, acc) => 1,
-  {} as { abc: 1 },
-)(ast);
-// @ts-ignore
-type tAST = AST$TagParamPairs<typeof t>;
-// @ts-ignore
-const tt = ast1$act<typeof t>()({ "html.div": (x) => `<div>${x}</div>` as const })(t);
