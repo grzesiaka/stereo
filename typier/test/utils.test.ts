@@ -106,13 +106,13 @@ import { WithTag } from "~types";
 
 describe(UNSAFE, ({ eq }) => ({
   Uint8Array_or_Array: () => {
-    const codec = UNSAFE<Array<number> | Uint8Array>(
-      (a) => (a instanceof Uint8Array ? a : new Uint8Array(a)) as Uint8Array,
+    const codec = UNSAFE<Uint8Array<ArrayBuffer>>(
+      (a) => (a instanceof Uint8Array ? a : new Uint8Array(a)) as Uint8Array<ArrayBuffer>,
       (a) => a,
     )("Uint8Array");
 
-    eq(Decode(codec, [0, 0, 255]), new Uint8Array([0, 0, 255]) as never);
-    eq(Decode(codec, new Uint8Array([0, 0, 255])), new Uint8Array([0, 0, 255]) as never);
+    eq(new Uint8Array([0, 0, 255]), Decode(codec, [0, 0, 255]));
+    eq(new Uint8Array([0, 0, 255]), Decode(codec, new Uint8Array([0, 0, 255])));
 
     eq(Check(codec, [-1, 0, 256]), true);
 
