@@ -2,6 +2,7 @@
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["unicorn", "typescript", "oxc"],
   "categories": {},
+  "ignorePatterns": ["*/**/out/**", "*/**/node_modules/**"],
   "rules": {
     "constructor-super": "warn",
     "for-direction": "warn",
@@ -130,6 +131,5 @@
     }
   },
   "env": {},
-  "globals": {},
-  "ignorePatterns": ["node_modules/"]
+  "globals": {}
 }

@@ -1,1 +1,1 @@
-export default "yxYo";
+export default "yxyo";

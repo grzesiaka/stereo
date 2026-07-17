@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "composyo": "workspace:^",
-    "type-fest": "catalog:"
+    "type-fest": "catalog:",
+    "~types": "workspace:^"
   }
 }

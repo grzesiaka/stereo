@@ -22,7 +22,8 @@
     "set-defaults": "node ./__config/src/set-defaults.ts",
     "clear-all": "node ./__config/src/clear-all.ts",
     "set-exports": "node ./__config/src/set-exports.ts",
-    "refresh": "pnpm clear-all && pnpm install && pnpm set-defaults && pnpm lint && pnpm set-exports  && pnpm build && pnpm tsc && pnpm test-ci"
+    "refresh": "pnpm set-defaults && pnpm lint && pnpm set-exports && pnpm build && pnpm tsc && pnpm test-ci",
+    "refresh-full": "pnpm clear-all && pnpm install && pnpm refresh"
   },
   "dependencies": {
     "stereo": "link:",
