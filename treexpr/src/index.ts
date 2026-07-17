@@ -1,3 +1,3 @@
 export * from "./base"
-export * from "./map"
+export * from "./map-by-tag"
 export * from "./reduce"

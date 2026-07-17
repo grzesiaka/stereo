@@ -1,4 +1,5 @@
-import { dethunk, NestedArrays$ValuesUnion, Union$ObjectById } from "jsyoyo";
+import { dethunk, Union$ObjectById } from "jsyoyo";
+import { NestedArrays$ValuesUnion } from "arryo";
 import { $el, HTML_AST, HTML_Tag, HTML_Props, HTMeLe } from "./el";
 
 type InitHTMLs<Kids> = Kids extends readonly [infer H, ...infer R] ? [InitHTML<H>, ...InitHTMLs<R>] : [];

@@ -879,6 +879,9 @@ importers:
 
   treexpr:
     devDependencies:
+      arryo:
+        specifier: workspace:^
+        version: link:../libs/arryo
       composyo:
         specifier: workspace:^
         version: link:../composyo
@@ -934,6 +937,9 @@ importers:
 
   uiyui:
     dependencies:
+      arryo:
+        specifier: 'workspace:'
+        version: link:../libs/arryo
       ioioy:
         specifier: 'workspace:'
         version: link:../ioioy
