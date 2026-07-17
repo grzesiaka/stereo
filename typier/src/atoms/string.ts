@@ -2,7 +2,8 @@ import type { TStringOptions } from "typebox";
 import { $Atom, createAtom } from "./0";
 import { __ } from "~types";
 import { a } from "jsyoyo";
-import type { Remove, Join } from "jsyoyo";
+import type { Join } from "jsyoyo";
+import type { Remove } from "arryo";
 
 type Options$MinLength<O extends TStringOptions> = O extends { readonly minLength: infer L extends number }
   ? `${L}<=`

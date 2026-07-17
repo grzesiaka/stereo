@@ -25,6 +25,7 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
+    "arryo": "workspace:^",
     "jsyoyo": "workspace:^",
     "proyij": "workspace:^",
     "treeo": "workspace:^"
