@@ -1,4 +1,3 @@
-export * from "arryo";
 export * from "ififify";
 export * from "objoy";
 export * from "txtxt";
