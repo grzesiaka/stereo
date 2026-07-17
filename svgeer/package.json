@@ -1,6 +1,6 @@
 {
-  "name": "svgyoyo",
-  "version": "1.0.0-alpha.0",
+  "name": "svgeer",
+  "version": "0.0.0-alpha.1",
   "type": "module",
   "sideEffects": false,
   "exports": {
