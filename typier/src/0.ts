@@ -1,5 +1,5 @@
 import { Static as TBStatic } from "typebox";
-import { __ } from "~types";
+import { __, ARR } from "~types";
 
 /** Used instead of Typebox's TSchema `{}` as the latter accepts `TSchema[]` as `TSchema`, which results in `unknown` inferred type */
 export interface TSchema {
@@ -23,6 +23,13 @@ export interface TypierBase<$TYP extends string = string, $KEY extends string = 
 export type Static<T extends TSchema, WithOptions extends boolean = true> =
   | TBStatic<T>
   | (WithOptions extends false ? never : T extends { "~optional": true } ? __ : never);
+
+export type StaticArr<Ts extends ARR<TSchema>, WithOptions extends boolean = true> = Ts extends readonly [
+  infer H extends TSchema,
+  ...infer R extends ARR<TSchema>,
+]
+  ? [Static<H, WithOptions>, ...StaticArr<R, WithOptions>]
+  : [];
 
 export const isTypier = (t: unknown): t is TypierBase =>
   typeof t === "object" && t !== null && "$TYP" in t && "$KEY" in t;
