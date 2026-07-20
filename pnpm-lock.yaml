@@ -762,6 +762,9 @@ importers:
 
   specyo:
     devDependencies:
+      composyo:
+        specifier: workspace:^
+        version: link:../composyo
       typier:
         specifier: workspace:^
         version: link:../typier
