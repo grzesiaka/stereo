@@ -19,6 +19,23 @@ export type UnwrapTaggedArr<T> = T extends readonly [infer H extends TG, ...infe
     : T extends ReadonlyArray<infer X extends TG>
       ? UnwrapTagged<X>[]
       : T;
-export type TaggedArr<T, Tag extends PropertyKey, Meta> = T extends readonly [infer H, ...infer R]
-  ? [Tagged<H, Tag, Meta>, ...TaggedArr<R, Tag, Meta>]
-  : [];
+
+export type ArrWithTagAndMeta<T, Tag extends PropertyKey, Meta> = T extends readonly [infer H, ...infer R]
+  ? [Tagged<H, Tag, Meta>, ...ArrWithTagAndMeta<R, Tag, Meta>]
+  : T extends readonly []
+    ? []
+    : T extends Array<infer X>
+      ? Array<Tagged<X, Tag, Meta>>
+      : T extends ReadonlyArray<infer X>
+        ? ReadonlyArray<Tagged<X, Tag, Meta>>
+        : never;
+
+export type ArrWithTag<T, Tag extends PropertyKey> = T extends readonly [infer H, ...infer R]
+  ? [WithTag<H, Tag>, ...ArrWithTag<R, Tag>]
+  : T extends readonly []
+    ? []
+    : T extends Array<infer X>
+      ? Array<WithTag<X, Tag>>
+      : T extends ReadonlyArray<infer X>
+        ? ReadonlyArray<WithTag<X, Tag>>
+        : never;
