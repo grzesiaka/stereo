@@ -53,7 +53,7 @@ export const source = <OUT extends Ports>(...OUT: OUT) => box()(...OUT);
 export const sink = <IN extends Ports>(...IN: IN) => box(...IN)();
 
 export type PortRef<P extends ARR> = Exclude<keyof P & string, keyof []> | Extract<P[number], TypierBase>["$KEY"];
-export type DerefPortId<Ps extends ARR, PortRef> = PortRef extends keyof Ps
+export type DerefPort<Ps extends ARR, PortRef> = PortRef extends keyof Ps
   ? Ps[PortRef]
   : Extract<Ps[number], { $KEY: PortRef }>;
 
@@ -63,24 +63,34 @@ export type InputId<B extends Box = Box> =
 export type OutputId<B extends Box = Box> =
   B extends Box<infer ID, any, infer OUT> ? `${ID}${OUTPUT_SYM}${PortRef<OUT>}` : never;
 
-export type PortIds<B extends Box = Box> = InputId<B> | OutputId<B>;
+// export type PortId<B extends Box = Box> = InputId<B> | OutputId<B>;
+
+export type PortId$BoxIdAndRef<P> = P extends `${infer ID}${INPUT_SYM | OUTPUT_SYM}${infer Ref}`
+  ? { ID: ID; PortRef: Ref }
+  : { ID: never; PortRef: never };
 
 export type InputIdWithType<B extends Box = Box> =
-  B extends Box<infer ID, infer IN> ? [`${B["ID"]}${INPUT_SYM}${P}`, Port$Type<DerefPortId<B["IN"], P>>] : never;
-export type OutputIdWithType<B extends Box = Box, P extends PortRef<B["OUT"]> = PortRef<B["OUT"]>> = [
-  `${B["ID"]}${OUTPUT_SYM}${P}`,
-  Port$Type<DerefPortId<B["OUT"], P>>,
-];
+  B extends Box<infer ID, infer IN>
+    ? PortRef<IN> extends infer P extends string
+      ? [`${ID}${INPUT_SYM}${P}`, Port$Type<DerefPort<B["IN"], P>>]
+      : never
+    : never;
+export type OutputIdWithType<B extends Box = Box> =
+  B extends Box<infer ID, any, infer OUT>
+    ? PortRef<OUT> extends infer P extends string
+      ? [`${ID}${OUTPUT_SYM}${P}`, Port$Type<DerefPort<B["OUT"], P>>]
+      : never
+    : never;
 
 export type InputId$Type<
   B extends Box = Box,
   PortId extends InputId<B> = InputId<B>,
-> = PortId extends `${string}${INPUT_SYM}${infer Ref}` ? Port$Type<DerefPortId<B["IN"], Ref>> : never;
+> = PortId extends `${string}${INPUT_SYM}${infer Ref}` ? Port$Type<DerefPort<B["IN"], Ref>> : never;
 
 export type OutputId$Type<
   B extends Box = Box,
   PortId extends OutputId<B> = OutputId<B>,
-> = PortId extends `${string}${OUTPUT_SYM}${infer Ref}` ? Port$Type<DerefPortId<B["OUT"], Ref>> : never;
+> = PortId extends `${string}${OUTPUT_SYM}${infer Ref}` ? Port$Type<DerefPort<B["OUT"], Ref>> : never;
 
 export const input =
   <B extends Box>(b: B) =>

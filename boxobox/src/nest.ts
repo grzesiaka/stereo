@@ -1,5 +1,16 @@
 import { ARR } from "~types";
-import { Box, Boxes, DerefPortId, InputId, InputIdWithType, OutputId, OutputId$Type } from "./box";
+import {
+  Box,
+  Boxes,
+  DerefPort,
+  InputId,
+  InputIdWithType,
+  OutputId,
+  OutputId$Type,
+  Port$Type,
+  PortId$BoxIdAndRef,
+  PortRef,
+} from "./box";
 
 export type Wires<Bs extends Boxes> = ARR<
   [OutputId<Bs[number]>, InputId<Bs[number]> | ARR<InputId<Bs[number]>>, unknown?]
@@ -10,14 +21,35 @@ export interface Nest<Bs extends Boxes, Ws extends Wires<Bs>> {
   wires: Ws;
 }
 
-export type CompatibleInputIds<B extends Box, X> =
-  InputIdWithType<B> extends readonly [infer K, infer T] ? (X extends T ? K : ["XK", X, T, K]) : never;
+// export type WirePorts<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends InputId<Bs[number]>> = {
+//   From: Extract<Bs[number], { ID: PortId$BoxIdAndRef<From>["ID"] }>["OUT"][PortId$BoxIdAndRef<From>["PortRef"] &
+//     keyof Bs[number]["OUT"]];
+//   To: Extract<Bs[number], { ID: PortId$BoxIdAndRef<To>["ID"] }>["IN"][PortId$BoxIdAndRef<From>["PortRef"] &
+//     keyof Bs[number]["IN"]];
+// };
+
+export type WireTypes<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends InputId<Bs[number]>> = {
+  From: Port$Type<
+    DerefPort<Extract<Bs[number], { ID: PortId$BoxIdAndRef<From>["ID"] }>["OUT"], PortId$BoxIdAndRef<From>["PortRef"]>
+  >;
+  To: Port$Type<
+    DerefPort<Extract<Bs[number], { ID: PortId$BoxIdAndRef<To>["ID"] }>["IN"], PortId$BoxIdAndRef<To>["PortRef"]>
+  >;
+};
+
+export type Wire<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends InputId<Bs[number]>> =
+  WireTypes<Bs, From, To> extends { From: infer FromT; To: infer ToT }
+    ? ToT extends FromT
+      ? [From, To]
+      : //  [FromT, ToT]
+        never
+    : never;
 
 export const wire =
   <const Bs extends Boxes>(bs: Bs) =>
   <From extends OutputId<Bs[number]>>(from: From) =>
-  <To extends CompatibleInputIds<Bs[number], OutputId$Type<Bs[number], From>>>(to: To) =>
-    [from, to] as const;
+  <To extends InputId<Bs[number]>>(to: To): Wire<Bs, From, To> =>
+    [from, to] as any;
 
 // import { ARR } from "~types";
 // import { Static } from "typier";
