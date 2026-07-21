@@ -1,1 +1,1 @@
-export default "specyo";
+export * from "./hierarchy"

@@ -11,7 +11,17 @@ describe(hierarchy, ({ eq }) => ({
     const h = hierarchy<{ op_1: (x: 1) => 1; op_12: (x: 12) => 12 }>()(($) => [
       "⨂",
       "root",
-      [$.op_1(1), $.op_12(12), ["⨁", "OR", [$.op_1(1)] as any as [["op_1", ["222"]]]]],
+      [
+        $.op_1(1),
+        $.op_12(12),
+        [
+          "⨁",
+          "OR",
+          [
+            /* TODO - should not be accepted $.op_1(1)] as any as [["op_1", ["222"]]*/
+          ],
+        ],
+      ],
     ]);
     eq(h)([
       "⨂",

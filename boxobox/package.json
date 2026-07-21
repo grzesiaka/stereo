@@ -17,7 +17,8 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
-    "typier": "workspace:^"
+    "typier": "workspace:^",
+    "~types": "workspace:^"
   },
   "peerDependencies": {
     "type-fest": "catalog:"

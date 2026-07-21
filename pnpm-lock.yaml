@@ -117,6 +117,28 @@ importers:
         specifier: 'workspace:'
         version: link:../libs/types
 
+  boxobox:
+    dependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.7.0
+    devDependencies:
+      typier:
+        specifier: workspace:^
+        version: link:../typier
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../__config
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../libs/testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../libs/types
+
   composyo:
     devDependencies:
       jsyoyo:
