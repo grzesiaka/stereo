@@ -12,14 +12,14 @@ import {
   PortRef,
 } from "./box";
 
-export type Wires<Bs extends Boxes> = ARR<
-  [OutputId<Bs[number]>, InputId<Bs[number]> | ARR<InputId<Bs[number]>>, unknown?]
->;
+// export type Wires<Bs extends Boxes> = ARR<
+//   [OutputId<Bs[number]>, InputId<Bs[number]> | ARR<InputId<Bs[number]>>, unknown?]
+// >;
 
-export interface Nest<Bs extends Boxes, Ws extends Wires<Bs>> {
-  boxes: Bs;
-  wires: Ws;
-}
+// export interface Nest<Bs extends Boxes, Ws extends Wires<Bs>> {
+//   boxes: Bs;
+//   wires: Ws;
+// }
 
 // export type WirePorts<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends InputId<Bs[number]>> = {
 //   From: Extract<Bs[number], { ID: PortId$BoxIdAndRef<From>["ID"] }>["OUT"][PortId$BoxIdAndRef<From>["PortRef"] &
@@ -41,14 +41,27 @@ export type Wire<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends
   WireTypes<Bs, From, To> extends { From: infer FromT; To: infer ToT }
     ? ToT extends FromT
       ? [From, To]
-      : //  [FromT, ToT]
-        never
+      : never
     : never;
+
+export type Wires<
+  Bs extends Boxes,
+  From extends OutputId<Bs[number]>,
+  To extends ARR<InputId<Bs[number]>>,
+> = To extends [infer H extends InputId<Bs[number]>, ...infer R extends ARR<InputId<Bs[number]>>]
+  ? [Wire<Bs, From, H>, ...Wires<Bs, From, R>]
+  : [];
+
+type CompatibleInputIds<Bs extends Boxes, From extends OutputId<Bs[number]>> = {
+  [K in InputId<Bs[number]>]: Wire<Bs, From, K> extends never ? never : K;
+}[InputId<Bs[number]>];
 
 export const wire =
   <const Bs extends Boxes>(bs: Bs) =>
   <From extends OutputId<Bs[number]>>(from: From) =>
-  <To extends InputId<Bs[number]>>(to: To): Wire<Bs, From, To> =>
+  <To extends CompatibleInputIds<Bs, From>[]>(
+    ...to: To
+  ): To extends { length: 1 } ? Wire<Bs, From, To[0]> : Wires<Bs, From, To> =>
     [from, to] as any;
 
 // import { ARR } from "~types";

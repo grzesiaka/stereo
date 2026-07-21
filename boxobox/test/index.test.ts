@@ -10,6 +10,7 @@ const T = fromTree({
   full_name: S(),
   age: N(),
   active: B(),
+  random: B(),
 });
 
 describe(box, ({ eq }) => ({
@@ -28,7 +29,7 @@ describe(box, ({ eq }) => ({
 describe(wire, ({ eq }) => ({
   simple: () => {
     const f = box()(T.age, T.active)("from");
-    const t = box(T.age, T.active)()("to");
+    const t = box(T.age, T.active, T.random, T.active.$("active_2"))()("to");
 
     type Bs = (typeof f | typeof t)[];
 
