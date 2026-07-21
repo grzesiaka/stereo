@@ -1,3 +1,24 @@
+import { ARR } from "~types";
+import { Box, Boxes, DerefPortId, InputId, InputIdWithType, OutputId, OutputId$Type } from "./box";
+
+export type Wires<Bs extends Boxes> = ARR<
+  [OutputId<Bs[number]>, InputId<Bs[number]> | ARR<InputId<Bs[number]>>, unknown?]
+>;
+
+export interface Nest<Bs extends Boxes, Ws extends Wires<Bs>> {
+  boxes: Bs;
+  wires: Ws;
+}
+
+export type CompatibleInputIds<B extends Box, X> =
+  InputIdWithType<B> extends readonly [infer K, infer T] ? (X extends T ? K : ["XK", X, T, K]) : never;
+
+export const wire =
+  <const Bs extends Boxes>(bs: Bs) =>
+  <From extends OutputId<Bs[number]>>(from: From) =>
+  <To extends CompatibleInputIds<Bs[number], OutputId$Type<Bs[number], From>>>(to: To) =>
+    [from, to] as const;
+
 // import { ARR } from "~types";
 // import { Static } from "typier";
 // import { Box, Boxes, Ports } from "./box";
