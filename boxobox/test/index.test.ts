@@ -2,7 +2,7 @@ import { describe } from "~testing";
 import { fromTree, S, N, B } from "typier";
 
 import { box, __ } from "../src/box";
-import { from, to } from "../src/wire";
+import { autoWire, from, to } from "../src/wire";
 
 const T = fromTree({
   first_name: S(),
@@ -33,17 +33,17 @@ describe("wire", ({ eq }) => {
   // type T = WireTypes<Bs[], "b2->0", "b1<-1">;
 
   const b1 = box(T.first_name, __ as __<string>)(T.age, T.active, T.active.$("activer"))("b1");
-  const b2 = box(T.age, T.active, T.random, T.active.$("active_2"))(__ as __<"abc">)("b2");
+  const b2 = box(T.age, T.active, T.random, T.active.$("active_2"))(__ as __<"abc">, T.first_name)("b2");
 
   return {
     from: () => {
       const $ = from([b1, b2]);
       const w1 = $("b1->active")("b2<-active");
-      eq(w1, ["b1->active", "b2<-active"]);
+      eq(w1, ["b1->active", ["b2<-active"]]);
       const w2 = $("b1->active")("b2<-active", "b2<-active_2");
       eq(w2, ["b1->active", ["b2<-active", "b2<-active_2"]]);
       const w3 = $("b2->0")("b1<-1");
-      eq(w3, ["b2->0", "b1<-1"]);
+      eq(w3, ["b2->0", ["b1<-1"]]);
 
       const empty = $("b1->age")();
       // no runtime check so just empty array present
@@ -53,16 +53,22 @@ describe("wire", ({ eq }) => {
     to: () => {
       const $ = to([b1, b2]);
       const w1 = $("b2<-active")("b1->active");
-      eq(w1, ["b2<-active", "b1->active"]);
+      eq(w1, ["b2<-active", ["b1->active"]]);
       const w2 = $("b2<-active")("b1->active", "b1->activer");
       eq(w2, ["b2<-active", ["b1->active", "b1->activer"]]);
       const w3 = $("b1<-1")("b2->0");
-      eq(w3, ["b1<-1", "b2->0"]);
+      eq(w3, ["b1<-1", ["b2->0"]]);
 
       // @ts-expect-error no runtime check
-      const err = $("b2<-age", "non-port-id");
+      const err = $("b2<-age")("non-port-id");
       //  @ts-expect-error
-      eq(err, ["b2<-age", "non-port-id"]);
+      eq(err, ["b2<-age", ["non-port-id"]]);
+    },
+
+    auto: () => {
+      const p = autoWire([b1, b2]);
+      const b = p[0];
+      console.log(p);
     },
   };
 });

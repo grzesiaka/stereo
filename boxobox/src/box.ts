@@ -1,5 +1,5 @@
 import { Static, TypierBase } from "typier";
-import { $$, ARR, WithTag } from "~types";
+import { $$, ARR } from "~types";
 import { Simplify } from "type-fest";
 export { __ } from "jsyoyo";
 
@@ -8,11 +8,15 @@ export type Ports<INorOUT extends ARR<Port> = ARR<Port>> = INorOUT;
 
 export type Port$Type<P> = P extends TypierBase ? Static<P> : $$<P>;
 
-export type INPUT_SYM = "<-";
-export type OUTPUT_SYM = "->";
+export type INPUT_SYM = typeof INPUT_SYM;
+export const INPUT_SYM = "<-";
+export type OUTPUT_SYM = typeof OUTPUT_SYM;
+export const OUTPUT_SYM = "->";
 
-export type Input<P extends Port = Port> = WithTag<P, INPUT_SYM>;
-export type Output<P extends Port = Port> = WithTag<P, OUTPUT_SYM>;
+export const inputId = <BoxID extends string, PortRef extends string>(ID: BoxID, Ref: PortRef) =>
+  `${ID}${INPUT_SYM}${Ref}` as const;
+export const outputId = <BoxID extends string, PortRef extends string>(ID: BoxID, Ref: PortRef) =>
+  `${ID}${OUTPUT_SYM}${Ref}` as const;
 
 export interface Box<ID extends string = string, IN extends Ports = Ports, OUT extends Ports = Ports> {
   ID: ID;
@@ -71,36 +75,34 @@ export type InputId<B extends Box = Box> =
 export type OutputId<B extends Box = Box> =
   B extends Box<infer ID, any, infer OUT> ? `${ID}${OUTPUT_SYM}${PortRef<OUT>}` : never;
 
-// export type PortId<B extends Box = Box> = InputId<B> | OutputId<B>;
-
 export type PortId$BoxIdAndRef<P> = P extends `${infer ID}${INPUT_SYM | OUTPUT_SYM}${infer Ref}`
   ? { ID: ID; PortRef: Ref }
   : { ID: never; PortRef: never };
 
-export type InputIdWithType<B extends Box = Box> =
-  B extends Box<infer ID, infer IN>
-    ? PortRef<IN> extends infer P extends string
-      ? [`${ID}${INPUT_SYM}${P}`, Port$Type<DerefPort<B["IN"], P>>]
-      : never
-    : never;
-export type OutputIdWithType<B extends Box = Box> =
-  B extends Box<infer ID, any, infer OUT>
-    ? PortRef<OUT> extends infer P extends string
-      ? [`${ID}${OUTPUT_SYM}${P}`, Port$Type<DerefPort<B["OUT"], P>>]
-      : never
-    : never;
+// export type PortId<B extends Box = Box> = InputId<B> | OutputId<B>;
 
-export type InputId$Type<
-  B extends Box = Box,
-  PortId extends InputId<B> = InputId<B>,
-> = PortId extends `${string}${INPUT_SYM}${infer Ref}` ? Port$Type<DerefPort<B["IN"], Ref>> : never;
+// type InputIdWithType<B extends Box = Box> =
+//   B extends Box<infer ID, infer IN>
+//     ? PortRef<IN> extends infer P extends string
+//       ? [`${ID}${INPUT_SYM}${P}`, Port$Type<DerefPort<B["IN"], P>>]
+//       : never
+//     : never;
+// type OutputIdWithType<B extends Box = Box> =
+//   B extends Box<infer ID, any, infer OUT>
+//     ? PortRef<OUT> extends infer P extends string
+//       ? [`${ID}${OUTPUT_SYM}${P}`, Port$Type<DerefPort<B["OUT"], P>>]
+//       : never
+//     : never;
 
-export type OutputId$Type<
-  B extends Box = Box,
-  PortId extends OutputId<B> = OutputId<B>,
-> = PortId extends `${string}${OUTPUT_SYM}${infer Ref}` ? Port$Type<DerefPort<B["OUT"], Ref>> : never;
+// type InputId$Type<
+//   B extends Box = Box,
+//   PortId extends InputId<B> = InputId<B>,
+// > = PortId extends `${string}${INPUT_SYM}${infer Ref}` ? Port$Type<DerefPort<B["IN"], Ref>> : never;
 
-export const input =
-  <B extends Box>(b: B) =>
-  <const P extends PortRef<B["IN"]>>(p: P) =>
-    `${b["ID"]}<-${p}` as `${B["ID"]}${INPUT_SYM}${P}`;
+// type OutputId$Type<
+//   B extends Box = Box,
+//   PortId extends OutputId<B> = OutputId<B>,
+// > = PortId extends `${string}${OUTPUT_SYM}${infer Ref}` ? Port$Type<DerefPort<B["OUT"], Ref>> : never;
+
+// export type Input<P extends Port = Port> = WithTag<P, INPUT_SYM>;
+// export type Output<P extends Port = Port> = WithTag<P, OUTPUT_SYM>;
