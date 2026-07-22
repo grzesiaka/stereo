@@ -11,7 +11,7 @@ export type WireTypes<Bs extends Boxes, From extends OutputId<Bs[number]>, To ex
 
 export type Wire<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends InputId<Bs[number]>> =
   WireTypes<Bs, From, To> extends { From: infer FromT; To: infer ToT }
-    ? ToT extends FromT
+    ? FromT extends ToT
       ? [From, To]
       : never
     : never;

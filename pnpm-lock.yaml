@@ -123,6 +123,9 @@ importers:
         specifier: 'catalog:'
         version: 5.7.0
     devDependencies:
+      jsyoyo:
+        specifier: workspace:^
+        version: link:../libs/jsyoyo
       typier:
         specifier: workspace:^
         version: link:../typier

@@ -17,6 +17,7 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
+    "jsyoyo": "workspace:^",
     "typier": "workspace:^",
     "~types": "workspace:^"
   },

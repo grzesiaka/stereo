@@ -1,5 +1,7 @@
 import { Static, TypierBase } from "typier";
 import { $$, ARR, WithTag } from "~types";
+import { Simplify } from "type-fest";
+export { __ } from "jsyoyo";
 
 export type Port = unknown;
 export type Ports<INorOUT extends ARR<Port> = ARR<Port>> = INorOUT;
@@ -30,8 +32,14 @@ export type Sink<ID extends string = string, IN extends Ports = Ports> = Box<ID,
 export const box =
   <IN extends Ports>(...IN: IN) =>
   <OUT extends Ports>(...OUT: OUT) =>
-  <ID extends string>(ID: ID) =>
-    ({ ID, IN, OUT }) as never as Box<ID, IN, OUT>;
+  <IDorCtx extends string | { ID: string }>(ctx: IDorCtx) =>
+    (typeof ctx === "string" ? { ID: ctx, IN, OUT } : Object.assign({ IN, OUT }, ctx)) as never as IDorCtx extends {
+      ID: string;
+    }
+      ? Simplify<Omit<IDorCtx, "ID">> & Box<IDorCtx["ID"], IN, OUT>
+      : IDorCtx extends string
+        ? Box<IDorCtx, IN, OUT>
+        : never;
 
 /** Create a box by first specifying outputs and than inputs */
 box.OI =
