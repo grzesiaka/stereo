@@ -12,8 +12,8 @@ import {
   Port$Type,
   PortId$BoxIdAndRef,
 } from "./box";
-import { isTypier, TypierBase } from "typier";
-import { Simplify } from "type-fest";
+import { isTypier } from "typier";
+import { Simplify, Includes } from "type-fest";
 
 export type WireTypes<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends InputId<Bs[number]>> = {
   From: Port$Type<
@@ -81,43 +81,65 @@ type PrepareAutoInputs<Boxes, Acc extends Dict<string[]> = {}> = Boxes extends r
   ? PrepareAutoInputs<R, AutoWireable<H["ID"], "<-", H["IN"], Acc>>
   : Simplify<Acc>;
 
-type PrepareAuto<Outputs extends PrepareAutoOutputs<Boxes>, Inputs extends PrepareAutoInputs<Boxes>> = {
-  [T in keyof Outputs]: T extends keyof Inputs ? [Outputs[T], Inputs[T]] : never;
-}[keyof Outputs][];
+type AutoOrderBox<OUT, Acc extends ARR> = OUT extends readonly [infer H, ...infer R]
+  ? AutoOrderBox<
+      R,
+      H extends { $TYP: infer T extends string } ? (Includes<Acc, T> extends true ? Acc : [...Acc, T]) : Acc
+    >
+  : Acc;
+type AutoOrder<Boxes, Acc extends ARR = []> = Boxes extends readonly [infer H extends Box, ...infer R]
+  ? AutoOrder<R, AutoOrderBox<H["OUT"], Acc>>
+  : Acc;
 
 const prepareAuto = <const Bs extends Boxes>(bs: Bs) => {
-  const m = {} as Dict<[string[], string[]], string>;
+  const outs = {} as Dict<string[], string>;
+  const ins = {} as Dict<string[], string>;
+  const order = [] as string[];
   for (const b of bs) {
     for (const p of b.OUT) {
       if (isTypier(p)) {
-        const n = m[p.$TYP] || [[], []];
-        m[p.$TYP] = n;
-        n[0].push(outputId(b.ID, p.$KEY));
+        if (!order.includes(p.$TYP)) {
+          outs[p.$TYP] = [];
+          order.push(p.$TYP);
+        }
+        const n = outs[p.$TYP]!;
+        n.push(outputId(b.ID, p.$KEY));
       }
     }
   }
   // TODO is it better to iterate boxes twice OR once and filter out not matched
   for (const b of bs) {
     for (const p of b.IN) {
-      if (isTypier(p)) {
-        const n = m[p.$TYP];
-        if (n) {
-          // if no output auto wire impossible
-          n[1].push(inputId(b.ID, p.$KEY));
-        }
+      if (isTypier(p) && outs[p.$TYP]) {
+        const n = ins[p.$TYP] || [];
+        ins[p.$TYP] = n;
+        // if no output auto wire impossible
+        n.push(inputId(b.ID, p.$KEY));
       }
     }
   }
-  return m as any as PrepareAuto<PrepareAutoOutputs<Bs>, PrepareAutoInputs<Bs>>;
-  // return m as any as [PrepareAutoOutputs<Bs>, PrepareAutoInputs<Bs>];
+  return [order, outs, ins] as any as [AutoOrder<Bs>, PrepareAutoOutputs<Bs>, PrepareAutoInputs<Bs>];
 };
+
+export type AutoWire<
+  Bs extends Boxes,
+  Order = AutoOrder<Bs>,
+  Outs extends PrepareAutoOutputs<Bs> = PrepareAutoOutputs<Bs>,
+  Ins extends PrepareAutoInputs<Bs> = PrepareAutoInputs<Bs>,
+> = Order extends readonly [infer H extends keyof Outs & keyof Ins, ...infer R]
+  ? [[Outs[H] extends [infer X] ? X : Outs[H], Ins[H] extends [infer X] ? X : Ins[H]], ...AutoWire<Bs, R>]
+  : [];
 
 export const autoWire = <const Bs extends Boxes>(bs: Bs) => {
-  const p = prepareAuto(bs);
-  return p;
+  const [order, outs, ins] = prepareAuto(bs);
+  return order.map((o) => [
+    (outs[o] as any).length === 1 ? outs[o][0] : outs[o],
+    (ins[o] as any).length === 1 ? ins[o][0] : ins[o],
+  ]) as AutoWire<Bs>;
 };
 
-export const wire = <const Bs extends Boxes>(_?: Bs) => ({
-  from: from(_),
-  to: to(_),
+export const wirer = <const Bs extends Boxes>(bs: Bs) => ({
+  from: from(bs),
+  to: to(bs),
+  auto: autoWire(bs),
 });

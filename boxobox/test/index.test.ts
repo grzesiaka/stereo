@@ -67,8 +67,14 @@ describe("wire", ({ eq }) => {
 
     auto: () => {
       const p = autoWire([b1, b2]);
-      const b = p[0];
-      console.log(p);
+      eq(p, [
+        ["b1->age", "b2<-age"],
+        [
+          ["b1->active", "b1->activer"],
+          ["b2<-active", "b2<-active_2"],
+        ],
+        ["b2->first_name", "b1<-first_name"],
+      ]);
     },
   };
 });
