@@ -22,8 +22,8 @@ export type CompatibleTargetIds<Bs extends Boxes, From extends OutputId<Bs[numbe
 
 export const from =
   <const Bs extends Boxes>(_?: Bs) =>
-  <From extends OutputId<Bs[number]>, To extends CompatibleTargetIds<Bs, NoInfer<From>>[]>(
-    from: From,
+  <From extends OutputId<Bs[number]>>(from: From) =>
+  <To extends CompatibleTargetIds<Bs, NoInfer<From>>[]>(
     ...to: To
   ): To extends { length: 1 } ? [From, To[0]] : [From, To] =>
     [from, to.length === 1 ? to[0] : to] as any;
@@ -34,8 +34,8 @@ export type CompatibleDestinationIds<Bs extends Boxes, To extends InputId<Bs[num
 
 export const to =
   <const Bs extends Boxes>(_?: Bs) =>
-  <To extends InputId<Bs[number]>, From extends CompatibleDestinationIds<Bs, To>[]>(
-    to: To,
+  <To extends InputId<Bs[number]>>(to: To) =>
+  <From extends CompatibleDestinationIds<Bs, To>[]>(
     ...from: From
   ): From extends { length: 1 } ? [To, From[0]] : [To, From] =>
     [to, from.length === 1 ? from[0] : from] as any;
