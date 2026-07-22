@@ -16,20 +16,26 @@ export type Wire<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends
       : never
     : never;
 
-// type Wires<
-//   Bs extends Boxes,
-//   From extends OutputId<Bs[number]>,
-//   To extends ARR<InputId<Bs[number]>>,
-// > = To extends [infer H extends InputId<Bs[number]>, ...infer R extends ARR<InputId<Bs[number]>>]
-//   ? [Wire<Bs, From, H>, ...Wires<Bs, From, R>]
-//   : [];
-
-type CompatibleInputIds<Bs extends Boxes, From extends OutputId<Bs[number]>> = {
+export type CompatibleTargetIds<Bs extends Boxes, From extends OutputId<Bs[number]>> = {
   [K in InputId<Bs[number]>]: Wire<Bs, From, K> extends never ? never : K;
 }[InputId<Bs[number]>];
 
-export const wire =
+export const from =
   <const Bs extends Boxes>(_?: Bs) =>
-  <From extends OutputId<Bs[number]>>(from: From) =>
-  <To extends CompatibleInputIds<Bs, From>[]>(...to: To): [From, To] =>
-    [from, to] as any;
+  <From extends OutputId<Bs[number]>, To extends CompatibleTargetIds<Bs, NoInfer<From>>[]>(
+    from: From,
+    ...to: To
+  ): To extends { length: 1 } ? [From, To[0]] : [From, To] =>
+    [from, to.length === 1 ? to[0] : to] as any;
+
+export type CompatibleDestinationIds<Bs extends Boxes, To extends InputId<Bs[number]>> = {
+  [K in OutputId<Bs[number]>]: Wire<Bs, K, To> extends never ? never : K;
+}[OutputId<Bs[number]>];
+
+export const to =
+  <const Bs extends Boxes>(_?: Bs) =>
+  <To extends InputId<Bs[number]>, From extends CompatibleDestinationIds<Bs, To>[]>(
+    to: To,
+    ...from: From
+  ): From extends { length: 1 } ? [To, From[0]] : [To, From] =>
+    [to, from.length === 1 ? from[0] : from] as any;

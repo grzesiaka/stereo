@@ -2,7 +2,7 @@ import { describe } from "~testing";
 import { fromTree, S, N, B } from "typier";
 
 import { box } from "../src/box";
-import { wire } from "../src/wire";
+import { from, to } from "../src/wire";
 
 const T = fromTree({
   first_name: S(),
@@ -26,13 +26,33 @@ describe(box, ({ eq }) => ({
   },
 }));
 
-describe(wire, ({ eq }) => ({
-  simple: () => {
-    const f = box()(T.age, T.active)("from");
-    const t = box(T.age, T.active, T.random, T.active.$("active_2"))()("to");
-    const w1 = wire([f, t])("from->active")("to<-active");
-    eq(w1, ["from->active", ["to<-active"]]);
-    const w2 = wire([f, t])("from->active")("to<-active", "to<-active_2");
-    eq(w2, ["from->active", ["to<-active", "to<-active_2"]]);
-  },
-}));
+describe("wire", ({ eq }) => {
+  const b1 = box(T.first_name)(T.age, T.active, T.active.$("activer"))("b1");
+  const b2 = box(T.age, T.active, T.random, T.active.$("active_2"))()("b2");
+  return {
+    from: () => {
+      const $ = from([b1, b2]);
+      const w1 = $("b1->active", "b2<-active");
+      eq(w1, ["b1->active", "b2<-active"]);
+      const w2 = $("b1->active", "b2<-active", "b2<-active_2");
+      eq(w2, ["b1->active", ["b2<-active", "b2<-active_2"]]);
+
+      const empty = $("b1->age");
+      // no runtime check so just empty array present
+      eq(empty, ["b1->age", [] as any]);
+    },
+
+    to: () => {
+      const $ = to([b1, b2]);
+      const w1 = $("b2<-active", "b1->active");
+      eq(w1, ["b2<-active", "b1->active"]);
+      const w2 = $("b2<-active", "b1->active", "b1->activer");
+      eq(w2, ["b2<-active", ["b1->active", "b1->activer"]]);
+
+      // @ts-expect-error no runtime check
+      const err = $("b2<-age", "non-port-id");
+      //  @ts-expect-error
+      eq(err, ["b2<-age", "non-port-id"]);
+    },
+  };
+});
