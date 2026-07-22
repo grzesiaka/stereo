@@ -1,8 +1,8 @@
 import { describe } from "~testing";
 import { fromTree, S, N, B } from "typier";
 
-import { box, DerefPort, OutputId, OutputId$Type, OutputIdWithType, Port$Type, PortRef } from "../src/box";
-import { wire } from "../src/nest";
+import { box } from "../src/box";
+import { wire } from "../src/wire";
 
 const T = fromTree({
   first_name: S(),
@@ -30,18 +30,9 @@ describe(wire, ({ eq }) => ({
   simple: () => {
     const f = box()(T.age, T.active)("from");
     const t = box(T.age, T.active, T.random, T.active.$("active_2"))()("to");
-
-    type Bs = (typeof f | typeof t)[];
-
-    type fRef = PortRef<(typeof f | typeof t)["OUT"]>;
-    type Out = OutputId<Bs[number]>;
-
-    type Ty = OutputId$Type<Bs[number], "from->age">;
-    type DeRef = DerefPort<Bs[number]["OUT"], "age">;
-    type TTT = Port$Type<DeRef>;
-    type Z = OutputIdWithType<Bs[number]>;
-    const w = wire([f, t])("from->active")("to<-active");
-    w.From;
-    w.To;
+    const w1 = wire([f, t])("from->active")("to<-active");
+    eq(w1, ["from->active", ["to<-active"]]);
+    const w2 = wire([f, t])("from->active")("to<-active", "to<-active_2");
+    eq(w2, ["from->active", ["to<-active", "to<-active_2"]]);
   },
 }));
