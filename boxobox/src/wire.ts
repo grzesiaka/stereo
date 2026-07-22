@@ -13,6 +13,7 @@ import {
   PortId$BoxIdAndRef,
 } from "./box";
 import { isTypier, TypierBase } from "typier";
+import { Simplify } from "type-fest";
 
 export type WireTypes<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends InputId<Bs[number]>> = {
   From: Port$Type<
@@ -48,26 +49,40 @@ export const to =
   <To extends InputId<Bs[number]>, Extra extends ARR = []>(to: To, ...extra: Extra) =>
   <From extends CompatibleDestinationIds<Bs, To>[]>(...from: From): [To, From, ...Extra] => [to, from, ...extra];
 
-type AutoWireable<ID extends string, Dir extends INPUT_SYM | OUTPUT_SYM, Ps> = Ps extends readonly [infer H, ...infer R]
-  ? AutoWireable<ID, Dir, R> &
-      (H extends { $KEY: infer K extends string; $TYP: infer T extends string }
-        ? { [t in T]: { [k in `${ID}${Dir}${K}`]: 1 } }
-        : {})
-  : {};
+type AutoWireable<
+  ID extends string,
+  Dir extends INPUT_SYM | OUTPUT_SYM,
+  Ps,
+  Acc extends Dict<string[]>,
+> = Ps extends readonly [infer H, ...infer R]
+  ? AutoWireable<
+      ID,
+      Dir,
+      R,
+      H extends { $KEY: infer K extends string; $TYP: infer T extends string }
+        ? T extends keyof Acc
+          ? Omit<Acc, T> & { [t in T]: [...Acc[T], `${ID}${Dir}${K}`] }
+          : Acc & { [t in T]: [`${ID}${Dir}${K}`] }
+        : Acc
+    >
+  : Acc;
 
-type PrepareAutoOutputs<Boxes, Acc extends Dict<Dict<1>> = {}> = Boxes extends readonly [
+type PrepareAutoOutputs<Boxes, Acc extends Dict<string[]> = {}> = Boxes extends readonly [
   infer H extends Box,
   ...infer R,
 ]
-  ? AutoWireable<H["ID"], "->", H["OUT"]> & PrepareAutoOutputs<R, Acc>
-  : Acc;
+  ? PrepareAutoOutputs<R, AutoWireable<H["ID"], "->", H["OUT"], Acc>>
+  : Simplify<Acc>;
 
-type PrepareAutoInputs<Boxes, Acc extends Dict<Dict<1>> = {}> = Boxes extends readonly [infer H extends Box, ...infer R]
-  ? AutoWireable<H["ID"], "<-", H["IN"]> & PrepareAutoInputs<R, Acc>
-  : Acc;
+type PrepareAutoInputs<Boxes, Acc extends Dict<string[]> = {}> = Boxes extends readonly [
+  infer H extends Box,
+  ...infer R,
+]
+  ? PrepareAutoInputs<R, AutoWireable<H["ID"], "<-", H["IN"], Acc>>
+  : Simplify<Acc>;
 
 type PrepareAuto<Outputs extends PrepareAutoOutputs<Boxes>, Inputs extends PrepareAutoInputs<Boxes>> = {
-  [T in keyof Outputs]: T extends keyof Inputs ? [(keyof Outputs[T])[], (keyof Inputs[T])[]] : never;
+  [T in keyof Outputs]: T extends keyof Inputs ? [Outputs[T], Inputs[T]] : never;
 }[keyof Outputs][];
 
 const prepareAuto = <const Bs extends Boxes>(bs: Bs) => {
@@ -94,6 +109,7 @@ const prepareAuto = <const Bs extends Boxes>(bs: Bs) => {
     }
   }
   return m as any as PrepareAuto<PrepareAutoOutputs<Bs>, PrepareAutoInputs<Bs>>;
+  // return m as any as [PrepareAutoOutputs<Bs>, PrepareAutoInputs<Bs>];
 };
 
 export const autoWire = <const Bs extends Boxes>(bs: Bs) => {
