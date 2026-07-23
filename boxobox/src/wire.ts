@@ -16,9 +16,7 @@ import { isTypier } from "typier";
 import { Simplify, Includes } from "type-fest";
 import { Cross, cross } from "arryo";
 
-export type Wires<B extends Box = Box<string, any, any>> = ARR<
-  [OutputId<B> | ARR<OutputId<B>>, InputId<B> | ARR<InputId<B>>]
->;
+export type Wires<B extends Box = Box<string>> = ARR<[OutputId<B> | ARR<OutputId<B>>, InputId<B> | ARR<InputId<B>>]>;
 export type Wires1to1<B extends Box = Box> = ARR<[OutputId<B>, InputId<B>]>;
 
 export type WireTypes<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends InputId<Bs[number]>> = {

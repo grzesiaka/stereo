@@ -64,7 +64,12 @@ box.ID =
 export const source = <OUT extends Ports>(...OUT: OUT) => box()(...OUT);
 export const sink = <IN extends Ports>(...IN: IN) => box(...IN)();
 
-export type PortRef<P extends ARR> = Exclude<keyof P & string, keyof []> | Extract<P[number], TypierBase>["$KEY"];
+// export type PortRef<P extends ARR> = Exclude<keyof P & string, keyof []> | Extract<P[number], TypierBase>["$KEY"];
+export type PortRef<P extends ARR> = P extends readonly [...infer H, infer R]
+  ? PortRef<H> | (R extends { $KEY: infer Key } ? Key : `${H["length"]}` & keyof P)
+  : P extends readonly []
+    ? never
+    : string;
 export type DerefPort<Ps extends ARR, PortRef> = PortRef extends keyof Ps
   ? Ps[PortRef]
   : Extract<Ps[number], { $KEY: PortRef }>;
@@ -78,31 +83,3 @@ export type OutputId<B extends Box = Box> =
 export type PortId$BoxIdAndRef<P> = P extends `${infer ID}${INPUT_SYM | OUTPUT_SYM}${infer Ref}`
   ? { ID: ID; PortRef: Ref }
   : { ID: never; PortRef: never };
-
-// export type PortId<B extends Box = Box> = InputId<B> | OutputId<B>;
-
-// type InputIdWithType<B extends Box = Box> =
-//   B extends Box<infer ID, infer IN>
-//     ? PortRef<IN> extends infer P extends string
-//       ? [`${ID}${INPUT_SYM}${P}`, Port$Type<DerefPort<B["IN"], P>>]
-//       : never
-//     : never;
-// type OutputIdWithType<B extends Box = Box> =
-//   B extends Box<infer ID, any, infer OUT>
-//     ? PortRef<OUT> extends infer P extends string
-//       ? [`${ID}${OUTPUT_SYM}${P}`, Port$Type<DerefPort<B["OUT"], P>>]
-//       : never
-//     : never;
-
-// type InputId$Type<
-//   B extends Box = Box,
-//   PortId extends InputId<B> = InputId<B>,
-// > = PortId extends `${string}${INPUT_SYM}${infer Ref}` ? Port$Type<DerefPort<B["IN"], Ref>> : never;
-
-// type OutputId$Type<
-//   B extends Box = Box,
-//   PortId extends OutputId<B> = OutputId<B>,
-// > = PortId extends `${string}${OUTPUT_SYM}${infer Ref}` ? Port$Type<DerefPort<B["OUT"], Ref>> : never;
-
-// export type Input<P extends Port = Port> = WithTag<P, INPUT_SYM>;
-// export type Output<P extends Port = Port> = WithTag<P, OUTPUT_SYM>;
