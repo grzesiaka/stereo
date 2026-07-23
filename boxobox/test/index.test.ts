@@ -2,7 +2,7 @@ import { describe } from "~testing";
 import { fromTree, S, N, B } from "typier";
 
 import { box, __ } from "../src/box";
-import { autoWire, from, to } from "../src/wire";
+import { autoWire, from, to, flatten } from "../src/wire";
 
 const T = fromTree({
   first_name: S(),
@@ -73,6 +73,15 @@ describe("wire", ({ eq }) => {
           ["b1->active", "b1->activer"],
           ["b2<-active", "b2<-active_2"],
         ],
+        ["b2->first_name", "b1<-first_name"],
+      ]);
+
+      eq(flatten(p), [
+        ["b1->age", "b2<-age"],
+        ["b1->active", "b2<-active"],
+        ["b1->active", "b2<-active_2"],
+        ["b1->activer", "b2<-active"],
+        ["b1->activer", "b2<-active_2"],
         ["b2->first_name", "b1<-first_name"],
       ]);
     },

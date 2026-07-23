@@ -1,2 +1,2 @@
-export * from "./box";
-export * from "./wire";
+export * from "./box"
+export * from "./wire"

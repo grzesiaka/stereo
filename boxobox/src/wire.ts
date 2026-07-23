@@ -14,6 +14,12 @@ import {
 } from "./box";
 import { isTypier } from "typier";
 import { Simplify, Includes } from "type-fest";
+import { Cross, cross } from "arryo";
+
+export type Wires<B extends Box = Box<string, any, any>> = ARR<
+  [OutputId<B> | ARR<OutputId<B>>, InputId<B> | ARR<InputId<B>>]
+>;
+export type Wires1to1<B extends Box = Box> = ARR<[OutputId<B>, InputId<B>]>;
 
 export type WireTypes<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends InputId<Bs[number]>> = {
   From: Port$Type<
@@ -139,6 +145,11 @@ export const autoWire = <const Bs extends Boxes>(bs: Bs) => {
     (ins[o] as any).length === 1 ? ins[o][0] : ins[o],
   ]) as AutoWire<Bs>;
 };
+
+export type Flatten<Ws extends Wires> = Ws extends readonly [readonly [infer F, infer T], ...infer R extends Wires]
+  ? [...Cross<F, T>, ...Flatten<R>]
+  : [];
+export const flatten = <Ws extends Wires>(ws: Ws): Flatten<Ws> => ws.flatMap(([f, t]) => cross(f, t)) as never;
 
 export const wirer = <const Bs extends Boxes>(bs: Bs) => ({
   from: from(bs),
