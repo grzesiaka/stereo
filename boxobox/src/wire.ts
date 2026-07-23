@@ -38,7 +38,8 @@ export type CompatibleTargetIds<Bs extends Boxes, From extends OutputId<Bs[numbe
 export const from =
   <const Bs extends Boxes>(_?: Bs) =>
   <From extends OutputId<Bs[number]>, Extra extends ARR = []>(from: From, ...extra: Extra) =>
-  <To extends CompatibleTargetIds<Bs, NoInfer<From>>[]>(...to: To): [From, To, ...Extra] => [from, to, ...extra];
+  <To extends CompatibleTargetIds<Bs, NoInfer<From>>[]>(...to: To) =>
+    [from, to.length === 1 ? to[0] : to, ...extra] as [From, To extends { length: 1 } ? To[0] : To, ...Extra];
 
 export type CompatibleDestinationIds<Bs extends Boxes, To extends InputId<Bs[number]>> = {
   [K in OutputId<Bs[number]>]: Wire<Bs, K, To> extends never ? never : K;
@@ -47,7 +48,8 @@ export type CompatibleDestinationIds<Bs extends Boxes, To extends InputId<Bs[num
 export const to =
   <const Bs extends Boxes>(_?: Bs) =>
   <To extends InputId<Bs[number]>, Extra extends ARR = []>(to: To, ...extra: Extra) =>
-  <From extends CompatibleDestinationIds<Bs, To>[]>(...from: From): [To, From, ...Extra] => [to, from, ...extra];
+  <From extends CompatibleDestinationIds<Bs, To>[]>(...from: From) =>
+    [from.length === 1 ? from[0] : from, to, ...extra] as [From extends { length: 1 } ? From[0] : From, To, ...Extra];
 
 type AutoWireable<
   ID extends string,
