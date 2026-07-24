@@ -22,9 +22,6 @@ export interface Box<ID extends string = string, IN extends Ports = Ports, OUT e
   ID: ID;
   IN: IN;
   OUT: OUT;
-  // TODO - not sure if needed to mark input outputs separately; better probably just to keep them in separate collections
-  // IN: ArrWithTag<IN, INPUT_SYM>;
-  // OUT: ArrWithTag<OUT, OUTPUT_SYM>;
 }
 
 export type Boxes = ARR<Box>;

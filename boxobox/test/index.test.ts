@@ -1,8 +1,7 @@
 import { describe } from "~testing";
 import { fromTree, S, N, B } from "typier";
 
-import { box, __ } from "../src/box";
-import { autoWire, from, to, flatten } from "../src/wire";
+import { box, __, autoWire, from, to, flatten, xBox } from "../src";
 
 const T = fromTree({
   first_name: S(),
@@ -87,3 +86,7 @@ describe("wire", ({ eq }) => {
     },
   };
 });
+
+describe(xBox, ({ eq }) => ({
+  empty: () => {},
+}));
