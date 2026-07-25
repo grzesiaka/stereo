@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import { join, split, extractPrefix, groupByPrefix, PrePrefix } from "../src";
+import { join, split, extractPrefix, groupByPrefix } from "../src";
 
 describe(join, ({ eq }) => ({
   empty_empty: () => {
@@ -73,17 +73,28 @@ describe(extractPrefix, ({ eq }) => {
 });
 
 describe(groupByPrefix, ({ eq }) => {
+  const i = [{ type: "a.a" }, { type: "a.b" }, { type: "b.a" }, { type: "b.b" }] as const;
   return {
     empty: () => {
       eq(groupByPrefix("k")()([]), {});
       eq(groupByPrefix("k")("a")([]), {});
     },
     simple: () => {
-      const items = [{ type: "a.a" }, { type: "a.b" }, { type: "b.a" }, { type: "b.b" }] as const;
-      type Items = typeof items;
-      type P = PrePrefix<"type", ["a"], Items>;
-      const g = groupByPrefix("type")("a")(items);
-      eq(g, { a: [items[0], items[1]] });
+      const a = groupByPrefix("type")("a")(i);
+      eq(a, { a: [i[0], i[1]] });
+      const aa = groupByPrefix("type")("a.a")(i);
+      eq(aa, { "a.a": [i[0]] });
+      const ab = groupByPrefix("type")("a", "b")(i);
+      eq(ab, { a: [i[0], i[1]], b: [i[2], i[3]] });
+    },
+    overlapping: () => {
+      const aabb = groupByPrefix("type")("a.a", "b.b", "a", "b")(i);
+      eq(aabb, {
+        a: [i[1]],
+        b: [i[2]],
+        "a.a": [i[0]],
+        "b.b": [i[3]],
+      });
     },
   };
 });
