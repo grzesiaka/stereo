@@ -30,7 +30,9 @@ type ij_Project_<ij, Xs extends ARR> = Xs extends readonly [infer I, ...infer R]
       ? ARR<ij_Item<ij, X>>
       : never;
 
-export type ij_Project<ij extends ARR, Xs extends ARR> = ij extends readonly [infer K extends __<PropertyKey>]
+export type ij_Project<ij extends ARR<__<PropertyKey>>, Xs extends ARR> = ij extends readonly [
+  infer K extends __<PropertyKey>,
+]
   ? ij_Project1<K, Xs>
   : ij_Project_<ij, Xs>;
 

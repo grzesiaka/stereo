@@ -35,7 +35,7 @@ catalogs:
       version: 5.7.0
     typebox:
       specifier: 1.3.2
-      version: 1.1.29
+      version: 1.3.2
     typescript:
       specifier: 6.0.3
       version: 6.0.3
@@ -44,7 +44,7 @@ catalogs:
       version: 8.1.2
     vitest:
       specifier: 4.1.9
-      version: 4.1.9
+      version: 4.1.8
 
 pnpmfileChecksum: sha256-8xFT6biQQ3w2Z8+0GZr5OAXTN0KaeEEYb/qvdTycvCo=
 
@@ -152,7 +152,7 @@ importers:
         version: link:../libs/jsyoyo
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -209,7 +209,7 @@ importers:
         version: link:../typier
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -227,7 +227,7 @@ importers:
         version: 8.1.2(@types/node@26.1.0)(esbuild@0.27.4)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -288,7 +288,7 @@ importers:
         version: 1.3.2
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       xpresyo:
         specifier: workspace:^
         version: link:../libs/xpresyo
@@ -312,7 +312,7 @@ importers:
         version: link:../proyij
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -327,7 +327,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -342,7 +342,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -384,7 +384,7 @@ importers:
         version: link:../../treeo
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       xpresyo:
         specifier: workspace:^
         version: link:../xpresyo
@@ -405,7 +405,7 @@ importers:
         version: 0.0.352
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../../__config
@@ -423,7 +423,7 @@ importers:
         version: 26.1.0
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../../__config
@@ -479,7 +479,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -503,7 +503,7 @@ importers:
         version: link:../txtxt
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -518,7 +518,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -555,7 +555,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -570,7 +570,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -591,7 +591,7 @@ importers:
         version: link:../jsyoyo
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -622,10 +622,14 @@ importers:
         version: link:../types
 
   libs/txtxt:
+    dependencies:
+      proyij:
+        specifier: workspace:^
+        version: link:../proyij
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -644,7 +648,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -691,7 +695,7 @@ importers:
         version: link:../../treeo
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -710,7 +714,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -725,7 +729,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -792,7 +796,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -813,7 +817,7 @@ importers:
         version: link:../typier
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -835,7 +839,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -872,7 +876,7 @@ importers:
         version: 5.7.0
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -912,7 +916,7 @@ importers:
         version: 5.7.0
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -970,7 +974,7 @@ importers:
         version: link:../treeo
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -1013,7 +1017,7 @@ importers:
         version: link:../libs/deacted
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -1035,7 +1039,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -1056,7 +1060,7 @@ importers:
         version: link:../typier
       vitest:
         specifier: 'catalog:'
-        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+        version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
@@ -3672,7 +3676,7 @@ snapshots:
       esbuild: 0.27.4
       fsevents: 2.3.3
 
-  vitest@4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4)):
+  vitest@4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9(vitest@4.1.9))(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4)):
     dependencies:
       '@vitest/expect': 4.1.8
       '@vitest/mocker': 4.1.8(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))

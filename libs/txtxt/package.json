@@ -15,5 +15,8 @@
     ".": "./out/index.mjs",
     "./*": "./out/*.mjs"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "dependencies": {
+    "proyij": "workspace:^"
+  }
 }
