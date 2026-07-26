@@ -1,5 +1,4 @@
 export * from "./box"
-export * from "./frame"
 export * from "./oBox"
 export * from "./wire"
 export * from "./xBox"

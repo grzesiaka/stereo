@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 import { fromTree, S, N, B } from "typier";
 
-import { box, __, autoWire, from, to, flatten, xBox } from "../src";
+import { box, __, autoWire, from, to, flatWires } from "../src";
 
 const T = fromTree({
   first_name: S(),
@@ -36,7 +36,7 @@ describe("wire", ({ eq }) => {
 
   return {
     from: () => {
-      const $ = from([b1, b2]);
+      const $ = from([b1, b2], [["b2->first_name", ["b2<-random"]]]);
       const w1 = $("b1->active")("b2<-active");
       eq(w1, ["b1->active", "b2<-active"]);
       const w2 = $("b1->active")("b2<-active", "b2<-active_2");
@@ -47,10 +47,13 @@ describe("wire", ({ eq }) => {
       const empty = $("b1->age")();
       // no runtime check so just empty array present
       eq(empty, ["b1->age", [] as any]);
+
+      // @ts-expect-error b2->first_name was excluded
+      $("b2->first_name");
     },
 
     to: () => {
-      const $ = to([b1, b2]);
+      const $ = to([b1, b2], [["b2->first_name", "b1<-first_name"]]);
       const w1 = $("b2<-active")("b1->active");
       eq(w1, ["b1->active", "b2<-active"]);
       const w2 = $("b2<-active")("b1->active", "b1->activer");
@@ -62,6 +65,9 @@ describe("wire", ({ eq }) => {
       const err = $("b2<-age")("non-port-id");
       //  @ts-expect-error
       eq(err, ["non-port-id", "b2<-age"]);
+
+      // @ts-expect-error excluded
+      $("b1<-first_name");
     },
 
     auto: () => {
@@ -75,18 +81,21 @@ describe("wire", ({ eq }) => {
         ["b2->first_name", "b1<-first_name"],
       ]);
 
-      eq(flatten(p), [
+      const flat = [
         ["b1->age", "b2<-age"],
         ["b1->active", "b2<-active"],
         ["b1->active", "b2<-active_2"],
         ["b1->activer", "b2<-active"],
         ["b1->activer", "b2<-active_2"],
         ["b2->first_name", "b1<-first_name"],
-      ]);
+      ] as const;
+
+      eq(flat, flatWires(p));
+      eq(flatWires(p), flatWires(flatWires(p)));
     },
   };
 });
 
-describe(xBox, ({ eq }) => ({
-  empty: () => {},
-}));
+// describe(xBox, ({ eq }) => ({
+//   empty: () => {},
+// }));

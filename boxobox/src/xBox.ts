@@ -6,6 +6,6 @@ export interface xBox<ID extends string = string, IN extends Ports = Ports, OUT 
   OUT
 > {}
 
-export const xBox = <Bs extends Boxes>(bs: Bs) => 1;
+export const xBox = <Bs extends Boxes>(_bs: Bs) => 1;
 
 export default xBox;

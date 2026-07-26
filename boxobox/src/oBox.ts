@@ -1,5 +1,5 @@
-import { Box, Boxes } from "./box";
+import { Boxes } from "./box";
 
-export const oBox = () => 1;
+export const oBox = <Bs extends Boxes>(_?: Bs) => 1;
 
 export default oBox;

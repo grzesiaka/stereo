@@ -583,12 +583,6 @@ importers:
 
   libs/proyij:
     devDependencies:
-      composyo:
-        specifier: workspace:^
-        version: link:../../composyo
-      jsyoyo:
-        specifier: workspace:^
-        version: link:../jsyoyo
       vitest:
         specifier: 'catalog:'
         version: 4.1.8(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -622,6 +616,10 @@ importers:
         version: link:../types
 
   libs/txtxt:
+    dependencies:
+      proyij:
+        specifier: workspace:^
+        version: link:../proyij
     devDependencies:
       vitest:
         specifier: 'catalog:'
