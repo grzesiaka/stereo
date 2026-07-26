@@ -17,7 +17,11 @@ import { Simplify, Includes } from "type-fest";
 import { Cross, cross } from "arryo";
 
 export type Wires<B extends Box = Box<string>> = ARR<[OutputId<B> | ARR<OutputId<B>>, InputId<B> | ARR<InputId<B>>]>;
-export type Wires1to1<B extends Box = Box> = ARR<[OutputId<B>, InputId<B>]>;
+export type Wires1to1<B extends Box = Box> = ARR<
+  {
+    [From in OutputId<B>]: Wire<[B], From, CompatibleTargetIds<[B], From>>;
+  }[OutputId<B>]
+>;
 
 export type WireTypes<Bs extends Boxes, From extends OutputId<Bs[number]>, To extends InputId<Bs[number]>> = {
   From: Port$Type<

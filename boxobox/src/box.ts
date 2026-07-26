@@ -31,8 +31,8 @@ export type Source<ID extends string = string, OUT extends Ports = Ports> = Box<
 export type Sink<ID extends string = string, IN extends Ports = Ports> = Box<ID, IN, []>;
 
 export const box =
-  <IN extends Ports>(...IN: IN) =>
-  <OUT extends Ports>(...OUT: OUT) =>
+  <const IN extends Ports>(...IN: IN) =>
+  <const OUT extends Ports>(...OUT: OUT) =>
   <IDorCtx extends string | { ID: string }>(ctx: IDorCtx) =>
     (typeof ctx === "string" ? { ID: ctx, IN, OUT } : Object.assign({ IN, OUT }, ctx)) as never as IDorCtx extends {
       ID: string;
