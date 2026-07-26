@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import { join, split, extractPrefix, groupByPrefix } from "../src";
+import { join, split, extractPrefix, groupByPrefix, groupByPrefixKV } from "../src";
 
 describe(join, ({ eq }) => ({
   empty_empty: () => {
@@ -94,6 +94,38 @@ describe(groupByPrefix, ({ eq }) => {
         b: [i[2]],
         "a.a": [i[0]],
         "b.b": [i[3]],
+      });
+    },
+  };
+});
+
+describe(groupByPrefixKV, ({ eq }) => {
+  const i = [
+    ["a.a", 0],
+    ["a.b", 1],
+    ["b.a", 2],
+    ["b.b", "b.b"],
+  ] as const;
+  return {
+    empty: () => {
+      eq(groupByPrefixKV()([]), {});
+      eq(groupByPrefixKV("0")([]), {});
+    },
+    simple: () => {
+      const a = groupByPrefixKV("a")(i);
+      eq(a, { a: [0, 1] });
+      const aa = groupByPrefixKV("a.a")(i);
+      eq(aa, { "a.a": [0] });
+      const ab = groupByPrefixKV("a", "b")(i);
+      eq(ab, { a: [0, 1], b: [2, "b.b"] });
+    },
+    overlapping: () => {
+      const aabb = groupByPrefixKV("a.a", "b.b", "a", "b")(i);
+      eq(aabb, {
+        a: [1],
+        b: [2],
+        "a.a": [0],
+        "b.b": ["b.b"],
       });
     },
   };

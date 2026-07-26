@@ -1,3 +1,4 @@
+import { ij_Project } from "proyij";
 import { __, ARR } from "~types";
 
 export const prefixExtractor = <const Prefixes extends string[]>(ps: Prefixes) =>
@@ -60,17 +61,48 @@ export type GroupByPrefix<Key extends PropertyKey, Prefixes extends ARR<string>,
   >;
 };
 
+export type GroupByPrefixAndProject<
+  Key extends PropertyKey,
+  Project extends PropertyKey,
+  Prefixes extends ARR<string>,
+  Items extends ARR,
+> = { [K in keyof GroupByPrefix<Key, Prefixes, Items>]: ij_Project<[Project], GroupByPrefix<Key, Prefixes, Items>[K]> };
+
 export const groupByPrefix =
-  <const Key extends PropertyKey>(key: Key) =>
+  <
+    const Key extends PropertyKey,
+    Project extends __<PropertyKey> = __,
+    ItemC extends { [K in Key]: string } & (Project extends PropertyKey ? { [P in Project]: unknown } : {}) = {
+      [K in Key]: string;
+    } & (Project extends PropertyKey ? { [P in Project]: unknown } : {}),
+  >(
+    key: Key,
+    project = void 0 as Project,
+  ) =>
   <const Prefixes extends string[]>(...ps: Prefixes) => {
     const ex = prefixExtractor(ps);
-    return <const Items extends ARR<{ [K in Key]: string }>>(items: Items) =>
-      items.reduce((a, i) => {
-        const p = i[key].match(ex);
-        if (p) {
-          // @ts-expect-error
-          (a[p[1]] = a[p[1]] || []).push(i);
+    // TODO not sure if this optimization is worth it; decide for once instead for each item;
+    //      maybe better to split into seperate functions: groupByPrefix and groupByPrefixAndProject
+    // TODO if needed a custom projection function could be supported
+    const red = project
+      ? (a: any, i: any) => {
+          const p = i[key].match(ex);
+          if (p) {
+            (a[p[1]] = a[p[1]] || []).push(i[project]); // <--- project to key
+          }
+          return a;
         }
-        return a;
-      }, {}) as GroupByPrefix<Key, Prefixes, Items>;
+      : (a: any, i: any) => {
+          const p = i[key].match(ex);
+          if (p) {
+            (a[p[1]] = a[p[1]] || []).push(i); // <--- id / no-project
+          }
+          return a;
+        };
+    return <const Items extends ARR<ItemC>>(items: Items) =>
+      items.reduce(red, {}) as Project extends PropertyKey
+        ? GroupByPrefixAndProject<Key, Project, Prefixes, Items>
+        : GroupByPrefix<Key, Prefixes, Items>;
   };
+
+export const groupByPrefixKV = groupByPrefix<0, 1>(0, 1);
