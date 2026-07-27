@@ -14,19 +14,20 @@ import {
 } from "./box";
 import { isTypier } from "typier";
 import { Simplify, Includes } from "type-fest";
-import { Cross, cross } from "arryo";
+import { crossArr, CrossArr, CrossArrFn } from "arryo";
 
-export type Wires<B extends Box = Box<string>> = ARR<
-  | {
-      [From in OutputId<B>]:
-        | Wire<[B], From, CompatibleTargetIds<[B], From>>
-        | ARR<Wire<[B], From, CompatibleTargetIds<[B], From>>>;
-    }[OutputId<B>]
+export type Wires<B extends Box = Box<string>, Extra = never> = ARR<
+  | Extra
   | {
       [To in InputId<B>]:
         | Wire<[B], CompatibleDestinationIds<[B], To>, To>
         | ARR<Wire<[B], CompatibleDestinationIds<[B], To>, To>>;
     }[InputId<B>]
+  | {
+      [From in OutputId<B>]:
+        | Wire<[B], From, CompatibleTargetIds<[B], From>>
+        | ARR<Wire<[B], From, CompatibleTargetIds<[B], From>>>;
+    }[OutputId<B>]
 >;
 export type Wires1to1<B extends Box = Box> = ARR<
   {
@@ -57,12 +58,23 @@ export type CompatibleTargetIds<Bs extends Boxes, From extends OutputId<Bs[numbe
 export type WireFrom<Bs extends Boxes, Excluded extends Wires<Bs[number]> = []> = Fn$O<typeof from<Bs, Excluded>>;
 export const from =
   <const Bs extends Boxes, const Excluded extends Wires<Bs[number]> = []>(_bs?: Bs, _ws?: Excluded) =>
-  <From extends Exclude<OutputId<Bs[number]>, FlatWires<Excluded>[number][0]>, Extra extends ARR = []>(
+  <From extends Exclude<OutputId<Bs[number]>, CrossArr<Excluded>[number][0]>, ExtraFrom extends ARR = []>(
     from: From,
-    ...extra: Extra
+    ...extraFrom: ExtraFrom
   ) =>
-  <To extends CompatibleTargetIds<Bs, NoInfer<From>>[]>(...to: To) =>
-    [from, to.length === 1 ? to[0] : to, ...extra] as [From, To extends { length: 1 } ? To[0] : To, ...Extra];
+  <
+    To extends CompatibleTargetIds<Bs, NoInfer<From>> | ARR<CompatibleTargetIds<Bs, NoInfer<From>>>,
+    ExtraTo extends ARR = [],
+  >(
+    to: To,
+    ...extraTo: ExtraTo
+  ) =>
+    [from, to.length === 1 ? to[0] : to, ...extraFrom, ...extraTo] as [
+      From,
+      To extends { length: 1 } ? To[0] : To,
+      ...ExtraFrom,
+      ...ExtraTo,
+    ];
 
 export type CompatibleDestinationIds<Bs extends Boxes, To extends InputId<Bs[number]>> = {
   [K in OutputId<Bs[number]>]: Wire<Bs, K, To> extends never ? never : K;
@@ -71,12 +83,20 @@ export type CompatibleDestinationIds<Bs extends Boxes, To extends InputId<Bs[num
 export type WireTo<Bs extends Boxes, Excluded extends Wires<Bs[number]> = []> = Fn$O<typeof to<Bs, Excluded>>;
 export const to =
   <const Bs extends Boxes, const Excluded extends Wires<Bs[number]> = []>(_bs?: Bs, _ws?: Excluded) =>
-  <To extends Exclude<InputId<Bs[number]>, FlatWires<Excluded>[number][1]>, Extra extends ARR = []>(
+  <To extends Exclude<InputId<Bs[number]>, CrossArr<Excluded>[number][1]>, ExtraTo extends ARR = []>(
     to: To,
-    ...extra: Extra
+    ...extraTo: ExtraTo
   ) =>
-  <From extends CompatibleDestinationIds<Bs, To>[]>(...from: From) =>
-    [from.length === 1 ? from[0] : from, to, ...extra] as [From extends { length: 1 } ? From[0] : From, To, ...Extra];
+  <From extends CompatibleDestinationIds<Bs, To> | ARR<CompatibleDestinationIds<Bs, To>>, ExtraFrom extends ARR = []>(
+    from: From,
+    ...extraFrom: ExtraFrom
+  ) =>
+    [from.length === 1 ? from[0] : from, to, ...extraTo, ...extraFrom] as [
+      From extends { length: 1 } ? From[0] : From,
+      To,
+      ...ExtraTo,
+      ...ExtraFrom,
+    ];
 
 type AutoWireable<
   ID extends string,
@@ -120,7 +140,7 @@ type AutoOrder<Boxes, Acc extends ARR = []> = Boxes extends readonly [infer H ex
   ? AutoOrder<R, AutoOrderBox<H["OUT"], Acc>>
   : Acc;
 
-const prepareAuto = <const Bs extends Boxes>(bs: Bs) => {
+const typedPorts = <const Bs extends Boxes>(bs: Bs) => {
   const outs = {} as Dict<string[], string>;
   const ins = {} as Dict<string[], string>;
   const order = [] as string[];
@@ -160,17 +180,14 @@ export type AutoWire<
   : [];
 
 export const autoWire = <const Bs extends Boxes>(bs: Bs) => {
-  const [order, outs, ins] = prepareAuto(bs);
+  const [order, outs, ins] = typedPorts(bs);
   return order.map((o) => [
     (outs[o] as any).length === 1 ? outs[o][0] : outs[o],
     (ins[o] as any).length === 1 ? ins[o][0] : ins[o],
   ]) as AutoWire<Bs>;
 };
 
-export type FlatWires<Ws extends Wires<Box<string, any, any>>> = Ws extends readonly [
-  readonly [infer F, infer T],
-  ...infer R extends Wires,
-]
-  ? [...Cross<F, T>, ...FlatWires<R>]
-  : [];
-export const flatWires = <Ws extends Wires>(ws: Ws): FlatWires<Ws> => ws.flatMap(([f, t]) => cross(f, t)) as never;
+/**
+ * Flatten wires to 1-to-1 wire per entry. Looses extra information if any.
+ */
+export const flatWires = crossArr as CrossArrFn<readonly [string | ARR<string>, string | ARR<string>]>;

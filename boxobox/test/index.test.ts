@@ -36,15 +36,15 @@ describe("wire", ({ eq }) => {
 
   return {
     from: () => {
-      const $ = from([b1, b2], [["b2->first_name", ["b2<-random"]]]);
+      const $ = from([b1, b2], [["b2->first_name", "b1<-first_name"]]);
       const w1 = $("b1->active")("b2<-active");
       eq(w1, ["b1->active", "b2<-active"]);
-      const w2 = $("b1->active")("b2<-active", "b2<-active_2");
+      const w2 = $("b1->active")(["b2<-active", "b2<-active_2"]);
       eq(w2, ["b1->active", ["b2<-active", "b2<-active_2"]]);
       const w3 = $("b2->0")("b1<-1");
       eq(w3, ["b2->0", "b1<-1"]);
 
-      const empty = $("b1->age")();
+      const empty = $("b1->age")([]);
       // no runtime check so just empty array present
       eq(empty, ["b1->age", [] as any]);
 
@@ -56,7 +56,7 @@ describe("wire", ({ eq }) => {
       const $ = to([b1, b2], [["b2->first_name", "b1<-first_name"]]);
       const w1 = $("b2<-active")("b1->active");
       eq(w1, ["b1->active", "b2<-active"]);
-      const w2 = $("b2<-active")("b1->active", "b1->activer");
+      const w2 = $("b2<-active")(["b1->active", "b1->activer"]);
       eq(w2, [["b1->active", "b1->activer"], "b2<-active"]);
       const w3 = $("b1<-1")("b2->0");
       eq(w3, ["b2->0", "b1<-1"]);
