@@ -1,5 +1,7 @@
 import { describe } from "~testing";
 import cross from "../src/cross";
+import crossArr, { CrossArrFn } from "../src/cross-arr";
+import { ARR } from "~types";
 
 describe(cross, ({ eq }) => ({
   empty: () => {
@@ -54,5 +56,32 @@ describe(cross, ({ eq }) => ({
 
     const a = cross([1] as number[], ["a"] as string[]);
     eq(a, [[1, "a"]] as [number, string][]);
+  },
+}));
+
+describe(crossArr, ({ eq }) => ({
+  wires: () => {
+    const x = crossArr as CrossArrFn<readonly [string | ARR<string>, string | ARR<string>]>;
+    const nested = [
+      ["b1->age", "b2<-age"],
+      [
+        ["b1->active", "b1->activer"],
+        ["b2<-active", "b2<-active_2"],
+      ],
+      ["b2->first_name", "b1<-first_name"],
+    ] as const;
+
+    const flat = [
+      ["b1->age", "b2<-age"],
+      ["b1->active", "b2<-active"],
+      ["b1->active", "b2<-active_2"],
+      ["b1->activer", "b2<-active"],
+      ["b1->activer", "b2<-active_2"],
+      ["b2->first_name", "b1<-first_name"],
+    ] as const;
+
+    const crossed = x(nested);
+    eq(flat, crossed);
+    eq(crossed, x(x(nested))); //idempotent
   },
 }));

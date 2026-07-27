@@ -16,7 +16,18 @@ import { isTypier } from "typier";
 import { Simplify, Includes } from "type-fest";
 import { Cross, cross } from "arryo";
 
-export type Wires<B extends Box = Box<string>> = ARR<[OutputId<B> | ARR<OutputId<B>>, InputId<B> | ARR<InputId<B>>]>;
+export type Wires<B extends Box = Box<string>> = ARR<
+  | {
+      [From in OutputId<B>]:
+        | Wire<[B], From, CompatibleTargetIds<[B], From>>
+        | ARR<Wire<[B], From, CompatibleTargetIds<[B], From>>>;
+    }[OutputId<B>]
+  | {
+      [To in InputId<B>]:
+        | Wire<[B], CompatibleDestinationIds<[B], To>, To>
+        | ARR<Wire<[B], CompatibleDestinationIds<[B], To>, To>>;
+    }[InputId<B>]
+>;
 export type Wires1to1<B extends Box = Box> = ARR<
   {
     [From in OutputId<B>]: Wire<[B], From, CompatibleTargetIds<[B], From>>;
@@ -156,7 +167,10 @@ export const autoWire = <const Bs extends Boxes>(bs: Bs) => {
   ]) as AutoWire<Bs>;
 };
 
-export type FlatWires<Ws extends Wires> = Ws extends readonly [readonly [infer F, infer T], ...infer R extends Wires]
+export type FlatWires<Ws extends Wires<Box<string, any, any>>> = Ws extends readonly [
+  readonly [infer F, infer T],
+  ...infer R extends Wires,
+]
   ? [...Cross<F, T>, ...FlatWires<R>]
   : [];
 export const flatWires = <Ws extends Wires>(ws: Ws): FlatWires<Ws> => ws.flatMap(([f, t]) => cross(f, t)) as never;
