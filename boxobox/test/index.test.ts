@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 import { fromTree, S, N, B } from "typier";
 
-import { box, __, autoWire, from, to, flatWires } from "../src";
+import { box, __, autoWire, from, to, flatWires, portsByKey, freePorts } from "../src";
 
 const T = fromTree({
   first_name: S(),
@@ -11,6 +11,12 @@ const T = fromTree({
   active: B(),
   random: B(),
 });
+
+const active_2 = T.active.$("active_2");
+const activer = T.active.$("activer");
+
+const b1 = box(T.first_name, __ as __<string>)(T.age, T.active, activer)("b1");
+const b2 = box(T.age, T.active, T.random, active_2)(__ as __<"abc">, T.first_name)("b2");
 
 describe(box, ({ eq }) => ({
   empty: () => {
@@ -24,16 +30,27 @@ describe(box, ({ eq }) => ({
     eq(b.IN, [T.first_name, T.last_name]);
     eq(b.OUT, [T.full_name]);
   },
+  ports: () => {
+    const ps = portsByKey([b1, b2]);
+    eq(ps.IN, {
+      "b1<-1": __,
+      "b1<-first_name": T.first_name,
+      "b2<-active": T.active,
+      "b2<-active_2": active_2,
+      "b2<-age": T.age,
+      "b2<-random": T.random,
+    });
+    eq(ps.OUT, {
+      "b1->active": T.active,
+      "b1->activer": activer,
+      "b1->age": T.age,
+      "b2->0": __,
+      "b2->first_name": T.first_name,
+    });
+  },
 }));
 
 describe("wire", ({ eq }) => {
-  // import { WireTypes } from "../src/wire";
-  // type Bs = typeof b1 | typeof b2;
-  // type T = WireTypes<Bs[], "b2->0", "b1<-1">;
-
-  const b1 = box(T.first_name, __ as __<string>)(T.age, T.active, T.active.$("activer"))("b1");
-  const b2 = box(T.age, T.active, T.random, T.active.$("active_2"))(__ as __<"abc">, T.first_name)("b2");
-
   return {
     from: () => {
       const $ = from([b1, b2], [["b2->first_name", "b1<-first_name"]]);
@@ -72,6 +89,7 @@ describe("wire", ({ eq }) => {
 
     auto: () => {
       const p = autoWire([b1, b2]);
+      console.log("FREE", freePorts([b1, b2], p));
       eq(p, [
         ["b1->age", "b2<-age"],
         [

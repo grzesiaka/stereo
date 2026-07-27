@@ -1,6 +1,7 @@
 import { Static, TypierBase } from "typier";
 import { $$, ARR } from "~types";
 import { Simplify } from "type-fest";
+import { Dict } from "jsyoyo";
 export { __ } from "jsyoyo";
 
 export type Port = unknown;
@@ -61,7 +62,6 @@ box.ID =
 export const source = <OUT extends Ports>(...OUT: OUT) => box()(...OUT);
 export const sink = <IN extends Ports>(...IN: IN) => box(...IN)();
 
-// export type PortRef<P extends ARR> = Exclude<keyof P & string, keyof []> | Extract<P[number], TypierBase>["$KEY"];
 export type PortRef<P extends ARR> = P extends readonly [...infer H, infer R]
   ? PortRef<H> | (R extends { $KEY: infer Key } ? Key : `${H["length"]}` & keyof P)
   : P extends readonly []
@@ -80,3 +80,42 @@ export type OutputId<B extends Box = Box> =
 export type PortId$BoxIdAndRef<P> = P extends `${infer ID}${INPUT_SYM | OUTPUT_SYM}${infer Ref}`
   ? { ID: ID; PortRef: Ref }
   : { ID: never; PortRef: never };
+
+export type PortsByPortId<ID extends string, S extends INPUT_SYM | OUTPUT_SYM, P extends ARR> = P extends readonly [
+  ...infer H,
+  infer R,
+]
+  ? PortsByPortId<ID, S, H> & {
+      [p in `${ID}${S}${R extends { $KEY: infer Key extends string } ? Key : `${H["length"]}` & keyof P}`]: R;
+    }
+  : P extends readonly []
+    ? {}
+    : string;
+
+export type PortsByKeyIN<Bs extends Boxes> = Bs extends readonly [infer B extends Box, ...infer R extends Boxes]
+  ? PortsByPortId<B["ID"], "<-", B["IN"]> & PortsByKeyIN<R>
+  : {};
+
+export type PortsByKeyOUT<Bs extends Boxes> = Bs extends readonly [infer B extends Box, ...infer R extends Boxes]
+  ? PortsByPortId<B["ID"], "->", B["OUT"]> & PortsByKeyOUT<R>
+  : {};
+
+export type PortsByKey<Bs extends Boxes> = {
+  IN: Simplify<PortsByKeyIN<Bs>>;
+  OUT: Simplify<PortsByKeyOUT<Bs>>;
+};
+
+export const portsByKey = <const Bs extends Boxes>(bs: Bs) => {
+  const IN = {} as Dict<unknown, string>;
+  const OUT = {} as Dict<unknown, string>;
+
+  for (const b of bs) {
+    b.IN.forEach((p: any, i) => (IN[inputId(b.ID, p?.$KEY || i)] = p));
+    b.OUT.forEach((p: any, i) => (OUT[outputId(b.ID, p?.$KEY || i)] = p));
+  }
+
+  return {
+    IN,
+    OUT,
+  } as never as PortsByKey<Bs>;
+};
