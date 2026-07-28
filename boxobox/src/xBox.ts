@@ -1,7 +1,8 @@
-import { es } from "jsyoyo";
+import { es, vs } from "jsyoyo";
 import { $Box, $box, Boxes, Ports, PortsByKey, portsByKey, PortsWithIdIN, PortsWithIdOUT } from "./box";
 import { WireFrom, WireTo, AutoWire, Wires, from, to, FlatWires, autoWire } from "./wire";
 import { Simplify } from "type-fest";
+import { ij_Project } from "proyij"; // this might be an overkill TODO use a simple projection
 
 export type FilterPorts<PortsWithId, Exclude> = PortsWithId extends readonly [readonly [infer ID, infer P], ...infer R]
   ? ID extends Exclude
@@ -15,16 +16,11 @@ export type FreePortsOUT<Bs extends Boxes, Ws extends Wires> = FilterPorts<
   FlatWires<Ws>[number][0]
 >;
 
-export type FreePortsKV<Bs extends Boxes, Ws extends Wires> = {
-  byKey: {
-    IN: Simplify<Pick<PortsByKey<Bs>["IN"], FreePortsIN<Bs, Ws>[number][0]>>;
-    OUT: Simplify<Pick<PortsByKey<Bs>["OUT"], FreePortsOUT<Bs, Ws>[number][0]>>;
-  };
-  IN: FreePortsIN<Bs, Ws>;
-  OUT: FreePortsOUT<Bs, Ws>;
+export type FreePortsByKey<Bs extends Boxes, Ws extends Wires> = {
+  IN: Simplify<Pick<PortsByKey<Bs>["IN"], FreePortsIN<Bs, Ws>[number][0]>>;
+  OUT: Simplify<Pick<PortsByKey<Bs>["OUT"], FreePortsOUT<Bs, Ws>[number][0]>>;
 };
-
-export const freePortsKV = <const Bs extends Boxes, const Ws extends Wires>(Bs: Bs, Ws: Ws) => {
+export const freePortsByKey = <const Bs extends Boxes, const Ws extends Wires>(Bs: Bs, Ws: Ws) => {
   const byKey = portsByKey(Bs);
   for (const w of Ws) {
     const [from, to] = w as never as [string | string[], string | string[]];
@@ -39,6 +35,16 @@ export const freePortsKV = <const Bs extends Boxes, const Ws extends Wires>(Bs: 
       delete byKey.IN[to as never];
     }
   }
+  return byKey as FreePortsByKey<Bs, Ws>;
+};
+
+export type FreePortsKV<Bs extends Boxes, Ws extends Wires> = {
+  byKey: FreePortsByKey<Bs, Ws>;
+  IN: FreePortsIN<Bs, Ws>;
+  OUT: FreePortsOUT<Bs, Ws>;
+};
+export const freePortsKV = <const Bs extends Boxes, const Ws extends Wires>(Bs: Bs, Ws: Ws) => {
+  const byKey = freePortsByKey(Bs, Ws);
   return {
     byKey,
     IN: es(byKey.IN),
@@ -46,7 +52,19 @@ export const freePortsKV = <const Bs extends Boxes, const Ws extends Wires>(Bs: 
   } as never as FreePortsKV<Bs, Ws>;
 };
 
-// export const freePorts = <const Bs extends Boxes, const Ws extends Wires>(Bs: Bs, Ws: Ws) =>
+export type FreePorts<Bs extends Boxes, Ws extends Wires> = {
+  byKey: FreePortsByKey<Bs, Ws>;
+  IN: ij_Project<[1], FreePortsIN<Bs, Ws>>;
+  OUT: ij_Project<[1], FreePortsOUT<Bs, Ws>>;
+};
+export const freePorts = <const Bs extends Boxes, const Ws extends Wires>(Bs: Bs, Ws: Ws) => {
+  const byKey = freePortsByKey(Bs, Ws);
+  return {
+    byKey,
+    IN: vs(byKey.IN),
+    OUT: vs(byKey.OUT),
+  } as never as FreePorts<Bs, Ws>;
+};
 
 export type xBox<
   IDorCtx extends string | { ID: string },
@@ -61,7 +79,7 @@ export type xBoxesFn = <
   const Bs extends Boxes,
   const $Wires extends Wires<Bs[number]>,
   const PreWires extends Wires<Bs[number]> = [],
-  const IO extends { IN: Ports; OUT: Ports } = FreePortsKV<Bs, [...PreWires, ...$Wires]>,
+  const IO extends { IN: Ports; OUT: Ports } = FreePorts<Bs, [...PreWires, ...$Wires]>,
 >(
   boxes: Bs,
   wires: (from: WireFrom<Bs, PreWires>, to: WireTo<Bs, PreWires>) => $Wires,
@@ -71,24 +89,22 @@ export type xBoxesFn = <
   ctx: IDorCtx,
 ) => xBox<IDorCtx, IO["IN"], IO["OUT"], Bs, [...$Wires, ...PreWires]>;
 
-const f = from() as any;
-const t = to() as any;
 export const x: xBoxesFn = (bs, ws, io, pre = [] as any) => {
-  const w = ws(f, t);
-  const p = io ? io(bs, w, pre) : freePortsKV(bs, w.concat(pre));
-  return $box(p.IN, p.OUT, { "][": bs, "><": ws(f, t).concat(pre) as any });
+  const w = ws(from._, to._);
+  const p = io ? io(bs, w, pre) : freePorts(bs, w.concat(pre));
+  return $box(p.IN, p.OUT, { "][": bs, "><": ws(from._, to._).concat(pre) as any });
 };
 
 export type xBoxesFnAuto = <
   const Bs extends Boxes,
-  const $Wires extends Wires<Bs[number], never>,
-  const IO extends { IN: Ports; OUT: Ports } = FreePortsKV<Bs, [...AutoWire<Bs>, ...NoInfer<$Wires>]>,
+  const $Wires extends Wires<Bs[number], never> = [],
+  const IO extends { IN: Ports; OUT: Ports } = FreePorts<Bs, [...AutoWire<Bs>, ...$Wires]>,
 >(
   boxes: Bs,
-  wires: (from: WireFrom<Bs, AutoWire<Bs>>, to: WireTo<Bs, AutoWire<Bs>>) => $Wires,
+  wires?: (from: WireFrom<Bs, AutoWire<Bs>>, to: WireTo<Bs, AutoWire<Bs>>) => $Wires,
   IO?: (boxes: Bs, wires: NoInfer<$Wires>, preWires: AutoWire<Bs>) => IO,
 ) => <IDorCtx extends string | { ID: string }>(
   ctx: IDorCtx,
 ) => xBox<IDorCtx, IO["IN"], IO["OUT"], Bs, [...$Wires, ...AutoWire<Bs>]>;
 
-export const xx: xBoxesFnAuto = (bs, ws, io) => x(bs, ws, io, autoWire(bs));
+export const xx: xBoxesFnAuto = (bs, ws, io) => x(bs, ws || ((() => []) as any), io, autoWire(bs));

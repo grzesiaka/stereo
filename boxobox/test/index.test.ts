@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 import { fromTree, S, N, B } from "typier";
 
-import { box, __, autoWire, from, to, flatWires, portsByKey, freePortsKV, x } from "../src";
+import { box, __, autoWire, from, to, flatWires, portsByKey, freePortsKV, x, xx } from "../src";
 
 const T = fromTree({
   first_name: S(),
@@ -142,16 +142,58 @@ describe(x, ({ eq }) => ({
       "][": [],
     });
   },
-  simple: () => {
-    const xed = x([b1, b2], (f, t) => {
-      return [
-        f("b1->active")(["b2<-active", "b2<-active_2"]),
+  manual: () => {
+    const xB = x([b1, b2], (f, t) => [
+      f("b1->active")(["b2<-active", "b2<-active_2"]),
+      ["b1->activer", ["b2<-active", "b2<-active_2"]],
+      t("b1<-first_name")("b2->first_name"),
+    ])("xD");
+    eq(xB, {
+      ID: "xD",
+      IN: [__, T.age, T.random],
+      OUT: [T.age, __],
+      "><": [
+        ["b1->active", ["b2<-active", "b2<-active_2"]],
         ["b1->activer", ["b2<-active", "b2<-active_2"]],
-        t("b1<-first_name")("b2->first_name"),
-      ];
-    })("? ? ?");
-    const w = xed["><"];
-    const { IN, OUT } = xed;
-    // console.log(OUT);
+        ["b2->first_name", "b1<-first_name"],
+      ],
+      "][": [b1, b2],
+    });
+  },
+  auto_manual: () => {
+    const xB = xx([b1, b2], (f) => [f("b2->0")("b1<-1")])("xD");
+    eq(xB, {
+      ID: "xD",
+      IN: [T.random],
+      OUT: [],
+      "><": [
+        ["b2->0", "b1<-1"],
+        ["b1->age", "b2<-age"],
+        [
+          ["b1->active", "b1->activer"],
+          ["b2<-active", "b2<-active_2"],
+        ],
+        ["b2->first_name", "b1<-first_name"],
+      ],
+      "][": [b1, b2],
+    });
+  },
+
+  auto: () => {
+    const xB = xx([b1, b2])("xD");
+    eq(xB, {
+      ID: "xD",
+      IN: [__, T.random],
+      OUT: [__],
+      "><": [
+        ["b1->age", "b2<-age"],
+        [
+          ["b1->active", "b1->activer"],
+          ["b2<-active", "b2<-active_2"],
+        ],
+        ["b2->first_name", "b1<-first_name"],
+      ],
+      "][": [b1, b2],
+    });
   },
 }));

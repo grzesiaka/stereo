@@ -74,6 +74,7 @@ export const from =
       ...ExtraFrom,
       ...ExtraTo,
     ];
+from._ = from();
 
 export type CompatibleDestinationIds<Bs extends Boxes, To extends InputId<Bs[number]>> = {
   [K in OutputId<Bs[number]>]: Wire<Bs, K, To> extends never ? never : K;
@@ -99,6 +100,7 @@ export const to =
       ...ExtraTo,
       ...ExtraFrom,
     ];
+to._ = to();
 
 type AutoWireable<
   ID extends string,
