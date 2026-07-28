@@ -3,9 +3,13 @@ import { __, Tagged, WithTag } from "~types";
 import { TypierBase } from "../0";
 import { resolveKey, ResolveKey } from "../_";
 
-type Rekey<Schema extends object, Type, $TYP extends string, $KEY extends string, $META> = <const K extends string>(
+type Rekey<Schema extends object, Type, $TYP extends string, $KEY extends string, $META> = <
+  const K extends string,
+  const T extends string = $TYP,
+>(
   key: K,
-) => $Atom<Schema, Type, $TYP, ResolveKey<$KEY, K>, $META>;
+  typ?: T,
+) => $Atom<Schema, Type, T, ResolveKey<$KEY, K>, $META>;
 
 export type Atom<
   Schema extends object,
@@ -51,5 +55,11 @@ export const createAtom =
       ...(($KEY[0] === "?" ? { "~optional": true } : {}) as {}),
       $TYP,
       $KEY: $KEY.replace(/^\?/, "") || ($KEY ? $TYP : ""),
-      $: ($NEW_KEY: string) => createAtom(S)($TYP, resolveKey($KEY, $NEW_KEY)),
+      $: ($NEW_KEY: string, $NEW_TYP = $TYP) => createAtom(S)($NEW_TYP, resolveKey($KEY, $NEW_KEY)),
     }) as never;
+
+export type RetypeAtom<
+  A extends Atom<object, any, string, string, any>,
+  K extends string = A["$KEY"],
+  TYP extends string = A["$TYP"],
+> = A extends Atom<infer S, infer T, any, any, infer M> ? Atom<S, T, K, TYP, M> : never;

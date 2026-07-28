@@ -17,8 +17,8 @@ describe(Bool, ({ eq }) => ({
     eq(Check(emptyKey, false), true);
     eq(Check(emptyKey, ""), false);
 
-    const emptyOptionalKey = emptyKey.$("?");
-    eq(emptyOptionalKey.$TYP, "bool");
+    const emptyOptionalKey = emptyKey.$("?", "loob");
+    eq(emptyOptionalKey.$TYP, "loob");
     eq(emptyOptionalKey.$KEY, "rekeyed");
     eq(emptyOptionalKey["~optional"], true);
     eq(Check(emptyOptionalKey, true), true);
@@ -36,8 +36,8 @@ describe(Bool, ({ eq }) => ({
     eq(Check(reKeyO, true), true);
     eq(Check(reKeyO, ""), false);
 
-    const reKey1 = reKey.$("?k");
-    eq(reKey1.$TYP, "bool");
+    const reKey1 = reKey.$("?k", "loob");
+    eq(reKey1.$TYP, "loob");
     eq(reKey1.$KEY, "k");
     eq(Check(reKey1, true), true);
     eq(Check(reKey1, ""), false);

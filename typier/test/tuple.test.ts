@@ -15,6 +15,9 @@ describe(Tup, ({ eq }) => ({
     eq(Check(t, {}), false);
     eq(Check(t, [1]), false);
     eq(Check(t, 1), false);
+    const xt = t.$("new_key", "new_type");
+    eq(xt.$KEY)("new_key");
+    eq(xt.$TYP)("new_type");
   },
   pair: () => {
     const p = Str({ minLength: 1 })("1");

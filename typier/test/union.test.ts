@@ -30,6 +30,7 @@ describe(Uni, ({ eq }) => ({
     eq(Check(t, []), false);
     eq(Check(t, 1), false);
     eq(Check(t, [1]), false);
+    eq(t.$("new", "abc"));
   },
   null: () => {
     const s = Str()("");

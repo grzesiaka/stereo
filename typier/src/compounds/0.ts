@@ -4,9 +4,13 @@ import { __ } from "~types";
 
 export type { TSchema } from "../0";
 
-type Rekey<Schema extends object, $TYP extends string, $KEY extends string> = <const K extends string>(
+type Rekey<Schema extends object, $TYP extends string, $KEY extends string> = <
+  const K extends string,
+  const T extends string = $TYP,
+>(
   key: K,
-) => $Compound<Schema, $TYP, ResolveKey<$KEY, K>>;
+  typ?: T,
+) => $Compound<Schema, T, ResolveKey<$KEY, K>>;
 
 export type Compound<Schema extends object, $TYP extends string = string, $KEY extends string = $TYP> = Schema &
   TypierBase<$TYP, $KEY> & {
@@ -28,5 +32,5 @@ export const createCompound =
       ...(($KEY[0] === "?" ? { "~optional": true } : {}) as {}),
       $TYP,
       $KEY: $KEY.replace(/^\?/, "") || ($KEY ? $TYP : ""),
-      $: ($NEW_KEY: string) => createCompound(S)($TYP, resolveKey($KEY, $NEW_KEY)),
+      $: ($NEW_KEY: string, $NEW_TYP = $TYP) => createCompound(S)($NEW_TYP, resolveKey($KEY, $NEW_KEY)),
     }) as never;
