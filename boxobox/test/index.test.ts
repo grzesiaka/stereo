@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 import { fromTree, S, N, B } from "typier";
 
-import { box, __, autoWire, from, to, flatWires, portsByKey, freePorts } from "../src";
+import { box, __, autoWire, from, to, flatWires, portsByKey, freePortsKV, x } from "../src";
 
 const T = fromTree({
   first_name: S(),
@@ -50,74 +50,108 @@ describe(box, ({ eq }) => ({
   },
 }));
 
-describe("wire", ({ eq }) => {
-  return {
-    from: () => {
-      const $ = from([b1, b2], [["b2->first_name", "b1<-first_name"]]);
-      const w1 = $("b1->active")("b2<-active");
-      eq(w1, ["b1->active", "b2<-active"]);
-      const w2 = $("b1->active")(["b2<-active", "b2<-active_2"]);
-      eq(w2, ["b1->active", ["b2<-active", "b2<-active_2"]]);
-      const w3 = $("b2->0")("b1<-1");
-      eq(w3, ["b2->0", "b1<-1"]);
+describe("wire", ({ eq }) => ({
+  from: () => {
+    const $ = from([b1, b2], [["b2->first_name", "b1<-first_name"]]);
+    const w1 = $("b1->active")("b2<-active");
+    eq(w1, ["b1->active", "b2<-active"]);
+    const w2 = $("b1->active")(["b2<-active", "b2<-active_2"]);
+    eq(w2, ["b1->active", ["b2<-active", "b2<-active_2"]]);
+    const w3 = $("b2->0")("b1<-1");
+    eq(w3, ["b2->0", "b1<-1"]);
 
-      const empty = $("b1->age")([]);
-      // no runtime check so just empty array present
-      eq(empty, ["b1->age", [] as any]);
+    const empty = $("b1->age")([]);
+    // no runtime check so just empty array present
+    eq(empty, ["b1->age", [] as any]);
 
-      // @ts-expect-error b2->first_name was excluded
-      $("b2->first_name");
-    },
+    // @ts-expect-error b2->first_name was excluded
+    $("b2->first_name");
+  },
 
-    to: () => {
-      const $ = to([b1, b2], [["b2->first_name", "b1<-first_name"]]);
-      const w1 = $("b2<-active")("b1->active");
-      eq(w1, ["b1->active", "b2<-active"]);
-      const w2 = $("b2<-active")(["b1->active", "b1->activer"]);
-      eq(w2, [["b1->active", "b1->activer"], "b2<-active"]);
-      const w3 = $("b1<-1")("b2->0");
-      eq(w3, ["b2->0", "b1<-1"]);
+  to: () => {
+    const $ = to([b1, b2], [["b2->first_name", "b1<-first_name"]]);
+    const w1 = $("b2<-active")("b1->active");
+    eq(w1, ["b1->active", "b2<-active"]);
+    const w2 = $("b2<-active")(["b1->active", "b1->activer"]);
+    eq(w2, [["b1->active", "b1->activer"], "b2<-active"]);
+    const w3 = $("b1<-1")("b2->0");
+    eq(w3, ["b2->0", "b1<-1"]);
 
-      // @ts-expect-error no runtime check
-      const err = $("b2<-age")("non-port-id");
-      //  @ts-expect-error
-      eq(err, ["non-port-id", "b2<-age"]);
+    // @ts-expect-error no runtime check
+    const err = $("b2<-age")("non-port-id");
+    //  @ts-expect-error
+    eq(err, ["non-port-id", "b2<-age"]);
 
-      // @ts-expect-error excluded
-      $("b1<-first_name");
-    },
+    // @ts-expect-error excluded
+    $("b1<-first_name");
+  },
 
-    auto: () => {
-      const p = autoWire([b1, b2]);
+  auto_flat_free: () => {
+    const p = autoWire([b1, b2]);
 
-      eq(p, [
-        ["b1->age", "b2<-age"],
-        [
-          ["b1->active", "b1->activer"],
-          ["b2<-active", "b2<-active_2"],
-        ],
-        ["b2->first_name", "b1<-first_name"],
-      ]);
+    eq(p, [
+      ["b1->age", "b2<-age"],
+      [
+        ["b1->active", "b1->activer"],
+        ["b2<-active", "b2<-active_2"],
+      ],
+      ["b2->first_name", "b1<-first_name"],
+    ]);
 
-      const flat = [
-        ["b1->age", "b2<-age"],
-        ["b1->active", "b2<-active"],
-        ["b1->active", "b2<-active_2"],
-        ["b1->activer", "b2<-active"],
-        ["b1->activer", "b2<-active_2"],
-        ["b2->first_name", "b1<-first_name"],
-      ] as const;
+    const flat = [
+      ["b1->age", "b2<-age"],
+      ["b1->active", "b2<-active"],
+      ["b1->active", "b2<-active_2"],
+      ["b1->activer", "b2<-active"],
+      ["b1->activer", "b2<-active_2"],
+      ["b2->first_name", "b1<-first_name"],
+    ] as const;
 
-      eq(flat, flatWires(p));
-      eq(flatWires(p), flatWires(flatWires(p)));
+    eq(flat, flatWires(p));
+    eq(flatWires(p), flatWires(flatWires(p)));
 
-      const free = freePorts([b1, b2], p);
-      const { IN, OUT, byKey } = free;
-      console.log(free);
-    },
-  };
-});
+    const free = freePortsKV([b1, b2], p);
+    const free_flat = freePortsKV([b1, b2], flat);
+    const { IN, OUT, byKey } = free;
+    eq(free, free_flat);
+    eq(IN, [
+      ["b1<-1", __],
+      ["b2<-random", T.random],
+    ]);
+    eq(OUT, [["b2->0", __]]);
 
-// describe(xBox, ({ eq }) => ({
-//   empty: () => {},
-// }));
+    eq(byKey, {
+      IN: {
+        "b1<-1": __,
+        "b2<-random": T.random,
+      },
+      OUT: {
+        "b2->0": __,
+      },
+    });
+  },
+}));
+
+describe(x, ({ eq }) => ({
+  empty: () => {
+    eq(x([], () => [])(""), {
+      ID: "",
+      IN: [],
+      OUT: [],
+      "><": [],
+      "][": [],
+    });
+  },
+  simple: () => {
+    const xed = x([b1, b2], (f, t) => {
+      return [
+        f("b1->active")(["b2<-active", "b2<-active_2"]),
+        ["b1->activer", ["b2<-active", "b2<-active_2"]],
+        t("b1<-first_name")("b2->first_name"),
+      ];
+    })("? ? ?");
+    const w = xed["><"];
+    const { IN, OUT } = xed;
+    // console.log(OUT);
+  },
+}));

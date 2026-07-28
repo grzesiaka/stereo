@@ -19,14 +19,10 @@ import { crossArr, CrossArr, CrossArrFn } from "arryo";
 export type Wires<B extends Box = Box<string, any, any>, Extra = [OutputId<B>[], InputId<B>[]]> = ARR<
   | Extra
   | {
-      [To in InputId<B>]:
-        | Wire<[B], CompatibleDestinationIds<[B], To>, To>
-        | ARR<Wire<[B], CompatibleDestinationIds<[B], To>, To>>;
+      [To in InputId<B>]: readonly [CompatibleDestinationIds<[B], To> | ARR<CompatibleDestinationIds<[B], To>>, To];
     }[InputId<B>]
   | {
-      [From in OutputId<B>]:
-        | Wire<[B], From, CompatibleTargetIds<[B], From>>
-        | ARR<Wire<[B], From, CompatibleTargetIds<[B], From>>>;
+      [From in OutputId<B>]: [From, CompatibleTargetIds<[B], From> | ARR<CompatibleTargetIds<[B], From>>];
     }[OutputId<B>]
 >;
 
@@ -66,7 +62,7 @@ export const from =
     ...extraFrom: ExtraFrom
   ) =>
   <
-    To extends CompatibleTargetIds<Bs, NoInfer<From>> | ARR<CompatibleTargetIds<Bs, NoInfer<From>>>,
+    const To extends CompatibleTargetIds<Bs, NoInfer<From>> | ARR<CompatibleTargetIds<Bs, NoInfer<From>>>,
     ExtraTo extends ARR = [],
   >(
     to: To,
@@ -90,7 +86,10 @@ export const to =
     to: To,
     ...extraTo: ExtraTo
   ) =>
-  <From extends CompatibleDestinationIds<Bs, To> | ARR<CompatibleDestinationIds<Bs, To>>, ExtraFrom extends ARR = []>(
+  <
+    const From extends CompatibleDestinationIds<Bs, To> | ARR<CompatibleDestinationIds<Bs, To>>,
+    ExtraFrom extends ARR = [],
+  >(
     from: From,
     ...extraFrom: ExtraFrom
   ) =>
