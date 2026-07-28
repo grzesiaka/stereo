@@ -2,8 +2,9 @@ import { Static, TypierBase } from "typier";
 import { $$, ARR } from "~types";
 import { Simplify } from "type-fest";
 import { Dict } from "jsyoyo";
-export { __ } from "jsyoyo";
+import { KeyValues$Object } from "proyij";
 
+export { __ } from "jsyoyo";
 export type Port = unknown;
 export type Ports<INorOUT extends ARR<Port> = ARR<Port>> = INorOUT;
 
@@ -81,28 +82,29 @@ export type PortId$BoxIdAndRef<P> = P extends `${infer ID}${INPUT_SYM | OUTPUT_S
   ? { ID: ID; PortRef: Ref }
   : { ID: never; PortRef: never };
 
-export type PortsByPortId<ID extends string, S extends INPUT_SYM | OUTPUT_SYM, P extends ARR> = P extends readonly [
+export type Ports$PortIdPort<ID extends string, S extends INPUT_SYM | OUTPUT_SYM, P extends ARR> = P extends readonly [
   ...infer H,
   infer R,
 ]
-  ? PortsByPortId<ID, S, H> & {
-      [p in `${ID}${S}${R extends { $KEY: infer Key extends string } ? Key : `${H["length"]}` & keyof P}`]: R;
-    }
+  ? [
+      ...Ports$PortIdPort<ID, S, H>,
+      [`${ID}${S}${R extends { $KEY: infer Key extends string } ? Key : `${H["length"]}` & keyof P}`, R],
+    ]
   : P extends readonly []
-    ? {}
-    : string;
+    ? []
+    : ARR<[string, P[number]]>;
 
-export type PortsByKeyIN<Bs extends Boxes> = Bs extends readonly [infer B extends Box, ...infer R extends Boxes]
-  ? PortsByPortId<B["ID"], "<-", B["IN"]> & PortsByKeyIN<R>
-  : {};
+export type PortsWithIdIN<Bs extends Boxes> = Bs extends readonly [infer B extends Box, ...infer R extends Boxes]
+  ? [...Ports$PortIdPort<B["ID"], "<-", B["IN"]>, ...PortsWithIdIN<R>]
+  : [];
 
-export type PortsByKeyOUT<Bs extends Boxes> = Bs extends readonly [infer B extends Box, ...infer R extends Boxes]
-  ? PortsByPortId<B["ID"], "->", B["OUT"]> & PortsByKeyOUT<R>
-  : {};
+export type PortsWithIdOUT<Bs extends Boxes> = Bs extends readonly [infer B extends Box, ...infer R extends Boxes]
+  ? [...Ports$PortIdPort<B["ID"], "->", B["OUT"]>, ...PortsWithIdOUT<R>]
+  : [];
 
 export type PortsByKey<Bs extends Boxes> = {
-  IN: Simplify<PortsByKeyIN<Bs>>;
-  OUT: Simplify<PortsByKeyOUT<Bs>>;
+  IN: KeyValues$Object<PortsWithIdIN<Bs>>;
+  OUT: KeyValues$Object<PortsWithIdOUT<Bs>>;
 };
 
 export const portsByKey = <const Bs extends Boxes>(bs: Bs) => {

@@ -129,6 +129,9 @@ importers:
       jsyoyo:
         specifier: workspace:^
         version: link:../libs/jsyoyo
+      proyij:
+        specifier: workspace:^
+        version: link:../libs/proyij
       typier:
         specifier: workspace:^
         version: link:../typier

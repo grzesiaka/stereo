@@ -19,6 +19,7 @@
   "devDependencies": {
     "arryo": "workspace:^",
     "jsyoyo": "workspace:^",
+    "proyij": "workspace:^",
     "typier": "workspace:^",
     "~types": "workspace:^"
   },

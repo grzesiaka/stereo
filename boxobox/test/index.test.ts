@@ -89,7 +89,7 @@ describe("wire", ({ eq }) => {
 
     auto: () => {
       const p = autoWire([b1, b2]);
-      console.log("FREE", freePorts([b1, b2], p));
+
       eq(p, [
         ["b1->age", "b2<-age"],
         [
@@ -110,6 +110,10 @@ describe("wire", ({ eq }) => {
 
       eq(flat, flatWires(p));
       eq(flatWires(p), flatWires(flatWires(p)));
+
+      const free = freePorts([b1, b2], p);
+      const { IN, OUT, byKey } = free;
+      console.log(free);
     },
   };
 });

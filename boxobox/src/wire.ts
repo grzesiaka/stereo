@@ -16,7 +16,7 @@ import { isTypier } from "typier";
 import { Simplify, Includes } from "type-fest";
 import { crossArr, CrossArr, CrossArrFn } from "arryo";
 
-export type Wires<B extends Box = Box<string>, Extra = never> = ARR<
+export type Wires<B extends Box = Box<string, any, any>, Extra = [OutputId<B>[], InputId<B>[]]> = ARR<
   | Extra
   | {
       [To in InputId<B>]:
@@ -29,6 +29,9 @@ export type Wires<B extends Box = Box<string>, Extra = never> = ARR<
         | ARR<Wire<[B], From, CompatibleTargetIds<[B], From>>>;
     }[OutputId<B>]
 >;
+
+export type WiresNoManyToMany<B extends Box = Box<string, any, any>> = Wires<B, never>;
+
 export type Wires1to1<B extends Box = Box> = ARR<
   {
     [From in OutputId<B>]: Wire<[B], From, CompatibleTargetIds<[B], From>>;
@@ -140,7 +143,7 @@ type AutoOrder<Boxes, Acc extends ARR = []> = Boxes extends readonly [infer H ex
   ? AutoOrder<R, AutoOrderBox<H["OUT"], Acc>>
   : Acc;
 
-const typedPorts = <const Bs extends Boxes>(bs: Bs) => {
+const autowireable = <const Bs extends Boxes>(bs: Bs) => {
   const outs = {} as Dict<string[], string>;
   const ins = {} as Dict<string[], string>;
   const order = [] as string[];
@@ -180,13 +183,14 @@ export type AutoWire<
   : [];
 
 export const autoWire = <const Bs extends Boxes>(bs: Bs) => {
-  const [order, outs, ins] = typedPorts(bs);
+  const [order, outs, ins] = autowireable(bs);
   return order.map((o) => [
     (outs[o] as any).length === 1 ? outs[o][0] : outs[o],
     (ins[o] as any).length === 1 ? ins[o][0] : ins[o],
   ]) as AutoWire<Bs>;
 };
 
+export type FlatWires<Ws extends Wires> = CrossArr<Ws>;
 /**
  * Flatten wires to 1-to-1 wire per entry. Looses extra information if any.
  */
