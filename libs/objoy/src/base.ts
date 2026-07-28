@@ -19,6 +19,15 @@ export const es = Object.entries as <const X extends object>(obj: X) => { [K in 
 /**
  * An alias for:
  *
+ * `Object.values`
+ *
+ * It makes the typing more precise, but for wild objects the typing might be incorrect.
+ */
+export const vs = Object.values as <const X extends object>(obj: X) => X[keyof X][];
+
+/**
+ * An alias for:
+ *
  * `Object.keys`
  *
  * It makes the typing more precise, but for wild objects the typing might be incorrect.
