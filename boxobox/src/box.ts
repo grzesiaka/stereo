@@ -26,23 +26,43 @@ export interface Box<ID extends string = string, IN extends Ports = Ports, OUT e
   OUT: OUT;
 }
 
+export type $Box<
+  IDorCtx extends string | { ID: string },
+  IN extends Ports = Ports,
+  OUT extends Ports = Ports,
+  Extra extends {} = {},
+> = Extra &
+  (IDorCtx extends {
+    ID: string;
+  }
+    ? Simplify<Omit<IDorCtx, "ID">> & Box<IDorCtx["ID"], IN, OUT>
+    : IDorCtx extends string
+      ? Box<IDorCtx, IN, OUT>
+      : never);
+
+export type $$Box<IN extends Ports = Ports, OUT extends Ports = Ports, Extra extends {} = {}> = <
+  IDorCtx extends string | { ID: string },
+>(
+  ctx: IDorCtx,
+) => $Box<IDorCtx, IN, OUT, Extra>;
+
 export type Boxes = ARR<Box>;
 
 export type Source<ID extends string = string, OUT extends Ports = Ports> = Box<ID, [], OUT>;
 
 export type Sink<ID extends string = string, IN extends Ports = Ports> = Box<ID, IN, []>;
 
+export const $box =
+  <const IN extends Ports, const OUT extends Ports, Extra extends {} = {}>(IN: IN, OUT: OUT, Extra = {} as Extra) =>
+  <IDorCtx extends string | { ID: string }>(ctx: IDorCtx) =>
+    (typeof ctx === "string"
+      ? { ID: ctx, IN, OUT, ...Extra }
+      : Object.assign({ IN, OUT }, Extra, ctx)) as never as $Box<IDorCtx, IN, OUT, Extra>;
+
 export const box =
   <const IN extends Ports>(...IN: IN) =>
   <const OUT extends Ports>(...OUT: OUT) =>
-  <IDorCtx extends string | { ID: string }>(ctx: IDorCtx) =>
-    (typeof ctx === "string" ? { ID: ctx, IN, OUT } : Object.assign({ IN, OUT }, ctx)) as never as IDorCtx extends {
-      ID: string;
-    }
-      ? Simplify<Omit<IDorCtx, "ID">> & Box<IDorCtx["ID"], IN, OUT>
-      : IDorCtx extends string
-        ? Box<IDorCtx, IN, OUT>
-        : never;
+    $box(IN, OUT);
 
 /** Create a box by first specifying outputs and than inputs */
 box.OI =
