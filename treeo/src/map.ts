@@ -1,11 +1,12 @@
 import { MapTree, TreeOrLeaves, Tree$ValueKeyPairs } from "./types";
 
+const defRec = (t: unknown): t is object => typeof t === "object" && !Array.isArray(t) && t !== null;
 export const map =
-  <T extends TreeOrLeaves>(t: T, ks = "") =>
+  <T extends TreeOrLeaves>(t: T, rec = defRec, ks = "") =>
   <X>(f: (vk: Tree$ValueKeyPairs<T>) => X): MapTree<T, X> => {
-    if (typeof t === "object" && !Array.isArray(t) && t !== null) {
+    if (rec(t)) {
       return Object.entries(t).reduce((a, [k, v]) => {
-        a[k] = map(v, ks ? `${ks}.${k}` : k)(f as any);
+        a[k] = map(v, rec, ks ? `${ks}.${k}` : k)(f as any);
         return a;
       }, {} as any);
     } else {

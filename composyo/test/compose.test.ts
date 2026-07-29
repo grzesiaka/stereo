@@ -91,4 +91,19 @@ describe("c / compose", () => {
 
     expect(y((_, L) => L())(1)).toBe("secret");
   });
+
+  // test("generic", () => {
+  //   const AB =
+  //     <cA extends string>($: (a: cA) => [cA, cA]) =>
+  //     <A extends string>(a: string extends A ? cA : A) =>
+  //       $(a as never) as string extends A ? [cA, cA] : [A, A];
+
+  //   const _ab = AB((x) => [x, x])("23");
+
+  //   o(1)(
+  //     () => "a",
+  //     AB((x) => [x, x]),
+  //     (x) => x,
+  //   );
+  // });
 });

@@ -1,18 +1,16 @@
 import { LastArrayElement } from "type-fest";
 
 import { $Atom, BOOL, ENUM, NUMBER, STRING } from "../atoms/index";
-import { ARRAY, OBJECT, TUPLE, UNION, $Compound } from "../compounds/index";
+import { ARRAY, OBJECT, TUPLE, UNION } from "../compounds/index";
 
 import { map, type Tree } from "treeo";
 import { Join } from "jsyoyo";
 import { Fn$O } from "~types";
+import { TypT } from "../0";
 
-type Leaf = <$TYP extends string, $KEY extends string = $TYP>(
-  $TYP: $TYP,
-  $KEY?: $KEY,
-) => $Atom<any, any, $TYP, $KEY, any> | $Compound<any, $TYP, any>;
+type $Leaf = <$TYP extends string, $KEY extends string = $TYP>($TYP: $TYP, $KEY?: $KEY) => TypT<$TYP, $KEY>;
 
-type ToTypier<T, P extends readonly string[] = []> = T extends Leaf
+export type TreeToTypT<T, P extends readonly string[] = []> = T extends $Leaf
   ? Fn$O<T> extends BOOL<infer S>
     ? BOOL<S, Join<P, ".">, LastArrayElement<P>>
     : Fn$O<T> extends NUMBER<infer S>
@@ -34,7 +32,7 @@ type ToTypier<T, P extends readonly string[] = []> = T extends Leaf
                     : never
   : T extends { readonly [K: string]: any }
     ? {
-        [K in keyof T & string]: ToTypier<T[K], [...P, K]>;
+        [K in keyof T & string]: TreeToTypT<T[K], [...P, K]>;
       }
     : never;
 
@@ -43,7 +41,7 @@ type ToTypier<T, P extends readonly string[] = []> = T extends Leaf
  * @param tree
  * @returns
  */
-export const fromTree = <const T extends Tree<Leaf>>(tree: T) =>
-  map(tree)(([v, k]) => (v as any)(k, k.split(".").pop())) as any as ToTypier<T>;
+export const fromTree = <const T extends Tree<$Leaf>>(tree: T) =>
+  map(tree)(([v, k]) => (v as any)(k, k.split(".").pop())) as any as TreeToTypT<T>;
 
 export default fromTree;

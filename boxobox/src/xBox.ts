@@ -72,8 +72,7 @@ export type xBox<
   OUT extends Ports = Ports,
   BOXES extends Boxes = Boxes,
   WIRES extends Wires<BOXES[number]> = Wires<BOXES[number]>,
-  E = {},
-> = $Box<IDorCtx, IN, OUT, { "][": BOXES; "><": WIRES } & E>;
+> = $Box<IDorCtx, IN, OUT, { "][": BOXES; "><": WIRES }>;
 
 export type xBoxesFn = <
   const Bs extends Boxes,

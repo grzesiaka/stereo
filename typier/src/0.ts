@@ -1,5 +1,7 @@
 import { Static as TBStatic } from "typebox";
 import { __, ARR } from "~types";
+import { $Atom } from "./atoms";
+import { $Compound } from "./compounds";
 
 /** Used instead of Typebox's TSchema `{}` as the latter accepts `TSchema[]` as `TSchema`, which results in `unknown` inferred type */
 export interface TSchema {
@@ -33,3 +35,9 @@ export type StaticArr<Ts extends ARR<TSchema>, WithOptions extends boolean = tru
 
 export const isTypier = (t: unknown): t is TypierBase =>
   typeof t === "object" && t !== null && "$TYP" in t && "$KEY" in t;
+
+export type TypT<$TYP extends string = string, $KEY extends string = string> =
+  | $Atom<object, unknown, $TYP, $KEY, unknown>
+  | $Compound<object, $TYP, $KEY>;
+
+export type { WithTag, Tagged } from "~types";
