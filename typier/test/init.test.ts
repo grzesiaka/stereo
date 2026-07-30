@@ -1,7 +1,7 @@
 import { Check, Parse } from "typebox/value";
 
 import { describe } from "~testing";
-import { reTYP$, fromTree, Num, Obj, Str, WithTag } from "../src/index";
+import { reTYP$, fromTree, Num, Obj, Str, WithTag, prefixTYP$ } from "../src/index";
 
 describe(fromTree, ({ eq }) => ({
   empty: () => {
@@ -46,7 +46,7 @@ describe(reTYP$, ({ eq }) => {
     },
 
     prefix: () => {
-      const r = reTYP$.prefix("$")(t);
+      const r = prefixTYP$("$")(t);
       eq(Parse(r.s, ""), "" as WithTag<string, "$.s">);
       eq(r.s.$TYP, "$.s");
       eq(r.s.$KEY, "str");

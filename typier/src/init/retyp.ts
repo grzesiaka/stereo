@@ -45,11 +45,4 @@ export const reTYP$ = <const T extends Tree<TypT>>(tree: T) =>
     return (v as any).$(v.$KEY, k);
   }) as any as RetypTree<T>;
 
-export type RetypePrefix<P extends string, T> = RetypTree<{ [p in P]: T }>[P & keyof RetypTree<{ [p in P]: T }>];
-
-reTYP$.prefix =
-  <const P extends string, const cT extends Tree<TypT>>(prefix: P) =>
-  <const T extends Tree<TypT>>(tree: Tree<TypT> extends T ? cT : T) =>
-    reTYP$({ [prefix]: tree })[prefix] as never as RetypePrefix<P, Tree<TypT> extends T ? cT : T>;
-
 export default reTYP$;

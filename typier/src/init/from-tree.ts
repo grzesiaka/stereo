@@ -8,7 +8,7 @@ import { Join } from "jsyoyo";
 import { Fn$O } from "~types";
 import { TypT } from "../0";
 
-type $Leaf = <$TYP extends string, $KEY extends string = $TYP>($TYP: $TYP, $KEY?: $KEY) => TypT<$TYP, $KEY>;
+type $Leaf = <$TYP extends string>($TYP: $TYP, $KEY?: any) => TypT<$TYP, any>; // TODO: somehow $KEY extends string makes Typescript unhappy. Better Ts be happy.
 
 export type TreeToTypT<T, P extends readonly string[] = []> = T extends $Leaf
   ? Fn$O<T> extends BOOL<infer S>
