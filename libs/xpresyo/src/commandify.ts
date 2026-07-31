@@ -27,7 +27,7 @@ export type CommandifyLeaves<T, P extends string = ""> = T extends Fn
   : { [K in keyof T & string]: CommandifyLeaves<T[K], "" extends P ? `${K}` : `${P}.${K}`> };
 
 export const commandifyLeaves = <T extends Tree_of_Functions>(fns: T) =>
-  map(fns)(([_, k]) => (...ps: any) => [k, ps]) as CommandifyLeaves<T>;
+  map._(fns)(([_, k]) => (...ps: any) => [k, ps]) as CommandifyLeaves<T>;
 
 export type Commandify<T, Constraint = CommandBase, P extends string = ""> = T extends Fn
   ? <I extends Fn$I<T>>(
@@ -38,7 +38,7 @@ export type Commandify<T, Constraint = CommandBase, P extends string = ""> = T e
 export const $commandify =
   <KidsConstraint>() =>
   <T extends Tree_of_Functions>(fns: T) =>
-    map(fns)(
+    map._(fns)(
       ([_, k]) =>
         (...ps: any[]) =>
         (...kids: any[]) =>

@@ -37,12 +37,9 @@ export type RetypTree<T, P extends readonly string[] = []> =
  * @param tree
  * @returns
  */
-export const reTYP$ = <const T extends Tree<TypT>>(tree: T) =>
-  map(
-    tree,
-    (t): t is object => !("$TYP" in (t as any)),
-  )(([v, k]: any) => {
-    return (v as any).$(v.$KEY, k);
-  }) as any as RetypTree<T>;
+export const reTYP$: <const T extends Tree<TypT>>(tree: T) => RetypTree<T> = map(
+  ([v, k]: any) => (v as any).$(v.$KEY, k),
+  (t): t is object => !("$TYP" in (t as any)),
+) as any;
 
 export default reTYP$;

@@ -23,7 +23,7 @@ import { ARR, Fn, Fn$I, Fn$O } from "~types";
  * ```
  */
 export const acted = <T extends Tree_of_Functions>(fns: T) =>
-  map(fns)(
+  map._(fns)(
     ([f, k]) =>
       (...ps: any[]) =>
       (...kids: any[]) =>

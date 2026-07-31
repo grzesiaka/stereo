@@ -15,24 +15,24 @@ describe(flattern, ({ eq }) => ({
   simple_with_acc: () => eq(flatten(tree, { acc: "!" }), { acc: "!", a: "B", "c.d": "E", "c.f": tree.c.f, "c.g": [] }),
 }));
 
-describe("mapTree", ({ eq }) => ({
+describe("mapTree._", ({ eq }) => ({
   "{}": () => {
-    const m = mapTree({})(() => 1);
+    const m = mapTree._({})(() => 1);
     eq(m, {});
   },
   count: () => {
     let i = 0;
-    const m = mapTree(tree)(() => ++i);
+    const m = mapTree._(tree)(() => ++i);
     eq(m)({ a: 1, c: { d: 2, f: 3, g: 4 } });
   },
 
   path: () => {
-    const m = mapTree(tree)((x) => x[1]);
+    const m = mapTree._(tree)((x) => x[1]);
     eq(m)({ a: "a", c: { d: "c.d", f: "c.f", g: "c.g" } });
   },
 
   switch_on_key: () => {
-    const m = mapTree(tree)((vk) => {
+    const m = mapTree._(tree)((vk) => {
       switch (vk[1]) {
         case "a":
           return vk[0];
@@ -111,7 +111,7 @@ describe(get, ({ eq, ERR }) => ({
 // describe("2entries", () => {
 //   test("empty", () => expect(tree2vks({})).toStrictEqual([]));
 //   test("deeper", () => {
-//     const e = tree2vks(mapTree(t)((x) => x[1]));
+//     const e = tree2vks(mapTree._(t)((x) => x[1]));
 //     // @ts-expect-error "1" should be "a"
 //     let f: typeof e = [["a", "1"]];
 //     f = [

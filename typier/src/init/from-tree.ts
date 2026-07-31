@@ -41,7 +41,8 @@ export type TreeToTypT<T, P extends readonly string[] = []> = T extends $Leaf
  * @param tree
  * @returns
  */
-export const fromTree = <const T extends Tree<$Leaf>>(tree: T) =>
-  map(tree)(([v, k]) => (v as any)(k, k.split(".").pop())) as any as TreeToTypT<T>;
+export const fromTree: <const T extends Tree<$Leaf>>(tree: T) => TreeToTypT<T> = map(([v, k]) =>
+  (v as any)(k, k.split(".").pop()),
+) as any;
 
 export default fromTree;

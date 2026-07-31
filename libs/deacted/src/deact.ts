@@ -25,7 +25,7 @@ import { DeactFn, deactFn } from "./fn/deact";
  *    ) as Deact<T>;
  * ```
  */
-export const deact = <T extends Tree_of_Functions>(fns: T) => map(fns)(([_, k]) => deactFn(id)(k)) as Deact<T>;
+export const deact = <T extends Tree_of_Functions>(fns: T) => map._(fns)(([_, k]) => deactFn(id)(k)) as Deact<T>;
 
 export type Deact<T, P extends string = ""> = T extends Fn
   ? Fn$O<DeactFn<P, Fn$I<T>>>

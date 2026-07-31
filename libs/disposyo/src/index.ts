@@ -14,7 +14,7 @@ export const DISPOSE: unique symbol = Symbol.dispose || Symbol.for("dispose");
 export type DISPOSE = typeof DISPOSE;
 
 const dispose = (T: Tree_of_Disposable) =>
-  forEach(T)(([v]) =>
+  forEach._(T)(([v]) =>
     ifArray(
       v,
       (a) => a.forEach((c) => c()),
