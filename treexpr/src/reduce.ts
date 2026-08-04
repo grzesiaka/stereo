@@ -1,11 +1,11 @@
 import { ARR } from "~types";
 import { o } from "composyo";
+
 export const reduce =
-  <EXP, X = {}>(reduceFn: (x: X) => (ps: Reduceable<EXP>) => unknown, x = {} as X) =>
-  (exp: EXP) => [reduceFn, x, exp, o];
+  <cEXP, X = {}>(reduceFn: (x: X) => (ps: Reduceable<cEXP>) => unknown, x = {} as X) =>
+  <EXP>(exp: EXP) => [reduceFn, x, exp, o];
 
 type ReduceableArr<X> = X extends readonly [infer H, ...infer R] ? [Reduceable<H>, ...ReduceableArr<R>] : [];
-
 type Reduceable<X> = X extends readonly [...infer H, infer R extends ARR] ? [...H, R] | ReduceableArr<R>[number] : X;
 
 export default reduce;
