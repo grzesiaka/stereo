@@ -26,11 +26,11 @@ export type MapByTag<T extends TREExprs, M extends TreeOPs> = _Map<T, M>;
 
 export const mapByTag =
   <M extends TreeOPs>(M: M) =>
-  <T extends TREExprs, FromRoot extends ARR = []>(fromRoot = [] as never as FromRoot) =>
+  <T extends TREExprs>(fromRoot = [] as ARR) =>
   (t: T): MapByTag<T, M> => {
     if (typeof t[0] === "string") {
       const m = M[t[0]] as TreeOP | undefined;
-      const kids = t[2]?.map(mapByTag(M)([t, ...fromRoot] as any) as any);
+      const kids = t[2]?.map(mapByTag(M)([...fromRoot, t] as any) as any);
       const x = m && m(t[1], t[0], fromRoot, kids);
       return (kids ? [...((m ? [x] : [t[0], t[1]]) as any[]), kids] : m ? x : t) as MapByTag<T, M>;
     }
