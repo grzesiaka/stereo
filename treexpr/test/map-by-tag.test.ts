@@ -46,4 +46,13 @@ describe(mapByTag, ({ eq }) => ({
     eq(abc, abc_);
     eq(abc, ["a", [["c", ["c"]]]]);
   },
+
+  // extra_params: () => {
+  //   const e = exp(["B", 0, [["B", 1]]]);
+  //   const m = e(mapByTag({ B: (...x) => x })());
+  //   console.log(m);
+  //   console.log(m[0]);
+  //   console.log(m[0][3]);
+  //   console.log(m[0][3][0][2][0]);
+  // },
 }));
