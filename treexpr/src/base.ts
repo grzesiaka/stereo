@@ -13,10 +13,17 @@ export type TREExpr<TPs extends TagParam = TagParam, Extra = never> =
 // export type TREExprs<TE extends TREExpr, Extra = never> = Extra | TE | ARR<TE | Extra>;
 export type TREExprs<TPs extends TagParam = TagParam, Extra = never> = TREExpr<TPs, Extra> | ARR<TREExpr<TPs, Extra>>;
 
-export default TREExprs;
+export type RemoveDefaultTagParam<E> = E extends TagParam ? (TagParam extends E ? never : E) : E;
+export type TREExprs$TagParam<E> = E extends TREExprs<infer X> ? X : never;
+export type TREExprs$TagParamStrict<E> = RemoveDefaultTagParam<TREExprs$TagParam<E>>;
 
-export type TreeOP<TP extends TagParam = TagParam, FromRoot extends ARR = ARR, Kids extends ARR = ARR> = Fn<
-  [params: TP[1], tag: TP[0], from_root: FromRoot, kids?: Kids]
->;
+export type TreeOP<
+  TP extends TagParam = TagParam,
+  RES = unknown,
+  FromRoot extends ARR = ARR,
+  Kids extends ARR = ARR,
+> = Fn<[tagParam: TP, from_root: FromRoot, kids?: Kids], RES>;
+
+export type TreeOP$Result<OP> = OP extends TreeOP<any, infer R> ? R : never;
 
 export type TreeOPs = Dict<TreeOP>;

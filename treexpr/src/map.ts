@@ -1,7 +1,6 @@
 import { ARR, Fn$O } from "~types";
 
-import { TREExprs, TagParam } from "./base";
-import { TreeOP } from "./_types";
+import { TREExprs, TreeOP, TREExprs$TagParamStrict, TreeOP$Result } from "./base";
 
 type _MapArr<X, TreeXpr> = TreeXpr extends readonly [infer T, ...infer R] ? [Map<X, T>, ..._MapArr<X, R>] : [];
 
@@ -13,17 +12,18 @@ export type Map<OP_RES, T> = T extends readonly [string, unknown]
 
 export const map =
   <
-    TPs extends TagParam = TagParam<string, unknown>,
-    cT extends TREExprs<TPs> = TREExprs<TPs>,
-    OP extends TreeOP<TPs> = TreeOP<TPs>,
+    cT extends TREExprs = TREExprs,
+    OP extends TreeOP<TREExprs$TagParamStrict<cT>> = TreeOP<TREExprs$TagParamStrict<cT>>,
   >(
     OP: OP,
     fromRoot = [] as ARR,
   ) =>
-  <T extends TREExprs<TPs>>(t: TREExprs<TPs> extends T ? cT : T): Map<Fn$O<OP>, TREExprs<TPs> extends T ? cT : T> => {
+  <T extends TREExprs<TREExprs$TagParamStrict<cT>>>(
+    t: TREExprs<TREExprs$TagParamStrict<cT>> extends T ? cT : T,
+  ): Map<TreeOP$Result<OP>, TREExprs<TREExprs$TagParamStrict<cT>> extends T ? cT : T> => {
     if (typeof t[0] === "string") {
       const kids = t[2]?.map(map(OP as never, [t, ...fromRoot]) as never);
-      const x = OP(t[1] as never, t[0], fromRoot, kids);
+      const x = OP(t as never, fromRoot, kids);
       return (kids ? [x, kids] : x) as never;
     }
     return t.map(map(OP as never, fromRoot) as never) as never;
