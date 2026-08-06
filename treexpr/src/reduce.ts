@@ -1,32 +1,15 @@
-import { ARR } from "~types";
-import { o } from "composyo";
+import { TagParam, TREExprs } from "./base";
+import map from "./map";
 
 export const reduce =
-  <cEXP, X = {}>(reduceFn: (x: X) => (ps: Reduceable<cEXP>) => unknown, x = {} as X) =>
-  <EXP>(exp: EXP) => [reduceFn, x, exp, o];
-
-type ReduceableArr<X> = X extends readonly [infer H, ...infer R] ? [Reduceable<H>, ...ReduceableArr<R>] : [];
-type Reduceable<X> = X extends readonly [...infer H, infer R extends ARR] ? [...H, R] | ReduceableArr<R>[number] : X;
+  <Accu>(accu: () => Accu) =>
+  <TP extends TagParam, cT extends TREExprs<TP> = TREExprs<TP>>(
+    reduceFn: (x: Accu) => (tag_param: TP, from_root: TREExprs<TP>) => unknown,
+  ) =>
+  <T extends TREExprs<TP>>(exp: TREExprs<TP> extends T ? cT : T): Accu => {
+    const x = accu();
+    map(reduceFn(x))(exp); // TODO: optimize by removing map; just traverse the expression
+    return x;
+  };
 
 export default reduce;
-
-// o(x())(
-//   reduce((a) => (x) => {
-//     switch (x[0]) {
-//       case "A":
-//         return x[1];
-//     }
-//   }),
-// );
-
-// function x() {
-//   return [
-//     "a",
-//     1,
-//     [
-//       ["b", 2],
-//       ["c", 3],
-//       ["D", "D", [["A", "a", [["AA", "aa"]]]]],
-//     ],
-//   ] as const;
-// }

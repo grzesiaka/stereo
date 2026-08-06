@@ -1,7 +1,6 @@
-import { ARR, Fn$I, Fn$O } from "~types";
+import { ARR, Dict, Fn, Fn$I, Fn$O } from "~types";
 
-import { TREExprs } from "./base";
-import { TreeOP, TreeOPs } from "./_types";
+import { TREExprs, TreeOP, TreeOPs } from "./base";
 
 /**
  * ReturnType of picked function or `NotFound` if no tag present in the bundle
@@ -25,13 +24,13 @@ type _Map<T, M> = T extends readonly [infer OP extends string, infer Params]
 export type MapByTag<T extends TREExprs, M extends TreeOPs> = _Map<T, M>;
 
 export const mapByTag =
-  <M extends TreeOPs>(M: M) =>
+  <M extends Dict<Fn>>(M: M) =>
   <T extends TREExprs>(fromRoot = [] as ARR) =>
   (t: T): MapByTag<T, M> => {
     if (typeof t[0] === "string") {
       const m = M[t[0]] as TreeOP | undefined;
       const kids = t[2]?.map(mapByTag(M)([...fromRoot, t] as any) as any);
-      const x = m && m(t[1], t[0], fromRoot, kids);
+      const x = m && m(t as never, fromRoot, kids);
       return (kids ? [...((m ? [x] : [t[0], t[1]]) as any[]), kids] : m ? x : t) as MapByTag<T, M>;
     }
     return t.map(mapByTag(M)(fromRoot as any) as any) as MapByTag<T, M>;
