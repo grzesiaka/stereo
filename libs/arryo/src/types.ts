@@ -10,3 +10,6 @@ export type NestedArrays$ValuesUnion<T, Shape = unknown> = T extends Shape
   : T extends readonly (infer E)[]
     ? NestedArrays$ValuesUnion<E, Shape>
     : never;
+
+export type Head<X, E = never> = X extends readonly [infer H, ...any[]] ? H : X extends readonly [] ? E : X;
+export type Tail<X, E = never> = X extends readonly [any, ...infer R] ? R : X extends readonly [] ? E : X;

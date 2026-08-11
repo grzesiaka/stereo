@@ -19,6 +19,7 @@
   "devDependencies": {
     "arryo": "workspace:^",
     "composyo": "workspace:^",
-    "jsyoyo": "workspace:^"
+    "jsyoyo": "workspace:^",
+    "txtxt": "workspace:^"
   }
 }

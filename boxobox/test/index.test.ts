@@ -1,16 +1,18 @@
 import { describe } from "~testing";
-import { fromTree, S, N, B } from "typier";
+import { prefixTYP$, fromTree, S, N, B } from "typier";
 
 import { box, __, autoWire, from, to, flatWires, portsByKey, freePortsKV, x, xx } from "../src";
 
-const T = fromTree({
-  first_name: S(),
-  last_name: S(),
-  full_name: S(),
-  age: N(),
-  active: B(),
-  random: B(),
-});
+const T = prefixTYP$("!")(
+  fromTree({
+    first_name: S(),
+    last_name: S(),
+    full_name: S(),
+    age: N(),
+    active: B(),
+    random: B(),
+  }),
+);
 
 const active_2 = T.active.$("active_2");
 const activer = T.active.$("activer");
