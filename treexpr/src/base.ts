@@ -1,7 +1,8 @@
 import { ARR, Dict, Fn } from "~types";
 import { __ } from "composyo";
 import { Head, Tail } from "arryo";
-export { dethunk, Head, Tail } from "arryo";
+export { dethunk } from "arryo";
+export type { Head, Tail } from "arryo";
 
 export type TagParam<Tag = string, Param = unknown> = readonly [Tag, Param];
 // TODO: if Kids were an array they could be interpeted as next echons
@@ -14,35 +15,6 @@ export type $TREExpr<TPs extends TagParam = TagParam, Extra = never, Kids extend
       readonly [...TPs, unknown]);
 
 export type TREExpr<TPs extends TagParam = TagParam> = $TREExpr<TPs>;
-
-type A = $TREExpr<
-  ["0", "zero"],
-  never,
-  [["1", "one"] | ["2", "two"] | ["3", string], ["a", "a"] | ["b", "b"] | ["ab", "ab"]]
->;
-const a = [
-  "0",
-  "zero",
-  [
-    ["3", "three"],
-    [
-      "1",
-      "one",
-      [
-        ["a", "a"],
-        ["ab", "ab"],
-      ],
-    ],
-    [
-      "2",
-      "two",
-      [
-        ["ab", "ab"],
-        ["a", "a"],
-      ],
-    ],
-  ],
-] as const satisfies A;
 
 // export type TREExprs<TE extends TREExpr, Extra = never> = Extra | TE | ARR<TE | Extra>;
 export type TREExprs<TPs extends TagParam = TagParam, Extra = never> = $TREExpr<TPs, Extra> | ARR<$TREExpr<TPs, Extra>>;
