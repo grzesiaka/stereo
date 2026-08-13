@@ -63,10 +63,10 @@ importers:
         version: link:__config
       ~testing:
         specifier: workspace:^
-        version: link:_libs/testing
+        version: link:LIBS/testing
       ~types:
         specifier: workspace:^
-        version: link:_libs/types
+        version: link:LIBS/types
     devDependencies:
       oxfmt:
         specifier: 'catalog:'
@@ -87,23 +87,11 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
 
-  __config:
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 26.1.0
-      ~cfg:
-        specifier: 'workspace:'
-        version: 'link:'
-      ~types:
-        specifier: 'workspace:'
-        version: link:../_libs/types
-
-  _done/composyo:
+  DONE/composyo:
     devDependencies:
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -112,12 +100,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _done/ioioy:
+  DONE/ioioy:
     dependencies:
       typier:
         specifier: 'workspace:'
@@ -125,13 +113,13 @@ importers:
     devDependencies:
       disposyo:
         specifier: workspace:^
-        version: link:../../_libs/disposyo
+        version: link:../../LIBS/disposyo
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
       proyij:
         specifier: workspace:^
-        version: link:../../_libs/proyij
+        version: link:../../LIBS/proyij
       typebox:
         specifier: 'catalog:'
         version: 1.3.2
@@ -140,22 +128,22 @@ importers:
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       xpresyo:
         specifier: workspace:^
-        version: link:../../_todo/xpresyo
+        version: link:../../TODO/xpresyo
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _done/treeo:
+  DONE/treeo:
     dependencies:
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
     devDependencies:
       composyo:
         specifier: workspace:^
@@ -171,12 +159,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _done/typier:
+  DONE/typier:
     dependencies:
       type-fest:
         specifier: 'catalog:'
@@ -187,13 +175,13 @@ importers:
     devDependencies:
       arryo:
         specifier: workspace:^
-        version: link:../../_libs/arryo
+        version: link:../../LIBS/arryo
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
       proyij:
         specifier: workspace:^
-        version: link:../../_libs/proyij
+        version: link:../../LIBS/proyij
       treeo:
         specifier: workspace:^
         version: link:../treeo
@@ -205,12 +193,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _libs/arrobje:
+  LIBS/arrobje:
     devDependencies:
       jsyoyo:
         specifier: workspace:^
@@ -231,7 +219,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/arryo:
+  LIBS/arryo:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -246,7 +234,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/collecyo:
+  LIBS/collecyo:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -261,14 +249,14 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/deacted:
+  LIBS/deacted:
     devDependencies:
       jsyoyo:
         specifier: workspace:^
         version: link:../jsyoyo
       treeo:
         specifier: workspace:^
-        version: link:../../_done/treeo
+        version: link:../../DONE/treeo
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -282,20 +270,20 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/disposyo:
+  LIBS/disposyo:
     devDependencies:
       jsyoyo:
         specifier: workspace:^
         version: link:../jsyoyo
       treeo:
         specifier: workspace:^
-        version: link:../../_done/treeo
+        version: link:../../DONE/treeo
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       xpresyo:
         specifier: workspace:^
-        version: link:../../_todo/xpresyo
+        version: link:../../TODO/xpresyo
       ~cfg:
         specifier: 'workspace:'
         version: link:../../__config
@@ -306,7 +294,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/envs/dom:
+  LIBS/envs/dom:
     devDependencies:
       '@types/web':
         specifier: 'catalog:'
@@ -324,7 +312,7 @@ importers:
         specifier: 'workspace:'
         version: link:../../types
 
-  _libs/envs/nodejs:
+  LIBS/envs/nodejs:
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -342,7 +330,7 @@ importers:
         specifier: 'workspace:'
         version: link:../../types
 
-  _libs/envyo:
+  LIBS/envyo:
     dependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -364,7 +352,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/ififify:
+  LIBS/ififify:
     dependencies:
       numyo:
         specifier: workspace:^
@@ -383,7 +371,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/jsyoyo:
+  LIBS/jsyoyo:
     devDependencies:
       ififify:
         specifier: workspace:^
@@ -407,7 +395,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/libyo:
+  LIBS/libyo:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -422,7 +410,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/numyo:
+  LIBS/numyo:
     dependencies:
       ts-arithmetic:
         specifier: ^0.1.1
@@ -444,7 +432,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/objoy:
+  LIBS/objoy:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -459,7 +447,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/proyij:
+  LIBS/proyij:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -474,7 +462,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/testing:
+  LIBS/testing:
     dependencies:
       vitest:
         specifier: 'catalog:'
@@ -493,7 +481,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/txtxt:
+  LIBS/txtxt:
     dependencies:
       proyij:
         specifier: workspace:^
@@ -512,7 +500,7 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _libs/types:
+  LIBS/types:
     dependencies:
       type-fest:
         specifier: 'catalog:'
@@ -531,7 +519,7 @@ importers:
         specifier: 'workspace:'
         version: 'link:'
 
-  _libs/weweber:
+  LIBS/weweber:
     dependencies:
       '@types/web':
         specifier: 'catalog:'
@@ -550,11 +538,11 @@ importers:
         specifier: 'workspace:'
         version: link:../types
 
-  _todo/astaster:
+  TODO/astaster:
     devDependencies:
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -563,28 +551,28 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/exexe:
+  TODO/exexe:
     devDependencies:
       ioioy:
         specifier: workspace:^
-        version: link:../../_done/ioioy
+        version: link:../../DONE/ioioy
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
       oyoyo:
         specifier: workspace:^
         version: link:../../oyoyo
       treeo:
         specifier: workspace:^
-        version: link:../../_done/treeo
+        version: link:../../DONE/treeo
       typier:
         specifier: workspace:^
-        version: link:../../_done/typier
+        version: link:../../DONE/typier
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -593,12 +581,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/extensy:
+  TODO/extensy:
     devDependencies:
       vite:
         specifier: 'catalog:'
@@ -611,12 +599,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/flowestro:
+  TODO/flowestro:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -626,12 +614,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/gragraph:
+  TODO/gragraph:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -641,12 +629,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/htmlek:
+  TODO/htmlek:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -656,12 +644,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/nonoder:
+  TODO/nonoder:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -671,16 +659,16 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/oformo:
+  TODO/oformo:
     dependencies:
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -690,12 +678,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/okoko:
+  TODO/okoko:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -705,16 +693,16 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/proxyo:
+  TODO/proxyo:
     devDependencies:
       treeo:
         specifier: workspace:^
-        version: link:../../_done/treeo
+        version: link:../../DONE/treeo
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -723,16 +711,16 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/rxihno:
+  TODO/rxihno:
     dependencies:
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -742,19 +730,19 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/statree:
+  TODO/statree:
     dependencies:
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
       treeo:
         specifier: workspace:^
-        version: link:../../_done/treeo
+        version: link:../../DONE/treeo
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -764,12 +752,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/svgeer:
+  TODO/svgeer:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -779,16 +767,16 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/taskyo:
+  TODO/taskyo:
     dependencies:
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
     devDependencies:
       type-fest:
         specifier: 'catalog:'
@@ -801,12 +789,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/treefree:
+  TODO/treefree:
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -816,12 +804,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/unitoy:
+  TODO/unitoy:
     dependencies:
       type-fest:
         specifier: 'catalog:'
@@ -835,12 +823,12 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/xpresyo:
+  TODO/xpresyo:
     dependencies:
       type-fest:
         specifier: 'catalog:'
@@ -848,13 +836,13 @@ importers:
     devDependencies:
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
       objoy:
         specifier: workspace:^
-        version: link:../../_libs/objoy
+        version: link:../../LIBS/objoy
       treeo:
         specifier: workspace:^
-        version: link:../../_done/treeo
+        version: link:../../DONE/treeo
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -863,19 +851,19 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
 
-  _todo/yxyo:
+  TODO/yxyo:
     devDependencies:
       jsyoyo:
         specifier: workspace:^
-        version: link:../../_libs/jsyoyo
+        version: link:../../LIBS/jsyoyo
       typier:
         specifier: workspace:^
-        version: link:../../_done/typier
+        version: link:../../DONE/typier
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -884,10 +872,22 @@ importers:
         version: link:../../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../../_libs/testing
+        version: link:../../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../../_libs/types
+        version: link:../../LIBS/types
+
+  __config:
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.1.0
+      ~cfg:
+        specifier: 'workspace:'
+        version: 'link:'
+      ~types:
+        specifier: 'workspace:'
+        version: link:../LIBS/types
 
   boxobox:
     dependencies:
@@ -897,16 +897,16 @@ importers:
     devDependencies:
       arryo:
         specifier: workspace:^
-        version: link:../_libs/arryo
+        version: link:../LIBS/arryo
       jsyoyo:
         specifier: workspace:^
-        version: link:../_libs/jsyoyo
+        version: link:../LIBS/jsyoyo
       proyij:
         specifier: workspace:^
-        version: link:../_libs/proyij
+        version: link:../LIBS/proyij
       typier:
         specifier: workspace:^
-        version: link:../_done/typier
+        version: link:../DONE/typier
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -915,22 +915,22 @@ importers:
         version: link:../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../_libs/testing
+        version: link:../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../_libs/types
+        version: link:../LIBS/types
 
   examples:
     devDependencies:
       ioioy:
         specifier: workspace:^
-        version: link:../_done/ioioy
+        version: link:../DONE/ioioy
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
       typier:
         specifier: workspace:^
-        version: link:../_done/typier
+        version: link:../DONE/typier
       uiyui:
         specifier: workspace:^
         version: link:../uiyui
@@ -939,13 +939,13 @@ importers:
         version: 8.1.2(@types/node@26.1.0)(esbuild@0.27.4)
       weweber:
         specifier: workspace:^
-        version: link:../_libs/weweber
+        version: link:../LIBS/weweber
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
       ~types:
         specifier: 'workspace:'
-        version: link:../_libs/types
+        version: link:../LIBS/types
 
   oyoyo:
     devDependencies:
@@ -954,10 +954,10 @@ importers:
         version: 4.1.9(vitest@4.1.9)
       composyo:
         specifier: workspace:^
-        version: link:../_done/composyo
+        version: link:../DONE/composyo
       jsyoyo:
         specifier: workspace:^
-        version: link:../_libs/jsyoyo
+        version: link:../LIBS/jsyoyo
       type-fest:
         specifier: 'catalog:'
         version: 5.7.0
@@ -966,25 +966,25 @@ importers:
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
       xpresyo:
         specifier: workspace:^
-        version: link:../_todo/xpresyo
+        version: link:../TODO/xpresyo
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../_libs/testing
+        version: link:../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../_libs/types
+        version: link:../LIBS/types
 
   specyo:
     devDependencies:
       composyo:
         specifier: workspace:^
-        version: link:../_done/composyo
+        version: link:../DONE/composyo
       typier:
         specifier: workspace:^
-        version: link:../_done/typier
+        version: link:../DONE/typier
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -993,25 +993,25 @@ importers:
         version: link:../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../_libs/testing
+        version: link:../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../_libs/types
+        version: link:../LIBS/types
 
   treexpr:
     devDependencies:
       arryo:
         specifier: workspace:^
-        version: link:../_libs/arryo
+        version: link:../LIBS/arryo
       composyo:
         specifier: workspace:^
-        version: link:../_done/composyo
+        version: link:../DONE/composyo
       jsyoyo:
         specifier: workspace:^
-        version: link:../_libs/jsyoyo
+        version: link:../LIBS/jsyoyo
       txtxt:
         specifier: workspace:^
-        version: link:../_libs/txtxt
+        version: link:../LIBS/txtxt
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -1020,41 +1020,41 @@ importers:
         version: link:../__config
       ~testing:
         specifier: 'workspace:'
-        version: link:../_libs/testing
+        version: link:../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../_libs/types
+        version: link:../LIBS/types
 
   uiyui:
     dependencies:
       arryo:
         specifier: 'workspace:'
-        version: link:../_libs/arryo
+        version: link:../LIBS/arryo
       ioioy:
         specifier: 'workspace:'
-        version: link:../_done/ioioy
+        version: link:../DONE/ioioy
       jsyoyo:
         specifier: workspace:*
-        version: link:../_libs/jsyoyo
+        version: link:../LIBS/jsyoyo
       txtxt:
         specifier: workspace:*
-        version: link:../_libs/txtxt
+        version: link:../LIBS/txtxt
       type-fest:
         specifier: 'catalog:'
         version: 5.7.0
       typier:
         specifier: workspace:*
-        version: link:../_done/typier
+        version: link:../DONE/typier
       xpresyo:
         specifier: workspace:*
-        version: link:../_todo/xpresyo
+        version: link:../TODO/xpresyo
     devDependencies:
       '@types/web':
         specifier: 'catalog:'
         version: 0.0.352
       deacted:
         specifier: workspace:^
-        version: link:../_libs/deacted
+        version: link:../LIBS/deacted
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
@@ -1063,13 +1063,13 @@ importers:
         version: link:../__config
       ~nodejs:
         specifier: workspace:^
-        version: link:../_libs/envs/nodejs
+        version: link:../LIBS/envs/nodejs
       ~testing:
         specifier: 'workspace:'
-        version: link:../_libs/testing
+        version: link:../LIBS/testing
       ~types:
         specifier: 'workspace:'
-        version: link:../_libs/types
+        version: link:../LIBS/types
 
 packages:
 
