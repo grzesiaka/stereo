@@ -1,9 +1,10 @@
 import { describe } from "~testing";
 import { $rect, rect, inset, outset, center } from "../src/base";
-import { $row } from "../src/grouping";
+import { $col, $row } from "../src/grouping";
 
 const r0 = rect(0, 0, 0, 0);
 const r1 = rect(1, 1, 1, 1);
+const r42 = rect(2, 2, 4, 2);
 
 const randInt = (max: number, min = 0) => (min + Math.random() * (max - min)) | 0;
 
@@ -35,11 +36,25 @@ describe(rect, ({ eq }) => ({
 
 describe("grouping", ({ eq }) => ({
   empty: () => {
-    const e = $row()([]);
-    eq(e)({ "[]": [], gap: 0, ...r0 });
+    const r = $row()([]);
+    eq(r)({ "[]": [], gap: 0, ...r0 });
+
+    const c = $col()([]);
+    eq(c)({ "[]": [], gap: 0, ...r0 });
   },
   single: () => {
-    const e = $row({ gap: 4, y: 2 })([r1]);
-    eq(e)({ "[]": [r1], gap: 4, ...r1, y: 2 });
+    const r = $row({ gap: 4, y: 2 })([r1]);
+    eq(r)({ "[]": [r1], gap: 4, ...r1, y: 2 });
+
+    const c = $col({ gap: 4, y: 2 })([r42]);
+    eq(c)({ "[]": [r42], gap: 4, ...r42, y: 2 });
+  },
+
+  more: () => {
+    const r = $row({ gap: 4, y: 2 })([r1, r42]);
+    eq(r)({ "[]": [r1, r42], gap: 4, x: 1, y: 2, w: 9, h: 2 });
+
+    const c = $col({ gap: 3, y: 2 })([r42, r1]);
+    eq(c)({ "[]": [r42, r1], gap: 3, x: 2, y: 2, w: 4, h: 6 });
   },
 }));
