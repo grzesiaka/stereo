@@ -1,5 +1,6 @@
 packages:
   - ./**/*
+  - "!./DEAD_END/**/*"
 blockExoticSubdeps: true
 
 catalog:

@@ -30,8 +30,8 @@ const bs = $.div({ id: "root" }, "a b")(
 //   button: () => "B_T_N" as const,
 // };
 
-type TP = HTMLTagAndProps<"button" | "p" | "h1" | "div">;
+// type TP = HTMLTagAndProps<"button" | "p" | "h1" | "div">;
 
-const b = ast1$act<TP>()({
-  button: (x) => "<button />" as const,
-})()(bs);
+// const b = ast1$act<TP>()({
+//   button: (x) => "<button />" as const,
+// })()(bs);

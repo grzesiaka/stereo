@@ -1,0 +1,38 @@
+{
+  "name": "uiyui",
+  "version": "1.0.0-alpha.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./out/index.mjs",
+    "./*": "./out/*.mjs",
+    "./html": "./out/html/index.mjs",
+    "./html/*": "./out/html/*.mjs",
+    "./svg": "./out/svg/index.mjs",
+    "./svg/*": "./out/svg/*.mjs"
+  },
+  "scripts": {
+    "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.web.json",
+    "build$": "turbo run build --filter='uiyui'...",
+    "dev": "pnpm build --watch",
+    "dev$": "turbo run dev --filter='uiyui'...",
+    "test": "vitest test --passWithNoTests --project unit",
+    "test-ci": "vitest test --passWithNoTests --project unit/out",
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.web.json"
+  },
+  "devDependencies": {
+    "@types/web": "catalog:",
+    "deacted": "workspace:^",
+    "~nodejs": "workspace:^"
+  },
+  "peerDependencies": {
+    "arryo": "workspace:",
+    "ioioy": "workspace:",
+    "jsyoyo": "workspace:*",
+    "txtxt": "workspace:*",
+    "type-fest": "catalog:",
+    "typier": "workspace:*",
+    "xpresyo": "workspace:*"
+  },
+  "$kind": "web"
+}

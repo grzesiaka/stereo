@@ -1,8 +1,8 @@
 // TS-2598 Type instantiation is excessively deep and possibly infinite.ts
 //  Do not run this file; it is only to pick if ts2598 appears.
 
-import { ast1$act } from "deacted";
-import { init, props as $, uy$html, $state, HTMLTagAndProps } from "../src/html";
+// import { ast1$act } from "deacted";
+import { init, props as $, uy$html, $state } from "../src/html";
 
 const uiAst = $uiAst();
 
