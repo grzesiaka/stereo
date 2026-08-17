@@ -6,10 +6,8 @@
   "exports": {
     ".": "./out/index.mjs",
     "./*": "./out/*.mjs",
-    "./html": "./out/html/index.mjs",
-    "./html/*": "./out/html/*.mjs",
-    "./svg": "./out/svg/index.mjs",
-    "./svg/*": "./out/svg/*.mjs"
+    "./targets": "./out/targets/index.mjs",
+    "./targets/*": "./out/targets/*.mjs"
   },
   "scripts": {
     "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.web.json",
@@ -21,18 +19,7 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.web.json"
   },
   "devDependencies": {
-    "@types/web": "catalog:",
-    "deacted": "workspace:^",
-    "~nodejs": "workspace:^"
-  },
-  "peerDependencies": {
-    "arryo": "workspace:",
-    "ioioy": "workspace:",
-    "jsyoyo": "workspace:*",
-    "txtxt": "workspace:*",
-    "type-fest": "catalog:",
-    "typier": "workspace:*",
-    "xpresyo": "workspace:*"
+    "numyo": "workspace:^"
   },
   "$kind": "web"
 }
