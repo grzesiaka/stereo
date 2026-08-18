@@ -9,7 +9,10 @@ export type TaggedNegate<N extends Tagged<number>> = Tagged<
   GetTagMetadata<N, GetTagName<N>>
 >;
 
-export const subtract = <A extends number, B extends number>(a: A, b: B) =>
-  (a - b) as any as ReturnType<typeof sum<[A, B extends Tagged<number> ? TaggedNegate<B> : Negate<B>]>>;
+export type Subtract<A extends number, B extends number> = ReturnType<
+  typeof sum<[A, B extends Tagged<number> ? TaggedNegate<B> : Negate<B>]>
+>;
+
+export const subtract = <A extends number, B extends number>(a: A, b: B) => (a - b) as any as Subtract<A, B>;
 
 export default subtract;
