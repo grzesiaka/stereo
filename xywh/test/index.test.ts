@@ -2,7 +2,8 @@ import { describe } from "~testing";
 import { pipe, compose, __ } from "composyo";
 
 import { $rect, rect, inset, outset, center, resizeBy, moveTo, resizeTo, moveBy, Rect } from "../src/base";
-import { $col, $row } from "../src/grouping";
+import { $col, $row } from "../src/inout";
+import { vertical } from "../src";
 
 const r0 = rect(0, 0, 0, 0);
 const r1 = rect(1, 1, 1, 1);
@@ -54,7 +55,7 @@ describe(rect, ({ eq }) => ({
   },
 }));
 
-describe("grouping", ({ eq }) => ({
+describe("inout", ({ eq }) => ({
   empty: () => {
     const r = $row()([]);
     eq(r)({ "[]": [], gap: 0, ...r0 });
@@ -94,5 +95,16 @@ describe("grouping", ({ eq }) => ({
 
     const c = $col({ gap: 3, y: 2 })(xs);
     eq(c)({ "[]": xs, gap: 3, x: 1, y: 2, w: 4, h: 19 });
+  },
+}));
+
+describe("outin", ({ eq }) => ({
+  vertical: () => {
+    const rs = vertical([1, "A"], 1, [2, { "?": "!" }])(r42);
+    eq(rs)([
+      { Id: "A", x: 2, y: 2, w: 1, h: 2 },
+      { x: 3, y: 2, w: 1, h: 2 },
+      { x: 4, y: 2, w: 2, h: 2, "?": "!" },
+    ]);
   },
 }));

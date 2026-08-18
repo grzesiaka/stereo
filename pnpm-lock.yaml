@@ -1048,6 +1048,9 @@ importers:
       composyo:
         specifier: workspace:^
         version: link:../DONE/composyo
+      jsyoyo:
+        specifier: workspace:^
+        version: link:../LIBS/jsyoyo
       numyo:
         specifier: workspace:^
         version: link:../LIBS/numyo
