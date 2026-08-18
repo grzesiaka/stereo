@@ -1045,6 +1045,9 @@ importers:
 
   xywh:
     devDependencies:
+      composyo:
+        specifier: workspace:^
+        version: link:../DONE/composyo
       numyo:
         specifier: workspace:^
         version: link:../LIBS/numyo

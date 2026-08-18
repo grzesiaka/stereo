@@ -1,5 +1,7 @@
 import { describe } from "~testing";
-import { $rect, rect, inset, outset, center } from "../src/base";
+import { pipe, compose, __ } from "composyo";
+
+import { $rect, rect, inset, outset, center, resizeBy, moveTo, resizeTo, moveBy, Rect } from "../src/base";
 import { $col, $row } from "../src/grouping";
 
 const r0 = rect(0, 0, 0, 0);
@@ -19,18 +21,36 @@ describe(rect, ({ eq }) => ({
   },
 
   inset: () => {
-    eq(inset(r0)(0), r0);
-    eq(inset(r1)(1), { x: 2, y: 2, w: -1, h: -1 });
+    eq(inset(0)(r0), r0);
+    eq(inset(1)(r1), { x: 2, y: 2, w: -1, h: -1 });
   },
   outset: () => {
-    eq(outset(r0)(0), r0);
-    eq(outset(r1)(1), { x: 0, y: 0, w: 3, h: 3 });
+    eq(outset(0)(r0), r0);
+    eq(outset(1)(r1), { x: 0, y: 0, w: 3, h: 3 });
   },
   inset_outset_are_reverses: () => {
     const d = randInt(49);
     const r = rect(randInt(49), randInt(49), randInt(49), randInt(49));
-    eq(outset(inset(r)(d))(d), r);
-    eq(inset(outset(r)(d))(d), r);
+    eq(outset(d)(inset(d)(r)), r);
+    eq(inset(d)(outset(d)(r)), r);
+  },
+
+  pipe: () => {
+    const x0 = pipe(r1)(moveTo(46, 46), resizeTo(35, 35));
+    eq(x0)({ x: 46, y: 46, w: 35, h: 35 });
+
+    const x1 = pipe(x0)(moveBy(2, 2), resizeBy(3, 3), inset(3), outset(2));
+    eq(x1)({ x: 49, y: 49, w: 36, h: 36 });
+  },
+
+  compose: () => {
+    const c0 = compose(__ as __<Rect>)(moveTo(46, 46), resizeTo(35, 35));
+    const x0 = c0(r0);
+    eq(x0)({ x: 46, y: 46, w: 35, h: 35 });
+
+    const c1 = compose(x0)(moveBy(2, 2), resizeBy(3, 3), inset(3), outset(2));
+    const x1 = c1(x0);
+    eq(x1)({ x: 49, y: 49, w: 36, h: 36 });
   },
 }));
 

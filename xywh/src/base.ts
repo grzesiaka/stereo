@@ -48,8 +48,8 @@ export const center = <R extends Rect>(r: R) =>
   }) as Point<Sum<[R["x"], Product<[R["w"], 0.5]>]>, Sum<[R["y"], Product<[R["h"], 0.5]>]>>;
 
 export const resizeBy =
-  <R extends Rect>(r: R) =>
-  <W extends number, H extends number>(w: W, h: H) =>
+  <W extends number, H extends number, const cR extends Rect>(w: W, h: H) =>
+  <const R extends Rect>(r: Rect extends R ? cR : R) =>
     ({
       x: r.x,
       y: r.y,
@@ -58,8 +58,8 @@ export const resizeBy =
     }) as Rect<R["x"], R["y"], Sum<[R["w"], W]>, Sum<[R["h"], H]>>;
 
 export const resizeTo =
-  <R extends Rect>(r: R) =>
-  <W extends number, H extends number>(w: W, h: H) =>
+  <W extends number, H extends number, const cR extends Rect>(w: W, h: H) =>
+  <const R extends Rect>(r: Rect extends R ? cR : R) =>
     ({
       x: r.x,
       y: r.y,
@@ -68,8 +68,8 @@ export const resizeTo =
     }) as Rect<R["x"], R["y"], W, H>;
 
 export const moveBy =
-  <R extends Rect>(r: R) =>
-  <X extends number, Y extends number>(x: X, y: Y) =>
+  <X extends number, Y extends number, const cR extends Rect>(x: X, y: Y) =>
+  <const R extends Rect>(r: Rect extends R ? cR : R) =>
     ({
       x: r.x + x,
       y: r.y + y,
@@ -78,8 +78,8 @@ export const moveBy =
     }) as Rect<Sum<[R["x"], X]>, Sum<[R["y"], Y]>, R["w"], R["h"]>;
 
 export const moveTo =
-  <R extends Rect>(r: R) =>
-  <X extends number, Y extends number>(x: X, y: Y) =>
+  <X extends number, Y extends number, const cR extends Rect>(x: X, y: Y) =>
+  <const R extends Rect>(r: Rect extends R ? cR : R) =>
     ({
       x: x,
       y: y,
@@ -88,8 +88,8 @@ export const moveTo =
     }) as Rect<X, Y, R["w"], R["h"]>;
 
 export const inset =
-  <R extends Rect>(r: R) =>
-  <D extends number>(d: D) =>
+  <const D extends number, const cR extends Rect>(d: D) =>
+  <const R extends Rect>(r: Rect extends R ? cR : R) =>
     ({
       x: r.x + d,
       y: r.y + d,
@@ -98,8 +98,8 @@ export const inset =
     }) as Rect<Sum<[R["x"], D]>, Sum<[R["y"], D]>, Sum<[R["w"], Product<[-2, D]>]>, Sum<[R["h"], Product<[-2, D]>]>>;
 
 export const outset =
-  <R extends Rect>(r: R) =>
-  <D extends number>(d: D) =>
+  <const D extends number, const cR extends Rect>(d: D) =>
+  <const R extends Rect>(r: Rect extends R ? cR : R) =>
     ({
       x: r.x - d,
       y: r.y - d,
