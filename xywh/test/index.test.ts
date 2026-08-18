@@ -50,11 +50,29 @@ describe("grouping", ({ eq }) => ({
     eq(c)({ "[]": [r42], gap: 4, ...r42, y: 2 });
   },
 
-  more: () => {
+  2: () => {
     const r = $row({ gap: 4, y: 2 })([r1, r42]);
     eq(r)({ "[]": [r1, r42], gap: 4, x: 1, y: 2, w: 9, h: 2 });
 
     const c = $col({ gap: 3, y: 2 })([r42, r1]);
     eq(c)({ "[]": [r42, r1], gap: 3, x: 2, y: 2, w: 4, h: 6 });
+  },
+
+  5: () => {
+    const xs = [r1, r42, r1, r42, r1] as const;
+    const r = $row({ gap: 1, y: 2 })(xs);
+    eq(r)({ "[]": xs, gap: 1, x: 1, y: 2, w: 15, h: 2 });
+
+    const c = $col({ gap: 3, y: 2 })(xs);
+    eq(c)({ "[]": xs, gap: 3, x: 1, y: 2, w: 4, h: 19 });
+  },
+
+  array: () => {
+    const xs = [r1, r42, r1, r42, r1];
+    const r = $row({ gap: 1, y: 2 })(xs);
+    eq(r)({ "[]": xs, gap: 1, x: 1, y: 2, w: 15, h: 2 });
+
+    const c = $col({ gap: 3, y: 2 })(xs);
+    eq(c)({ "[]": xs, gap: 3, x: 1, y: 2, w: 4, h: 19 });
   },
 }));

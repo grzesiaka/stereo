@@ -51,7 +51,7 @@ export const $row =
     ResolveX<P, Rs>,
     ResolveY<P, Rs>,
     Sum<[Sum<ij_Project<["w"], Rs>>, Product<[Sum<[Rs["length"], -1]>, P["gap"]]>]>,
-    Max<ij_Project<["h"], Rs>, 0>
+    Max<ij_Project<["h"], Rs>, Rs extends readonly [] ? 0 : number>
   > =>
     $rect({
       "[]": rs,
@@ -81,7 +81,7 @@ export const $col =
     Rs,
     ResolveX<P, Rs>,
     ResolveY<P, Rs>,
-    Max<ij_Project<["w"], Rs>, 0>,
+    Max<ij_Project<["w"], Rs>, Rs extends readonly [] ? 0 : number>,
     Sum<[Sum<ij_Project<["h"], Rs>>, Product<[Sum<[Rs["length"], -1]>, P["gap"]]>]>
   > =>
     $rect({
