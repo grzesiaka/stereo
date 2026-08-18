@@ -22,9 +22,9 @@ describe(AO, ({ eq }) => ({
 
   ex: () => {
     const x = AO.$("id", "v")(ex);
-    const _r = ["a", __, "b", __, "c", "no-id", __] as const;
+    const _r = ["a", __, "b", __, "c", "no-id", __] as ["a", __, "b", __, "c", "no-id", __];
     const r = a(_r, { $: { A: "a", B: "b", "no-v": __, C: "c" } } as const);
-    eq(x, r as typeof x);
+    eq(x, r);
   },
 
   ex_no_anchor: () => {
