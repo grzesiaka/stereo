@@ -18,3 +18,8 @@ export const OP =
   <const Params>(p: Params) =>
   <X extends {}>(x: X) =>
     a(x, { __: [id, p] as OP<OP_ID, Params> });
+
+export const GET_OP =
+  <OP_ID extends string, Params>() =>
+  <X extends {}>(x: X) =>
+    (x as any).__ as [OP_ID, Params] | undefined;
