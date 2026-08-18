@@ -33,12 +33,12 @@ type ResolveY<SP extends StackParams, Rs extends Rects> = SP["y"] extends number
     : 0;
 
 export type Row<
-  Params extends StackParams = StackParams,
-  Rs extends Rects = Rects,
   X extends number = number,
   Y extends number = number,
   W extends number = number,
   H extends number = number,
+  Params extends StackParams = StackParams,
+  Rs extends Rects = Rects,
 > = GroupedRect<Params, Rs, X, Y, W, H>;
 
 export const $row =
@@ -46,12 +46,12 @@ export const $row =
   <const Rs extends Rects>(
     rs: Rs,
   ): Row<
-    P,
-    Rs,
     ResolveX<P, Rs>,
     ResolveY<P, Rs>,
     Sum<[Sum<ij_Project<["w"], Rs>>, Product<[Sum<[Rs["length"], -1]>, P["gap"]]>]>,
-    Max<ij_Project<["h"], Rs>, Rs extends readonly [] ? 0 : number>
+    Max<ij_Project<["h"], Rs>, Rs extends readonly [] ? 0 : number>,
+    P,
+    Rs
   > =>
     $rect({
       "[]": rs,
@@ -64,12 +64,12 @@ export const $row =
     ) as never;
 
 export type Col<
-  Params extends StackParams = StackParams,
-  Rs extends Rects = Rects,
   X extends number = number,
   Y extends number = number,
   W extends number = number,
   H extends number = number,
+  Params extends StackParams = StackParams,
+  Rs extends Rects = Rects,
 > = GroupedRect<Params, Rs, X, Y, W, H>;
 
 export const $col =
@@ -77,12 +77,12 @@ export const $col =
   <const Rs extends Rects>(
     rs: Rs,
   ): Col<
-    P,
-    Rs,
     ResolveX<P, Rs>,
     ResolveY<P, Rs>,
     Max<ij_Project<["w"], Rs>, Rs extends readonly [] ? 0 : number>,
-    Sum<[Sum<ij_Project<["h"], Rs>>, Product<[Sum<[Rs["length"], -1]>, P["gap"]]>]>
+    Sum<[Sum<ij_Project<["h"], Rs>>, Product<[Sum<[Rs["length"], -1]>, P["gap"]]>]>,
+    P,
+    Rs
   > =>
     $rect({
       "[]": rs,
