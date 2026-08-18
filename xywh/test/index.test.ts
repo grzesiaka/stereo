@@ -100,7 +100,14 @@ describe("inout", ({ eq }) => ({
 
 describe("outin", ({ eq }) => ({
   vertical: () => {
-    const rs = vertical([1, "A"], 1, [2, { "?": "!" }])(r42);
+    let rs = vertical([1, "A"], 1, [2, { "?": "!" }])(r42);
+    eq(rs)([
+      { Id: "A", x: 2, y: 2, w: 1, h: 2 },
+      { x: 3, y: 2, w: 1, h: 2 },
+      { x: 4, y: 2, w: 2, h: 2, "?": "!" },
+    ]);
+
+    rs = vertical([1, "A"], 1, [-1, { "?": "!" }])(r42);
     eq(rs)([
       { Id: "A", x: 2, y: 2, w: 1, h: 2 },
       { x: 3, y: 2, w: 1, h: 2 },
