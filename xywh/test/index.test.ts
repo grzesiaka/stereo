@@ -3,11 +3,12 @@ import { pipe, compose, __ } from "composyo";
 
 import { $rect, rect, inset, outset, center, resizeBy, moveTo, resizeTo, moveBy, Rect } from "../src/base";
 import { $col, $row } from "../src/inout";
-import { vertical } from "../src";
+import { horizontal, vertical } from "../src";
 
 const r0 = rect(0, 0, 0, 0);
 const r1 = rect(1, 1, 1, 1);
 const r42 = rect(2, 2, 4, 2);
+const r_1024_2048 = rect(0, 0, 1024, 2048);
 
 const randInt = (max: number, min = 0) => (min + Math.random() * (max - min)) | 0;
 
@@ -101,6 +102,7 @@ describe("inout", ({ eq }) => ({
 describe("outin", ({ eq }) => ({
   vertical: () => {
     let rs = vertical([1, "A"], 1, [2, { "?": "!" }])(r42);
+
     eq(rs)([
       { Id: "A", x: 2, y: 2, w: 1, h: 2 },
       { x: 3, y: 2, w: 1, h: 2 },
@@ -112,6 +114,22 @@ describe("outin", ({ eq }) => ({
       { Id: "A", x: 2, y: 2, w: 1, h: 2 },
       { x: 3, y: 2, w: 1, h: 2 },
       { x: 4, y: 2, w: 2, h: 2, "?": "!" },
+    ]);
+  },
+
+  horizontal: () => {
+    let rs = horizontal([100, "header"], [1548, "main"], [400, "footer"])(r_1024_2048);
+    eq(rs)([
+      { Id: "header", x: 0, y: 0, w: 1024, h: 100 },
+      { Id: "main", x: 0, y: 100, w: 1024, h: 1548 },
+      { Id: "footer", x: 0, y: 1648, w: 1024, h: 400 },
+    ]);
+
+    rs = horizontal([100, "header"], [1548, "main"], [-1, "footer"])(r_1024_2048);
+    eq(rs)([
+      { Id: "header", x: 0, y: 0, w: 1024, h: 100 },
+      { Id: "main", x: 0, y: 100, w: 1024, h: 1548 },
+      { Id: "footer", x: 0, y: 1648, w: 1024, h: 400 },
     ]);
   },
 }));
