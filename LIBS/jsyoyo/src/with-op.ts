@@ -1,4 +1,5 @@
 import { a } from "objoy";
+import { ARR, Dict, Fn, Fn$I, Fn$O } from "~types";
 
 export interface WithOP<OP_ID extends string, Params> {
   __: OP<OP_ID, Params>;
@@ -23,3 +24,30 @@ export const GET_OP =
   <OP_ID extends string, Params>() =>
   <X extends {}>(x: X) =>
     (x as any).__ as [OP_ID, Params] | undefined;
+
+export const asOP = <F extends Fn<ARR, {}>>(fn: F, op = fn["name"]) =>
+  new Proxy(fn, {
+    apply(_, thisArgs, args) {
+      const r = Reflect.apply(fn, thisArgs, args);
+      return OP(op)(args)(r);
+    },
+  });
+
+export type WithExplicitOP<FNs extends Dict<Fn<ARR, object>, string>> = {
+  [K in keyof FNs]: <P extends Fn$I<FNs[K]>>(...p: P) => Fn$O<FNs[K]> & WithOP<K & string, P>;
+};
+
+export const $asOPs =
+  <Implicit extends boolean = true>() =>
+  <FNs extends Dict<Fn<ARR, object>, string>>(fns: FNs): Implicit extends true ? FNs : WithExplicitOP<FNs> =>
+    new Proxy(
+      {},
+      {
+        get: (t: any, key: any) => {
+          if (t[key]) return t[key];
+          return (t[key] = asOP(fns[key]!, key));
+        },
+      },
+    ) as any;
+
+export const asOPs = $asOPs<true>();
