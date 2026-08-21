@@ -1,5 +1,6 @@
 import { describe } from "~testing";
-import { pipe, compose, __ } from "composyo";
+import { pipe, compose, __, GET_OP } from "composyo";
+import { $asOPs, ARR } from "jsyoyo";
 
 import { $rect, rect, inset, outset, center, resizeBy, moveTo, resizeTo, moveBy, Rect } from "../src/base";
 import { $col, $row } from "../src/inout";
@@ -131,5 +132,19 @@ describe("outin", ({ eq }) => ({
       { Id: "main", x: 0, y: 100, w: 1024, h: 1548 },
       { Id: "footer", x: 0, y: 1648, w: 1024, h: 400 },
     ]);
+  },
+}));
+
+const $ = $asOPs<true>()({ moveBy, resizeBy });
+describe("ops", ({ eq }) => ({
+  ops: () => {
+    const { moveBy, resizeBy } = $;
+    const o = compose(r0)(moveBy(1, 1), resizeBy(2, 2));
+    const fns = GET_OP(o)?.[1][2].map((f) => (f as any).__ as [string, ARR]);
+    eq(fns, [
+      ["moveBy", [1, 1]],
+      ["resizeBy", [2, 2]],
+    ]);
+    eq(o(), { x: 1, y: 1, w: 2, h: 2 });
   },
 }));

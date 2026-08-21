@@ -34,20 +34,28 @@ export const asOP = <F extends Fn<ARR, {}>>(fn: F, op = fn["name"]) =>
   });
 
 export type WithExplicitOP<FNs extends Dict<Fn<ARR, object>, string>> = {
-  [K in keyof FNs]: <P extends Fn$I<FNs[K]>>(...p: P) => Fn$O<FNs[K]> & WithOP<K & string, P>;
+  [K in keyof FNs]: <const P extends Fn$I<FNs[K]>>(...p: P) => Fn$O<FNs[K]> & WithOP<K & string, P>;
 };
 
+/**
+ *  Allows tracking by calling which function and with which parameters a value was created.
+ *
+ * `Implicit` flat controls if ops should be reflect on type level `__`.
+ *  Unfortunately, adding anything to a function with generic params breaks type inference in `compose` / `pipe`.
+ *
+ * @returns _take a look at asOPs_
+ */
 export const $asOPs =
-  <Implicit extends boolean = true>() =>
+  <Implicit extends boolean>() =>
   <FNs extends Dict<Fn<ARR, object>, string>>(fns: FNs): Implicit extends true ? FNs : WithExplicitOP<FNs> =>
-    new Proxy(
-      {},
-      {
-        get: (t: any, key: any) => {
-          if (t[key]) return t[key];
-          return (t[key] = asOP(fns[key]!, key));
-        },
-      },
-    ) as any;
+    new Proxy(fns, {
+      get: (t: any, key: any) => asOP(Reflect.get(t, key)),
+    });
 
+/**
+ * Allows tracking by calling which function and with which parameters a value was created.
+ *
+ * @param fns A Dictionary with functions. Each function must return object-like value which does not have `__` property.
+ * @returns A proxy to this dictionary that automatically will track how value was created by calling one of the functions.
+ */
 export const asOPs = $asOPs<true>();
