@@ -1,4 +1,4 @@
-import { Sum, Product } from "numyo";
+import { Sum, Product, Subtract, Max, Min } from "numyo";
 
 export interface Point<X extends number = number, Y extends number = number> {
   x: X;
@@ -106,11 +106,37 @@ export const outset =
       w: r.w + 2 * d,
       h: r.h + 2 * d,
     }) as Rect<
-      Sum<[R["x"], Product<[-1, D]>]>,
-      Sum<[R["y"], Product<[-1, D]>]>,
+      Subtract<R["x"], D>,
+      Subtract<R["y"], D>,
       Sum<[R["w"], Product<[2, D]>]>,
       Sum<[R["h"], Product<[2, D]>]>
     >;
+
+type _Intersect<
+  A extends Rect,
+  B extends Rect,
+  X extends number = Max<[A["x"], B["x"]]>,
+  Y extends number = Max<[A["y"], B["y"]]>,
+  HO extends number = Min<[Sum<[A["x"], A["w"]]>, Sum<[B["x"], B["w"]]>]>,
+  VE extends number = Min<[Sum<[A["y"], A["h"]]>, Sum<[B["y"], B["h"]]>]>,
+> = Rect<X, Y, Max<[0, Subtract<HO, X>]>, Max<[0, Subtract<VE, Y>]>>;
+
+export type Intersect<A extends Rect, B extends Rect> = _Intersect<A, B>;
+
+export const intersect =
+  <const A extends Rect, const cB extends Rect>(a: A) =>
+  <const B extends Rect>(b: Rect extends B ? cB : B) => {
+    const x = Math.max(a.x, b.x);
+    const y = Math.max(a.y, b.y);
+    const ho = Math.min(a.x + a.w, b.x + b.w);
+    const ve = Math.min(a.y + a.h, b.y + b.h);
+    return rect(x, y, Math.max(0, ho - x), Math.max(0, ve - y)) as Rect<
+      Intersect<A, B>["x"],
+      Intersect<A, B>["y"],
+      Intersect<A, B>["w"],
+      Intersect<A, B>["h"]
+    >; // as Intersect<A, B> does not collapse to Rect in IDE;
+  };
 
 // export type PartialRect<
 //   X extends number = number,

@@ -2,7 +2,7 @@ import { describe } from "~testing";
 import { pipe, compose, __, GET_OP } from "composyo";
 import { $asOPs, ARR } from "jsyoyo";
 
-import { $rect, rect, inset, outset, center, resizeBy, moveTo, resizeTo, moveBy, Rect } from "../src/base";
+import { $rect, rect, inset, outset, center, resizeBy, moveTo, resizeTo, moveBy, Rect, intersect } from "../src/base";
 import { $col, $row } from "../src/inout";
 import { horizontal, vertical } from "../src";
 
@@ -28,8 +28,10 @@ describe(rect, ({ eq }) => ({
     eq(inset(1)(r1), { x: 2, y: 2, w: -1, h: -1 });
   },
   outset: () => {
-    eq(outset(0)(r0), r0);
-    eq(outset(1)(r1), { x: 0, y: 0, w: 3, h: 3 });
+    const out0 = outset(0)(r0);
+    eq(out0, r0);
+    const out1 = outset(1)(r1);
+    eq(out1, { x: 0, y: 0, w: 3, h: 3 });
   },
   inset_outset_are_reverses: () => {
     const d = randInt(49);
@@ -135,6 +137,24 @@ describe("outin", ({ eq }) => ({
   },
 }));
 
+describe(intersect, ({ eq }) => ({
+  zero: () => {
+    const x0 = intersect(r0)(r0);
+    eq(x0, r0);
+    const x_01 = intersect(r0)(r1);
+    const x_10 = intersect(r1)(r0);
+    eq(x_01, rect(1, 1, 0, 0));
+    eq(x_10, rect(1, 1, 0, 0));
+  },
+
+  small: () => {
+    eq(intersect(rect(2, 2, 3, 3))(rect(2, 4, 2, 2)), rect(2, 4, 2, 1));
+    eq(intersect(rect(2, 2, 3, 3))(rect(3, 4, 2, 2)), rect(3, 4, 2, 1));
+    eq(intersect(rect(2, 2, 3, 3))(rect(5, 5, 2, 2)), rect(5, 5, 0, 0));
+    eq(intersect(rect(2, 2, 3, 3))(rect(7, 6, 2, 2)), rect(7, 6, 0, 0));
+  },
+}));
+
 const $ = $asOPs<true>()({ moveBy, resizeBy });
 describe("ops", ({ eq }) => ({
   ops: () => {
@@ -146,5 +166,28 @@ describe("ops", ({ eq }) => ({
       ["resizeBy", [2, 2]],
     ]);
     eq(o(), { x: 1, y: 1, w: 2, h: 2 });
+  },
+}));
+
+describe("long", ({ eq }) => ({
+  long: () => {
+    const c = compose(r0)(
+      resizeBy(2, 2),
+      eq(rect(0, 0, 2, 2)),
+      intersect(rect(1, 1, 2, 2)),
+      eq(rect(1, 1, 1, 1)),
+      moveBy(2, 2),
+      eq(rect(3, 3, 1, 1)),
+      resizeBy(3, 3),
+      compose(__ as __<Rect<3, 3, 4, 4>>)(
+        eq(rect(3, 3, 4, 4)),
+        outset(1),
+        eq(rect(2, 2, 6, 6)),
+        moveBy(1, 2),
+        eq(rect(3, 4, 6, 6)),
+        center,
+      ),
+    );
+    eq(c())({ x: 6, y: 7 });
   },
 }));
