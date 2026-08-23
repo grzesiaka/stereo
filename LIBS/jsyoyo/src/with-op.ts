@@ -25,6 +25,15 @@ export const GET_OP =
   <X extends {}>(x: X) =>
     (x as any).__ as [OP_ID, Params] | undefined;
 
+/**
+ * Start with `fn: (a: A, c: C) => B` you will get a function `(a: A, c: C) => B` back,
+ * but when called `B` will be extended by `{ __: [op, [A, C]]}` remembering how `B` was created.
+ * `__` is not reflected in type; only in the runtime.
+ *
+ * @param fn any function
+ * @param op id of the operation; defaults to `fn["name"]`
+ * @returns `Proxy` to `fn`
+ */
 export const asOP = <F extends Fn<ARR, {}>>(fn: F, op = fn["name"]) =>
   new Proxy(fn, {
     apply(_, thisArgs, args) {
@@ -38,12 +47,15 @@ export type WithExplicitOP<FNs extends Dict<Fn<ARR, object>, string>> = {
 };
 
 /**
- *  Allows tracking by calling which function and with which parameters a value was created.
+ * Adds reference under `__` to a `operation-id` (_default_: function's name) and a function's params
+ * to values created by calling a function from the provided dictionary.
  *
- * `Implicit` flat controls if ops should be reflect on type level `__`.
+ * @see {@link asOP}, {@link $asOPs}
+ *
+ * `Implicit` flat controls if augmentation should be reflect on type level `__`.
  *  Unfortunately, adding anything to a function with generic params breaks type inference in `compose` / `pipe`.
  *
- * @returns _take a look at asOPs_
+ * @returns A function; more info: {@link asOPs}.
  */
 export const $asOPs =
   <Implicit extends boolean>() =>
@@ -53,9 +65,12 @@ export const $asOPs =
     });
 
 /**
- * Allows tracking by calling which function and with which parameters a value was created.
+ * In runtime, adds reference under `__` to a `operation-id` (_default_: function's name) and a function's params
+ * to values created by calling a function from the provided dictionary.
+ *
+ * @see {@link asOP}, {@link $asOPs}
  *
  * @param fns A Dictionary with functions. Each function must return object-like value which does not have `__` property.
- * @returns A proxy to this dictionary that automatically will track how value was created by calling one of the functions.
+ * @returns A proxy to this dictionary that automatically tracks how value was created by calling one of the functions.
  */
 export const asOPs = $asOPs<true>();
