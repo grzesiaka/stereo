@@ -1013,6 +1013,9 @@ importers:
       jsyoyo:
         specifier: workspace:^
         version: link:../LIBS/jsyoyo
+      treeo:
+        specifier: workspace:^
+        version: link:../DONE/treeo
       txtxt:
         specifier: workspace:^
         version: link:../LIBS/txtxt

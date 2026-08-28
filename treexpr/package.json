@@ -20,6 +20,7 @@
     "arryo": "workspace:^",
     "composyo": "workspace:^",
     "jsyoyo": "workspace:^",
+    "treeo": "workspace:^",
     "txtxt": "workspace:^"
   }
 }
