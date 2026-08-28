@@ -60,4 +60,4 @@ export type Shapes<LRs> = LRs extends readonly [infer LR, ...infer R]
 // const arr = [["x", "y", "x", "y"]] as const satisfies T_ARR;
 
 // type T_ARRn = Shapes<ARR<["y", ["a", ...ARR<"x|y">]] | "x" | "_y_">>;
-// const arrn = ["x", "_y_", "x", ["y", ["a", "x|y"]]] as const satisfies T_ARRn;
+// const arrn = ["x", "_y_", "x", ["y", ["a", "x|y", "x|y", "x|y", "x|y"]]] as const satisfies T_ARRn;

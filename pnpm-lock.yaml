@@ -220,6 +220,10 @@ importers:
         version: link:../types
 
   LIBS/arryo:
+    dependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.7.0
     devDependencies:
       vitest:
         specifier: 'catalog:'

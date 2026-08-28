@@ -18,5 +18,8 @@
   },
   "devDependencies": {
     "~types": "workspace:^"
+  },
+  "peerDependencies": {
+    "type-fest": "catalog:"
   }
 }

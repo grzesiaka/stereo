@@ -1,10 +1,19 @@
 import { ARR, Dict, Fn } from "~types";
 import { __ } from "composyo";
-import { Head, Tail } from "arryo";
+import { Head, Shape, Tail } from "arryo";
+
 export { dethunk } from "arryo";
 export type { Head, Tail } from "arryo";
 
+export type START_WITH_ID<R extends ARR = ARR, ID extends string = string> = [ID, ...R];
+
+export type TREEXPR<ID extends string = string, X = unknown, KIDS extends ARR = ARR> = Shape<[[ID, X], KIDS]>;
+
+export type TREEXPR_ANY_ID<X = unknown, KIDS extends ARR = ARR> = Shape<[[string, X], KIDS]>;
+
 export type TagParam<Tag = string, Param = unknown> = readonly [Tag, Param];
+
+// TODO: migrate to arryo/Shape
 // TODO: if Kids were an array they could be interpeted as next echons
 export type $TREExpr<TPs extends TagParam = TagParam, Extra = never, Kids extends ARR<TagParam> = ARR<TPs>> =
   | Extra
