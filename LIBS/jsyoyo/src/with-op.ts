@@ -61,7 +61,7 @@ export const $asOPs =
   <Implicit extends boolean>() =>
   <FNs extends Dict<Fn<ARR, object>, string>>(fns: FNs): Implicit extends true ? FNs : WithExplicitOP<FNs> =>
     new Proxy(fns, {
-      get: (t: any, key: any) => asOP(Reflect.get(t, key)),
+      get: (t: any, key: any) => asOP(Reflect.get(t, key), key),
     });
 
 /**
