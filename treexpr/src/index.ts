@@ -1,4 +1,5 @@
 export * from "./base"
+export * from "./flatten"
 export * from "./map-by-tag"
 export * from "./map"
 export * from "./reduce"

@@ -1,15 +1,53 @@
 import { describe } from "~testing";
 import mapTree from "../src/map";
 import get from "../src/get";
-import flattern, { flatten } from "../src/flatten";
+import { flatten } from "../src/flatten";
 import { ks } from "jsyoyo";
+import set from "../src/set";
+import { awaiT } from "../src/async";
 
 const tree = {
   a: "B",
   c: { d: "E", f: () => 1 as const, g: [] },
 } as const;
 
-describe(flattern, ({ eq }) => ({
+describe(awaiT, ({ eq }) => ({
+  "{}": async () => eq(await awaiT({}))({}),
+  flat: async () => eq(await awaiT({ b: Promise.resolve("B"), a: "A" }))({ a: "A", b: "B" }),
+  nested: async () => {
+    const t = await awaiT({
+      a: "A",
+      aa: { a: Promise.resolve("aa.a"), aa: { a: Promise.resolve("aa.aa.a"), A: "A" } },
+    });
+    eq(t)({
+      a: "A",
+      aa: { a: "aa.a", aa: { A: "A", a: "aa.aa.a" } },
+    });
+  },
+}));
+
+describe(set, ({ eq }) => ({
+  "": () => {
+    const t = set("", 1)({});
+    eq(t)({ "": 1 });
+    eq(set("", "")({ "": "0", a: "a" }), { "": "", a: "a" });
+  },
+
+  a: () => {
+    const t = set("a", 1)({});
+    eq(t)({ a: 1 });
+    eq(set("a", "A")({ "": "", a: "A" }), { "": "", a: "A" });
+  },
+
+  "a.b": () => {
+    const t = set("a.b", 1)({});
+    eq(t)({ a: { b: 1 } });
+    const ab = set("a.b", "ab")({ "": "", a: "A" });
+    eq(ab, { "": "", a: { b: "ab" } });
+  },
+}));
+
+describe(flatten, ({ eq }) => ({
   "{}": () => eq(flatten({}), {}),
   simple: () => eq(flatten(tree), { a: "B", "c.d": "E", "c.f": tree.c.f, "c.g": [] }),
   simple_with_acc: () => eq(flatten(tree, { acc: "!" }), { acc: "!", a: "B", "c.d": "E", "c.f": tree.c.f, "c.g": [] }),
