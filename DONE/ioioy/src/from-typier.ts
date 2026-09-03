@@ -5,7 +5,7 @@ import OneOf, { type OneOf_IOs } from "./one-of";
 import { __, ARR } from "~types";
 import { IdIOs } from "./io";
 
-export const TYPIER: unique symbol = Symbol.for("TYPIER");
+const TYPIER_SYM: unique symbol = Symbol.for("TYPIER");
 
 type WithUndefinedIfOptionalOrNoDefault<T> = T extends { "~optional": true }
   ? __
@@ -23,14 +23,14 @@ export type FromTypier<T> = T extends readonly unknown[]
   ? TypierArrayToIO<T>
   : T extends TR.$Atom
     ? Var<
-        { Id: T["$KEY"]; [TYPIER]: T },
+        { Id: T["$KEY"]; [TYPIER_SYM]: T },
         (T extends { "~hint": infer X } ? X : TR.Static<T>) | WithUndefinedIfOptionalOrNoDefault<T>
       >
     : T extends { type: "object"; $PARTS: infer Parts; $KEY: infer Key extends string; "~optional"?: infer Optional }
       ? And_Vars<
           {
             Id: Key;
-            [TYPIER]: T;
+            [TYPIER_SYM]: T;
           },
           TypierArrayToIO<Parts> extends IdIOs ? TypierArrayToIO<Parts> : [],
           Optional extends true ? [undefined] : []
@@ -44,7 +44,7 @@ export type FromTypier<T> = T extends readonly unknown[]
         ? OneOf_IOs<
             {
               Id: Key;
-              [TYPIER]: T;
+              [TYPIER_SYM]: T;
             },
             TypierArrayToIO<Items>,
             [...(Optional extends true ? [undefined] : []), ...({ type: "null" } extends Items[number] ? [null] : [])]
@@ -54,7 +54,7 @@ export type FromTypier<T> = T extends readonly unknown[]
 export const fromTypier = <T extends TR.ATOM | TR.COMPOUND | TR.$Atom>(t: T): FromTypier<T> => {
   const L = {
     Id: t.$KEY,
-    [TYPIER]: t,
+    [TYPIER_SYM]: t,
   };
   switch (t.type) {
     case "object":
@@ -71,3 +71,5 @@ export const fromTypier = <T extends TR.ATOM | TR.COMPOUND | TR.$Atom>(t: T): Fr
       return V((t as any).default, L) as never;
   }
 };
+
+fromTypier.SYMBOL = TYPIER_SYM;

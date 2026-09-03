@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 import * as TR from "typier";
 import { Parse } from "typebox/value";
-import { fromTypier as $, TYPIER } from "../src";
+import { fromTypier as $ } from "../src";
 import { __ } from "jsyoyo";
 
 const T0 = TR.fromTree({
@@ -58,9 +58,9 @@ describe($, ({ eq, res }) => ({
     const _U = TR.U(TR.Null(), T0.B, TR.Null())("UNI");
     const U = $(_U);
 
-    eq(U.O[TYPIER], _U);
+    eq(U.O[$.SYMBOL], _U);
     eq(Object.keys(U.IOs), ["B"]);
-    U.IOs.B.O[TYPIER] = T0.B;
+    U.IOs.B.O[$.SYMBOL] = T0.B;
 
     const r = res();
     U.O(r.add);
