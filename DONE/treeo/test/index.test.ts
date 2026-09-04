@@ -13,6 +13,7 @@ const tree = {
 
 describe(awaiT, ({ eq }) => ({
   "{}": async () => eq(await awaiT({}))({}),
+  promise: async () => eq(await awaiT(Promise.resolve(1 as const)), 1),
   flat: async () => eq(await awaiT({ b: Promise.resolve("B"), a: "A" }))({ a: "A", b: "B" }),
   nested: async () => {
     const t = await awaiT({
