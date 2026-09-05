@@ -3,9 +3,7 @@ import { $$, __ } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 
 type ProgressSpec<Units extends string = string, Max extends __<number> = __<number>> = [units: Units, max: Max];
-
 type ProgressRunParams<S extends ProgressSpec> = __ extends S[1] ? (S[1] extends __ ? [] : [$$<S[1]>]) : [];
-
 type ProgressVar<ID extends string, S extends ProgressSpec> = Var<
   ID,
   {
@@ -29,7 +27,7 @@ const initProgress = <Spec extends TaskSpec>(
     total: init[0] || p[1],
     value: 0,
     get _01() {
-      return x.X.total === __ ? __ : Math.round((1000 * x.X.value) / x.X.total) * 1000;
+      return x.X.total === __ ? __ : Math.trunc((1000 * x.X.value) / x.X.total) * 1000;
     },
   });
   return ((v?: $$<Spec["progress"][1]>) => {
@@ -54,7 +52,8 @@ export interface TaskSpec<
   run: (
     p: Params,
     d: AwaiTreed<Deps>,
-    u: ProgressVar<ID, Progress>,
+    a: (onborted: () => void) => void,
+    u: ProgressUpdate<ID, Progress>,
     s: TaskSpec<ID, NoInfer<Result>, Params, NoInfer<Deps>, Progress>,
   ) => Result;
 }
@@ -66,7 +65,8 @@ export const spec =
     run: (
       p: Params,
       d: AwaiTreed<Deps>,
-      u: ProgressVar<ID, Progress>,
+      a: (onborted: () => void) => void,
+      u: ProgressUpdate<ID, Progress>,
       s: TaskSpec<ID, NoInfer<Result>, Params, NoInfer<Deps>, Progress>,
     ) => Result,
   ): TaskSpec<ID, Result, Params, Deps, Progress> => ({
@@ -76,6 +76,7 @@ export const spec =
     run,
   });
 
+type Spec$Result<S> = S extends TaskSpec<any, infer X> ? X : never;
 type Spec$Params<S> = S extends TaskSpec<any, any, infer X> ? X : never;
 type Spec$Deps<S> = S extends TaskSpec<any, any, any, infer X> ? X : never;
 
@@ -86,15 +87,20 @@ export const load = <S extends TaskSpec>(s: S) =>
         S extends { loaded: unknown } ? S : S & { loaded: Spec$Deps<S> }
       >);
 
+export type TaskRun<S extends TaskSpec> = Promise<Awaited<Spec$Result<S>>> & {
+  progress: ProgressVar<S["ID"], S["progress"]>["O"];
+};
 export const run =
   <Spec extends TaskSpec>(spec: Spec) =>
-  <Params extends Spec$Params<Spec>, Progress extends ProgressRunParams<Spec["progress"]>>(
+  <Params extends Spec$Params<Spec>, ProgressTotal extends ProgressRunParams<Spec["progress"]>>(
     params: Params,
-    ...progress: Progress
-  ) =>
-    load(spec).then((s) => {
-      return s.run(params, s.loaded, progress as any, spec);
-    });
+    ...total: ProgressTotal
+  ) => {
+    const progress = initProgress(spec, ...total);
+    const $ = load(spec).then((s) => s.run(params, s.loaded, () => 1, progress, s)) as TaskRun<Spec>;
+    $.progress = progress().O;
+    return $;
+  };
 
 //type TaskDuration<Avg extends number = number, Max extends __<number> = __<number>> = __ extends Max ? Avg : [Avg, Max];
 // export interface WithTime<Time extends __<TaskDuration> = __<TaskDuration>> {
