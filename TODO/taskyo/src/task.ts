@@ -1,42 +1,8 @@
-import { Var } from "ioioy";
-import { $$, __ } from "jsyoyo";
+import { __, id } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
-
-type ProgressSpec<Units extends string = string, Max extends __<number> = __<number>> = [units: Units, max: Max];
-type ProgressRunParams<S extends ProgressSpec> = __ extends S[1] ? (S[1] extends __ ? [] : [$$<S[1]>]) : [];
-type ProgressVar<ID extends string, S extends ProgressSpec> = Var<
-  ID,
-  {
-    unit: S[0];
-    total: S[1];
-    value: S[1];
-    _01: number; // TODO clamped
-  }
->;
-
-type ProgressUpdate<ID extends string, S extends ProgressSpec> = (() => ProgressVar<ID, S>) &
-  (never extends $$<S[1]> ? {} : (v: $$<S[1]>) => ProgressVar<ID, S>["X"]);
-
-const initProgress = <Spec extends TaskSpec>(
-  spec: Spec,
-  ...init: ProgressRunParams<Spec["progress"]>
-): ProgressUpdate<Spec["ID"], Spec["progress"]> => {
-  const p = spec.progress;
-  const x = Var({
-    unit: p[0],
-    total: init[0] || p[1],
-    value: 0,
-    get _01() {
-      return x.X.total === __ ? __ : Math.trunc((1000 * x.X.value) / x.X.total) * 1000;
-    },
-  });
-  return ((v?: $$<Spec["progress"][1]>) => {
-    if (!v) return x.X;
-    x.X.value = Math.min(v, x.X.total || 0);
-    x.I(x.X);
-    return x.X;
-  }) as never;
-};
+import { initProgress, ProgressRunParams, ProgressSpec, ProgressUpdate, ProgressVar } from "./progress";
+import "./_utils";
+import { AbortSignal, NEVER } from "./_utils";
 
 export interface TaskSpec<
   ID extends string = string,
@@ -94,10 +60,22 @@ export const run =
   <Spec extends TaskSpec>(spec: Spec) =>
   <Params extends Spec$Params<Spec>, ProgressTotal extends ProgressRunParams<Spec["progress"]>>(
     params: Params,
+    abort: AbortSignal,
     ...total: ProgressTotal
   ) => {
     const progress = initProgress(spec, ...total);
-    const $ = load(spec).then((s) => s.run(params, s.loaded, () => 1, progress, s)) as TaskRun<Spec>;
+    const P = progress().X;
+    let dispose = id;
+    const abo = (f: () => void) => {
+      abort.addEventListener("abort", () => {
+        progress().X.aborted = true;
+        progress(P.value);
+      });
+      dispose = (x) => (abort.removeEventListener("abort", f), P.aborted ? (NEVER as never) : x);
+    };
+    const $ = load(spec)
+      .then((s) => s.run(params, s.loaded, abo, progress, s))
+      .then(dispose) as TaskRun<Spec>;
     $.progress = progress().O;
     return $;
   };
