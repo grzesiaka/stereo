@@ -42,9 +42,9 @@ export const spec =
     run,
   });
 
-type Spec$Result<S> = S extends TaskSpec<any, infer X> ? X : never;
-type Spec$Params<S> = S extends TaskSpec<any, any, infer X> ? X : ["WTF?!", S];
-type Spec$Deps<S> = S extends TaskSpec<any, any, any, infer X> ? X : never;
+export type Spec$Result<S> = S extends { run: any } ? ReturnType<S["run"]> : never;
+export type Spec$Params<S> = S extends { run: any } ? Parameters<S["run"]>[0] : never;
+export type Spec$Deps<S> = S extends { run: any } ? Parameters<S["run"]>[1] : never;
 
 export const load = <S extends TaskSpec>(s: S) =>
   "loaded" in s

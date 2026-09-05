@@ -2,25 +2,40 @@ import { describe } from "~testing";
 
 import { $progress, run, spec } from "../src";
 import { __ } from "jsyoyo";
-import { AbortController } from "../src/_utils";
+import { awaiT } from "treeo";
 
-const Spec = spec(
-  "TEST",
-  "%",
-  100,
-)(() => ({
+const deps = () => ({
   tree: { o: import("treeo") },
   ioioy: import("ioioy"),
-}));
+});
+const Spec = spec("TEST", "%", 100)(deps);
 
 describe(run, ({ eq }) => ({
-  "{}": async () => {
+  "+1": async () => {
+    // const s = Spec((P: { a: "B" }, $, a, u, s) => ({ P, $, a, u, s }));
+    const s = Spec((p: number) => p + 1);
+    const r = await run(s)(1, new Proxy({} as any, { get: () => () => 1 }));
+    const d = await awaiT(deps());
+    eq(s.loaded, d);
+    eq(r, 2);
+  },
+  self: async () => {
     const s = Spec((P: { a: "B" }, $, a, u, s) => ({ P, $, a, u, s }));
-    // const s = Spec(() => 1);
-    s.load();
-    const r = await run(s)(["WTF?!", s], new Proxy({} as any, { get: () => () => 1 }));
 
-    eq(r);
+    const r = await run(s)({ a: "B" }, new Proxy({} as any, { get: () => () => 1 }));
+    const d = await awaiT(deps());
+
+    eq(r.$, d);
+    eq(r.P, { a: "B" });
+  },
+
+  progress: async () => {
+    const s = Spec(async (_, _$, a, p) => {
+      p(50);
+      await Promise.resolve();
+      p(100);
+      return "ok";
+    });
   },
 }));
 

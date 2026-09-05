@@ -14,7 +14,8 @@ export interface ProgressInfo<S extends ProgressSpec> {
 
 export type ProgressVar<S extends ProgressSpec> = Var<string, ProgressInfo<S>>;
 
-export type ProgressUpdate<S extends ProgressSpec> = (() => ProgressVar<S>) & ((...v: [S[1]]) => ProgressVar<S>["X"]);
+export type ProgressUpdate<S extends ProgressSpec> = (() => ProgressVar<S>) &
+  ((...v: S[1] extends __ ? [__?] : [S[1] | (number & {})]) => ProgressVar<S>["X"]);
 
 export const $progress = <Spec extends Pick<TaskSpec, "progress" | "ID">>(
   spec: Spec,
@@ -33,7 +34,7 @@ export const $progress = <Spec extends Pick<TaskSpec, "progress" | "ID">>(
     },
     spec.ID,
   );
-  return ((...v: [Spec["progress"][1]?]) => {
+  return ((...v: any[]) => {
     if (v.length === 0) return x;
     x.X.value = Math.min(v[0] || 0, x.X.total || 0);
     x.I(x.X);
