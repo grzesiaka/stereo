@@ -1,6 +1,6 @@
 import { __, id } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
-import { initProgress, ProgressRunParams, ProgressSpec, ProgressUpdate, ProgressVar } from "./progress";
+import { $progress, ProgressRunParams, ProgressSpec, ProgressUpdate, ProgressVar } from "./progress";
 import "./_utils";
 import { AbortSignal, NEVER } from "./_utils";
 
@@ -63,7 +63,7 @@ export const run =
     abort: AbortSignal,
     ...total: ProgressTotal
   ) => {
-    const progress = initProgress(spec, ...total);
+    const progress = $progress(spec, ...total);
     const P = progress().X;
     let dispose = id;
     const abo = (f: () => void) => {
