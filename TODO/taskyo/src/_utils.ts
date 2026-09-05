@@ -1,3 +1,5 @@
+import { id } from "jsyoyo";
+
 interface AbortEvent {
   readonly type: "abort";
   readonly target: AbortSignal;
@@ -25,4 +27,4 @@ export declare const AbortController: {
   new (): AbortController;
 };
 
-export const NEVER = Promise.resolve();
+export const NEVER = new Promise(id);

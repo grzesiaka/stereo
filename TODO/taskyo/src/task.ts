@@ -46,7 +46,7 @@ export type Spec$Result<S> = S extends { run: any } ? ReturnType<S["run"]> : nev
 export type Spec$Params<S> = S extends { run: any } ? Parameters<S["run"]>[0] : never;
 export type Spec$Deps<S> = S extends { run: any } ? Parameters<S["run"]>[1] : never;
 
-export const load = <S extends TaskSpec>(s: S) =>
+export const load = <S extends TaskSpec<any, any, any, any, any>>(s: S) =>
   "loaded" in s
     ? Promise.resolve(s)
     : (awaiT(s.load()).then((l: any) => ((s.loaded = l), s)) as Promise<
@@ -69,12 +69,12 @@ export const run =
     const abo = (f: () => void) => {
       abort.addEventListener("abort", () => {
         progress().X.aborted = true;
-        progress(P.value);
+        progress(P.value as any);
       });
       dispose = (x) => (abort.removeEventListener("abort", f), P.aborted ? (NEVER as never) : x);
     };
     const $ = load(spec)
-      .then((s) => s.run(params, s.loaded, abo, progress, s))
+      .then((s) => s.run(params, s.loaded, abo, progress as any, s))
       .then(dispose) as TaskRun<Spec>;
     $.progress = progress().O;
     return $;
