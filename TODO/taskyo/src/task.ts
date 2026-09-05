@@ -6,34 +6,34 @@ import { AbortSignal, NEVER } from "./_utils";
 
 export interface TaskSpec<
   ID extends string = string,
-  Result = unknown,
-  Params = unknown,
-  Deps extends Tree | Promise<unknown> = Tree | Promise<unknown>,
+  Result = any,
+  Params = any,
+  Deps extends Tree | Promise<any> = any,
   Progress extends ProgressSpec = ProgressSpec,
 > {
-  ID: ID;
+  ID: ID & (string & {});
   progress: Progress;
   load: () => Deps;
-  loaded?: Deps;
+  loaded?: AwaiTreed<Deps>;
   run: (
     p: Params,
     d: AwaiTreed<Deps>,
     a: (onborted: () => void) => void,
-    u: ProgressUpdate<ID, Progress>,
-    s: TaskSpec<ID, NoInfer<Result>, Params, NoInfer<Deps>, Progress>,
+    u: ProgressUpdate<Progress>,
+    s: TaskSpec<ID, any, Params, Deps, Progress>,
   ) => Result;
 }
 
 export const spec =
   <ID extends string, const Progress extends ProgressSpec = ["", 1]>(ID: ID, ...progress: Progress) =>
-  <Deps extends Tree | Promise<unknown>>(load: () => Deps) =>
-  <Params, Result>(
+  <Deps extends Tree | Promise<any>>(load: () => Deps) =>
+  <const Params, Result>(
     run: (
       p: Params,
       d: AwaiTreed<Deps>,
       a: (onborted: () => void) => void,
-      u: ProgressUpdate<ID, Progress>,
-      s: TaskSpec<ID, NoInfer<Result>, Params, NoInfer<Deps>, Progress>,
+      u: ProgressUpdate<Progress>,
+      s: TaskSpec<ID, any, NoInfer<Params>, NoInfer<Deps>, Progress>,
     ) => Result,
   ): TaskSpec<ID, Result, Params, Deps, Progress> => ({
     ID,
@@ -43,21 +43,21 @@ export const spec =
   });
 
 type Spec$Result<S> = S extends TaskSpec<any, infer X> ? X : never;
-type Spec$Params<S> = S extends TaskSpec<any, any, infer X> ? X : never;
+type Spec$Params<S> = S extends TaskSpec<any, any, infer X> ? X : ["WTF?!", S];
 type Spec$Deps<S> = S extends TaskSpec<any, any, any, infer X> ? X : never;
 
 export const load = <S extends TaskSpec>(s: S) =>
   "loaded" in s
     ? Promise.resolve(s)
-    : (awaiT(s.load()).then((l) => ((s.loaded = l), s)) as Promise<
+    : (awaiT(s.load()).then((l: any) => ((s.loaded = l), s)) as Promise<
         S extends { loaded: unknown } ? S : S & { loaded: Spec$Deps<S> }
       >);
 
 export type TaskRun<S extends TaskSpec> = Promise<Awaited<Spec$Result<S>>> & {
-  progress: ProgressVar<S["ID"], S["progress"]>["O"];
+  progress: ProgressVar<S["progress"]>["O"];
 };
 export const run =
-  <Spec extends TaskSpec>(spec: Spec) =>
+  <Spec extends TaskSpec<string, any, any, any, any>>(spec: Spec) =>
   <Params extends Spec$Params<Spec>, ProgressTotal extends ProgressRunParams<Spec["progress"]>>(
     params: Params,
     abort: AbortSignal,

@@ -12,15 +12,14 @@ export interface ProgressInfo<S extends ProgressSpec> {
   _01: number; // TODO clamped
 }
 
-export type ProgressVar<ID extends string, S extends ProgressSpec> = Var<ID, ProgressInfo<S>, Partial<ProgressInfo<S>>>;
+export type ProgressVar<S extends ProgressSpec> = Var<string, ProgressInfo<S>>;
 
-export type ProgressUpdate<ID extends string, S extends ProgressSpec> = (() => ProgressVar<ID, S>) &
-  ((...v: [S[1]]) => ProgressVar<ID, S>["X"]);
+export type ProgressUpdate<S extends ProgressSpec> = (() => ProgressVar<S>) & ((...v: [S[1]]) => ProgressVar<S>["X"]);
 
 export const $progress = <Spec extends Pick<TaskSpec, "progress" | "ID">>(
   spec: Spec,
   ...init: ProgressRunParams<Spec["progress"]>
-): ProgressUpdate<Spec["ID"], Spec["progress"]> => {
+): ProgressUpdate<Spec["progress"]> => {
   const p = spec.progress;
   const total = init[0] || p[1];
   const x = Var(

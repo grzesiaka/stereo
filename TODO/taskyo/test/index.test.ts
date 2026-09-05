@@ -1,7 +1,28 @@
 import { describe } from "~testing";
 
-import { $progress } from "../src";
+import { $progress, run, spec } from "../src";
 import { __ } from "jsyoyo";
+import { AbortController } from "../src/_utils";
+
+const Spec = spec(
+  "TEST",
+  "%",
+  100,
+)(() => ({
+  tree: { o: import("treeo") },
+  ioioy: import("ioioy"),
+}));
+
+describe(run, ({ eq }) => ({
+  "{}": async () => {
+    const s = Spec((P: { a: "B" }, $, a, u, s) => ({ P, $, a, u, s }));
+    // const s = Spec(() => 1);
+    s.load();
+    const r = await run(s)(["WTF?!", s], new Proxy({} as any, { get: () => () => 1 }));
+
+    eq(r);
+  },
+}));
 
 describe($progress, ({ eq, res }) => ({
   __: () => {
