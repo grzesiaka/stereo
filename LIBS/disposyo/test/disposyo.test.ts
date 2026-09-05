@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 import { __ } from "jsyoyo";
 
-import disposyo, { DISPOSE } from "../src/index";
+import disposyo, { DISPOSE } from "../src/disposyo";
 
 describe(disposyo, ({ eq, res }) => ({
   empty: () => {
