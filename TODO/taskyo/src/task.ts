@@ -67,7 +67,6 @@ export const run =
     const P = progress().X;
     const on = ON(abort);
     const d = disposyo([
-      on("abc", () => 1),
       on("abort", () => {
         progress().X.aborted = true;
         progress(P.value as any);
