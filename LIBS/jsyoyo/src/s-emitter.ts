@@ -9,16 +9,19 @@ export const sEmit = <Events extends Dict<ARR>>(cbs = {} as Partial<Dict<Set<Fn>
     cbs[key]?.delete(cb);
     if (cbs[key]?.size === 0) delete cbs[key];
   };
+  const on = <Key extends keyof Events>(key: Key, cb: (...ev: Events[Key]) => void) => {
+    cbs[key] = cbs[key] || new Set();
+    cbs[key].add(cb);
+    return () => off(key, cb);
+  };
   return {
     listners: cbs,
     emit: <Key extends keyof Events>(key: Key, ...ev: Events[Key]) => cbs[key]?.forEach((c) => c(...ev)),
     $: {
-      on: <Key extends keyof Events>(key: Key, cb: (...ev: Events[Key]) => void) => {
-        cbs[key] = cbs[key] || new Set();
-        cbs[key].add(cb);
-        return () => off(key, cb);
-      },
+      on,
       off,
+      addEventListener: on,
+      removeEventListener: off,
     },
   };
 };

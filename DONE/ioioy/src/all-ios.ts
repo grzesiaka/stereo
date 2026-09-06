@@ -2,7 +2,7 @@ import { Simplify } from "type-fest";
 import { __, Cb } from "~types";
 import type { ij_Project, KeyValues$Object } from "proyij";
 import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
-import D, { DISPOSE, type Disposyo, Dispose } from "disposyo";
+import { disposyo as D, DISPOSE, type Disposyo, Dispose } from "disposyo";
 import { mb } from "jsyoyo";
 import { OP, WithOP } from "jsyoyo";
 

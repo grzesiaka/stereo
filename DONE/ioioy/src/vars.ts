@@ -7,7 +7,7 @@ import type { IO, IOs$FlatTypes, IdIOs } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
 import { __, mb } from "jsyoyo";
 import { OP } from "jsyoyo";
-import D, { DISPOSE, type Disposyo, Dispose } from "disposyo";
+import { disposyo as D, DISPOSE, type Disposyo, Dispose } from "disposyo";
 import type { Var } from "./var";
 
 export type And_Vars_X<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
