@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 
 import { $progress, load, run, spec } from "../src";
-import { __, id } from "jsyoyo";
+import { __, AbortController } from "jsyoyo";
 import { awaiT } from "treeo";
 import { NEVER } from "../src/_utils";
 
@@ -57,20 +57,17 @@ describe(run, ({ eq, res }) => ({
       return p().X.aborted ? NEVER : ("ok" as const);
     });
 
-    let _abort = __ as __<() => void>;
-    const pr = run(s)(1, {
-      addEventListener: (_: any, a: any) => (_abort = a),
-    } as any);
+    const abort = new AbortController();
+    const pr = run(s)(1, abort.signal);
     const re = res();
     pr.progress((x) => re.add(x.value));
-    await tick(4);
     re.eq([0]);
     // It waits for dynamic imports to resolve
-    while (!_abort) await tick();
+    while (re.items.length < 2) await tick();
     re.eq([0, 50]);
-    _abort();
+    abort.abort();
     while (re.items.length < 3) await tick();
-    re.eq([0, 50, 50]);
+    re.eq([0, 50, 50]); // the last 50 after abortion
     eq(pr.progress().aborted, true);
   },
 
@@ -85,22 +82,18 @@ describe(run, ({ eq, res }) => ({
 
     await load(s);
 
-    let _abort = __ as __<() => void>;
-    const pr = run(s)(1, {
-      addEventListener: (_: any, a: any) => {
-        console.log("--->", a);
-        _abort = a;
-      },
-    } as any);
+    const abort = new AbortController();
+    const pr = run(s)(1, abort.signal);
+
     const re = res();
     pr.progress((x) => re.add(x.value));
-    await tick(1);
     re.eq([0]);
+    eq(pr.progress().value, 0);
+    await tick(2);
     re.eq([0, 50]);
-    console.log("abort");
-    _abort();
+    abort.abort();
     while (re.items.length < 3) await tick();
-    re.eq([0, 50, 50]);
+    re.eq([0, 50, 50]); // the last 50 after abortion
     eq(pr.progress().aborted, true);
   },
 }));

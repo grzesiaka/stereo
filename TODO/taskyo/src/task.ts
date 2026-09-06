@@ -1,8 +1,8 @@
-import { __, id } from "jsyoyo";
+import { __, AbortSignal, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import { $progress, ProgressRunParams, ProgressSpec, ProgressUpdate, ProgressVar } from "./progress";
 import "./_utils";
-import { AbortSignal, NEVER } from "./_utils";
+import { disposyo } from "disposyo";
 
 export interface TaskSpec<
   ID extends string = string,
@@ -65,17 +65,19 @@ export const run =
   ) => {
     const progress = $progress(spec, ...total);
     const P = progress().X;
-    let dispose = id;
-    const abo = (f: () => void) => {
-      abort.addEventListener("abort", () => {
+    const on = ON(abort);
+    const d = disposyo([
+      on("abc", () => 1),
+      on("abort", () => {
         progress().X.aborted = true;
         progress(P.value as any);
-      });
-      dispose = (x) => (abort.removeEventListener("abort", f), P.aborted ? (NEVER as never) : x);
-    };
+      }),
+    ]);
+
+    const abo = (f: () => void) => d.__.push(on("abort", f));
     const $ = load(spec)
       .then((s) => s.run(params, s.loaded, abo, progress as any, s))
-      .then(dispose) as TaskRun<Spec>;
+      .finally(d) as TaskRun<Spec>;
     $.progress = progress().O;
     return $;
   };
