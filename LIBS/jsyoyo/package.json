@@ -9,7 +9,9 @@
     "./num": "./out/num/index.mjs",
     "./num/*": "./out/num/*.mjs",
     "./parse": "./out/parse/index.mjs",
-    "./parse/*": "./out/parse/*.mjs"
+    "./parse/*": "./out/parse/*.mjs",
+    "./polyfills": "./out/polyfills/index.mjs",
+    "./polyfills/*": "./out/polyfills/*.mjs"
   },
   "scripts": {
     "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/_*/*.ts !./src/*/_*.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",

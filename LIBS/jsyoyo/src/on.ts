@@ -1,14 +1,12 @@
-import { Fn$I } from "~types";
+import { ARR, Dict } from "~types";
 import { id } from "./id";
 import { OnOff } from "./s-emitter";
 
 export const ON =
-  <T extends Partial<OnOff>>(t: T) =>
-  <KV extends Fn$I<T["on"]>>(...kv: KV) =>
-    // (...kv) OR EVEN (...(kv as any[]) DO NOT WORK
-    (
-      (t.on || t.addEventListener || (() => 1))(kv[0], kv[1]),
-      () => (t.off || t.removeEventListener || id)(kv[0], kv[1])
-    );
+  <Events extends Dict<ARR>, T extends Partial<OnOff<Events>> = Partial<OnOff<Events>>>(t: T) =>
+  <Key extends keyof Events>(key: Key, cb: (...ev: Events[Key]) => void, opt?: boolean | { once?: boolean }) => (
+    (t.on || t.addEventListener || (() => 1))(key, cb, opt),
+    () => (t.off || t.removeEventListener || id)(key, cb)
+  );
 
 export default ON;

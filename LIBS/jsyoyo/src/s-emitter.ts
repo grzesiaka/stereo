@@ -1,4 +1,4 @@
-import { ARR, Dict, Fn, Fn$O } from "~types";
+import { __, ARR, Dict, Fn, Fn$O } from "~types";
 
 // sEmit - 's' / 'small' | TODO 'm' - matching by prefix; solo-mode when registering return updated self with register names removed
 
@@ -9,10 +9,14 @@ export const sEmit = <Events extends Dict<ARR>>(cbs = {} as Partial<Dict<Set<Fn>
     cbs[key]?.delete(cb);
     if (cbs[key]?.size === 0) delete cbs[key];
   };
-  const on = <Key extends keyof Events>(key: Key, cb: (...ev: Events[Key]) => void) => {
+  const on = <Key extends keyof Events>(
+    key: Key,
+    cb: (...ev: Events[Key]) => void,
+    _opt?: boolean | { once?: boolean },
+  ) => {
     cbs[key] = cbs[key] || new Set();
     cbs[key].add(cb);
-    return () => off(key, cb);
+    // return () => off(key, cb) as __<() => void>;
   };
   return {
     listners: cbs,

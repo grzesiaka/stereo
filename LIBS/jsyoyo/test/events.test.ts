@@ -9,7 +9,8 @@ describe(sEmit, ({ eq, res }) => ({
     $.on("a", (x) => r.add(["a", x]));
     eq(listners.a!.size, 1);
     eq(listners.b, __);
-    const off_b = $.on("b", (x) => r.add(["b", x]));
+    const on_b = (x: unknown) => r.add(["b", x]);
+    $.on("b", on_b);
     r.eq([]);
     emit("a", "A");
     emit("b", "B");
@@ -17,7 +18,7 @@ describe(sEmit, ({ eq, res }) => ({
       ["a", "A"],
       ["b", "B"],
     ]);
-    off_b();
+    $.off("b", on_b);
     emit("a", "A");
     emit("b", "B");
     r.eq([
