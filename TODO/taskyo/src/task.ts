@@ -1,7 +1,7 @@
 import { __, AbortSignal, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import { $progress, ProgressRunParams, ProgressSpec, ProgressUpdate, ProgressVar } from "./progress";
-import "./_utils";
+import "./utils";
 import { disposyo } from "disposyo";
 
 export interface TaskSpec<

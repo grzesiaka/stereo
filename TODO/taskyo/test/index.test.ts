@@ -3,7 +3,7 @@ import { describe } from "~testing";
 import { $progress, load, run, spec } from "../src";
 import { __, AbortController } from "jsyoyo";
 import { awaiT } from "treeo";
-import { NEVER } from "../src/_utils";
+import { NEVER } from "../src/utils";
 
 const deps = () => ({
   tree: { o: import("treeo") },

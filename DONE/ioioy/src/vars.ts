@@ -1,12 +1,12 @@
 import { Simplify } from "type-fest";
-import type { ij_Project, KeyValues$Object } from "proyij";
+import type { ij_Project } from "proyij";
 import { ARR, Cb } from "~types";
 import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
 
 import type { IO, IOs$FlatTypes, IdIOs } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
 import { __, mb } from "jsyoyo";
-import { OP } from "jsyoyo";
+import { OP, KeyValues$Object } from "jsyoyo";
 import { disposyo as D, DISPOSE, type Disposyo, Dispose } from "disposyo";
 import type { Var } from "./var";
 

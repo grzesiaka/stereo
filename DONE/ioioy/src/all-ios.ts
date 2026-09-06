@@ -1,10 +1,10 @@
 import { Simplify } from "type-fest";
 import { __, Cb } from "~types";
-import type { ij_Project, KeyValues$Object } from "proyij";
+import type { ij_Project } from "proyij";
 import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
 import { disposyo as D, DISPOSE, type Disposyo, Dispose } from "disposyo";
 import { mb } from "jsyoyo";
-import { OP, WithOP } from "jsyoyo";
+import { OP, WithOP, KeyValues$Object } from "jsyoyo";
 
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";

@@ -1,7 +1,7 @@
 import { __, ARR } from "~types";
 import { Simplify } from "type-fest";
-import { ij_Project, KeyValues$Object } from "proyij";
-import { a } from "jsyoyo";
+import { ij_Project } from "proyij";
+import { a, KeyValues$Object } from "jsyoyo";
 
 export type ArrObje<
   Xs extends ARR,

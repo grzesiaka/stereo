@@ -1,8 +1,7 @@
 import { Static, TypierBase } from "typier";
 import { $$, ARR } from "~types";
 import { Simplify } from "type-fest";
-import { Dict } from "jsyoyo";
-import { KeyValues$Object } from "proyij";
+import { Dict, KeyValues$Object } from "jsyoyo";
 
 export { __ } from "jsyoyo";
 export type Port = unknown;

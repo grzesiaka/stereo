@@ -1,4 +1,4 @@
-import { ARR, Dict, Fn, Fn$I } from "~types";
+import { Fn, Fn$I } from "~types";
 import { id } from "./id";
 import { OnOff } from "./s-emitter";
 
