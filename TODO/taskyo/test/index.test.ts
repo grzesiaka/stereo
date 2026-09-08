@@ -1,17 +1,39 @@
 import { describe } from "~testing";
 
-import { $progress, load, run, spec } from "../src";
 import { __, AbortController } from "jsyoyo";
 import { awaiT } from "treeo";
-import { NEVER } from "../src/utils";
+
+import { $progress, load, run, spec, taskyo, NEVER, Taskyo } from "../src";
+import { indexify } from "proyij";
 
 const deps = () => ({
   tree: { o: import("treeo") },
   ioioy: import("ioioy"),
 });
 const Spec = spec("TEST", "%", 100)(deps);
+const I = <ID extends string>(I: ID) => spec(I, "", 1)(deps);
 const fakeAbort = new Proxy({} as any, { get: () => () => 1 });
 const tick = (n = 1): Promise<void> => (n <= 1 ? Promise.resolve() : tick(n - 1).then(() => Promise.resolve()));
+
+describe(taskyo, ({ eq }) => ({
+  empty: () => {
+    const t = new Taskyo({}, []);
+    eq([t.specs, t.steps, t.ctx], [{}, [], __]);
+  },
+  simple: () => {
+    const i = indexify("ID")([Spec<number, 1>(() => 1), I("2")<number, 2>(() => 2)]);
+    const t = taskyo(i)
+      .$params(
+        "start",
+        (c) =>
+          ({
+            TEST: 8,
+            2: 8,
+          }) as const,
+      )
+      .$("later", (ctx) => {});
+  },
+}));
 
 describe(run, ({ eq, res }) => ({
   "+1": async () => {

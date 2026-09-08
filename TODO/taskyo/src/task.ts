@@ -4,6 +4,7 @@ import { $progress, ProgressRunParams, ProgressSpec, ProgressUpdate, ProgressVar
 import "./utils";
 import { disposyo } from "disposyo";
 
+export type TaskSpacAny = TaskSpec<any, any, any, any, any>;
 export interface TaskSpec<
   ID extends string = string,
   Result = any,
