@@ -1,43 +1,47 @@
 import { Var } from "ioioy";
-import { TaskSpec } from "./task";
-import { $$, __ } from "jsyoyo";
+import { $$, __, Fn$I } from "jsyoyo";
 
-export type ProgressSpec<Units extends string = string, Max extends __<number> = __<number>> = [units: Units, max: Max];
-export type ProgressRunParams<S extends ProgressSpec> = __ extends S[1] ? (S[1] extends __ ? [] : [$$<S[1]>]) : [];
-export interface ProgressInfo<S extends ProgressSpec> {
-  unit: S[0];
-  total: S[1];
-  value: S[1] | 0;
-  aborted?: boolean;
-  _01: number; // TODO clamped
+interface Base<Value extends number = number, Total extends Value = Value> {
+  curr: Value;
+  total: Total;
 }
 
-export type ProgressVar<S extends ProgressSpec> = Var<string, ProgressInfo<S>>;
+export interface ProgressCreateOptions<Value extends number = number, Total extends Value = Value> extends Partial<
+  Base<Value, Total>
+> {}
 
-export type ProgressUpdate<S extends ProgressSpec> = (() => ProgressVar<S>) &
-  ((...v: S[1] extends __ ? [__?] : [S[1] | (number & {})]) => ProgressVar<S>["X"]);
+type Failed = "abort" | "error";
+interface ProgressInfo<S extends ProgressCreateOptions> extends Base<$$<S["curr"]> & number, $$<S["total"]> & number> {
+  failed?: Failed;
+}
+export type ProgressVar<S extends ProgressCreateOptions> = Var<string, ProgressInfo<S>>;
 
-export const $progress = <Spec extends Pick<TaskSpec, "progress" | "ID">>(
-  spec: Spec,
-  ...init: ProgressRunParams<Spec["progress"]>
-): ProgressUpdate<Spec["progress"]> => {
-  const p = spec.progress;
-  const total = init[0] || p[1];
-  const x = Var(
-    {
-      unit: p[0],
-      total,
-      value: 0,
-      get _01() {
-        return x.X.total === __ ? __ : Math.trunc((1000 * x.X.value) / x.X.total) / 1000;
-      },
-    },
-    spec.ID,
-  );
-  return ((...v: any[]) => {
-    if (v.length === 0) return x;
-    x.X.value = Math.min(v[0] || 0, x.X.total || 0);
-    x.I(x.X);
-    return x.X;
-  }) as never;
-};
+export type ProgressUpdate<S extends ProgressCreateOptions> = (() => ProgressInfo<S>) &
+  ((next: $$<S["curr"]> & number, failed?: Failed) => ProgressInfo<S>);
+
+export type ProgressRunParams<O extends ProgressCreateOptions> = __ extends O["total"]
+  ? [$$<O["total"]> & number]
+  : [O["total"]?];
+
+export const $progress =
+  <const O extends ProgressCreateOptions = {}>(options = {} as O) =>
+  <T extends ProgressRunParams<O>>(...total: T): [ProgressVar<O>, ProgressUpdate<O>] => {
+    const i = { curr: 0, total: total[0], ...options } as never as ProgressInfo<O>;
+    const x = Var(i) as ProgressVar<O>;
+    return [
+      x,
+      // Interestingly: Parameters<F> seems to not pick-up []
+      ((...vf: Fn$I<ProgressUpdate<O>> | []) => {
+        if (vf.length === 0) return x.X;
+        const i = {
+          ...x.X,
+          curr: Math.min(vf[0] || 0, x.X.total),
+        } as ProgressInfo<O>;
+        vf[1] && (i.failed = vf[1]);
+        x.I(i);
+        return x.X;
+      }) as ProgressUpdate<O>,
+    ];
+  };
+
+export const _01 = (curr: number, total: number) => Math.trunc((curr / total) * 100) / 100;

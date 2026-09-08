@@ -1,6 +1,6 @@
 import { __, AbortSignal, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
-import { $progress, ProgressRunParams, ProgressSpec, ProgressUpdate, ProgressVar } from "./progress";
+import { $progress, ProgressRunParams, ProgressCreateOptions, ProgressUpdate, ProgressVar } from "./progress";
 import "./utils";
 import { disposyo } from "disposyo";
 
@@ -10,9 +10,9 @@ export interface TaskSpec<
   Result = any,
   Params = any,
   Deps extends Tree | Promise<any> = any,
-  Progress extends ProgressSpec = ProgressSpec,
+  Progress extends ProgressCreateOptions = ProgressCreateOptions,
 > {
-  ID: ID & (string & {});
+  ID: ID;
   progress: Progress;
   load: () => Deps;
   loaded?: AwaiTreed<Deps>;
@@ -26,8 +26,11 @@ export interface TaskSpec<
 }
 
 export const spec =
-  <ID extends string, const Progress extends ProgressSpec = ["", 1]>(ID: ID, ...progress: Progress) =>
-  <Deps extends Tree | Promise<any>>(load: () => Deps) =>
+  <const Progress extends ProgressCreateOptions = {}, Extra extends {} = {}>(
+    progress = {} as Progress,
+    extra = {} as Extra,
+  ) =>
+  <ID extends string, Deps extends Tree | Promise<any>>(ID: ID, load: () => Deps) =>
   <const Params, Result>(
     run: (
       p: Params,
@@ -36,7 +39,8 @@ export const spec =
       u: ProgressUpdate<Progress>,
       s: TaskSpec<ID, any, NoInfer<Params>, NoInfer<Deps>, Progress>,
     ) => Result,
-  ): TaskSpec<ID, Result, Params, Deps, Progress> => ({
+  ): TaskSpec<ID, Result, Params, Deps, Progress> & Extra => ({
+    ...extra,
     ID,
     progress,
     load,
@@ -57,36 +61,31 @@ export const load = <S extends TaskSpec<any, any, any, any, any>>(s: S) =>
 export type TaskRun<S extends TaskSpec> = Promise<Awaited<Spec$Result<S>>> & {
   progress: ProgressVar<S["progress"]>["O"];
 };
-export const run =
+export const $run =
   <Spec extends TaskSpec<string, any, any, any, any>>(spec: Spec) =>
   <Params extends Spec$Params<Spec>, ProgressTotal extends ProgressRunParams<Spec["progress"]>>(
     params: Params,
     abort: AbortSignal,
     ...total: ProgressTotal
   ) => {
-    const progress = $progress(spec, ...total);
-    const P = progress().X;
-    const on = ON(abort);
-    const d = disposyo([
-      on("abort", () => {
-        progress().X.aborted = true;
-        progress(P.value as any);
-      }),
-    ]);
+    const [p, update] = $progress(spec.progress)(...(total as never));
 
-    const abo = (f: () => void) => d.__.push(on("abort", f));
+    const on = ON(abort);
+    const d = disposyo([on("abort", () => update(p.X.curr, "abort"))]);
+    const _abort = (f: () => void) => d.__.push(on("abort", f));
+
     const $ = load(spec)
-      .then((s) => s.run(params, s.loaded, abo, progress as any, s))
+      .then((s) => s.run(params, s.loaded, _abort, update, s))
       .finally(d) as TaskRun<Spec>;
-    $.progress = progress().O;
-    return $;
+    $.progress = p.O;
+    return [$, p] as const;
   };
 
-//type TaskDuration<Avg extends number = number, Max extends __<number> = __<number>> = __ extends Max ? Avg : [Avg, Max];
-// export interface WithTime<Time extends __<TaskDuration> = __<TaskDuration>> {
-//   time: Time;
-// }
-
-// export interface Task<S extends TaskSpec> {
-//   spec: S;
-// }
+export const run =
+  <Spec extends TaskSpec<string, any, any, any, any>>(spec: Spec) =>
+  <Params extends Spec$Params<Spec>, ProgressTotal extends ProgressRunParams<Spec["progress"]>>(
+    params: Params,
+    abort: AbortSignal,
+    ...total: ProgressTotal
+  ) =>
+    $run(spec)(params, abort, ...total)[0];
