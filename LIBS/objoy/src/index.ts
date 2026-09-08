@@ -1,3 +1,3 @@
 export * from "./base"
-export * from "./from-array"
+export * from "./from-entries"
 export * from "./from-strings"

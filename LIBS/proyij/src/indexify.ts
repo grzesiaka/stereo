@@ -10,7 +10,7 @@ export type Indexify<X, K extends PropertyKey> = Simplify<_Indexify<X, K>>;
 /** Picks a name for each item. The name becomes a key the item value in a newly formed object. */
 export const indexify =
   <K extends PropertyKey = "id">(k = "id" as K) =>
-  <A extends ARR<object>>(a: A) =>
+  <const A extends ARR<object>>(a: A) =>
     a.reduce((a, x) => (k in x && ((a as any)[(x as any)[k]] = x), a), {} as Indexify<A, K>) as Indexify<A, K>;
 
 export default indexify;

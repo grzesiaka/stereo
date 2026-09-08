@@ -1,6 +1,6 @@
 import { describe } from "~testing";
 
-import { objectFromArray as $ } from "../src";
+import { fromEntries as $ } from "../src";
 
 describe($, ({ eq }) => ({
   empty: () => eq($([]), {}),
