@@ -2,9 +2,9 @@ import { describe } from "~testing";
 
 import { __, AbortController } from "jsyoyo";
 import { awaiT } from "treeo";
-
-import { $progress, load, run, spec, taskyo, NEVER, Taskyo, _01 } from "../src";
 import { indexify } from "proyij";
+
+import { $progress, load, run, spec, NEVER, _01, parallel } from "../src";
 
 const deps = () => ({
   tree: { o: import("treeo") },
@@ -14,27 +14,25 @@ const Spec = spec({ units: "%", total: 100, failed: __ as __<"abort"> }, (i) => 
   "TEST",
   deps,
 );
-const I = <ID extends string>(I: ID) => spec({ total: 1 })(I, deps);
+const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) =>
+  spec({ total: 1 })(I, deps)<ID, Promise<number>>(async (p, _d, _abo, u) => {
+    for (let i = 0; i < T; i++) {
+      await tick();
+      u(i / T);
+    }
+    u(1);
+    return p.length;
+  });
 const fakeAbort = new Proxy({} as any, { get: () => () => 1 });
 const tick = (n = 1): Promise<void> => (n <= 1 ? Promise.resolve() : tick(n - 1).then(() => Promise.resolve()));
 
-describe(taskyo, ({ eq }) => ({
-  empty: () => {
-    const t = new Taskyo({}, []);
-    eq([t.specs, t.steps, t.ctx], [{}, [], __]);
-  },
-  simple: () => {
-    const i = indexify("ID")([Spec<number, 1>(() => 1), I("2")<number, 2>(() => 2)]);
-    taskyo(i)
-      .$params(
-        "start",
-        () =>
-          ({
-            TEST: 8,
-            2: 4,
-          }) as const,
-      )
-      .$("later", (_, acc) => acc.start);
+const specs = indexify("ID")([IO("A"), IO("B", 10), IO("C", 8)]);
+
+describe(parallel, ({ eq }) => ({
+  simple: async () => {
+    const s = parallel("II", specs);
+    const r = await run(s)({ A: "A", B: "B", C: "C" }, fakeAbort, 1);
+    eq(r, { A: 1, B: 1, C: 1 });
   },
 }));
 

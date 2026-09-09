@@ -1,4 +1,4 @@
-import { __, AbortSignal, Fn$O, id, ON } from "jsyoyo";
+import { __, AbortSignal, ARR, Dict, Fn$O, id, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import {
   $progress,
@@ -34,7 +34,7 @@ export interface TaskSpec<
 
 export const spec =
   <
-    const ProgressBase extends ProgressCreateOptions = {},
+    const ProgressBase extends ProgressCreateOptions & Dict = {},
     ProgressMap extends (i: ProgressInfo<ProgressBase>) => ProgressInfo<ProgressBase> = (
       i: ProgressInfo<ProgressBase>,
     ) => ProgressInfo<ProgressBase>,
