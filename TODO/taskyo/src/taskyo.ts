@@ -1,65 +1,38 @@
-import { __, ARR, Dict, Fn$O } from "jsyoyo";
-import { SimplifyDeep, Simplify } from "type-fest";
-import { Spec$Params, Spec$Result, TaskSpecAny, TaskSpec } from "./task";
-import { indexify, Indexify } from "proyij";
+import { ARR } from "jsyoyo";
+import { Tree } from "treeo";
+import { Simplify } from "type-fest";
+import { o, Compose } from "composyo";
 
-type Step<L = unknown, R = unknown, E extends ARR = ARR> = readonly [L, R, ...E];
+import { Spec$Params, Spec$ResultOK, TaskSpec, TaskSpecAny } from "./task";
 
-type _Params<Specs extends Dict<TaskSpec>> = { [K in keyof Specs]: Spec$Params<Specs[K]> };
-type Specs$Params<Specs extends Dict<TaskSpec>, Ctx> = _Params<Specs> | ((ctx: Ctx) => _Params<Specs>);
+export type STEP1<
+  Ctx = unknown,
+  S extends TaskSpecAny = TaskSpecAny,
+  Params extends (ctx: Ctx) => Spec$Params<S> = (ctx: Ctx) => Spec$Params<S>,
+> = [S, Params];
 
-type _Steps$Accumulated<Steps> = Steps extends readonly [infer H, ...infer R]
-  ? _Steps$Accumulated<R> & (H extends Step<infer ID extends string, infer X> ? { [i in ID]: Fn$O<X> } : {})
-  : {};
-type Steps$Accumulated<Steps> = Simplify<_Steps$Accumulated<Steps>>;
+export type STEP<Ctx = unknown> = STEP1<Ctx> | Tree<STEP1<Ctx>> | ARR<STEP1<Ctx>>;
 
-export class Taskyo<
-  Ctx = __,
-  Specs extends Dict<TaskSpecAny> = Dict<TaskSpecAny>,
-  Steps extends ARR<Step> = ARR<Step>,
-> {
-  constructor(
-    public readonly specs: Specs,
-    public readonly steps: Steps,
-    public readonly ctx?: __<Ctx>,
-  ) {}
+export type STEPS = ARR<STEP>;
 
-  $params<ID extends string, const Params extends Specs$Params<Specs, Ctx>>(ID: ID, $: Params) {
-    return new Taskyo<
-      SimplifyDeep<Ctx & { [i in ID]: { [k in keyof Params & keyof Specs]: Spec$Result<Specs[k]> } }>,
-      Specs,
-      [...Steps, [ID, Params]]
-    >(this.specs, this.steps.concat([ID, $]) as [...Steps, [ID, Params]]);
-  }
+type S$R<S, Flat = false> = S extends readonly [readonly [TaskSpecAny, ...any[]], ...infer R]
+  ? S$R<S[0]> & ([] extends R ? {} : S$R<R>)
+  : S extends readonly [infer S extends TaskSpecAny, ...any[]]
+    ? true extends Flat
+      ? Spec$ResultOK<S>
+      : { [K in S["ID"]]: Spec$ResultOK<S> }
+    : S extends { [K in string]: any }
+      ? { [K in keyof S]: Simplify<S$R<S[K], true>> }
+      : never;
+export type Step$Result<S> = Simplify<S$R<S>>;
 
-  $<ID extends string, const Next>(ID: ID, $: (ctx: Ctx, acc: Steps$Accumulated<Steps>, t: this) => Next) {
-    return new Taskyo<Next, Specs, [] extends Steps ? [[ID, Next]] : [...Steps, [ID, Next]]>(
-      this.specs,
-      this.steps.concat([ID, $]) as never,
-    );
-  }
+type SPEC<ID extends string, Params = ID, Result = ID> = [TaskSpec<ID, Result, Params>, () => Params, ID];
+
+type A = Step$Result<[SPEC<"A", "", "AA">, SPEC<"B">]>;
+
+type B = Step$Result<{ A: { B: SPEC<"AB", 1, Promise<2>>; C: { D: [SPEC<"L">, SPEC<"R">] } } }>;
+
+export class Taskyo<Steps extends STEPS> {
+  constructor(public readonly steps: Steps) {}
+  run<S extends STEP>() {}
 }
-
-export const taskyo = <
-  Specs extends Dict<TaskSpecAny> | ARR<TaskSpecAny>,
-  const Steps extends ARR<Step> = [],
-  const Ctx = {},
->(
-  specs: Specs,
-  steps = [] as never as Steps,
-  ctx = {} as Ctx,
-) =>
-  new Taskyo<Ctx, Specs extends ARR ? Indexify<Specs, "ID"> : Specs, Steps>(
-    (Array.isArray(specs) ? indexify("ID")(specs) : specs) as never,
-    steps,
-    ctx,
-  );
-
-export default taskyo;
-
-/*
-  TODO for 2026-09-09
-
-    1. taskyo - context, provide results from previous steps
-    1. taskyo - adding steps, TODO steps
-*/

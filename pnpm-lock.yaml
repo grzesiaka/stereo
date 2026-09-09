@@ -778,6 +778,9 @@ importers:
 
   TODO/taskyo:
     dependencies:
+      composyo:
+        specifier: workspace:^
+        version: link:../../DONE/composyo
       disposyo:
         specifier: workspace:^
         version: link:../../LIBS/disposyo

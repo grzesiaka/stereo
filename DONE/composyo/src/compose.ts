@@ -2,7 +2,7 @@ import { $$, __, ARR, FLIP, Fn } from "jsyoyo";
 import { OP } from "jsyoyo";
 
 export const compose =
-  <X, L = __, R = unknown>(x: X, L = __ as L, _?: R): Compose<X, L> =>
+  <X, L = __, R = unknown>(x: X, L = __ as L, _?: R): Compose<X, L, R> =>
   (...fns: ARR<Fn>) => {
     if (!fns.length) return x as any;
     const f = (i: any) => {

@@ -10,7 +10,6 @@ import {
   ProgressSpec,
 } from "./progress";
 import "./utils";
-import { disposyo } from "disposyo";
 
 export type TaskSpecAny = TaskSpec<any, any, any, any, any>;
 export interface TaskSpec<
@@ -89,8 +88,8 @@ export const $run =
     const [p, update] = $progress(...spec.progress)(...(total as never));
 
     const on = ON(abort);
-    const d = disposyo();
-    const _abort = (f: () => void) => d.__.push(on("abort", f));
+    let d: () => void = () => __;
+    const _abort = (f: () => void) => (d = on("abort", f));
 
     const $ = load(spec)
       .then((s) => s.run(params, s.loaded, _abort, update, s))
