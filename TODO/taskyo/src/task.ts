@@ -89,7 +89,7 @@ export const $run =
     const [p, update] = $progress(...spec.progress)(...(total as never));
 
     const on = ON(abort);
-    const d = disposyo([on("abort", () => update(p.X.curr, "abort"))]);
+    const d = disposyo();
     const _abort = (f: () => void) => d.__.push(on("abort", f));
 
     const $ = load(spec)

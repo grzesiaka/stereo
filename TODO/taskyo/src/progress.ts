@@ -15,19 +15,17 @@ export type ProgressMap<O extends ProgressCreateOptions = ProgressCreateOptions>
   i: ProgressInfo<O>,
 ) => ProgressInfo<O>;
 
-type Failed = "abort" | "error";
 export type ProgressInfo<S extends ProgressCreateOptions> = Simplify<
   Omit<S, "total" | "curr"> &
     S & {
       total: $$<S["total"]> & number;
       curr: $$<S["curr"]> & number;
-      failed?: Failed;
     }
 >;
 export type ProgressVar<S extends ProgressCreateOptions> = Var<string, ProgressInfo<S>>;
 
 export type ProgressUpdate<S extends ProgressCreateOptions> = (() => ProgressInfo<S>) &
-  ((next: $$<S["curr"]> & number, failed?: Failed) => ProgressInfo<S>);
+  ((next: $$<S["curr"]> & number, other?: Partial<Omit<S, "curr">>) => ProgressInfo<S>);
 
 export type ProgressRunParams<O extends ProgressCreateOptions> = __ extends O["total"]
   ? [$$<O["total"]> & number]
@@ -52,9 +50,9 @@ export const $progress =
         if (vf.length === 0) return x.X;
         const i = map({
           ...x.X,
+          ...vf[1],
           curr: Math.min(vf[0] || 0, x.X.total),
         }) as ProgressInfo<O>;
-        vf[1] && ((i as any).failed = vf[1]);
         x.I(i);
         return x.X;
       }) as ProgressUpdate<O>,

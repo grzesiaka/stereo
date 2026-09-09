@@ -10,7 +10,10 @@ const deps = () => ({
   tree: { o: import("treeo") },
   ioioy: import("ioioy"),
 });
-const Spec = spec({ units: "%", total: 100 }, (i) => ({ ...i, _01: _01(i.curr, i.total) }))("TEST", deps);
+const Spec = spec({ units: "%", total: 100, failed: __ as __<"abort"> }, (i) => ({ ...i, _01: _01(i.curr, i.total) }))(
+  "TEST",
+  deps,
+);
 const I = <ID extends string>(I: ID) => spec({ total: 1 })(I, deps);
 const fakeAbort = new Proxy({} as any, { get: () => () => 1 });
 const tick = (n = 1): Promise<void> => (n <= 1 ? Promise.resolve() : tick(n - 1).then(() => Promise.resolve()));
@@ -28,10 +31,10 @@ describe(taskyo, ({ eq }) => ({
         () =>
           ({
             TEST: 8,
-            2: 8,
+            2: 4,
           }) as const,
       )
-      .$("later", (ctx, acc) => acc.start);
+      .$("later", (_, acc) => acc.start);
   },
 }));
 
@@ -70,8 +73,8 @@ describe(run, ({ eq, res }) => ({
   },
 
   abort: async () => {
-    const s = Spec(async (_, _$, _a, p) => {
-      _a(() => 1);
+    const s = Spec(async (_, _$, abo, p) => {
+      abo(() => p(p().curr, { failed: "abort" }));
       p(50);
       await tick(2);
       !p().failed && p(100);
@@ -93,8 +96,8 @@ describe(run, ({ eq, res }) => ({
   },
 
   abort_manual_load: async () => {
-    const s = Spec(async (_, _$, _a, p) => {
-      _a(() => 1);
+    const s = Spec(async (_, _$, abo, p) => {
+      abo(() => p(p().curr, { failed: "abort" }));
       p(50);
       await tick(2);
       !p().failed && p(100);
