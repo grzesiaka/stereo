@@ -10,7 +10,7 @@ const deps = () => ({
   tree: { o: import("treeo") },
   ioioy: import("ioioy"),
 });
-const Spec = spec({ units: "%", total: 100 })("TEST", deps);
+const Spec = spec({ units: "%", total: 100 }, (i) => ({ ...i, _01: _01(i.curr, i.total) }))("TEST", deps);
 const I = <ID extends string>(I: ID) => spec({ total: 1 })(I, deps);
 const fakeAbort = new Proxy({} as any, { get: () => () => 1 });
 const tick = (n = 1): Promise<void> => (n <= 1 ? Promise.resolve() : tick(n - 1).then(() => Promise.resolve()));
@@ -31,7 +31,7 @@ describe(taskyo, ({ eq }) => ({
             2: 8,
           }) as const,
       )
-      .$("later", (ctx) => ctx);
+      .$("later", (ctx, acc) => acc.start);
   },
 }));
 
@@ -112,6 +112,7 @@ describe(run, ({ eq, res }) => ({
     eq(pr.progress().curr, 0);
     await tick(2);
     re.eq([0, 50]);
+    eq(pr.progress()._01, 0.5);
     abort.abort();
     while (re.items.length < 3) await tick();
     re.eq([0, 50, 50]); // the last 50 after abortion
@@ -121,9 +122,10 @@ describe(run, ({ eq, res }) => ({
 
 describe($progress, ({ eq, res }) => ({
   indeterminate: () => {
-    const [p, update] = $progress({ total: Infinity })();
+    const [p, update] = $progress({ total: Infinity }, (i) => ({ a: "A" as const, ...i }))();
     eq(p.X.total, Infinity);
     eq(p.X.curr, 0);
+    eq(p.X.a, "A");
     update(1);
   },
   0: () => {

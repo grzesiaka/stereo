@@ -1,16 +1,21 @@
-import { __, ARR, Dict } from "jsyoyo";
-import { SimplifyDeep } from "type-fest";
-import { Spec$Params, Spec$Result, TaskSpacAny, TaskSpec } from "./task";
+import { __, ARR, Dict, Fn$O } from "jsyoyo";
+import { SimplifyDeep, Simplify } from "type-fest";
+import { Spec$Params, Spec$Result, TaskSpecAny, TaskSpec } from "./task";
 import { indexify, Indexify } from "proyij";
 
-type Step<ID extends string = string, X = unknown> = readonly [ID, X];
+type Step<L = unknown, R = unknown, E extends ARR = ARR> = readonly [L, R, ...E];
 
 type _Params<Specs extends Dict<TaskSpec>> = { [K in keyof Specs]: Spec$Params<Specs[K]> };
 type Specs$Params<Specs extends Dict<TaskSpec>, Ctx> = _Params<Specs> | ((ctx: Ctx) => _Params<Specs>);
 
+type _Steps$Accumulated<Steps> = Steps extends readonly [infer H, ...infer R]
+  ? _Steps$Accumulated<R> & (H extends Step<infer ID extends string, infer X> ? { [i in ID]: Fn$O<X> } : {})
+  : {};
+type Steps$Accumulated<Steps> = Simplify<_Steps$Accumulated<Steps>>;
+
 export class Taskyo<
   Ctx = __,
-  Specs extends Dict<TaskSpacAny> = Dict<TaskSpacAny>,
+  Specs extends Dict<TaskSpecAny> = Dict<TaskSpecAny>,
   Steps extends ARR<Step> = ARR<Step>,
 > {
   constructor(
@@ -27,7 +32,7 @@ export class Taskyo<
     >(this.specs, this.steps.concat([ID, $]) as [...Steps, [ID, Params]]);
   }
 
-  $<ID extends string, const Next>(ID: ID, $: (ctx: Ctx, t: this) => Next) {
+  $<ID extends string, const Next>(ID: ID, $: (ctx: Ctx, acc: Steps$Accumulated<Steps>, t: this) => Next) {
     return new Taskyo<Next, Specs, [] extends Steps ? [[ID, Next]] : [...Steps, [ID, Next]]>(
       this.specs,
       this.steps.concat([ID, $]) as never,
@@ -36,7 +41,7 @@ export class Taskyo<
 }
 
 export const taskyo = <
-  Specs extends Dict<TaskSpacAny> | ARR<TaskSpacAny>,
+  Specs extends Dict<TaskSpecAny> | ARR<TaskSpecAny>,
   const Steps extends ARR<Step> = [],
   const Ctx = {},
 >(
@@ -51,3 +56,10 @@ export const taskyo = <
   );
 
 export default taskyo;
+
+/*
+  TODO for 2026-09-09
+
+    1. taskyo - context, provide results from previous steps
+    1. taskyo - adding steps, TODO steps
+*/
