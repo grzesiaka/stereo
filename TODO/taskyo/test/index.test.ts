@@ -4,7 +4,7 @@ import { __, AbortController } from "jsyoyo";
 import { awaiT } from "treeo";
 import { indexify } from "proyij";
 
-import { $progress, load, run, spec, NEVER, _01, parallel } from "../src";
+import { $progress, load, run, spec, NEVER, _01, parallel, tick } from "../src";
 
 const deps = () => ({
   tree: { o: import("treeo") },
@@ -23,15 +23,15 @@ const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) 
     return p.length;
   })(I);
 const fakeAbort = new Proxy({} as any, { get: () => () => 1 });
-const tick = (n = 1): Promise<void> => (n <= 1 ? Promise.resolve() : tick(n - 1).then(() => Promise.resolve()));
 
-const specs = indexify("Id")([IO("A"), IO("B", 10), IO("C", 8)]);
+const specs = indexify("Id")([IO("A", 1), IO("B", 2), IO("C", 4)]);
 
 describe(parallel, ({ eq }) => ({
   simple: async () => {
     const s = parallel("II", specs);
-    const r = await run(s)({ A: "A", B: "B", C: "C" }, fakeAbort);
-    eq(r, { A: 1, B: 1, C: 1 });
+    const r = run(s)({ A: "A", B: "B", C: "C" }, fakeAbort);
+    r.progress((x) => console.log(x));
+    eq(await r, { A: 1, B: 1, C: 1 });
   },
 }));
 

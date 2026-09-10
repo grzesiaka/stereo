@@ -1,7 +1,9 @@
 import { __, AbortController } from "jsyoyo";
-import { Tree, awaiT, get, map as _map } from "treeo";
+import { Tree, awaiT, get, map as _map, set } from "treeo";
 
 import { run, spec, Spec$Params, Spec$ResultOK, TaskSpec, TaskSpecAny } from "./task";
+import { disposyo } from "disposyo";
+import { ProgressBase } from "./progress";
 
 export type ParallelParams<SS extends Tree<TaskSpecAny>> = SS extends { [K in string]: any }
   ? { [K in keyof SS]: SS[K] extends TaskSpecAny ? Spec$Params<SS[K]> : ParallelParams<SS[K]> }
@@ -14,20 +16,34 @@ export type ParallelResults<SS extends Tree<TaskSpecAny>, Extra = never> = SS ex
 const map = <SS extends Tree<TaskSpec>>(ss: SS, f: (vk: [TaskSpec, string]) => unknown) =>
   _map<TaskSpec, Tree>(f as never, (i): i is object => typeof (i as any)["run"] !== "function")(ss as never);
 
-export const parallel = <const ID extends string, SS extends Tree<TaskSpecAny>>(ID: ID, ss: SS) =>
-  spec({ partial: map(ss, () => __) as ParallelResults<SS, __> })(() => ({}))<
-    ParallelParams<SS>,
-    Promise<ParallelResults<SS>>
-  >((p, _, abo, u) => {
+export const parallel = <const ID extends string, SS extends Tree<TaskSpecAny>>(ID: ID, ss: SS) => {
+  let i = 0;
+  const partial = map(ss, () => (i++, __)) as ParallelResults<SS, __>;
+  return spec({
+    partial,
+    total: i,
+    completed: 0 as number,
+  })(() => ({}))<ParallelParams<SS>, Promise<ParallelResults<SS>>>((p, _, abo, u) => {
+    const dis = disposyo();
     const abort = new AbortController();
-    abo(() => abort.abort());
+    abo(() => (dis(), abort.abort()));
+    const rs = map(ss, ([s, k]) => {
+      const r = run(s)(get(p)(k as never), abort.signal);
+      const d = r.progress(async (x: ProgressBase) => {
+        if (x.curr === x.total) {
+          await r.then((x) => (set(k, x)(partial), x));
+          const p = u();
+          u(p.curr + 1, { partial, completed: p.completed + 1 });
+          d();
+        }
+      });
+      dis.__.push(d);
+      return r;
+    });
     u(0);
-    return awaiT(
-      map(ss, ([s, k]) => {
-        return run(s)(get(p)(k as never), abort.signal);
-      }),
-    ) as never as Promise<ParallelResults<SS>>;
+    return awaiT(rs).finally(dis) as never as Promise<ParallelResults<SS>>;
   })(ID) as never as TaskSpec<ID, Promise<ParallelResults<SS>>, ParallelParams<SS>, {}>;
+};
 
 // export const choice = <SS extends ARR<TaskSpecAny> | Tree<TaskSpecAny>>(ss: SS) => spec();
 

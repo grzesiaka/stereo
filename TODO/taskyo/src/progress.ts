@@ -2,13 +2,13 @@ import { Var } from "ioioy";
 import { $$, __, Fn$I, Fn$O, id } from "jsyoyo";
 import { Simplify } from "type-fest";
 
-interface Base<Value extends number = number, Total extends Value = Value> {
+export interface ProgressBase<Value extends number = number, Total extends Value = Value> {
   curr: Value;
   total: Total;
 }
 
 export interface ProgressCreateOptions<Value extends number = number, Total extends Value = Value> extends Partial<
-  Base<Value, Total>
+  ProgressBase<Value, Total>
 > {}
 
 export type ProgressMap<O extends ProgressCreateOptions = ProgressCreateOptions> = (
@@ -38,7 +38,7 @@ export const $progress = <const O extends ProgressCreateOptions = {}, Map extend
   options = {} as O,
   map = id as Map,
 ): [ProgressVar<Fn$O<Map>>, ProgressUpdate<O, Fn$O<Map>>] => {
-  const i = { curr: 0, ...options } as never as ProgressInfo<O>;
+  const i = { curr: 0, total: Infinity, ...options } as never as ProgressInfo<O>;
   const x = Var(map(i)) as ProgressVar<O>;
   return [
     x,
