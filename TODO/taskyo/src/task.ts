@@ -3,7 +3,7 @@ import { awaiT, AwaiTreed, Tree } from "treeo";
 import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressInfo, ProgressSpec } from "./progress";
 import "./utils";
 
-// export type TaskSpecAny = TaskSpec<any, any, any, any, [any, any]>;
+// export type TaskSpecAny = TaskSpec<any, any, any, any, [any, any]>; - makes Typescript unhappy
 export interface TaskSpecAny {
   Id: string;
   progress: any;

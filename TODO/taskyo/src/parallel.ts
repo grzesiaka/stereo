@@ -22,7 +22,6 @@ export const parallel = <const ID extends string, SS extends Tree<TaskSpecAny>>(
   return spec({
     partial,
     total: i,
-    completed: 0 as number,
   })(() => ({}))<ParallelParams<SS>, Promise<ParallelResults<SS>>>((p, _, abo, u) => {
     const dis = disposyo();
     const abort = new AbortController();
@@ -33,7 +32,7 @@ export const parallel = <const ID extends string, SS extends Tree<TaskSpecAny>>(
         if (x.curr === x.total) {
           await r.then((x) => (set(k, x)(partial), x));
           const p = u();
-          u(p.curr + 1, { partial, completed: p.completed + 1 });
+          u(p.curr + 1, { partial });
           d();
         }
       });
@@ -42,7 +41,16 @@ export const parallel = <const ID extends string, SS extends Tree<TaskSpecAny>>(
     });
     u(0);
     return awaiT(rs).finally(dis) as never as Promise<ParallelResults<SS>>;
-  })(ID) as never as TaskSpec<ID, Promise<ParallelResults<SS>>, ParallelParams<SS>, {}>;
+  })(ID) as never as TaskSpec<
+    ID,
+    Promise<ParallelResults<SS>>,
+    ParallelParams<SS>,
+    {},
+    [
+      { total: number; curr: number; partial: ParallelResults<SS, __> },
+      () => { total: number; curr: number; partial: ParallelResults<SS, __> },
+    ]
+  >;
 };
 
 // export const choice = <SS extends ARR<TaskSpecAny> | Tree<TaskSpecAny>>(ss: SS) => spec();

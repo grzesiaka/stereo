@@ -26,12 +26,20 @@ const fakeAbort = new Proxy({} as any, { get: () => () => 1 });
 
 const specs = indexify("Id")([IO("A", 1), IO("B", 2), IO("C", 4)]);
 
-describe(parallel, ({ eq }) => ({
+describe(parallel, ({ eq, res }) => ({
   simple: async () => {
     const s = parallel("II", specs);
     const r = run(s)({ A: "A", B: "B", C: "C" }, fakeAbort);
-    r.progress((x) => console.log(x));
+    const pr = res();
+    eq(r.progress(), { curr: 0, total: 3, partial: { A: __, B: __, C: __ } });
+    r.progress((x) => pr.add({ ...x, partial: { ...x.partial } }), true);
     eq(await r, { A: 1, B: 1, C: 1 });
+    pr.eq([
+      { curr: 0, total: 3, partial: { A: __, B: __, C: __ } },
+      { curr: 1, total: 3, partial: { A: 1, B: __, C: __ } },
+      { curr: 2, total: 3, partial: { A: 1, B: 1, C: __ } },
+      { curr: 3, total: 3, partial: { A: 1, B: 1, C: 1 } },
+    ]);
   },
 }));
 
