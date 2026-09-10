@@ -5,6 +5,7 @@ import { awaiT } from "treeo";
 import { indexify } from "proyij";
 
 import { $progress, load, run, task, NEVER, _01, parallel, tick } from "../src";
+import { choice, Tasks$ChoiceParams } from "../src/choice";
 
 const deps = () => ({
   tree: { o: import("treeo") },
@@ -14,20 +15,42 @@ const Spec = task({ units: "%", total: 100, failed: __ as __<"abort"> }, (i) => 
   deps,
 );
 const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) =>
-  task({ total: 1 })(deps)<ID, Promise<number>>(async (p, _d, _abo, u) => {
+  task({ total: T })(deps)<ID, Promise<number>>(async (p, _d, _abo, u) => {
+    console.log("--TASK--->", u());
     for (let i = 0; i < T; i++) {
       await tick();
-      u(i / T);
+      u(i);
     }
-    u(1);
+    u(T);
     return p.length;
   })(I);
 
-const specs = indexify("Id")([IO("A", 1), IO("B", 2), IO("C", 4)]);
+const tasks = () => [IO("A", 1), IO("B", 2), IO("C", 4)] as const;
+const taskObj = () => indexify("Id")(tasks());
+
+type TT = typeof tasks;
+type P = Tasks$ChoiceParams<TT>;
+
+describe(choice, ({ eq, res }) => ({
+  ONLY_simple_choice: async () => {
+    const c = choice(tasks())("⨁");
+    const rp = run(c)(["C", "C"]);
+
+    console.log("--SIMPLE_TEST--->", rp.progress());
+    const re = res();
+    // eq(r.progress(), { curr: 0, total: 4 });
+    rp.progress(re.add);
+    rp.progress((x) => console.log("--SIMPLE_TEST--->", rp.progress(), x));
+    // re.eq([]);
+    const r = await rp;
+    console.log("--SIMPLE_TEST--->", rp.progress());
+    eq(r, 1);
+  },
+}));
 
 describe(parallel, ({ eq, res }) => ({
   simple: async () => {
-    const s = parallel(specs)("II");
+    const s = parallel(taskObj())("II");
     const r = run(s)({ A: "A", B: "B", C: "C" });
     const pr = res();
     eq(r.progress(), { curr: 0, total: 3, partial: { A: __, B: __, C: __ } });
