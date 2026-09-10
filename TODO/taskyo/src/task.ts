@@ -1,6 +1,6 @@
-import { __, CtxId, CtxId$Id, CtxIdRequired, Dict, Fn$O, id, ON } from "jsyoyo";
+import { __, CtxId, CtxId$Id, CtxIdRequired, Dict, id, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
-import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressInfo, ProgressSpec } from "./progress";
+import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressSpec, ProgressCalc } from "./progress";
 import { fakeAbort } from "./utils";
 import { Simplify } from "type-fest";
 
@@ -17,7 +17,7 @@ export interface Task<
   Result = any,
   Params = any,
   Deps extends Tree | Promise<any> = any,
-  Progress extends ProgressSpec = ProgressSpec<any, any>,
+  Progress extends ProgressSpec = any,
 > {
   Id: ID;
   progress: Progress;
@@ -27,7 +27,7 @@ export interface Task<
     p: Params,
     d: AwaiTreed<Deps>,
     a: (on_abort: () => void) => void,
-    u: ProgressUpdate<Progress[0], Fn$O<Progress[1]>>,
+    u: ProgressUpdate<Progress[0]>,
     s: Task<string, any, Params, Deps, Progress>,
   ) => Result;
 }
@@ -35,14 +35,9 @@ export interface Task<
 export type Task$<E extends {}, T extends TaskAny> = Simplify<E & T>;
 
 export const task =
-  <
-    const ProgressBase extends ProgressCreateOptions & Dict = {},
-    ProgressMap extends (i: ProgressInfo<ProgressBase>) => ProgressInfo<ProgressBase> = (
-      i: ProgressInfo<ProgressBase>,
-    ) => ProgressInfo<ProgressBase>,
-  >(
+  <const ProgressBase extends ProgressCreateOptions & Dict = {}>(
     progress = {} as ProgressBase,
-    map = id as ProgressMap,
+    map = id as ProgressCalc<ProgressBase>,
   ) =>
   <Deps extends Tree | Promise<any>>(load: () => Deps) =>
   <const Params, Result>(
@@ -50,13 +45,13 @@ export const task =
       p: Params,
       d: AwaiTreed<Deps>,
       a: (on_abort: () => void) => void,
-      u: ProgressUpdate<ProgressBase, Fn$O<ProgressMap>>,
+      u: ProgressUpdate<ProgressBase>,
       s: Task<string, any, NoInfer<Params>, NoInfer<Deps>, any>,
     ) => Result,
   ) =>
   <Ctx extends CtxIdRequired>(
     Ctx: Ctx,
-  ): CtxId<Ctx, Task<CtxId$Id<Ctx>, Result, Params, Deps, ProgressSpec<ProgressBase, ProgressMap>>> =>
+  ): CtxId<Ctx, Task<CtxId$Id<Ctx>, Result, Params, Deps, ProgressSpec<ProgressBase>>> =>
     CtxId(
       {
         progress: [progress, map],
@@ -79,14 +74,14 @@ export const load = <T extends TaskAny>(task: T) =>
       >);
 
 export type TaskRun<T extends Task> = Promise<Awaited<Task$Result<T>>> & {
-  progress: ProgressVar<Fn$O<T["progress"][1]> extends ProgressCreateOptions ? Fn$O<T["progress"][1]> : never>["O"];
+  progress: ProgressVar<T["progress"][0]>["O"];
 };
 
 export const $run =
   <Task extends TaskAny>(task: Task) =>
   <Params extends Task$Params<Task>>(params: Params, abort = fakeAbort) => {
     const [p, update] = $progress(...task.progress);
-    console.log("---> RUN", task.Id);
+    // console.log("---> RUN", task.Id);
     const on = ON(abort);
     let d: () => void = () => __;
     const _abort = (f: () => void) => (d = on("abort", f));
@@ -95,7 +90,7 @@ export const $run =
       .then((s) => s.run(params, s.loaded, _abort, update, s))
       .finally(d);
     update(0, task.progress[0]);
-    console.log("---> RUN 2", update(), task.progress);
+    // console.log("---> RUN 2", update(), task.progress);
     return [$, p, update] as const;
   };
 

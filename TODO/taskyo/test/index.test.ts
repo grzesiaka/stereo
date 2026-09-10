@@ -5,18 +5,18 @@ import { awaiT } from "treeo";
 import { indexify } from "proyij";
 
 import { $progress, load, run, task, NEVER, _01, parallel, tick } from "../src";
-import { choice, Tasks$ChoiceParams } from "../src/choice";
+import { choice } from "../src/choice";
 
 const deps = () => ({
   tree: { o: import("treeo") },
   ioioy: import("ioioy"),
 });
-const Spec = task({ units: "%", total: 100, failed: __ as __<"abort"> }, (i) => ({ ...i, _01: _01(i.curr, i.total) }))(
-  deps,
-);
+const Spec = task({ units: "%", total: 100, _01: 0 as number, failed: __ as __<"abort"> }, (i) => {
+  i._01 = _01(i.curr, i.total);
+})(deps);
 const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) =>
   task({ total: T })(deps)<ID, Promise<number>>(async (p, _d, _abo, u) => {
-    console.log("--TASK--->", u());
+    // console.log("--TASK--->", u());
     for (let i = 0; i < T; i++) {
       await tick();
       u(i);
@@ -28,22 +28,19 @@ const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) 
 const tasks = () => [IO("A", 1), IO("B", 2), IO("C", 4)] as const;
 const taskObj = () => indexify("Id")(tasks());
 
-type TT = typeof tasks;
-type P = Tasks$ChoiceParams<TT>;
-
 describe(choice, ({ eq, res }) => ({
-  ONLY_simple_choice: async () => {
+  simple_choice: async () => {
     const c = choice(tasks())("⨁");
     const rp = run(c)(["C", "C"]);
 
-    console.log("--SIMPLE_TEST--->", rp.progress());
+    // console.log("--SIMPLE_TEST--->", rp.progress());
     const re = res();
     // eq(r.progress(), { curr: 0, total: 4 });
     rp.progress(re.add);
-    rp.progress((x) => console.log("--SIMPLE_TEST--->", rp.progress(), x));
+    // rp.progress((x) => console.log("--SIMPLE_TEST--->", rp.progress(), x));
     // re.eq([]);
     const r = await rp;
-    console.log("--SIMPLE_TEST--->", rp.progress());
+    //   console.log("--SIMPLE_TEST--->", rp.progress());
     eq(r, 1);
   },
 }));
@@ -154,7 +151,7 @@ describe(run, ({ eq, res }) => ({
 
 describe($progress, ({ eq, res }) => ({
   indeterminate: () => {
-    const [p, update] = $progress({ total: Infinity }, (i) => ({ a: "A" as const, ...i }));
+    const [p, update] = $progress({ total: Infinity, a: "A" });
     eq(p.X.total, Infinity);
     eq(p.X.curr, 0);
     eq(p.X.a, "A");

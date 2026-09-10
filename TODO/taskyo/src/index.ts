@@ -1,3 +1,4 @@
+export * from "./choice"
 export * from "./parallel"
 export * from "./progress"
 export * from "./task"

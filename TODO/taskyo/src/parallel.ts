@@ -1,9 +1,9 @@
-import { $$, __, AbortController, CtxId$Id, CtxIdRequired } from "jsyoyo";
+import { __, AbortController, CtxId$Id, CtxIdRequired } from "jsyoyo";
 import { Tree, awaiT, get, map as _map, set } from "treeo";
 
 import { run, task, Task$Params, Task$ResultOK, TaskAny, Task, Task$ } from "./task";
 import { disposyo } from "disposyo";
-import { ProgressBase, ProgressSpec } from "./progress";
+import { ProgressSpec } from "./progress";
 
 export type ParallelParams<SS extends Tree<TaskAny>> = SS extends { [K in string]: any }
   ? { [K in keyof SS]: SS[K] extends TaskAny ? Task$Params<SS[K]> : ParallelParams<SS[K]> }
@@ -28,7 +28,7 @@ export const parallel = <TT extends Tree<TaskAny>>(ss: TT) => {
     abo(() => (dis(), abort.abort()));
     const rs = map(ss, ([s, k]) => {
       const r = run(s)(get(p)(k as never), abort.signal);
-      const d = r.progress(async (x: ProgressBase) => {
+      const d = r.progress(async (x) => {
         if (x.curr === x.total) {
           await r.then((x) => (set(k, x)(partial), x));
           const p = u();
