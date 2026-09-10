@@ -1,7 +1,7 @@
-import { __, AbortController } from "jsyoyo";
+import { $$, __, AbortController, CtxId$Id, CtxIdRequired } from "jsyoyo";
 import { Tree, awaiT, get, map as _map, set } from "treeo";
 
-import { run, task, Task$Params, Task$ResultOK, TaskAny, Task } from "./task";
+import { run, task, Task$Params, Task$ResultOK, TaskAny, Task, Task$ } from "./task";
 import { disposyo } from "disposyo";
 import { ProgressBase, ProgressSpec } from "./progress";
 
@@ -16,13 +16,13 @@ export type ParallelResults<SS extends Tree<TaskAny>, Extra = never> = SS extend
 const map = <SS extends Tree<TaskAny>>(ss: SS, f: (vk: [TaskAny, string]) => unknown) =>
   _map<TaskAny, Tree>(f as never, (i): i is object => typeof (i as any)["run"] !== "function")(ss as never);
 
-export const parallel = <const ID extends string, SS extends Tree<TaskAny>>(ID: ID, ss: SS) => {
+export const parallel = <TT extends Tree<TaskAny>>(ss: TT) => {
   let i = 0;
-  const partial = map(ss, () => (i++, __)) as ParallelResults<SS, __>;
+  const partial = map(ss, () => (i++, __)) as ParallelResults<TT, __>;
   return task({
     partial,
     total: i,
-  })(() => ({}))<ParallelParams<SS>, Promise<ParallelResults<SS>>>((p, _, abo, u) => {
+  })(() => ({}))<ParallelParams<TT>, Promise<ParallelResults<TT>>>((p, _, abo, u) => {
     const dis = disposyo();
     const abort = new AbortController();
     abo(() => (dis(), abort.abort()));
@@ -40,13 +40,18 @@ export const parallel = <const ID extends string, SS extends Tree<TaskAny>>(ID: 
       return r;
     });
     u(0);
-    return awaiT(rs).finally(dis) as never as Promise<ParallelResults<SS>>;
-  })(ID) as never as Task<
-    ID,
-    Promise<ParallelResults<SS>>,
-    ParallelParams<SS>,
-    {},
-    ProgressSpec<{ total: number; curr: number; partial: ParallelResults<SS, __> }>
+    return awaiT(rs).finally(dis) as never as Promise<ParallelResults<TT>>;
+  }) as <Ctx extends CtxIdRequired>(
+    ctx: Ctx,
+  ) => Task$<
+    { __: ["⨂", TT] } & Ctx extends string ? {} : Ctx,
+    Task<
+      CtxId$Id<Ctx>,
+      Promise<ParallelResults<TT>>,
+      ParallelParams<TT>,
+      {},
+      ProgressSpec<{ total: number; curr: number; partial: ParallelResults<TT, __> }>
+    >
   >;
 };
 

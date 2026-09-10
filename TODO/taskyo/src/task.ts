@@ -1,8 +1,8 @@
-import { $$, __, CtxId, CtxId$Id, CtxIdConstraint, Dict, Fn$O, id, ON } from "jsyoyo";
+import { __, CtxId, CtxId$Id, CtxIdRequired, Dict, Fn$O, id, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressInfo, ProgressSpec } from "./progress";
-import "./utils";
 import { fakeAbort } from "./utils";
+import { Simplify } from "type-fest";
 
 // export type TaskAny = Task<any, any, any, any, [any, any]>; - makes Typescript unhappy
 export interface TaskAny {
@@ -32,6 +32,8 @@ export interface Task<
   ) => Result;
 }
 
+export type Task$<E extends {}, T extends TaskAny> = Simplify<E & T>;
+
 export const task =
   <
     const ProgressBase extends ProgressCreateOptions & Dict = {},
@@ -52,7 +54,7 @@ export const task =
       s: Task<string, any, NoInfer<Params>, NoInfer<Deps>, any>,
     ) => Result,
   ) =>
-  <Ctx extends $$<CtxIdConstraint>>(
+  <Ctx extends CtxIdRequired>(
     Ctx: Ctx,
   ): CtxId<Ctx, Task<CtxId$Id<Ctx>, Result, Params, Deps, ProgressSpec<ProgressBase, ProgressMap>>> =>
     CtxId(

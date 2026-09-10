@@ -3,6 +3,7 @@ import { __ } from "~types";
 import { a } from "objoy";
 
 export type CtxIdConstraint = __ | PropertyKey | { Id?: PropertyKey; [k: PropertyKey]: unknown };
+export type CtxIdRequired = PropertyKey | { Id: PropertyKey; [k: PropertyKey]: unknown };
 
 export type CtxId$Id<L extends CtxIdConstraint> = L extends { Id: infer S extends string }
   ? S

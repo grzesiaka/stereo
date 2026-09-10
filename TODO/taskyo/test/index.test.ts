@@ -27,7 +27,7 @@ const specs = indexify("Id")([IO("A", 1), IO("B", 2), IO("C", 4)]);
 
 describe(parallel, ({ eq, res }) => ({
   simple: async () => {
-    const s = parallel("II", specs);
+    const s = parallel(specs)("II");
     const r = run(s)({ A: "A", B: "B", C: "C" });
     const pr = res();
     eq(r.progress(), { curr: 0, total: 3, partial: { A: __, B: __, C: __ } });

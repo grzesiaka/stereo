@@ -5,6 +5,8 @@ import { Simplify } from "type-fest";
 export interface ProgressBase<Value extends number = number, Total extends Value = Value> {
   curr: Value;
   total: Total;
+  /** worst case duration */
+  dur: number;
 }
 
 export interface ProgressCreateOptions<Value extends number = number, Total extends Value = Value> extends Partial<
