@@ -24,39 +24,36 @@ export type ProgressInfo<S extends ProgressCreateOptions> = Simplify<
 >;
 export type ProgressVar<S extends ProgressCreateOptions> = Var<string, ProgressInfo<S>>;
 
-export type ProgressUpdate<S extends ProgressCreateOptions> = (() => ProgressInfo<S>) &
+export type ProgressUpdate<S extends ProgressCreateOptions, M extends ProgressCreateOptions> = (() => ProgressInfo<M>) &
   ((next: $$<S["curr"]> & number, other?: Partial<Omit<S, "curr">>) => ProgressInfo<S>);
-
-export type ProgressRunParams<O extends ProgressCreateOptions> = __ extends O["total"]
-  ? [$$<O["total"]> & number]
-  : [O["total"]?];
 
 // INFO the proper type should accept <O extends ProgressCreateOptions = {}, M extends ProgressMap<O> = ProgressMap<O>>
 //      unfortunately Typescript is unhappy then; anyway this is just a simple pair
-export type ProgressSpec<O extends ProgressCreateOptions = {}, M = unknown> = [O, M];
+export type ProgressSpec<
+  O extends ProgressCreateOptions = {},
+  M extends (a: any) => ProgressCreateOptions = (a: any) => ProgressCreateOptions,
+> = [O, M];
 
-export const $progress =
-  <const O extends ProgressCreateOptions = {}, Map extends ProgressMap<O> = ProgressMap<O>>(
-    options = {} as O,
-    map = id as Map,
-  ) =>
-  <T extends ProgressRunParams<O>>(...total: T): [ProgressVar<Fn$O<Map>>, ProgressUpdate<Fn$O<Map>>] => {
-    const i = { curr: 0, total: total[0], ...options } as never as ProgressInfo<O>;
-    const x = Var(map(i)) as ProgressVar<O>;
-    return [
-      x,
-      // Interestingly: Parameters<F> seems to not pick-up []
-      ((...vf: Fn$I<ProgressUpdate<O>> | []) => {
-        if (vf.length === 0) return x.X;
-        const i = map({
-          ...x.X,
-          ...vf[1],
-          curr: Math.min(vf[0] || 0, x.X.total),
-        }) as ProgressInfo<O>;
-        x.I(i);
-        return x.X;
-      }) as ProgressUpdate<O>,
-    ] as never;
-  };
+export const $progress = <const O extends ProgressCreateOptions = {}, Map extends ProgressMap<O> = ProgressMap<O>>(
+  options = {} as O,
+  map = id as Map,
+): [ProgressVar<Fn$O<Map>>, ProgressUpdate<O, Fn$O<Map>>] => {
+  const i = { curr: 0, ...options } as never as ProgressInfo<O>;
+  const x = Var(map(i)) as ProgressVar<O>;
+  return [
+    x,
+    // Interestingly: Parameters<F> seems to not pick-up []
+    ((...vf: Fn$I<ProgressUpdate<O, Fn$O<Map>>> | []) => {
+      if (vf.length === 0) return x.X;
+      const i = map({
+        ...x.X,
+        ...vf[1],
+        curr: Math.min(vf[0] || 0, x.X.total),
+      }) as ProgressInfo<O>;
+      x.I(i);
+      return x.X;
+    }) as ProgressUpdate<O, Fn$O<Map>>,
+  ] as never;
+};
 
 export const _01 = (curr: number, total: number) => Math.trunc((curr / total) * 100) / 100;

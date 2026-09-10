@@ -1,25 +1,24 @@
-import { __, AbortSignal, ARR, Dict, Fn$O, id, ON } from "jsyoyo";
+import { $$, __, AbortSignal, CtxId, CtxId$Id, CtxIdConstraint, Dict, Fn$O, id, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
-import {
-  $progress,
-  ProgressRunParams,
-  ProgressCreateOptions,
-  ProgressUpdate,
-  ProgressVar,
-  ProgressInfo,
-  ProgressSpec,
-} from "./progress";
+import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressInfo, ProgressSpec } from "./progress";
 import "./utils";
 
-export type TaskSpecAny = TaskSpec<any, any, any, any, any>;
+// export type TaskSpecAny = TaskSpec<any, any, any, any, [any, any]>;
+export interface TaskSpecAny {
+  Id: string;
+  progress: any;
+  load: () => any;
+  loaded?: any;
+  run: (p: any, d: any, a: any, u: any, s: any) => any;
+}
 export interface TaskSpec<
   ID extends string = string,
   Result = any,
   Params = any,
   Deps extends Tree | Promise<any> = any,
-  Progress extends ProgressSpec = ProgressSpec,
+  Progress extends ProgressSpec = ProgressSpec<any, any>,
 > {
-  ID: ID;
+  Id: ID;
   progress: Progress;
   load: () => Deps;
   loaded?: AwaiTreed<Deps>;
@@ -27,8 +26,8 @@ export interface TaskSpec<
     p: Params,
     d: AwaiTreed<Deps>,
     a: (on_abort: () => void) => void,
-    u: ProgressUpdate<Progress[0]>,
-    s: TaskSpec<ID, any, Params, Deps, Progress>,
+    u: ProgressUpdate<Progress[0], Fn$O<Progress[1]>>,
+    s: TaskSpec<string, any, Params, Deps, Progress>,
   ) => Result;
 }
 
@@ -38,36 +37,38 @@ export const spec =
     ProgressMap extends (i: ProgressInfo<ProgressBase>) => ProgressInfo<ProgressBase> = (
       i: ProgressInfo<ProgressBase>,
     ) => ProgressInfo<ProgressBase>,
-    Extra extends {} = {},
   >(
     progress = {} as ProgressBase,
     map = id as ProgressMap,
-    extra = {} as Extra,
   ) =>
-  <ID extends string, Deps extends Tree | Promise<any>>(ID: ID, load: () => Deps) =>
+  <Deps extends Tree | Promise<any>>(load: () => Deps) =>
   <const Params, Result>(
     run: (
       p: Params,
       d: AwaiTreed<Deps>,
       a: (on_abort: () => void) => void,
-      u: ProgressUpdate<Fn$O<ProgressMap>>,
-      s: TaskSpec<ID, any, NoInfer<Params>, NoInfer<Deps>, any>,
+      u: ProgressUpdate<ProgressBase, Fn$O<ProgressMap>>,
+      s: TaskSpec<string, any, NoInfer<Params>, NoInfer<Deps>, any>,
     ) => Result,
-  ): TaskSpec<ID, Result, Params, Deps, ProgressSpec<ProgressBase, ProgressMap>> & Extra => // @ts-expect-error
-  ({
-    ...extra,
-    ID,
-    progress: [progress, map],
-    load,
-    run,
-  });
+  ) =>
+  <Ctx extends $$<CtxIdConstraint>>(
+    Ctx: Ctx,
+  ): CtxId<Ctx, TaskSpec<CtxId$Id<Ctx>, Result, Params, Deps, ProgressSpec<ProgressBase, ProgressMap>>> =>
+    CtxId(
+      {
+        progress: [progress, map],
+        load,
+        run,
+      },
+      Ctx,
+    );
 
 export type Spec$Result<S> = S extends { run: any } ? Awaited<ReturnType<S["run"]>> : never;
 export type Spec$ResultOK<S> = Exclude<Spec$Result<S>, Error>;
 export type Spec$Params<S> = S extends { run: any } ? Parameters<S["run"]>[0] : never;
 export type Spec$Deps<S> = S extends { run: any } ? Parameters<S["run"]>[1] : never;
 
-export const load = <S extends TaskSpec<any, any, any, any, any>>(s: S) =>
+export const load = <S extends TaskSpecAny>(s: S) =>
   "loaded" in s
     ? Promise.resolve(s)
     : (awaiT(s.load()).then((l: any) => ((s.loaded = l), s)) as Promise<
@@ -79,13 +80,9 @@ export type TaskRun<S extends TaskSpec> = Promise<Awaited<Spec$Result<S>>> & {
 };
 
 export const $run =
-  <Spec extends TaskSpec<string, any, any, any, any>>(spec: Spec) =>
-  <Params extends Spec$Params<Spec>, ProgressTotal extends ProgressRunParams<Spec["progress"][0]>>(
-    params: Params,
-    abort: AbortSignal,
-    ...total: ProgressTotal
-  ) => {
-    const [p, update] = $progress(...spec.progress)(...(total as never));
+  <Spec extends TaskSpecAny>(spec: Spec) =>
+  <Params extends Spec$Params<Spec>>(params: Params, abort: AbortSignal) => {
+    const [p, update] = $progress(...spec.progress);
 
     const on = ON(abort);
     let d: () => void = () => __;
@@ -98,13 +95,9 @@ export const $run =
   };
 
 export const run =
-  <Spec extends TaskSpec<string, any, any, any, any>>(spec: Spec) =>
-  <Params extends Spec$Params<Spec>, ProgressTotal extends ProgressRunParams<Spec["progress"][0]>>(
-    params: Params,
-    abort: AbortSignal,
-    ...total: ProgressTotal
-  ) => {
-    const [$, p] = $run(spec)(params, abort, ...total);
+  <Spec extends TaskSpecAny>(spec: Spec) =>
+  <Params extends Spec$Params<Spec>>(params: Params, abort: AbortSignal) => {
+    const [$, p] = $run(spec)(params, abort);
     ($ as any).progress = p.O;
     return $ as TaskRun<Spec>;
   };

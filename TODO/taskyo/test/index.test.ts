@@ -11,41 +11,41 @@ const deps = () => ({
   ioioy: import("ioioy"),
 });
 const Spec = spec({ units: "%", total: 100, failed: __ as __<"abort"> }, (i) => ({ ...i, _01: _01(i.curr, i.total) }))(
-  "TEST",
   deps,
 );
 const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) =>
-  spec({ total: 1 })(I, deps)<ID, Promise<number>>(async (p, _d, _abo, u) => {
+  spec({ total: 1 })(deps)<ID, Promise<number>>(async (p, _d, _abo, u) => {
     for (let i = 0; i < T; i++) {
       await tick();
       u(i / T);
     }
     u(1);
     return p.length;
-  });
+  })(I);
 const fakeAbort = new Proxy({} as any, { get: () => () => 1 });
 const tick = (n = 1): Promise<void> => (n <= 1 ? Promise.resolve() : tick(n - 1).then(() => Promise.resolve()));
 
-const specs = indexify("ID")([IO("A"), IO("B", 10), IO("C", 8)]);
+const specs = indexify("Id")([IO("A"), IO("B", 10), IO("C", 8)]);
 
 describe(parallel, ({ eq }) => ({
   simple: async () => {
     const s = parallel("II", specs);
-    const r = await run(s)({ A: "A", B: "B", C: "C" }, fakeAbort, 1);
+    const r = await run(s)({ A: "A", B: "B", C: "C" }, fakeAbort);
     eq(r, { A: 1, B: 1, C: 1 });
   },
 }));
 
 describe(run, ({ eq, res }) => ({
   "+1": async () => {
-    const s = Spec((p: number) => p + 1);
-    const r = await run(s)(1, new Proxy({} as any, { get: () => () => 1 }));
+    const s = Spec((p: number) => p + 1)("");
+    const r = await run(s)(1, fakeAbort);
+    r;
     const d = await awaiT(deps());
     eq(s.loaded, d);
     eq(r, 2);
   },
   self: async () => {
-    const s = Spec((P: { a: "B" }, $, a, u, s) => ({ P, $, a, u, s }));
+    const s = Spec((P: { a: "B" }, $, a, u, s) => ({ P, $, a, u, s }))("");
 
     const r = await run(s)({ a: "B" }, fakeAbort);
     const d = await awaiT(deps());
@@ -60,7 +60,7 @@ describe(run, ({ eq, res }) => ({
       await tick();
       p(100);
       return "ok" as const;
-    });
+    })("");
 
     const pr = run(s)(1, fakeAbort);
     const re = res();
@@ -77,7 +77,7 @@ describe(run, ({ eq, res }) => ({
       await tick(2);
       !p().failed && p(100);
       return p().failed ? NEVER : ("ok" as const);
-    });
+    })("");
 
     const abort = new AbortController();
     const pr = run(s)(1, abort.signal);
@@ -100,7 +100,7 @@ describe(run, ({ eq, res }) => ({
       await tick(2);
       !p().failed && p(100);
       return p().failed ? NEVER : ("ok" as const);
-    });
+    })("");
 
     await load(s);
 
@@ -123,14 +123,14 @@ describe(run, ({ eq, res }) => ({
 
 describe($progress, ({ eq, res }) => ({
   indeterminate: () => {
-    const [p, update] = $progress({ total: Infinity }, (i) => ({ a: "A" as const, ...i }))();
+    const [p, update] = $progress({ total: Infinity }, (i) => ({ a: "A" as const, ...i }));
     eq(p.X.total, Infinity);
     eq(p.X.curr, 0);
     eq(p.X.a, "A");
     update(1);
   },
   0: () => {
-    const [p, u] = $progress({ total: 1 as number & { 1: 1 } })();
+    const [p, u] = $progress({ total: 1 as number & { 1: 1 } });
 
     const r = res();
     p.O((x) => r.add(_01(x.curr, x.total)));

@@ -12,10 +12,10 @@ export type ParallelResults<SS extends Tree<TaskSpecAny>, Extra = never> = SS ex
   : never;
 
 const map = <SS extends Tree<TaskSpec>>(ss: SS, f: (vk: [TaskSpec, string]) => unknown) =>
-  _map<Promise<unknown>, Tree>(f as never, (i): i is object => typeof (i as any)["run"] !== "function")(ss as never);
+  _map<TaskSpec, Tree>(f as never, (i): i is object => typeof (i as any)["run"] !== "function")(ss as never);
 
 export const parallel = <const ID extends string, SS extends Tree<TaskSpecAny>>(ID: ID, ss: SS) =>
-  spec({ partial: map(ss, () => __) as ParallelResults<SS, __> })(ID, () => ({}))<
+  spec({ partial: map(ss, () => __) as ParallelResults<SS, __> })(() => ({}))<
     ParallelParams<SS>,
     Promise<ParallelResults<SS>>
   >((p, _, abo, u) => {
@@ -24,10 +24,10 @@ export const parallel = <const ID extends string, SS extends Tree<TaskSpecAny>>(
     u(0);
     return awaiT(
       map(ss, ([s, k]) => {
-        return run(s as never)(get(p)(k as never), abort.signal);
+        return run(s)(get(p)(k as never), abort.signal);
       }),
     ) as never as Promise<ParallelResults<SS>>;
-  }) as never as TaskSpec<ID, Promise<ParallelResults<SS>>, ParallelParams<SS>, {}>;
+  })(ID) as never as TaskSpec<ID, Promise<ParallelResults<SS>>, ParallelParams<SS>, {}>;
 
 // export const choice = <SS extends ARR<TaskSpecAny> | Tree<TaskSpecAny>>(ss: SS) => spec();
 

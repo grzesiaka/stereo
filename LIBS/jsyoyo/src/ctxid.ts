@@ -4,6 +4,12 @@ import { a } from "objoy";
 
 export type CtxIdConstraint = __ | PropertyKey | { Id?: PropertyKey; [k: PropertyKey]: unknown };
 
+export type CtxId$Id<L extends CtxIdConstraint> = L extends { Id: infer S extends string }
+  ? S
+  : L extends string
+    ? L
+    : never;
+
 export type CtxId<L extends CtxIdConstraint, E = {}> = Simplify<
   E & (L extends string ? { Id: L } : __ extends L ? {} : L)
 >;
