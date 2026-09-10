@@ -1,25 +1,25 @@
 import { __, AbortController } from "jsyoyo";
 import { Tree, awaiT, get, map as _map, set } from "treeo";
 
-import { run, spec, Spec$Params, Spec$ResultOK, TaskSpec, TaskSpecAny } from "./task";
+import { run, task, Task$Params, Task$ResultOK, TaskAny, Task } from "./task";
 import { disposyo } from "disposyo";
 import { ProgressBase } from "./progress";
 
-export type ParallelParams<SS extends Tree<TaskSpecAny>> = SS extends { [K in string]: any }
-  ? { [K in keyof SS]: SS[K] extends TaskSpecAny ? Spec$Params<SS[K]> : ParallelParams<SS[K]> }
+export type ParallelParams<SS extends Tree<TaskAny>> = SS extends { [K in string]: any }
+  ? { [K in keyof SS]: SS[K] extends TaskAny ? Task$Params<SS[K]> : ParallelParams<SS[K]> }
   : never;
 
-export type ParallelResults<SS extends Tree<TaskSpecAny>, Extra = never> = SS extends { [K in string]: any }
-  ? { [K in keyof SS]: SS[K] extends TaskSpecAny ? Spec$ResultOK<SS[K]> | Extra : ParallelResults<SS[K]> }
+export type ParallelResults<SS extends Tree<TaskAny>, Extra = never> = SS extends { [K in string]: any }
+  ? { [K in keyof SS]: SS[K] extends TaskAny ? Task$ResultOK<SS[K]> | Extra : ParallelResults<SS[K]> }
   : never;
 
-const map = <SS extends Tree<TaskSpec>>(ss: SS, f: (vk: [TaskSpec, string]) => unknown) =>
-  _map<TaskSpec, Tree>(f as never, (i): i is object => typeof (i as any)["run"] !== "function")(ss as never);
+const map = <SS extends Tree<TaskAny>>(ss: SS, f: (vk: [TaskAny, string]) => unknown) =>
+  _map<TaskAny, Tree>(f as never, (i): i is object => typeof (i as any)["run"] !== "function")(ss as never);
 
-export const parallel = <const ID extends string, SS extends Tree<TaskSpecAny>>(ID: ID, ss: SS) => {
+export const parallel = <const ID extends string, SS extends Tree<TaskAny>>(ID: ID, ss: SS) => {
   let i = 0;
   const partial = map(ss, () => (i++, __)) as ParallelResults<SS, __>;
-  return spec({
+  return task({
     partial,
     total: i,
   })(() => ({}))<ParallelParams<SS>, Promise<ParallelResults<SS>>>((p, _, abo, u) => {
@@ -41,7 +41,7 @@ export const parallel = <const ID extends string, SS extends Tree<TaskSpecAny>>(
     });
     u(0);
     return awaiT(rs).finally(dis) as never as Promise<ParallelResults<SS>>;
-  })(ID) as never as TaskSpec<
+  })(ID) as never as Task<
     ID,
     Promise<ParallelResults<SS>>,
     ParallelParams<SS>,

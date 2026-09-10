@@ -4,17 +4,17 @@ import { __, AbortController } from "jsyoyo";
 import { awaiT } from "treeo";
 import { indexify } from "proyij";
 
-import { $progress, load, run, spec, NEVER, _01, parallel, tick } from "../src";
+import { $progress, load, run, task, NEVER, _01, parallel, tick } from "../src";
 
 const deps = () => ({
   tree: { o: import("treeo") },
   ioioy: import("ioioy"),
 });
-const Spec = spec({ units: "%", total: 100, failed: __ as __<"abort"> }, (i) => ({ ...i, _01: _01(i.curr, i.total) }))(
+const Spec = task({ units: "%", total: 100, failed: __ as __<"abort"> }, (i) => ({ ...i, _01: _01(i.curr, i.total) }))(
   deps,
 );
 const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) =>
-  spec({ total: 1 })(deps)<ID, Promise<number>>(async (p, _d, _abo, u) => {
+  task({ total: 1 })(deps)<ID, Promise<number>>(async (p, _d, _abo, u) => {
     for (let i = 0; i < T; i++) {
       await tick();
       u(i / T);
@@ -40,6 +40,7 @@ describe(parallel, ({ eq, res }) => ({
       { curr: 3, total: 3, partial: { A: 1, B: 1, C: 1 } },
     ]);
   },
+  error: () => 1,
 }));
 
 describe(run, ({ eq, res }) => ({
