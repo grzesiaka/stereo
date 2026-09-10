@@ -2,6 +2,7 @@ import { $$, __, AbortSignal, CtxId, CtxId$Id, CtxIdConstraint, Dict, Fn$O, id, 
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressInfo, ProgressSpec } from "./progress";
 import "./utils";
+import { fakeAbort } from "./utils";
 
 // export type TaskSpecAny = TaskSpec<any, any, any, any, [any, any]>; - makes Typescript unhappy
 export interface TaskSpecAny {
@@ -81,7 +82,7 @@ export type TaskRun<S extends TaskSpec> = Promise<Awaited<Spec$Result<S>>> & {
 
 export const $run =
   <Spec extends TaskSpecAny>(spec: Spec) =>
-  <Params extends Spec$Params<Spec>>(params: Params, abort: AbortSignal) => {
+  <Params extends Spec$Params<Spec>>(params: Params, abort = fakeAbort) => {
     const [p, update] = $progress(...spec.progress);
 
     const on = ON(abort);
@@ -96,7 +97,7 @@ export const $run =
 
 export const run =
   <Spec extends TaskSpecAny>(spec: Spec) =>
-  <Params extends Spec$Params<Spec>>(params: Params, abort: AbortSignal) => {
+  <Params extends Spec$Params<Spec>>(params: Params, abort = fakeAbort) => {
     const [$, p] = $run(spec)(params, abort);
     ($ as any).progress = p.O;
     return $ as TaskRun<Spec>;

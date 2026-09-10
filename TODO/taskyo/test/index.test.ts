@@ -22,14 +22,13 @@ const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) 
     u(1);
     return p.length;
   })(I);
-const fakeAbort = new Proxy({} as any, { get: () => () => 1 });
 
 const specs = indexify("Id")([IO("A", 1), IO("B", 2), IO("C", 4)]);
 
 describe(parallel, ({ eq, res }) => ({
   simple: async () => {
     const s = parallel("II", specs);
-    const r = run(s)({ A: "A", B: "B", C: "C" }, fakeAbort);
+    const r = run(s)({ A: "A", B: "B", C: "C" });
     const pr = res();
     eq(r.progress(), { curr: 0, total: 3, partial: { A: __, B: __, C: __ } });
     r.progress((x) => pr.add({ ...x, partial: { ...x.partial } }), true);
@@ -46,7 +45,7 @@ describe(parallel, ({ eq, res }) => ({
 describe(run, ({ eq, res }) => ({
   "+1": async () => {
     const s = Spec((p: number) => p + 1)("");
-    const r = await run(s)(1, fakeAbort);
+    const r = await run(s)(1);
     r;
     const d = await awaiT(deps());
     eq(s.loaded, d);
@@ -55,7 +54,7 @@ describe(run, ({ eq, res }) => ({
   self: async () => {
     const s = Spec((P: { a: "B" }, $, a, u, s) => ({ P, $, a, u, s }))("");
 
-    const r = await run(s)({ a: "B" }, fakeAbort);
+    const r = await run(s)({ a: "B" });
     const d = await awaiT(deps());
 
     eq(r.$, d);
@@ -70,7 +69,7 @@ describe(run, ({ eq, res }) => ({
       return "ok" as const;
     })("");
 
-    const pr = run(s)(1, fakeAbort);
+    const pr = run(s)(1);
     const re = res();
     pr.progress((x) => re.add(x.curr));
     const r = await pr;
