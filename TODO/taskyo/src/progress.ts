@@ -15,7 +15,7 @@ export type ProgressMap<O extends ProgressCreateOptions = ProgressCreateOptions>
   i: ProgressInfo<O>,
 ) => ProgressInfo<O>;
 
-export type ProgressInfo<S extends ProgressCreateOptions> = Simplify<
+export type ProgressInfo<S extends ProgressCreateOptions = ProgressCreateOptions> = Simplify<
   Omit<S, "total" | "curr"> &
     S & {
       total: $$<S["total"]> & number;
@@ -31,7 +31,7 @@ export type ProgressUpdate<S extends ProgressCreateOptions, M extends ProgressCr
 //      unfortunately Typescript is unhappy then; anyway this is just a simple pair
 export type ProgressSpec<
   O extends ProgressCreateOptions = {},
-  M extends (a: any) => ProgressCreateOptions = (a: any) => ProgressCreateOptions,
+  M extends (a: any) => ProgressInfo<O> = (a: any) => ProgressInfo<O>,
 > = [O, M];
 
 export const $progress = <const O extends ProgressCreateOptions = {}, Map extends ProgressMap<O> = ProgressMap<O>>(
@@ -39,9 +39,9 @@ export const $progress = <const O extends ProgressCreateOptions = {}, Map extend
   map = id as Map,
 ): [ProgressVar<Fn$O<Map>>, ProgressUpdate<O, Fn$O<Map>>] => {
   const i = { curr: 0, total: Infinity, ...options } as never as ProgressInfo<O>;
-  const x = Var(map(i)) as ProgressVar<O>;
+  const x = Var(map(i)) as ProgressVar<O>; // should be ProgressVar<Fn$O<Map>> but Typescript rather unhappy
   return [
-    x,
+    x as never as ProgressVar<Fn$O<Map>>,
     // Interestingly: Parameters<F> seems to not pick-up []
     ((...vf: Fn$I<ProgressUpdate<O, Fn$O<Map>>> | []) => {
       if (vf.length === 0) return x.X;
@@ -53,7 +53,7 @@ export const $progress = <const O extends ProgressCreateOptions = {}, Map extend
       x.I(i);
       return x.X;
     }) as ProgressUpdate<O, Fn$O<Map>>,
-  ] as never;
+  ];
 };
 
 export const _01 = (curr: number, total: number) => Math.trunc((curr / total) * 100) / 100;

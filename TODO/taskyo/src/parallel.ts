@@ -3,7 +3,7 @@ import { Tree, awaiT, get, map as _map, set } from "treeo";
 
 import { run, task, Task$Params, Task$ResultOK, TaskAny, Task } from "./task";
 import { disposyo } from "disposyo";
-import { ProgressBase } from "./progress";
+import { ProgressBase, ProgressSpec } from "./progress";
 
 export type ParallelParams<SS extends Tree<TaskAny>> = SS extends { [K in string]: any }
   ? { [K in keyof SS]: SS[K] extends TaskAny ? Task$Params<SS[K]> : ParallelParams<SS[K]> }
@@ -46,10 +46,7 @@ export const parallel = <const ID extends string, SS extends Tree<TaskAny>>(ID: 
     Promise<ParallelResults<SS>>,
     ParallelParams<SS>,
     {},
-    [
-      { total: number; curr: number; partial: ParallelResults<SS, __> },
-      () => { total: number; curr: number; partial: ParallelResults<SS, __> },
-    ]
+    ProgressSpec<{ total: number; curr: number; partial: ParallelResults<SS, __> }>
   >;
 };
 
