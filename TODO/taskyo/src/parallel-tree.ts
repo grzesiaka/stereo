@@ -3,7 +3,7 @@ import { Tree, awaiT, get, map as _map, set } from "treeo";
 
 import { run, task, Task$Params, Task$ResultOK, TaskAny, Task, Task$ } from "./task";
 import { disposyo } from "disposyo";
-import { ProgressSpec } from "./progress";
+import { ProgressSpec, ProgressUpdate } from "./progress";
 
 export type ParallelTreeParams<SS extends Tree<TaskAny>> = SS extends { [K in string]: any }
   ? { [K in keyof SS]: SS[K] extends TaskAny ? Task$Params<SS[K]> : ParallelTreeParams<SS[K]> }
@@ -16,17 +16,13 @@ export type ParallelTreeResults<SS extends Tree<TaskAny>, Extra = never> = SS ex
 const map = <SS extends Tree<TaskAny>>(ss: SS, f: (vk: [TaskAny, string]) => unknown) =>
   _map<TaskAny, Tree>(f as never, (i): i is object => typeof (i as any)["run"] !== "function")(ss as never);
 
-export const parallelTree = <TT extends Tree<TaskAny>>(ss: TT) => {
-  let i = 0;
-  const partial = map(ss, () => (i++, __)) as ParallelTreeResults<TT, __>;
-  return task({
-    partial,
-    total: i,
-  })(() => ({}))<ParallelTreeParams<TT>, Promise<ParallelTreeResults<TT>>>((p, _, abo, u) => {
+export const runTree =
+  <TT extends Tree<TaskAny>>(tt: Tree<TaskAny>, partial: ParallelTreeResults<TT, __>) =>
+  (p: ParallelTreeParams<TT>, _: unknown, abo: (on_abort: () => void) => void, u: ProgressUpdate<any>) => {
     const dis = disposyo();
     const abort = new AbortController();
     abo(() => (dis(), abort.abort()));
-    const rs = map(ss, ([s, k]) => {
+    const rs = map(tt, ([s, k]) => {
       const r = run(s)(get(p)(k as never), abort.signal);
       const d = r.progress(async (x) => {
         if (x.curr === x.total) {
@@ -41,10 +37,18 @@ export const parallelTree = <TT extends Tree<TaskAny>>(ss: TT) => {
     });
     u(0);
     return awaiT(rs).finally(dis) as never as Promise<ParallelTreeResults<TT>>;
-  }) as <Ctx extends CtxIdRequired>(
+  };
+
+export const parallelTree = <TT extends Tree<TaskAny>>(tt: TT) => {
+  let i = 0;
+  const partial = map(tt, () => (i++, __)) as ParallelTreeResults<TT, __>;
+  return task({
+    partial,
+    total: i,
+  })(() => ({}), { __: ["⨂*", tt] })(runTree(tt, partial)) as <Ctx extends CtxIdRequired>(
     ctx: Ctx,
   ) => Task$<
-    { __: ["⨂", TT] } & Ctx extends string ? {} : Ctx,
+    { __: ["⨂*", TT] } & Ctx extends string ? {} : Ctx,
     Task<
       CtxId$Id<Ctx>,
       Promise<ParallelTreeResults<TT>>,
@@ -54,43 +58,3 @@ export const parallelTree = <TT extends Tree<TaskAny>>(ss: TT) => {
     >
   >;
 };
-
-// export const choice = <SS extends ARR<TaskSpecAny> | Tree<TaskSpecAny>>(ss: SS) => spec();
-
-// type Step1Params<Ctx, Params> = (ctx: Ctx) => Params;
-
-// export type Step1<Ctx = unknown, S extends TaskSpec = TaskSpecAny> = [S, Step1Params<Ctx, Spec$Params<S>>];
-
-// export type Step<Ctx = unknown> = Step1<Ctx> | Tree<Step1<Ctx>> | ARR<Step1<Ctx>>;
-
-// type Steps = ARR<Step>;
-
-// type S$R<S, Flat = false> = S extends readonly [readonly [TaskSpecAny, ...any[]], ...infer R]
-//   ? S$R<S[0]> & ([] extends R ? {} : S$R<R>)
-//   : S extends readonly [infer S extends TaskSpecAny, ...any[]]
-//     ? true extends Flat
-//       ? Spec$ResultOK<S>
-//       : { [K in S["ID"]]: Spec$ResultOK<S> }
-//     : S extends { [K in string]: any }
-//       ? { [K in keyof S]: Simplify<S$R<S[K], true>> }
-//       : never;
-// export type STEP$Result<S> = Simplify<S$R<S>>;
-
-// export type STEPS$Result<SS> = SS extends readonly [infer S extends Step, ...infer R]
-//   ? STEP$Result<S> & STEPS$Result<R>
-//   : __;
-
-// export const Step =
-//   <const SS extends Steps, const Spec extends TaskSpec, const S extends Step<STEPS$Result<SS>, Spec>>(s: S) =>
-//   (ss: SS) =>
-//     ss.concat(s as never) as [...SS, S];
-
-// export const step0 = o([] as []);
-
-// // const t = o([] as [])(Step([]), Step([]));
-
-// type SPEC<ID extends string, Params = ID, Result = ID> = [TaskSpec<ID, Result, Params>, () => Params, ID];
-
-// type A = STEP$Result<[SPEC<"A", "", "AA">, SPEC<"B">]>;
-
-// type B = STEP$Result<{ A: { B: SPEC<"AB", 1, Promise<2>>; C: { D: [SPEC<"L">, SPEC<"R">] } } }>;
