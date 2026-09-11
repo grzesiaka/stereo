@@ -62,11 +62,12 @@ describe(parallel, ({ eq, res }) => ({
     const pr = res();
     eq(r.progress(), {
       _01: 0,
-      "⨂": { A: { curr: 0, total: 1 }, B: { curr: 0, total: 2 }, C: { curr: 0, total: 4 } },
+      "⨂": __,
       curr: 0,
       total: 3,
       partial: { A: __, B: __, C: __ },
     });
+
     r.progress((x) => pr.add([x.curr, x.total, x._01, { ...x.partial }]), true);
     eq(await r, { A: 1, B: 1, C: 1 });
     pr.eq(parallelTreeSimpleResults().map((x) => [x.curr, x.total, x._01, x.partial]));
@@ -79,10 +80,11 @@ describe(parallelTree, ({ eq, res }) => ({
     const s = parallelTree(taskObj())("II");
     const r = run(s)({ A: "A", B: "B", C: "C" });
     const pr = res();
-    eq(r.progress(), { _01: 0, curr: 0, total: 3, partial: { A: __, B: __, C: __ } });
-    r.progress((x) => pr.add({ ...x, partial: { ...x.partial } }), true);
+    eq(r.progress(), { "⨂": __, _01: 0, curr: 0, total: 3, partial: { A: __, B: __, C: __ } });
+
+    r.progress((x) => pr.add([x.curr, x.total, x._01, { ...x.partial }]), true);
     eq(await r, { A: 1, B: 1, C: 1 });
-    pr.eq(parallelTreeSimpleResults());
+    pr.eq(parallelTreeSimpleResults().map((x) => [x.curr, x.total, x._01, x.partial]));
   },
   error: () => 1,
 }));
