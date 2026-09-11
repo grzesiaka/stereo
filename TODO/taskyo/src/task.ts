@@ -78,10 +78,8 @@ export type TaskRun<T extends Task> = Promise<Awaited<Task$Result<T>>> & {
 };
 
 export const $run =
-  <Task extends TaskAny>(task: Task) =>
+  <Task extends TaskAny>(task: Task, [p, update] = $progress(...task.progress)) =>
   <Params extends Task$Params<Task>>(params: Params, abort = fakeAbort) => {
-    const [p, update] = $progress(...task.progress);
-    // console.log("---> RUN", task.Id);
     const on = ON(abort);
     let d: () => void = () => __;
     const _abort = (f: () => void) => (d = on("abort", f));
@@ -89,15 +87,14 @@ export const $run =
     const $ = load(task)
       .then((s) => s.run(params, s.loaded, _abort, update, s))
       .finally(d);
-    update(0, task.progress[0]);
-    // console.log("---> RUN 2", update(), task.progress);
+
     return [$, p, update] as const;
   };
 
 export const run =
-  <Task extends TaskAny>(task: Task) =>
+  <Task extends TaskAny>(task: Task, progress = $progress(...task.progress)) =>
   <Params extends Task$Params<Task>>(params: Params, abort = fakeAbort) => {
-    const [$, p] = $run(task)(params, abort);
+    const [$, p] = $run(task, progress)(params, abort);
     ($ as any).progress = p.O;
     return $ as TaskRun<Task>;
   };

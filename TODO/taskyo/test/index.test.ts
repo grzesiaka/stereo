@@ -33,14 +33,21 @@ describe(choice, ({ eq, res }) => ({
     const c = choice(tasks())("⨁");
     const rp = run(c)(["C", "C"]);
 
-    // console.log("--SIMPLE_TEST--->", rp.progress());
     const re = res();
-    // eq(r.progress(), { curr: 0, total: 4 });
-    rp.progress(re.add);
-    // rp.progress((x) => console.log("--SIMPLE_TEST--->", rp.progress(), x));
-    // re.eq([]);
+    const p0 = { curr: 0, total: Infinity, "⨁": __ };
+    const p = <N extends number>(curr: N) => ({ curr, total: 4, "⨁": "C" });
+
+    eq(rp.progress(), p0);
+
+    rp.progress((x) => {
+      re.add(x);
+      !x["⨁"] && eq(rp.progress(), p0);
+    });
+
     const r = await rp;
-    //   console.log("--SIMPLE_TEST--->", rp.progress());
+
+    re.eq([p0, p(0), p(1), p(2), p(3), p(4)]);
+
     eq(r, 1);
   },
 }));

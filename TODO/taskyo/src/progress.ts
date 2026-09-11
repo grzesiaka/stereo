@@ -6,7 +6,7 @@ export interface ProgressBase<Value extends number = number, Total extends Value
   curr: Value;
   total: Total;
   /** worst case duration */
-  dur: number;
+  dur?: number;
 }
 
 export interface ProgressCreateOptions<Value extends number = number, Total extends Value = Value> extends Partial<
@@ -31,7 +31,7 @@ export type ProgressUpdate<S extends ProgressCreateOptions> = (() => ProgressInf
 
 // INFO the proper type should accept <O extends ProgressCreateOptions = {}, M extends ProgressMap<O> = ProgressMap<O>>
 //      unfortunately Typescript is unhappy then; anyway this is just a simple pair
-export type ProgressSpec<O extends ProgressCreateOptions = {}> = [ProgressInfo<O>, ProgressCalc<any>];
+export type ProgressSpec<O extends ProgressCreateOptions = {}> = [ProgressInfo<O>, ProgressCalc<any>?];
 
 export const $progress = <const O extends ProgressCreateOptions = {}>(
   options = {} as O,
