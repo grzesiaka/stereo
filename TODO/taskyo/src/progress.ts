@@ -6,6 +6,7 @@ export interface ProgressBase {
   [k: string]: unknown;
   curr: number;
   total: number;
+  prev?: number;
   /** worst case duration */
   // dur?: number;
 }

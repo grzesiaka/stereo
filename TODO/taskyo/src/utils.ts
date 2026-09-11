@@ -10,3 +10,5 @@ export const fakeAbort = new Proxy({} as any, { get: () => () => 1 }) as AbortSi
 export type Tasks = ARR<TaskAny>;
 export type Tasks$Obj<TT extends Tasks> = Indexify<TT, "Id">;
 export const tasks$obj = indexify("Id") as <TT extends Tasks>(tt: TT) => Tasks$Obj<TT>;
+
+export const trunc = (n: number) => Math.trunc(n * 100) / 100;

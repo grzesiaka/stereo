@@ -14,6 +14,7 @@ export type Tasks$ParallelResultOK<TT extends Tasks, E = never> = {
 
 export type Tasks$ParallelProgress<TT extends ARR<TaskAny>> = Simplify<
   ProgressBase & {
+    _01: number;
     partial: Tasks$ParallelResultOK<TT, __>;
     "⨂": {
       [K in keyof Tasks$Obj<TT>]: Tasks$Obj<TT>[K] extends TaskAny ? Tasks$Obj<TT>[K]["progress"][0] : never;
@@ -23,13 +24,15 @@ export type Tasks$ParallelProgress<TT extends ARR<TaskAny>> = Simplify<
 
 export const parallel = <const TT extends ARR<TaskAny>>(tt: TT) => {
   const to = tasks$obj(tt) as Dict<Task>;
+  const partial = mb(() => __)(to);
   return task({
+    _01: 0 as number,
     total: tt.length,
-    partial: mb(() => __)(to),
+    partial,
     "⨂": mb<Dict<Task>>((t) => t.progress[0])(to),
   })(() => ({}), {
     __: ["⨂", tt, to],
-  })(runTree(to as never, {} as never)) as <Ctx extends CtxIdRequired>(
+  })(runTree(to as never, partial as never)) as <Ctx extends CtxIdRequired>(
     ctx: Ctx,
   ) => Task$<
     { __: ["⨂", TT] } & (Ctx extends string ? {} : Ctx),

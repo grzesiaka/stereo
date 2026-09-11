@@ -61,19 +61,15 @@ describe(parallel, ({ eq, res }) => ({
     const r = run(s)({ A: "A", B: "B", C: "C" });
     const pr = res();
     eq(r.progress(), {
+      _01: 0,
       "⨂": { A: { curr: 0, total: 1 }, B: { curr: 0, total: 2 }, C: { curr: 0, total: 4 } },
       curr: 0,
       total: 3,
       partial: { A: __, B: __, C: __ },
     });
-    r.progress((x) => pr.add([x.curr, x.total, { ...x.partial }]), true);
+    r.progress((x) => pr.add([x.curr, x.total, x._01, { ...x.partial }]), true);
     eq(await r, { A: 1, B: 1, C: 1 });
-    pr.eq([
-      [0, 3, { A: __, B: __, C: __ }],
-      [1, 3, { A: 1, B: __, C: __ }],
-      [2, 3, { A: 1, B: 1, C: __ }],
-      [3, 3, { A: 1, B: 1, C: 1 }],
-    ]);
+    pr.eq(parallelTreeSimpleResults().map((x) => [x.curr, x.total, x._01, x.partial]));
   },
   error: () => 1,
 }));
@@ -83,15 +79,10 @@ describe(parallelTree, ({ eq, res }) => ({
     const s = parallelTree(taskObj())("II");
     const r = run(s)({ A: "A", B: "B", C: "C" });
     const pr = res();
-    eq(r.progress(), { curr: 0, total: 3, partial: { A: __, B: __, C: __ } });
+    eq(r.progress(), { _01: 0, curr: 0, total: 3, partial: { A: __, B: __, C: __ } });
     r.progress((x) => pr.add({ ...x, partial: { ...x.partial } }), true);
     eq(await r, { A: 1, B: 1, C: 1 });
-    pr.eq([
-      { curr: 0, total: 3, partial: { A: __, B: __, C: __ } },
-      { curr: 1, total: 3, partial: { A: 1, B: __, C: __ } },
-      { curr: 2, total: 3, partial: { A: 1, B: 1, C: __ } },
-      { curr: 3, total: 3, partial: { A: 1, B: 1, C: 1 } },
-    ]);
+    pr.eq(parallelTreeSimpleResults());
   },
   error: () => 1,
 }));
@@ -208,3 +199,86 @@ describe($progress, ({ eq, res }) => ({
     r.eq([0, 0.5, 1]);
   },
 }));
+
+const parallelTreeSimpleResults = () => [
+  {
+    _01: 0,
+    curr: 0,
+    partial: {
+      A: undefined,
+      B: undefined,
+      C: undefined,
+    },
+    total: 3,
+  },
+  {
+    _01: 0.16666666666666666,
+    curr: 0,
+    partial: {
+      A: undefined,
+      B: undefined,
+      C: undefined,
+    },
+    total: 3,
+  },
+  {
+    _01: 0.25,
+    curr: 0,
+    partial: {
+      A: undefined,
+      B: undefined,
+      C: undefined,
+    },
+    total: 3,
+  },
+  {
+    _01: 0.3333333333333333,
+    curr: 0,
+    partial: {
+      A: undefined,
+      B: undefined,
+      C: undefined,
+    },
+    total: 3,
+  },
+  {
+    _01: 0.41666666666666663,
+    curr: 0,
+    partial: {
+      A: undefined,
+      B: undefined,
+      C: undefined,
+    },
+    total: 3,
+  },
+  {
+    _01: 0.75,
+    curr: 1,
+    partial: {
+      A: 1,
+      B: undefined,
+      C: undefined,
+    },
+    total: 3,
+  },
+  {
+    _01: 0.9166666666666666,
+    curr: 2,
+    partial: {
+      A: 1,
+      B: 1,
+      C: undefined,
+    },
+    total: 3,
+  },
+  {
+    _01: 1,
+    curr: 3,
+    partial: {
+      A: 1,
+      B: 1,
+      C: 1,
+    },
+    total: 3,
+  },
+];
