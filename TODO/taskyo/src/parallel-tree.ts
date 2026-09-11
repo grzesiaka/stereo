@@ -5,24 +5,24 @@ import { run, task, Task$Params, Task$ResultOK, TaskAny, Task, Task$ } from "./t
 import { disposyo } from "disposyo";
 import { ProgressSpec } from "./progress";
 
-export type ParallelParams<SS extends Tree<TaskAny>> = SS extends { [K in string]: any }
-  ? { [K in keyof SS]: SS[K] extends TaskAny ? Task$Params<SS[K]> : ParallelParams<SS[K]> }
+export type ParallelTreeParams<SS extends Tree<TaskAny>> = SS extends { [K in string]: any }
+  ? { [K in keyof SS]: SS[K] extends TaskAny ? Task$Params<SS[K]> : ParallelTreeParams<SS[K]> }
   : never;
 
-export type ParallelResults<SS extends Tree<TaskAny>, Extra = never> = SS extends { [K in string]: any }
-  ? { [K in keyof SS]: SS[K] extends TaskAny ? Task$ResultOK<SS[K]> | Extra : ParallelResults<SS[K]> }
+export type ParallelTreeResults<SS extends Tree<TaskAny>, Extra = never> = SS extends { [K in string]: any }
+  ? { [K in keyof SS]: SS[K] extends TaskAny ? Task$ResultOK<SS[K]> | Extra : ParallelTreeResults<SS[K]> }
   : never;
 
 const map = <SS extends Tree<TaskAny>>(ss: SS, f: (vk: [TaskAny, string]) => unknown) =>
   _map<TaskAny, Tree>(f as never, (i): i is object => typeof (i as any)["run"] !== "function")(ss as never);
 
-export const parallel = <TT extends Tree<TaskAny>>(ss: TT) => {
+export const parallelTree = <TT extends Tree<TaskAny>>(ss: TT) => {
   let i = 0;
-  const partial = map(ss, () => (i++, __)) as ParallelResults<TT, __>;
+  const partial = map(ss, () => (i++, __)) as ParallelTreeResults<TT, __>;
   return task({
     partial,
     total: i,
-  })(() => ({}))<ParallelParams<TT>, Promise<ParallelResults<TT>>>((p, _, abo, u) => {
+  })(() => ({}))<ParallelTreeParams<TT>, Promise<ParallelTreeResults<TT>>>((p, _, abo, u) => {
     const dis = disposyo();
     const abort = new AbortController();
     abo(() => (dis(), abort.abort()));
@@ -40,17 +40,17 @@ export const parallel = <TT extends Tree<TaskAny>>(ss: TT) => {
       return r;
     });
     u(0);
-    return awaiT(rs).finally(dis) as never as Promise<ParallelResults<TT>>;
+    return awaiT(rs).finally(dis) as never as Promise<ParallelTreeResults<TT>>;
   }) as <Ctx extends CtxIdRequired>(
     ctx: Ctx,
   ) => Task$<
     { __: ["⨂", TT] } & Ctx extends string ? {} : Ctx,
     Task<
       CtxId$Id<Ctx>,
-      Promise<ParallelResults<TT>>,
-      ParallelParams<TT>,
+      Promise<ParallelTreeResults<TT>>,
+      ParallelTreeParams<TT>,
       {},
-      ProgressSpec<{ total: number; curr: number; partial: ParallelResults<TT, __> }>
+      ProgressSpec<{ total: number; curr: number; partial: ParallelTreeResults<TT, __> }>
     >
   >;
 };

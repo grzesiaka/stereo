@@ -4,7 +4,7 @@ import { __, AbortController } from "jsyoyo";
 import { awaiT } from "treeo";
 import { indexify } from "proyij";
 
-import { $progress, load, run, task, NEVER, _01, parallel, tick } from "../src";
+import { $progress, load, run, task, NEVER, _01, parallelTree, tick } from "../src";
 import { choice } from "../src/choice";
 
 const deps = () => ({
@@ -54,9 +54,9 @@ describe(choice, ({ eq, res }) => ({
   },
 }));
 
-describe(parallel, ({ eq, res }) => ({
+describe(parallelTree, ({ eq, res }) => ({
   simple: async () => {
-    const s = parallel(taskObj())("II");
+    const s = parallelTree(taskObj())("II");
     const r = run(s)({ A: "A", B: "B", C: "C" });
     const pr = res();
     eq(r.progress(), { curr: 0, total: 3, partial: { A: __, B: __, C: __ } });
