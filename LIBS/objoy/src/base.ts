@@ -1,3 +1,5 @@
+import { Dict } from "~types";
+
 /**
  * An alias for:
  *
@@ -59,10 +61,11 @@ export const u = <X extends object, Y>(x: X, $: (x: X) => Y) => a(x, $(x));
 
 /** Maps object respecting it structure */
 export const mb =
-  <O extends {}, X>(f: (...vk: [value: Entry<O>[1], key: Entry<O>[0]]) => X) =>
-  (O: O) => {
+  <cO extends {} = Dict, X = unknown>(f: (...vk: [value: Entry<cO>[1], key: Entry<cO>[0]]) => X) =>
+  <O extends {}>(O: {} extends O ? cO : O) => {
     const r = {} as { [K in keyof O]: X };
     for (const k in O) {
+      // @ts-expect-error
       r[k] = f(O[k], k);
     }
     return r as { [K in keyof O]: X };
