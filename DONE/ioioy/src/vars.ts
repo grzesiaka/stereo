@@ -7,7 +7,7 @@ import type { IO, IOs$FlatTypes, IdIOs } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
 import { __, mb } from "jsyoyo";
 import { OP, KeyValues$Object } from "jsyoyo";
-import { disposyo as D, DISPOSE, type Disposyo, Dispose } from "disposyo";
+import { disposyo as D, DISPOSE, type Disposyo } from "disposyo";
 import type { Var } from "./var";
 
 export type And_Vars_X<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
@@ -18,7 +18,7 @@ export interface And_Vars<
   NullableValues extends ARR<__ | null> = [],
 > extends Var<Ctx, And_Vars_X<IOs> | NullableValues[number], Partial<And_Vars_X<IOs>> | NullableValues[number], IOs> {
   IOs: IOsById<IOs>;
-  [DISPOSE]: Disposyo<Dispose[]>;
+  [DISPOSE]: Disposyo;
 }
 
 export const Vars =
@@ -59,9 +59,9 @@ export const Vars =
         L,
       ),
       OO: new Set(),
-      [DISPOSE]: D() as Disposyo<Dispose[]>,
+      [DISPOSE]: D() as Disposyo,
     }) as And_Vars<Ctx, IOs, NullableValues> & { X: And_Vars_X<IOs> | NullableValues[number] };
-    $.IOs = iosById(IOs, (io) => $[DISPOSE].__.push(io.O(() => !updating && handleEmit(), 1)));
+    $.IOs = iosById(IOs, (io) => $[DISPOSE](io.O(() => !updating && handleEmit(), 1)));
     return $;
   };
 

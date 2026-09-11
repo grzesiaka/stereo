@@ -36,7 +36,7 @@ export const parallelTree = <TT extends Tree<TaskAny>>(ss: TT) => {
           d();
         }
       });
-      dis.__.push(d);
+      dis(d);
       return r;
     });
     u(0);

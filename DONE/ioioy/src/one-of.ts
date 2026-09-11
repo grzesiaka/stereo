@@ -27,7 +27,7 @@ export interface OneOf_IOs<
   $1: IOs[number] | NullableValues[number];
   OO: Set<Cb<OneOf_O<IOs> | NullableValues[number]>>;
   IOs: IOsById<IOs>;
-  [DISPOSE]: Disposyo<Dispose[]> | Dispose;
+  [DISPOSE]: Disposyo | Dispose;
 }
 
 export const OneOf =
@@ -72,7 +72,7 @@ export const OneOf =
         L,
       ),
       OO: new Set(),
-      [DISPOSE]: D() as Disposyo<Dispose[]>,
+      [DISPOSE]: D() as Disposyo,
     }) as OneOf_IOs<Ctx, IOs, NullableValues> & { X: OneOf_X<IOs> | NullableValues[number] };
     $.IOs = iosById(IOs);
     IOs[0] && O(IOs[0]);

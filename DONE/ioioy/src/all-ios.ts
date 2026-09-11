@@ -2,7 +2,7 @@ import { Simplify } from "type-fest";
 import { __, Cb } from "~types";
 import type { ij_Project } from "proyij";
 import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
-import { disposyo as D, DISPOSE, type Disposyo, Dispose } from "disposyo";
+import { disposyo as D, DISPOSE, type Disposyo } from "disposyo";
 import { mb } from "jsyoyo";
 import { OP, WithOP, KeyValues$Object } from "jsyoyo";
 
@@ -17,7 +17,7 @@ export interface And_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = I
   extends WithOP<"OLL", IOs>, IO<Partial<And_I<IOs>>, And_O<IOs>, And_X<IOs>, Ctx> {
   OO: Set<Cb<And_O<IOs>>>;
   IOs: IOsById<IOs>;
-  [DISPOSE]: Disposyo<Dispose[]>;
+  [DISPOSE]: Disposyo;
 }
 
 export const AndIOs =
@@ -47,13 +47,11 @@ export const AndIOs =
         return mb((v) => (v as IO).X)($.IOs);
       },
       OO: new Set(),
-      [DISPOSE]: D() as Disposyo<Dispose[]>,
+      [DISPOSE]: D() as Disposyo,
       _Fired: new Set(),
     }) as And_IOs<Ctx, IOs> & { X: And_X<IOs>; _Fired?: Set<PropertyKey> };
     $.IOs = iosById(IOs, (io, id) =>
-      $[DISPOSE].__.push(
-        io.O((x) => (((O as any)[id] = x), !updating && handleEmit({ [id]: x } as Partial<And_I<IOs>>))),
-      ),
+      $[DISPOSE](io.O((x) => (((O as any)[id] = x), !updating && handleEmit({ [id]: x } as Partial<And_I<IOs>>)))),
     );
     return $;
   };

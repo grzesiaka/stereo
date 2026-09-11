@@ -5,16 +5,16 @@ import disposyo, { DISPOSE } from "../src/disposyo";
 
 describe(disposyo, ({ eq, res }) => ({
   empty: () => {
-    const d = disposyo({});
-    eq(d.__, {});
+    const d = disposyo([]);
+    eq(d.__, []);
     d();
   },
 
   single_fn: () => {
     const r = res();
     const add = () => r.add(0);
-    const d = disposyo(add);
-    eq(d.__, add);
+    const d = disposyo([add]);
+    eq(d.__, [add]);
     d();
     r.eq([0]);
   },
@@ -29,28 +29,24 @@ describe(disposyo, ({ eq, res }) => ({
     r.eq([0, 1]);
   },
 
-  tree_of_fn_or_arr: () => {
+  arr_of_fn_added: () => {
     const r = res();
     const add0 = () => r.add(0);
     const add1 = () => r.add(1);
-    const t = {
-      fn: () => r.add("fn"),
-      arr: [add0, add1],
-      deep: {
-        fn: () => r.add("fn/deep"),
-        arr: [add0, add1],
-      },
-    };
+    const d = disposyo([add0, add1]);
 
-    const d = disposyo(t);
-    eq(d.__, t);
+    d(
+      () => r.add(2),
+      () => r.add("!"),
+    );
+
     d();
-    r.eq(["fn", 0, 1, "fn/deep", 0, 1]);
+    r.eq([0, 1, 2, "!"]);
   },
 
   with_target: () => {
     let done = false;
-    const t = disposyo(() => (done = true), {});
+    const t = disposyo([() => (done = true)], {});
     eq(!!t[DISPOSE], true);
     eq(done, false);
     t[DISPOSE]();

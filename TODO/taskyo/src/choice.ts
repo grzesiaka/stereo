@@ -1,6 +1,5 @@
 import { __, AbortController, ARR, ARR1, CtxId$Id, CtxIdRequired } from "jsyoyo";
 import { run, task, Task, Task$, Task$Params, Task$ResultOK, TaskAny } from "./task";
-import { disposyo } from "disposyo";
 import { $progress, ProgressBase } from "./progress";
 
 export type Tasks$ChoiceParams<TT> = TT extends readonly [infer T extends TaskAny, ...infer R]

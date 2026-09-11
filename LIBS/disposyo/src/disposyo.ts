@@ -1,32 +1,23 @@
-import { type TreeOrLeaves } from "treeo/types";
-import forEach from "treeo/map";
-import { ifArray, __ } from "jsyoyo";
+import { __ } from "jsyoyo";
+import { ARR } from "~types";
 
-export type Dispose = () => void;
+export type Dispose = () => unknown;
 
-export type Tree_of_Disposable = TreeOrLeaves<Dispose | Dispose[]>;
+export type Disposes = ARR<Dispose>;
 
-export type Disposyo<T extends Tree_of_Disposable = Tree_of_Disposable> = Dispose & { __: T };
+export type Disposyo = Dispose & { __: Disposes } & ((...disposes: Disposes) => void);
 
 // @ts-expect-error Symbol.dispose might be not present in older engines
 export const DISPOSE: unique symbol = Symbol.dispose || Symbol.for("dispose");
 export type DISPOSE = typeof DISPOSE;
 
-const dispose = (T: Tree_of_Disposable) =>
-  forEach._(T)(([v]) =>
-    ifArray(
-      v,
-      (a) => a.forEach((c) => c()),
-      (v) => v(),
-    ),
-  );
-
-export const disposyo = <D extends Tree_of_Disposable = Dispose[], T extends __<{}> = __>(
-  D = [] as unknown as D,
+export const disposyo = <T extends __<{}> = __>(
+  D = [] as Disposes | Dispose,
   target = __ as T,
-): __ extends T ? Disposyo<D> : T & { [DISPOSE]: Disposyo<D> } => {
-  const $: Disposyo<D> = () => dispose($.__);
-  $.__ = D;
+): __ extends T ? Disposyo : T & { [DISPOSE]: Disposyo } => {
+  const $: Disposyo = (...ds: Disposes) =>
+    (ds.length === 0 ? $.__.forEach((d) => d()) : (($.__ as never as any[]).push(...ds), $)) as never;
+  $.__ = Array.isArray(D) ? D : [D];
   if (target) {
     // @ts-expect-error
     target[DISPOSE] = $;
