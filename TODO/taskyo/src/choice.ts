@@ -34,11 +34,12 @@ export const choice = <const TT extends ARR1<TaskAny>>(tt: TT) =>
       },
       t.progress[1],
     );
-    const dis = disposyo();
+    let dis = () => void 0 as unknown;
     const abort = new AbortController();
     abo(() => (dis(), abort.abort()));
     const r = run(t, pr)(params[1], abort.signal);
-    r.progress((x) => pu(x.curr, x));
+    dis = r.progress((x) => pu(x.curr, x));
+    r.finally(dis);
     return r;
   }) as <Ctx extends CtxIdRequired>(
     ctx: Ctx,
