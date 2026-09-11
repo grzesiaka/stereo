@@ -21,11 +21,11 @@ export type Tasks$ChoiceProgress<TT extends ARR<TaskAny>> = TT extends readonly 
 export type Tasks$Ids<TT extends ARR<Task>> = TT[number]["Id"];
 
 export const choice = <const TT extends ARR1<TaskAny>>(tt: TT) =>
-  task<Tasks$ChoiceProgress<TT>>({
-    "⨁": __,
-  } as never)(() => ({
-    "⨁": __,
-  }))<Tasks$ChoiceParams<TT>, Promise<Task$ResultOK<TT>>>((params, _d, abo, pu) => {
+  task({
+    "⨁": __, // initially no selection; it is a runtime information; to remove it `load` CANNOT by async
+  })(() => ({}), {
+    __: ["⨁", tt],
+  })((params, _d, abo, pu) => {
     const t = tt.find((t) => t.Id === params[0])!;
     const pr = $progress(
       {
@@ -38,14 +38,11 @@ export const choice = <const TT extends ARR1<TaskAny>>(tt: TT) =>
     const abort = new AbortController();
     abo(() => (dis(), abort.abort()));
     const r = run(t, pr)(params[1], abort.signal);
-    const up = (x: any) => {
-      pu(x.curr, x);
-    };
-    r.progress(up, 1);
+    r.progress((x) => pu(x.curr, x));
     return r;
   }) as <Ctx extends CtxIdRequired>(
     ctx: Ctx,
   ) => Task$<
-    { __: ["⨁", TT] } & Ctx extends string ? {} : Ctx,
+    { __: ["⨁", TT] } & (Ctx extends string ? {} : Ctx),
     Task<CtxId$Id<Ctx>, Promise<Tasks$ChoiceResultOK<TT>>, Tasks$ChoiceParams<TT>, {}, [Tasks$ChoiceProgress<TT>]>
   >;

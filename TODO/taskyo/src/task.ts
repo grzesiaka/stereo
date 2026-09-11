@@ -1,4 +1,4 @@
-import { __, CtxId, CtxId$Id, CtxIdRequired, Dict, id, ON } from "jsyoyo";
+import { __, CtxId, CtxId$Id, CtxIdRequired, id, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressSpec, ProgressCalc } from "./progress";
 import { fakeAbort } from "./utils";
@@ -35,11 +35,11 @@ export interface Task<
 export type Task$<E extends {}, T extends TaskAny> = Simplify<E & T>;
 
 export const task =
-  <const ProgressBase extends ProgressCreateOptions & Dict = {}>(
+  <const ProgressBase extends ProgressCreateOptions = {}>(
     progress = {} as ProgressBase,
     map = id as ProgressCalc<ProgressBase>,
   ) =>
-  <Deps extends Tree | Promise<any>>(load: () => Deps) =>
+  <Deps extends Tree | Promise<any>, E extends {} = {}>(load: () => Deps, extra = {} as E) =>
   <const Params, Result>(
     run: (
       p: Params,
@@ -51,9 +51,10 @@ export const task =
   ) =>
   <Ctx extends CtxIdRequired>(
     Ctx: Ctx,
-  ): CtxId<Ctx, Task<CtxId$Id<Ctx>, Result, Params, Deps, ProgressSpec<ProgressBase>>> =>
+  ): CtxId<Ctx, E & Task<CtxId$Id<Ctx>, Result, Params, Deps, ProgressSpec<ProgressBase>>> =>
     CtxId(
       {
+        ...extra,
         progress: [progress, map],
         load,
         run,

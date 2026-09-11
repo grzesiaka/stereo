@@ -2,16 +2,15 @@ import { Var } from "ioioy";
 import { $$, __, Fn$I, id } from "jsyoyo";
 import { Simplify, Writable } from "type-fest";
 
-export interface ProgressBase<Value extends number = number, Total extends Value = Value> {
-  curr: Value;
-  total: Total;
+export interface ProgressBase {
+  [k: string]: unknown;
+  curr: number;
+  total: number;
   /** worst case duration */
-  dur?: number;
+  // dur?: number;
 }
 
-export interface ProgressCreateOptions<Value extends number = number, Total extends Value = Value> extends Partial<
-  ProgressBase<Value, Total>
-> {}
+export interface ProgressCreateOptions extends Partial<ProgressBase> {}
 
 export type ProgressCalc<O extends ProgressCreateOptions = ProgressCreateOptions> = (
   i: Writable<ProgressInfo<O>>,

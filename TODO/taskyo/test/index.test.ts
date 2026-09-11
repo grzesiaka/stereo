@@ -16,10 +16,9 @@ const Spec = task({ units: "%", total: 100, _01: 0 as number, failed: __ as __<"
 })(deps);
 const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) =>
   task({ total: T })(deps)<ID, Promise<number>>(async (p, _d, _abo, u) => {
-    // console.log("--TASK--->", u());
     for (let i = 0; i < T; i++) {
       await tick();
-      u(i);
+      i && u(i); // zero is the start value any way, so no point to report it twice
     }
     u(T);
     return p.length;
@@ -30,7 +29,10 @@ const taskObj = () => indexify("Id")(tasks());
 
 describe(choice, ({ eq, res }) => ({
   simple_choice: async () => {
-    const c = choice(tasks())("⨁");
+    const ts = tasks();
+    const c = choice(ts)("⨁");
+    eq(c.__, ["⨁", ts]);
+
     const rp = run(c)(["C", "C"]);
 
     const re = res();
