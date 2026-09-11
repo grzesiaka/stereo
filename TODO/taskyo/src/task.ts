@@ -1,4 +1,4 @@
-import { __, CtxId, CtxId$Id, CtxIdRequired, id, ON } from "jsyoyo";
+import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressSpec, ProgressCalc } from "./progress";
 import { fakeAbort } from "./utils";
@@ -55,7 +55,7 @@ export const task =
     CtxId(
       {
         ...extra,
-        progress: [progress, map],
+        progress: [a({ total: Infinity, curr: 0 }, progress), map],
         load,
         run,
       },

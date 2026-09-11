@@ -6,6 +6,7 @@ import { indexify } from "proyij";
 
 import { $progress, load, run, task, NEVER, _01, parallelTree, tick } from "../src";
 import { choice } from "../src/choice";
+import { parallel } from "../src/parallel";
 
 const deps = () => ({
   tree: { o: import("treeo") },
@@ -52,6 +53,29 @@ describe(choice, ({ eq, res }) => ({
 
     eq(r, 1);
   },
+}));
+
+describe(parallel, ({ eq, res }) => ({
+  simple: async () => {
+    const s = parallel(tasks())("II");
+    const r = run(s)({ A: "A", B: "B", C: "C" });
+    const pr = res();
+    eq(r.progress(), {
+      "⨂": { A: { curr: 0, total: 1 }, B: { curr: 0, total: 2 }, C: { curr: 0, total: 4 } },
+      curr: 0,
+      total: 3,
+      partial: { A: __, B: __, C: __ },
+    });
+    r.progress((x) => pr.add([x.curr, x.total, { ...x.partial }]), true);
+    eq(await r, { A: 1, B: 1, C: 1 });
+    pr.eq([
+      [0, 3, { A: __, B: __, C: __ }],
+      [1, 3, { A: 1, B: __, C: __ }],
+      [2, 3, { A: 1, B: 1, C: __ }],
+      [3, 3, { A: 1, B: 1, C: 1 }],
+    ]);
+  },
+  error: () => 1,
 }));
 
 describe(parallelTree, ({ eq, res }) => ({
