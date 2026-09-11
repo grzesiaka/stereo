@@ -1,5 +1,6 @@
 export * from "./choice"
 export * from "./parallel-tree"
+export * from "./parallel"
 export * from "./progress"
 export * from "./task"
 export * from "./utils"
