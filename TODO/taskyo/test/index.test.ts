@@ -7,6 +7,7 @@ import { indexify } from "proyij";
 import { $progress, load, run, task, NEVER, _01, parallelTree, tick } from "../src";
 import { choice } from "../src/choice";
 import { parallel } from "../src/parallel";
+import { Seq, Step$Dynamic } from "../src/sequence";
 
 const deps = () => ({
   tree: { o: import("treeo") },
@@ -15,6 +16,7 @@ const deps = () => ({
 const Spec = task({ units: "%", total: 100, _01: 0 as number, failed: __ as __<"abort"> }, (i) => {
   i._01 = _01(i.curr, i.total);
 })(deps);
+
 const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) =>
   task({ total: T })(deps)<ID, Promise<number>>(async (p, _d, _abo, u) => {
     for (let i = 0; i < T; i++) {
@@ -22,11 +24,29 @@ const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) 
       i && u(i); // zero is the start value any way, so no point to report it twice
     }
     u(T);
-    return p.length;
+    return p.length as ID["length"] & { tag: ID };
   })(I);
 
 const tasks = () => [IO("A", 1), IO("B", 2), IO("C", 4)] as const;
 const taskObj = () => indexify("Id")(tasks());
+
+const step0 = Spec((p: 112) => p)("step_0");
+
+describe(Seq, ({ eq, res }) => ({
+  step0: async () => {
+    const $ = new Seq().$(step0, __).$(IO("1"), (x, b) => "1");
+    const t = $.asTask("0");
+    const r = await run(t)(112);
+    eq(r, 112);
+  },
+
+  simple: () => {
+    const { A, B, C } = taskObj();
+    const D = Spec((p: 112) => {
+      return p;
+    });
+  },
+}));
 
 describe(choice, ({ eq, res }) => ({
   simple_choice: async () => {

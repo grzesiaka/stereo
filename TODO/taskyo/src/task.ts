@@ -4,6 +4,11 @@ import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, Progress
 import { fakeAbort } from "./utils";
 import { Simplify } from "type-fest";
 
+/**
+ * Dependencies constraint
+ */
+export type DepsC = Tree | Promise<any> | __;
+
 // export type TaskAny = Task<any, any, any, any, [any, any]>; - makes Typescript unhappy
 export interface TaskAny {
   Id: string;
@@ -16,7 +21,7 @@ export interface Task<
   ID extends string = string,
   Result = any,
   Params = any,
-  Deps extends Tree | Promise<any> = any,
+  Deps extends DepsC = any,
   Progress extends ProgressSpec = any,
 > {
   Id: ID;
@@ -39,7 +44,7 @@ export const task =
     progress = {} as ProgressBase,
     map = id as ProgressCalc<ProgressBase>,
   ) =>
-  <Deps extends Tree | Promise<any>, E extends {} = {}>(load: () => Deps, extra = {} as E) =>
+  <Deps extends DepsC, E extends {} = {}>(load: () => Deps, extra = {} as E) =>
   <const Params, Result>(
     run: (
       p: Params,
@@ -64,6 +69,7 @@ export const task =
 
 export type Task$Result<S> = S extends { run: any } ? Awaited<ReturnType<S["run"]>> : never;
 export type Task$ResultOK<S> = Exclude<Task$Result<S>, Error>;
+export type Task$Error<S> = Extract<Task$Result<S>, Error>;
 export type Task$Params<S> = S extends { run: any } ? Parameters<S["run"]>[0] : never;
 export type Task$Deps<S> = S extends { run: any } ? Parameters<S["run"]>[1] : never;
 
