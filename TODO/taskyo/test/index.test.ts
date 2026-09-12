@@ -7,7 +7,7 @@ import { indexify } from "proyij";
 import { $progress, load, run, task, NEVER, _01, parallelTree, tick } from "../src";
 import { choice } from "../src/choice";
 import { parallel } from "../src/parallel";
-import { Seq, Step$Dynamic } from "../src/sequence";
+import { sequence } from "../src/sequence";
 
 const deps = () => ({
   tree: { o: import("treeo") },
@@ -32,12 +32,15 @@ const taskObj = () => indexify("Id")(tasks());
 
 const step0 = Spec((p: 112) => p)("step_0");
 
-describe(Seq, ({ eq, res }) => ({
+describe(sequence, ({ eq, res }) => ({
   step0: async () => {
-    const $ = new Seq().$(step0, __).$(IO("1"), (x, b) => "1");
+    const $ = sequence(step0).$(IO("ABC"), (x, b) => "ABC");
     const t = $.asTask("0");
     const r = await run(t)(112);
-    eq(r, 112);
+    eq(r, {
+      step_0: 112,
+      ABC: 3,
+    });
   },
 
   simple: () => {

@@ -1,14 +1,8 @@
-import { __, AbortController, ARR, CtxId$Id, CtxIdRequired } from "jsyoyo";
+import { __, AbortController, ARR, ARR1, CtxId$Id, CtxIdRequired } from "jsyoyo";
 import { Task$Params, Task$ResultOK, TaskAny, DepsC, task, run, Task$, Task } from "./task";
 import { ProgressBase } from "./progress";
-
-const deps = () => ({
-  tree: { o: import("treeo") },
-  ioioy: import("ioioy"),
-});
-const Spec = task({ units: "%", total: 100, _01: 0 as number, failed: __ as __<"abort"> }, (i) => {
-  //  i._01 = _01(i.curr, i.total);
-})(deps);
+import { Simplify } from "type-fest";
+import { AwaiTreed } from "treeo";
 
 type RunTaskStep<
   T extends TaskAny = TaskAny,
@@ -30,14 +24,15 @@ type Step = RunTaskStep0 | RunTaskStep;
 type Steps = ARR<Step>;
 
 type Step$Path<ID extends string, Path extends __<string>> = Path extends string ? Path : ID;
-export type Step$Dynamic<S> =
+type Step$Dynamic<S> =
   S extends RunTaskStep<infer T, any, any, infer P>
     ? { [k in Step$Path<T["Id"], P>]: Task$ResultOK<T> }
     : S extends RunTaskStep0<infer T, infer P>
       ? { [k in Step$Path<T["Id"], P>]: Task$ResultOK<T> }
       : "Step$Path";
 
-type Steps$Dynamic<SS> = SS extends readonly [infer S, ...infer R] ? Step$Dynamic<S> & Steps$Dynamic<R> : {};
+type _Steps$Dynamic<SS> = SS extends readonly [infer S, ...infer R] ? Step$Dynamic<S> & _Steps$Dynamic<R> : {};
+type Steps$Dynamic<SS> = Simplify<_Steps$Dynamic<SS>>;
 
 type Steps$InitParams<SS> = SS extends readonly [infer S, ...infer R]
   ? S extends RunTaskStep0<infer T>
@@ -49,22 +44,30 @@ interface SeqProgress<SS extends Steps> extends ProgressBase {
   partial: Partial<Steps$Dynamic<SS>>;
 }
 
-export class Seq<const SS extends Steps = [], Deps extends DepsC = __> {
+class Seq<const SS extends ARR1<Step>, Deps extends DepsC = __> {
   constructor(
-    public readonly L = () => __ as Deps,
-    public readonly R = [] as Steps as SS,
+    public readonly L: () => Deps,
+    public readonly R: SS,
   ) {}
 
-  $<T extends TaskAny, P extends __<string> = __>(
-    ...ps: SS["length"] extends 0 ? RunTaskStep0<T, P> : RunTaskStep<T, Steps$Dynamic<SS>, Deps, P>
+  $<T extends TaskAny, const Re extends Task$Params<T>, P extends __<string> = __>(
+    task: T,
+    params: (R: Steps$Dynamic<SS>, L: AwaiTreed<Deps>) => Re,
+    path = __ as P,
   ) {
-    return new Seq(this.L, [...this.R, ps]);
+    return new Seq(this.L, [...this.R, [task, params, path]]);
   }
 
   asTask<Ctx extends CtxIdRequired>(ctx: Ctx) {
     return asTask(this.L, this.R)(ctx);
   }
 }
+
+export const sequence = <T extends TaskAny, D extends DepsC = __, P extends __<string> = __>(
+  t: T,
+  d = () => __ as D,
+  p = __ as P,
+) => new Seq(d, [[t, p] as RunTaskStep0<T, P>]);
 
 export const asTask = <SS extends Steps, Deps extends DepsC>(L: () => Deps, R: SS) =>
   task({
