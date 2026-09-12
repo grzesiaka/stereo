@@ -29,7 +29,7 @@ type Step$Dynamic<S> =
     ? { [k in Step$Path<T["Id"], P>]: Task$ResultOK<T> }
     : S extends RunTaskStep0<infer T, infer P>
       ? { [k in Step$Path<T["Id"], P>]: Task$ResultOK<T> }
-      : "Step$Path";
+      : never;
 
 type _Steps$Dynamic<SS> = SS extends readonly [infer S, ...infer R] ? Step$Dynamic<S> & _Steps$Dynamic<R> : {};
 type Steps$Dynamic<SS> = Simplify<_Steps$Dynamic<SS>>;
@@ -38,7 +38,7 @@ type Steps$InitParams<SS> = SS extends readonly [infer S, ...infer R]
   ? S extends RunTaskStep0<infer T>
     ? Task$Params<T>
     : Steps$InitParams<R>
-  : "Steps$Path";
+  : never;
 
 interface SeqProgress<SS extends Steps> extends ProgressBase {
   partial: Partial<Steps$Dynamic<SS>>;
@@ -78,7 +78,7 @@ export const asTask = <SS extends Steps, Deps extends DepsC>(L: () => Deps, R: S
     a(() => abort.abort());
     for (let i = 0; i < R.length; i++) {
       const s = R[i]!;
-      const pe = run(s[0])(i === 0 ? p : (s[1] as any)(u().partial, L));
+      const pe = run(s[0])(i === 0 ? p : (s[1] as any)(u().partial, L), abort.signal);
 
       const x = await pe;
       const t = u();

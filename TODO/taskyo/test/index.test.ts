@@ -13,7 +13,7 @@ const deps = () => ({
   tree: { o: import("treeo") },
   ioioy: import("ioioy"),
 });
-const Spec = task({ units: "%", total: 100, _01: 0 as number, failed: __ as __<"abort"> }, (i) => {
+const TSK = task({ units: "%", total: 100, _01: 0 as number, failed: __ as __<"abort"> }, (i) => {
   i._01 = _01(i.curr, i.total);
 })(deps);
 
@@ -30,24 +30,26 @@ const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) 
 const tasks = () => [IO("A", 1), IO("B", 2), IO("C", 4)] as const;
 const taskObj = () => indexify("Id")(tasks());
 
-const step0 = Spec((p: 112) => p)("step_0");
-
-describe(sequence, ({ eq, res }) => ({
-  step0: async () => {
-    const $ = sequence(step0).$(IO("ABC"), (x, b) => "ABC");
+describe(sequence, ({ eq }) => ({
+  step_0_only: async () => {
+    const $ = sequence(TSK((p: 112) => p)("step_0"));
     const t = $.asTask("0");
     const r = await run(t)(112);
     eq(r, {
       step_0: 112,
-      ABC: 3,
     });
   },
 
-  simple: () => {
+  simple: async () => {
     const { A, B, C } = taskObj();
-    const D = Spec((p: 112) => {
-      return p;
-    });
+    const t = sequence(TSK((p: 0) => [p, "A"] as const)("0"))
+      .$(A, (x) => x["0"][1])
+      .$(B, () => "B")
+      .$(C, () => "C")
+      .$(TSK((p: readonly number[]) => p.reduce((a, n) => a + n, 0))("sum"), (x) => [x.A, x.B, x.C])
+      .asTask("1");
+    const r = await run(t)(0);
+    eq(r, { "0": [0, "A"], A: 1, B: 1, C: 1, sum: 3 });
   },
 }));
 
@@ -114,7 +116,7 @@ describe(parallelTree, ({ eq, res }) => ({
 
 describe(run, ({ eq, res }) => ({
   "+1": async () => {
-    const s = Spec((p: number) => p + 1)("");
+    const s = TSK((p: number) => p + 1)("");
     const r = await run(s)(1);
     r;
     const d = await awaiT(deps());
@@ -122,7 +124,7 @@ describe(run, ({ eq, res }) => ({
     eq(r, 2);
   },
   self: async () => {
-    const s = Spec((P: { a: "B" }, $, a, u, s) => ({ P, $, a, u, s }))("");
+    const s = TSK((P: { a: "B" }, $, a, u, s) => ({ P, $, a, u, s }))("");
 
     const r = await run(s)({ a: "B" });
     const d = await awaiT(deps());
@@ -132,7 +134,7 @@ describe(run, ({ eq, res }) => ({
   },
 
   progress: async () => {
-    const s = Spec(async (_, _$, _a, p) => {
+    const s = TSK(async (_, _$, _a, p) => {
       p(50);
       await tick();
       p(100);
@@ -148,7 +150,7 @@ describe(run, ({ eq, res }) => ({
   },
 
   abort: async () => {
-    const s = Spec(async (_, _$, abo, p) => {
+    const s = TSK(async (_, _$, abo, p) => {
       abo(() => p(p().curr, { failed: "abort" }));
       p(50);
       await tick(2);
@@ -171,7 +173,7 @@ describe(run, ({ eq, res }) => ({
   },
 
   abort_manual_load: async () => {
-    const s = Spec(async (_, _$, abo, p) => {
+    const s = TSK(async (_, _$, abo, p) => {
       abo(() => p(p().curr, { failed: "abort" }));
       p(50);
       await tick(2);
