@@ -91,16 +91,13 @@ export const $run =
   <Params extends Task$Params<Task>>(params: Params, abort = fakeAbort) => {
     const on = ON(abort);
     let _f: undefined | (() => void);
-    const d = disposyo(on("abort", () => ((p.X.failed = new AbortError()), def.reject(p.X.failed), _f?.())));
+    const d = disposyo(on("abort", () => ((p.X.failed = new AbortError()), def.reject(p.X.failed), d(), _f?.())));
     const _abort = (f: () => void) => (_f = f);
 
     const def = deferred();
-    const $ = Promise.race([
-      load(task)
-        .then((s) => s.run(params, s.loaded, _abort, update, s))
-        .finally(d),
-      def.promise,
-    ]);
+    const $ = Promise.race([load(task).then((s) => s.run(params, s.loaded, _abort, update, s)), def.promise]).finally(
+      d,
+    );
 
     return [$, p, update] as const;
   };

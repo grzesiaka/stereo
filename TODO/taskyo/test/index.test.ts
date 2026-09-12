@@ -113,8 +113,7 @@ describe(choice, ({ eq, res }) => ({
     const rp = run(c)(["C", "C"], abort.signal);
     let err: unknown;
     try {
-      await tick();
-      await tick();
+      await tick(1);
 
       abort.abort();
 
@@ -159,7 +158,25 @@ describe(parallelTree, ({ eq, res }) => ({
     eq(await r, { A: 1, B: 1, C: 1 });
     pr.eq(parallelTreeSimpleResults().map((x) => [x.curr, x.total, x._01, x.partial]));
   },
-  error: () => 1,
+  abort: async () => {
+    const s = parallelTree(taskObj())("II");
+    const abort = new AbortController();
+    const rp = run(s)({ A: "A", B: "B", C: "C" }, abort.signal);
+
+    let err: unknown;
+    try {
+      await tick(1);
+      abort.abort();
+
+      await rp;
+    } catch (e) {
+      err = e;
+    }
+
+    eq(rp.progress().partial, { A: __, B: __, C: __ });
+    eq(err instanceof AbortError, true);
+    eq(err, rp.progress().failed);
+  },
 }));
 
 describe(run, ({ eq, res }) => ({

@@ -41,6 +41,7 @@ export const runTree =
     const abort = new AbortController();
     abo(() => (dis(), abort.abort()));
     const pr = {};
+
     const rs = map(tt, ([t, k]) => {
       const r = run(t)(get(p)(k as never), abort.signal) as TaskRun<
         Task<any, any, any, any, [ProgressBase & { _01: number }]>
@@ -69,6 +70,7 @@ export const runTree =
       dis(d);
       return r;
     });
+
     u(0, { "⨂": pr });
     return awaiT(rs).finally(dis) as never as Promise<ParallelTreeResults<TT>>;
   };
@@ -83,7 +85,7 @@ export const parallelTree = <TT extends Tree<TaskAny>>(tt: TT) => {
   })(() => ({}), { __: ["⨂", tt] })(runTree(tt)) as <Ctx extends CtxIdRequired>(
     ctx: Ctx,
   ) => Task$<
-    { __: ["⨂", __, TT] } & Ctx extends string ? {} : Ctx,
+    { __: ["⨂", __, TT] } & (Ctx extends string ? {} : Ctx),
     Task<CtxId$Id<Ctx>, Promise<ParallelTreeResults<TT>>, ParallelTreeParams<TT>, {}, [ParallelTreeProgress<TT>]>
   >;
 };
