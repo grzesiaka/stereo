@@ -7,8 +7,7 @@ export interface ProgressBase {
   curr: number;
   total: number;
   prev?: number;
-  aborted?: unknown;
-  error?: unknown;
+  failed?: unknown;
 }
 
 export interface ProgressCreateOptions extends Partial<ProgressBase> {}

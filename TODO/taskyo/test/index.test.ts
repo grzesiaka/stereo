@@ -4,7 +4,7 @@ import { __, AbortController } from "jsyoyo";
 import { awaiT } from "treeo";
 import { indexify } from "proyij";
 
-import { $progress, load, run, task, NEVER, _01, parallelTree, tick } from "../src";
+import { $progress, load, run, task, NEVER, _01, parallelTree, tick, AbortError } from "../src";
 import { choice } from "../src/choice";
 import { parallel } from "../src/parallel";
 import { sequence } from "../src/sequence";
@@ -187,17 +187,25 @@ describe(run, ({ eq, res }) => ({
     })("");
 
     const abort = new AbortController();
-    const pr = run(s)(1, abort.signal);
-    const re = res();
-    pr.progress((x) => re.add(x.curr));
-    re.eq([0]);
-    // It waits for dynamic imports to resolve
-    while (re.items.length < 2) await tick();
-    re.eq([0, 50]);
-    abort.abort();
-    while (re.items.length < 3) await tick();
-    re.eq([0, 50, 50]); // the last 50 after abortion
-    eq(pr.progress().failed, "abort");
+    let err: unknown;
+    try {
+      const pr = run(s)(1, abort.signal);
+      const re = res();
+      pr.progress((x) => re.add(x.curr));
+      re.eq([0]);
+      // It waits for dynamic imports to resolve
+      while (re.items.length < 2) await tick();
+      re.eq([0, 50]);
+      abort.abort();
+      await pr;
+      eq(1, 2 as 1);
+      while (re.items.length < 3) await tick();
+      re.eq([0, 50, 50]); // the last 50 after abortion
+      eq(pr.progress().failed, "abort");
+    } catch (e) {
+      err = e;
+    }
+    eq(err instanceof AbortError);
   },
 
   abort_manual_load: async () => {
@@ -210,21 +218,27 @@ describe(run, ({ eq, res }) => ({
     })("");
 
     await load(s);
+    let err: unknown;
+    try {
+      const abort = new AbortController();
+      const pr = run(s)(1, abort.signal);
 
-    const abort = new AbortController();
-    const pr = run(s)(1, abort.signal);
-
-    const re = res();
-    pr.progress((x) => re.add(x.curr));
-    re.eq([0]);
-    eq(pr.progress().curr, 0);
-    await tick(2);
-    re.eq([0, 50]);
-    eq(pr.progress()._01, 0.5);
-    abort.abort();
-    while (re.items.length < 3) await tick();
-    re.eq([0, 50, 50]); // the last 50 after abortion
-    eq(pr.progress().failed, "abort");
+      const re = res();
+      pr.progress((x) => re.add(x.curr));
+      re.eq([0]);
+      eq(pr.progress().curr, 0);
+      await tick(2);
+      re.eq([0, 50]);
+      eq(pr.progress()._01, 0.5);
+      abort.abort();
+      await pr;
+      while (re.items.length < 3) await tick();
+      re.eq([0, 50, 50]); // the last 50 after abortion
+      eq(pr.progress().failed, "abort");
+    } catch (e) {
+      err = e;
+    }
+    eq(err instanceof AbortError);
   },
 }));
 

@@ -1,8 +1,9 @@
 import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressSpec, ProgressCalc } from "./progress";
-import { fakeAbort } from "./utils";
+import { deferred, fakeAbort } from "./utils";
 import { Simplify } from "type-fest";
+import { AbortError } from "./errors";
 
 /**
  * Dependencies constraint
@@ -89,11 +90,15 @@ export const $run =
   <Params extends Task$Params<Task>>(params: Params, abort = fakeAbort) => {
     const on = ON(abort);
     let d: () => void = () => __;
-    const _abort = (f: () => void) => (d = on("abort", f));
+    const _abort = (f: () => void) => (d = on("abort", () => (def.reject(new AbortError()), f())));
 
-    const $ = load(task)
-      .then((s) => s.run(params, s.loaded, _abort, update, s))
-      .finally(d);
+    const def = deferred();
+    const $ = Promise.race([
+      load(task)
+        .then((s) => s.run(params, s.loaded, _abort, update, s))
+        .finally(d),
+      def.promise,
+    ]);
 
     return [$, p, update] as const;
   };
