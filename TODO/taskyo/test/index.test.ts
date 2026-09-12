@@ -4,7 +4,7 @@ import { __, AbortController } from "jsyoyo";
 import { awaiT } from "treeo";
 import { indexify } from "proyij";
 
-import { $progress, load, run, task, NEVER, _01, parallelTree, tick, AbortError } from "../src";
+import { $progress, load, run, task, NEVER, _01, parallelTree, tick, AbortError, CriticalError } from "../src";
 import { choice } from "../src/choice";
 import { parallel } from "../src/parallel";
 import { sequence } from "../src/sequence";
@@ -276,6 +276,42 @@ describe(run, ({ eq, res }) => ({
       err = e;
     }
     eq(err instanceof AbortError);
+  },
+
+  error_immediate: async () => {
+    const t = TSK(() => Promise.reject("!!"))("!");
+    const r = run(t)(1);
+    let err = {} as CriticalError;
+    try {
+      await r;
+    } catch (e) {
+      err = e as never;
+    }
+
+    eq(err instanceof CriticalError, true);
+    eq(err.cause.original, "!!");
+    eq(err.cause.task.Id, "!");
+    eq(err.cause.progress, { curr: 0, _01: 0, total: 100, units: "%", failed: err });
+  },
+
+  error_after: async () => {
+    const t = TSK(async (_, __, ___, u) => {
+      await tick();
+      u(50);
+      return Promise.reject("!!");
+    })("!");
+    const r = run(t)(1);
+    let err = {} as CriticalError;
+    try {
+      await r;
+    } catch (e) {
+      err = e as never;
+    }
+
+    eq(err instanceof CriticalError, true);
+    eq(err.cause.original, "!!");
+    eq(err.cause.task.Id, "!");
+    eq(err.cause.progress, { curr: 50, _01: 0.5, total: 100, units: "%", failed: err });
   },
 }));
 

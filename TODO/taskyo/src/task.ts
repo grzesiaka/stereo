@@ -3,7 +3,7 @@ import { awaiT, AwaiTreed, Tree } from "treeo";
 import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressSpec, ProgressCalc } from "./progress";
 import { deferred, fakeAbort } from "./utils";
 import { Simplify } from "type-fest";
-import { AbortError } from "./errors";
+import { AbortError, CriticalError } from "./errors";
 import { disposyo } from "disposyo";
 
 /**
@@ -95,9 +95,20 @@ export const $run =
     const _abort = (f: () => void) => (_f = f);
 
     const def = deferred();
-    const $ = Promise.race([load(task).then((s) => s.run(params, s.loaded, _abort, update, s)), def.promise]).finally(
-      d,
-    );
+    const $ = Promise.race([
+      load(task)
+        .then((s) => s.run(params, s.loaded, _abort, update, s))
+        .catch((e) => {
+          const err = new CriticalError({
+            original: e,
+            task,
+            progress: update(),
+          });
+          update().failed = err;
+          return Promise.reject(err);
+        }),
+      def.promise,
+    ]).finally(d);
 
     return [$, p, update] as const;
   };
