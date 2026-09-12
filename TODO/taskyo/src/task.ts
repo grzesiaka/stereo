@@ -4,6 +4,7 @@ import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, Progress
 import { deferred, fakeAbort } from "./utils";
 import { Simplify } from "type-fest";
 import { AbortError } from "./errors";
+import { disposyo } from "disposyo";
 
 /**
  * Dependencies constraint
@@ -89,8 +90,9 @@ export const $run =
   <Task extends TaskAny>(task: Task, [p, update] = $progress(...task.progress)) =>
   <Params extends Task$Params<Task>>(params: Params, abort = fakeAbort) => {
     const on = ON(abort);
-    let d: () => void = () => __;
-    const _abort = (f: () => void) => (d = on("abort", () => (def.reject(new AbortError()), f())));
+    let _f: undefined | (() => void);
+    const d = disposyo(on("abort", () => ((p.X.failed = new AbortError()), def.reject(p.X.failed), _f?.())));
+    const _abort = (f: () => void) => (_f = f);
 
     const def = deferred();
     const $ = Promise.race([

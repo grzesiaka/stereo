@@ -106,6 +106,26 @@ describe(choice, ({ eq, res }) => ({
 
     eq(r, 1);
   },
+
+  abort: async () => {
+    const c = choice(tasks())("⨁");
+    const abort = new AbortController();
+    const rp = run(c)(["C", "C"], abort.signal);
+    let err: unknown;
+    try {
+      await tick();
+      await tick();
+
+      abort.abort();
+
+      await rp;
+    } catch (e) {
+      err = e;
+    }
+
+    eq(err instanceof AbortError, true);
+    eq(err, rp.progress().failed);
+  },
 }));
 
 describe(parallel, ({ eq, res }) => ({

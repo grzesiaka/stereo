@@ -14,7 +14,7 @@ export type Tasks$ChoiceProgress<TT extends ARR<TaskAny>> = TT extends readonly 
   infer T extends TaskAny,
   ...infer R extends ARR<TaskAny>,
 ]
-  ? (T["progress"][0] & { "⨁": T["Id"] }) | Tasks$ChoiceProgress<R>
+  ? (T["progress"][0] & { "⨁": T["Id"] } & ProgressBase) | Tasks$ChoiceProgress<R>
   : ProgressBase & { "⨁": __ };
 
 export type Tasks$Ids<TT extends ARR<Task>> = TT[number]["Id"];
