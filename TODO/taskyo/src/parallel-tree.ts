@@ -60,7 +60,6 @@ export const runTree =
 
         const topCurr = top.curr + subDone;
 
-        // this due to rounding errors does not guarantee to hit perfect 1 at the end
         const _01 = topCurr === top.total ? 1 : top._01 + (1 / top.total) * diff;
         _01 > top._01 &&
           u(topCurr, {

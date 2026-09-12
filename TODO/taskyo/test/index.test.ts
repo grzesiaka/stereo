@@ -30,11 +30,32 @@ const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) 
 const tasks = () => [IO("A", 1), IO("B", 2), IO("C", 4)] as const;
 const taskObj = () => indexify("Id")(tasks());
 
-describe(sequence, ({ eq }) => ({
+describe(sequence, ({ eq, res }) => ({
   step_0_only: async () => {
     const $ = sequence(TSK((p: 112) => p)("step_0"));
     const t = $.asTask("0");
-    const r = await run(t)(112);
+    const x = run(t)(112);
+    const re = res();
+    x.progress(re.add);
+
+    const r = await x;
+
+    re.eq([
+      {
+        _01: 0,
+        curr: 0,
+        partial: {},
+        total: 1,
+      },
+      {
+        _01: 1,
+        curr: 1,
+        partial: {
+          step_0: 112,
+        },
+        total: 1,
+      },
+    ]);
     eq(r, {
       step_0: 112,
     });
@@ -48,7 +69,14 @@ describe(sequence, ({ eq }) => ({
       .$(C, () => "C")
       .$(TSK((p: readonly number[]) => p.reduce((a, n) => a + n, 0))("sum"), (x) => [x.A, x.B, x.C])
       .asTask("1");
-    const r = await run(t)(0);
+    const x = run(t)(0);
+    const re = res();
+    x.progress(re.add);
+
+    const r = await x;
+
+    // re.eq(sequenceSimpleResult());
+    re.eq(sequenceSimpleResult());
     eq(r, { "0": [0, "A"], A: 1, B: 1, C: 1, sum: 3 });
   },
 }));
@@ -309,3 +337,103 @@ const parallelTreeSimpleResults = () => [
     total: 3,
   },
 ];
+
+function sequenceSimpleResult() {
+  return [
+    {
+      _01: 0,
+      curr: 0,
+      partial: {},
+      total: 5,
+    },
+    {
+      _01: 0.2, // 20% 0 done
+      curr: 1,
+      partial: {
+        "0": [0, "A"],
+      },
+      total: 5,
+    },
+    {
+      _01: 0.4, // +20% A done
+      curr: 2,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+      },
+      total: 5,
+    },
+    {
+      _01: 0.5, // +20%/2
+      curr: 2,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+      },
+      total: 5,
+    },
+    {
+      _01: 0.6, // +20%/2 B done
+      curr: 3,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+        B: 1,
+      },
+      total: 5,
+    },
+    {
+      _01: 0.65, // +20%/4
+      curr: 3,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+        B: 1,
+      },
+      total: 5,
+    },
+    {
+      _01: 0.7, // +20%/4
+      curr: 3,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+        B: 1,
+      },
+      total: 5,
+    },
+    {
+      _01: 0.75, // +20%/4
+      curr: 3,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+        B: 1,
+      },
+      total: 5,
+    },
+    {
+      _01: 0.8, // +20%/4 C done
+      curr: 4,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+        B: 1,
+        C: 1,
+      },
+      total: 5,
+    },
+    {
+      _01: 1, // +20% sum done
+      curr: 5,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+        B: 1,
+        C: 1,
+        sum: 3,
+      },
+      total: 5,
+    },
+  ];
+}

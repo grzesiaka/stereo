@@ -40,7 +40,7 @@ export interface Task<
 export type Task$<E extends {}, T extends TaskAny> = Simplify<E & T>;
 
 export const task =
-  <const ProgressBase extends ProgressCreateOptions = {}>(
+  <ProgressBase extends ProgressCreateOptions = {}>(
     progress = {} as ProgressBase,
     map = id as ProgressCalc<ProgressBase>,
   ) =>

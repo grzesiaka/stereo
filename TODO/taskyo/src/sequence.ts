@@ -71,6 +71,7 @@ export const sequence = <T extends TaskAny, D extends DepsC = __, P extends __<s
 
 export const asTask = <SS extends Steps, Deps extends DepsC>(L: () => Deps, R: SS) =>
   task({
+    _01: 0,
     partial: {} as Partial<Step$Dynamic<SS>>,
     total: R.length,
   })(L, { __: ["~>", R] })(async (p: Steps$InitParams<SS>, L, a, u) => {
@@ -78,16 +79,30 @@ export const asTask = <SS extends Steps, Deps extends DepsC>(L: () => Deps, R: S
     a(() => abort.abort());
     for (let i = 0; i < R.length; i++) {
       const s = R[i]!;
-      const pe = run(s[0])(i === 0 ? p : (s[1] as any)(u().partial, L), abort.signal);
+      const x = run(s[0])(i === 0 ? p : (s[1] as any)(u().partial, L), abort.signal);
 
-      const x = await pe;
-      const t = u();
-      u(t.curr + 1, {
-        partial: {
-          ...t.partial,
-          [s[2] || s[0].Id]: x,
-        },
-      });
+      const progress = (re?: any) => (x: any) => {
+        const t = u();
+        if (re) {
+          const n = t.curr + 1;
+          u(n, {
+            _01: n === t.total ? 1 : (i + 1) / t.total,
+            partial: {
+              ...t.partial,
+              [s[2] || s[0]["Id"]]: re,
+            },
+          });
+        } else {
+          x.curr !== x.total && // no update in such a case - next will comes update with result
+            u(t.curr, {
+              _01: (i + x.curr / x.total) / t.total,
+            });
+        }
+      };
+      const d = x.progress(progress(), 1);
+      const re = await x;
+      d();
+      progress(re)(x.progress());
     }
 
     return u().partial as Step$Dynamic<SS>;

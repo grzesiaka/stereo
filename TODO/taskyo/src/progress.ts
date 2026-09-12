@@ -7,6 +7,8 @@ export interface ProgressBase {
   curr: number;
   total: number;
   prev?: number;
+  aborted?: unknown;
+  error?: unknown;
 }
 
 export interface ProgressCreateOptions extends Partial<ProgressBase> {}
@@ -27,8 +29,7 @@ export type ProgressVar<S extends ProgressCreateOptions> = Var<string, ProgressI
 export type ProgressUpdate<S extends ProgressCreateOptions> = (() => ProgressInfo<S>) &
   ((next: $$<S["curr"]> & number, other?: Partial<Omit<S, "curr">>) => ProgressInfo<S>);
 
-// INFO the proper type should accept <O extends ProgressCreateOptions = {}, M extends ProgressMap<O> = ProgressMap<O>>
-//      unfortunately Typescript is unhappy then; anyway this is just a simple pair
+// ProgressCalc<ProgressInfo<O>> does not work fully;
 export type ProgressSpec<O extends ProgressCreateOptions = {}> = [ProgressInfo<O>, ProgressCalc<any>?];
 
 export const $progress = <const O extends ProgressCreateOptions = {}>(
