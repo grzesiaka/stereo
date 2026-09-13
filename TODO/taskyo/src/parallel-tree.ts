@@ -5,6 +5,7 @@ import { run, task, Task$Params, Task$ResultOK, TaskAny, Task, Task$, TaskRun } 
 import { disposyo } from "disposyo";
 import { ProgressBase, ProgressUpdate } from "./progress";
 import { Simplify } from "type-fest";
+import { tick } from "./utils";
 
 export type ParallelTreeParams<TT extends Tree<TaskAny>> = TT extends { [K in string]: any }
   ? { [K in keyof TT]: TT[K] extends TaskAny ? Task$Params<TT[K]> : ParallelTreeParams<TT[K]> }
@@ -46,7 +47,7 @@ export const runTree =
       const r = run(t)(get(p)(k as never), abort.signal) as TaskRun<
         Task<any, any, any, any, [ProgressBase & { _01: number }]>
       >;
-      set(k, r.progress)(pr);
+      // set(k, r.progress)(pr);
       const d = r.progress(async (x: ProgressBase & { _01: number }) => {
         const subDone = x.curr === x.total ? 1 : 0;
         if (subDone) {
@@ -68,11 +69,19 @@ export const runTree =
           });
       });
       dis(d);
+
       return r;
     });
 
     u(0, { "⨂": pr });
-    return awaiT(rs).finally(dis) as never as Promise<ParallelTreeResults<TT>>;
+
+    // TODO expose all running tasks from here OR from progress
+    return awaiT(rs)
+      .catch((e) => {
+        tick().then(() => abort.abort());
+        return Promise.reject(e);
+      })
+      .finally(dis) as never as Promise<ParallelTreeResults<TT>>;
   };
 
 export const parallelTree = <TT extends Tree<TaskAny>>(tt: TT) => {

@@ -1,18 +1,33 @@
 import { ProgressBase } from "./progress";
 import { Task } from "./task";
 
-interface ErrorCtx {
+interface ErrorTrace {
   task: Task;
-  subtask?: Task;
   progress: ProgressBase;
-  original: unknown;
+}
+
+interface ErrorCause extends ErrorTrace {
+  source: unknown;
 }
 
 export class CriticalError extends Error {
-  constructor(public readonly cause: ErrorCtx) {
+  constructor(public readonly trace: [ErrorCause, ...ErrorTrace[]]) {
     super("critical");
   }
+  get cause() {
+    return this.trace[0];
+  }
+  get taskIds() {
+    return this.trace.map((t) => t.task["Id"]);
+  }
 }
+
+export const CRITIC = (err: unknown, cause: ErrorTrace) => {
+  if (err instanceof CriticalError) {
+    return new CriticalError([...err.trace, cause]);
+  }
+  return new CriticalError([{ ...cause, source: err }]);
+};
 
 export class AbortError extends Error {
   constructor() {

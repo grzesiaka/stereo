@@ -1,17 +1,17 @@
 import { describe } from "~testing";
 
-import { __, AbortController } from "jsyoyo";
-import { awaiT } from "treeo";
+import { __, a, AbortController } from "jsyoyo";
+import { awaiT, Tree } from "treeo";
 import { indexify } from "proyij";
 
-import { $progress, load, run, task, NEVER, _01, parallelTree, tick, AbortError, CriticalError } from "../src";
+import { $progress, load, run, task, NEVER, _01, parallelTree, tick, AbortError, CriticalError, TaskAny } from "../src";
 import { choice } from "../src/choice";
 import { parallel } from "../src/parallel";
 import { sequence } from "../src/sequence";
 
 const deps = () => ({
-  tree: { o: import("treeo") },
-  ioioy: import("ioioy"),
+  // tree: { o: import("treeo") },
+  // ioioy: import("ioioy"),
 });
 const TSK = task({ units: "%", total: 100, _01: 0 as number, failed: __ as __<"abort"> }, (i) => {
   i._01 = _01(i.curr, i.total);
@@ -28,7 +28,7 @@ const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) 
   })(I);
 
 const tasks = () => [IO("A", 1), IO("B", 2), IO("C", 4)] as const;
-const taskObj = () => indexify("Id")(tasks());
+const taskObj = <E extends Tree<TaskAny> = {}>(e = {} as E) => a(indexify("Id")(tasks()), e);
 
 describe(sequence, ({ eq, res }) => ({
   step_0_only: async () => {
@@ -177,6 +177,24 @@ describe(parallelTree, ({ eq, res }) => ({
     eq(err instanceof AbortError, true);
     eq(err, rp.progress().failed);
   },
+  error: async () => {
+    const s = parallelTree(taskObj({ eRR: { or: TSK((x: unknown) => tick(3).then(() => Promise.reject(x)))("!") } }))(
+      "II",
+    );
+    const abort = new AbortController();
+    const r = run(s)({ A: "A", B: "B", C: "C", eRR: { or: abort } }, abort.signal);
+
+    let err = {} as CriticalError;
+    try {
+      await r;
+    } catch (e) {
+      err = e as never;
+    }
+    eq(err instanceof CriticalError, true);
+    eq(err.cause.source, abort);
+    eq(err.taskIds, ["!", "II"]);
+    eq(err.cause.progress.failed instanceof CriticalError, true);
+  },
 }));
 
 describe(run, ({ eq, res }) => ({
@@ -289,7 +307,7 @@ describe(run, ({ eq, res }) => ({
     }
 
     eq(err instanceof CriticalError, true);
-    eq(err.cause.original, "!!");
+    eq(err.cause.source, "!!");
     eq(err.cause.task.Id, "!");
     eq(err.cause.progress, { curr: 0, _01: 0, total: 100, units: "%", failed: err });
   },
@@ -309,9 +327,9 @@ describe(run, ({ eq, res }) => ({
     }
 
     eq(err instanceof CriticalError, true);
-    eq(err.cause.original, "!!");
-    eq(err.cause.task.Id, "!");
-    eq(err.cause.progress, { curr: 50, _01: 0.5, total: 100, units: "%", failed: err });
+    eq(err.trace[0].source, "!!");
+    eq(err.trace[0].task.Id, "!");
+    eq(err.trace[0].progress, { curr: 50, _01: 0.5, total: 100, units: "%", failed: err });
   },
 }));
 
