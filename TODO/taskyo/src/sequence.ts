@@ -76,6 +76,13 @@ class Seq<const SS extends ARR1<Step>, Deps extends DepsC = __> {
     public readonly R: SS,
   ) {}
 
+  /**
+   * Register task
+   * @param task task to register
+   * @param params mapping from dynamic to task params
+   * @param path where result should be reported back to dynamic (defaults to task.Id)
+   * @returns
+   */
   $<T extends TaskAny, const Re extends Task$Params<T>, P extends __<string> = __>(
     task: T,
     params: (R: Steps$Dynamic<SS>, L: AwaiTreed<Deps>) => Re,
@@ -84,6 +91,25 @@ class Seq<const SS extends ARR1<Step>, Deps extends DepsC = __> {
     return new Seq(this.L, [...this.R, [task, params, path]]);
   }
 
+  /**
+   * Register task which does not require parameters from dynamic.
+   * Ideally it should be possible via `.$` but seems impossible while respecting `const Re`,
+   * which is vital to good DX.
+   */
+  S<T extends TaskAny<unknown> | TaskAny<__> /*TaskAny<never> never breaks */, P extends __<string> = __>(
+    task: T,
+    path = __ as P,
+  ) {
+    return new Seq(this.L, [...this.R, [task, () => __, path]]);
+  }
+
+  /**
+   * Recovery from error return by a previous. Error thrown are critical and not handled here.
+   * @param task task to register
+   * @param params mapping from error to task params
+   * @param path
+   * @returns where result should be reported back to dynamic (defaults to task.Id)
+   */
   _<T extends TaskAny, const Re extends Task$Params<T>, P extends __<string> = __>(
     task: T,
     params: (ERR: Steps$Errors<SS>, L: AwaiTreed<Deps>, R: Partial<Steps$Dynamic<SS>>) => Re,

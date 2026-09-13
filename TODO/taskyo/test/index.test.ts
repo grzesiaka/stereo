@@ -127,9 +127,12 @@ describe(sequence, ({ eq, res }) => ({
     const t2 = t.$(IO("A"), () => "A");
     eq(ERR as unknown, await run(t2.asTask("t2"))("!"));
 
-    const t3 = t2.$(IO("B"), () => "B")._(TSK((p) => p)("OK"), (e) => [e, e]);
+    const t3 = t2
+      .$(IO("B"), () => "B")
+      ._(TSK((p: readonly [Error, Error]) => p)("OK"), (e) => [e, e])
+      .S(TSK(() => 1 as const)("NO_PARAM"));
     const x3 = await run(t3.asTask("t3"))("!");
-    eq([ERR, ERR] as unknown, x3.OK);
+    eq(x3, { OK: [ERR, ERR], NO_PARAM: 1 });
   },
 }));
 

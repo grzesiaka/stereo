@@ -20,12 +20,12 @@ import { disposyo } from "disposyo";
 export type DepsC = Tree | Promise<any> | __;
 
 // export type TaskAny = Task<any, any, any, any, [any, any]>; - makes Typescript unhappy
-export interface TaskAny {
+export interface TaskAny<Params = any, Result = any> {
   Id: string;
   progress: any;
   load: () => any;
   loaded?: any;
-  run: (p: any, d: any, a: any, u: any, s: any) => any;
+  run: (p: Params, d: any, a: any, u: any, s: any) => Result;
 }
 export interface Task<
   ID extends string = string,
