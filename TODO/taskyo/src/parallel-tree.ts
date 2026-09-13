@@ -15,14 +15,14 @@ export type ParallelTreeResults<TT extends Tree<TaskAny>, Extra = never> = TT ex
   ? { [K in keyof TT]: TT[K] extends TaskAny ? Task$ResultOK<TT[K]> | Extra : ParallelTreeResults<TT[K]> }
   : never;
 
-export type ParallelSubTreeProgress<TT extends Tree<TaskAny>> = TT extends { [K in string]: any }
-  ? { [K in keyof TT]: TT[K] extends Task ? TaskRun<Task>["progress"] : ParallelSubTreeProgress<TT[K]> }
+export type ParallelSubtasks<TT extends Tree<TaskAny>> = TT extends { readonly [K in string]: any }
+  ? { [K in keyof TT]: TT[K] extends TaskAny ? TaskRun<TT[K]> : ParallelSubtasks<TT[K]> }
   : never;
 
 export type ParallelTreeProgress<TT extends Tree<TaskAny>> = Simplify<
   ProgressBase & {
     _01: number;
-    "⨂": __<ParallelSubTreeProgress<TT>>;
+    "⨂": __<ParallelSubtasks<TT>>;
     partial: ParallelTreeResults<TT, __>;
   }
 >;
@@ -41,13 +41,11 @@ export const runTree =
     const dis = disposyo();
     const abort = new AbortController();
     abo(() => (dis(), abort.abort()));
-    const pr = {};
 
-    const rs = map(tt, ([t, k]) => {
+    const tasks = map(tt, ([t, k]) => {
       const r = run(t)(get(p)(k as never), abort.signal) as TaskRun<
         Task<any, any, any, any, [ProgressBase & { _01: number }]>
       >;
-      // set(k, r.progress)(pr);
       const d = r.progress(async (x: ProgressBase & { _01: number }) => {
         const subDone = x.curr === x.total ? 1 : 0;
         if (subDone) {
@@ -73,10 +71,10 @@ export const runTree =
       return r;
     });
 
-    u(0, { "⨂": pr });
+    // optionally subtasks could be exposed from the promise itself, but run does not support it right now
+    u(0, { "⨂": tasks });
 
-    // TODO expose all running tasks from here OR from progress
-    return awaiT(rs)
+    return awaiT(tasks)
       .catch((e) => {
         tick().then(() => abort.abort());
         return Promise.reject(e);
@@ -84,11 +82,11 @@ export const runTree =
       .finally(dis) as never as Promise<ParallelTreeResults<TT>>;
   };
 
-export const parallelTree = <TT extends Tree<TaskAny>>(tt: TT) => {
+export const parallelTree = <const TT extends Tree<TaskAny>>(tt: TT) => {
   let i = 0;
   return task({
     _01: 0 as number,
-    "⨂": __ as __<ParallelSubTreeProgress<TT>>,
+    "⨂": __ as __<ParallelSubtasks<TT>>,
     partial: map(tt, () => (i++, __)) as ParallelTreeResults<TT, __>,
     total: i,
   })(() => ({}), { __: ["⨂", tt] })(runTree(tt)) as <Ctx extends CtxIdRequired>(

@@ -1,6 +1,14 @@
 import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
-import { $progress, ProgressCreateOptions, ProgressUpdate, ProgressVar, ProgressSpec, ProgressCalc } from "./progress";
+import {
+  $progress,
+  ProgressCreateOptions,
+  ProgressUpdate,
+  ProgressVar,
+  ProgressSpec,
+  ProgressCalc,
+  ProgressBase,
+} from "./progress";
 import { deferred, fakeAbort } from "./utils";
 import { Simplify } from "type-fest";
 import { AbortError, CRITIC } from "./errors";
@@ -28,8 +36,6 @@ export interface Task<
 > {
   Id: ID;
   progress: Progress;
-  load: () => Deps;
-  loaded?: AwaiTreed<Deps>;
   run: (
     p: Params,
     d: AwaiTreed<Deps>,
@@ -37,14 +43,16 @@ export interface Task<
     u: ProgressUpdate<Progress[0]>,
     s: Task<string, any, Params, Deps, Progress>,
   ) => Result;
+  loaded?: AwaiTreed<Deps>;
+  load: () => Deps;
 }
 
 export type Task$<E extends {}, T extends TaskAny> = Simplify<E & T>;
 
 export const task =
-  <ProgressBase extends ProgressCreateOptions = {}>(
-    progress = {} as ProgressBase,
-    map = id as ProgressCalc<ProgressBase>,
+  <ProgressShape extends ProgressCreateOptions = {}>(
+    progress = {} as ProgressShape,
+    map = id as ProgressCalc<ProgressShape>,
   ) =>
   <Deps extends DepsC, E extends {} = {}>(load: () => Deps, extra = {} as E) =>
   <const Params, Result>(
@@ -52,13 +60,13 @@ export const task =
       p: Params,
       d: AwaiTreed<Deps>,
       a: (on_abort: () => void) => void,
-      u: ProgressUpdate<ProgressBase>,
+      u: ProgressUpdate<ProgressShape>,
       s: Task<string, any, NoInfer<Params>, NoInfer<Deps>, any>,
     ) => Result,
   ) =>
   <Ctx extends CtxIdRequired>(
     Ctx: Ctx,
-  ): CtxId<Ctx, E & Task<CtxId$Id<Ctx>, Result, Params, Deps, ProgressSpec<ProgressBase>>> =>
+  ): CtxId<Ctx, E & Task<CtxId$Id<Ctx>, Result, Params, Deps, ProgressSpec<ProgressShape & ProgressBase>>> =>
     CtxId(
       {
         ...extra,
@@ -83,7 +91,7 @@ export const load = <T extends TaskAny>(task: T) =>
       >);
 
 export type TaskRun<T extends Task> = Promise<Awaited<Task$Result<T>>> & {
-  progress: ProgressVar<T["progress"][0]>["O"];
+  progress: ProgressVar<T["progress"][0] & ProgressBase>["O"];
 };
 
 export const $run =

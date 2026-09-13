@@ -2,12 +2,14 @@ import { Var } from "ioioy";
 import { $$, __, Fn$I, id } from "jsyoyo";
 import { Simplify, Writable } from "type-fest";
 
-export interface ProgressBase {
-  [k: string]: unknown;
+interface Base {
   curr: number;
   total: number;
   prev?: number;
   failed?: unknown;
+}
+export interface ProgressBase extends Base {
+  [k: string]: unknown;
 }
 
 export interface ProgressCreateOptions extends Partial<ProgressBase> {}
@@ -16,13 +18,7 @@ export type ProgressCalc<O extends ProgressCreateOptions = ProgressCreateOptions
   i: Writable<ProgressInfo<O>>,
 ) => void;
 
-export type ProgressInfo<S extends ProgressCreateOptions = ProgressCreateOptions> = Simplify<
-  Omit<S, "total" | "curr"> &
-    S & {
-      total: $$<S["total"]> & number;
-      curr: $$<S["curr"]> & number;
-    }
->;
+export type ProgressInfo<S extends ProgressCreateOptions = ProgressCreateOptions> = Simplify<S & Base>;
 export type ProgressVar<S extends ProgressCreateOptions> = Var<string, ProgressInfo<S>>;
 
 export type ProgressUpdate<S extends ProgressCreateOptions> = (() => ProgressInfo<S>) &
