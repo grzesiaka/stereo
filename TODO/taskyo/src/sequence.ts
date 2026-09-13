@@ -1,8 +1,9 @@
 import { __, AbortController, ARR, ARR1, CtxId$Id, CtxIdRequired } from "jsyoyo";
 import { Task$Params, Task$ResultOK, TaskAny, DepsC, task, run, Task$, Task, Task$Error } from "./task";
-import { ProgressBase } from "./progress";
+import { ProgressBase, ProgressUpdate } from "./progress";
 import { Simplify } from "type-fest";
 import { AwaiTreed } from "treeo";
+import { CRITIC } from "./errors";
 
 type TaskStep<
   T extends TaskAny = TaskAny,
@@ -26,7 +27,7 @@ type RecoveryStep<
   Dynamic = any,
   Static = any,
   ResultPath extends __<string> = __<string>,
-> = readonly ["_", task: T, params: RecoveryStepParams<T, Exception, Dynamic, Static>, result_path?: ResultPath];
+> = readonly [task: T, params: RecoveryStepParams<T, Exception, Dynamic, Static>, result_path: __<ResultPath>, "_"];
 type RecoveryStepParams<T extends TaskAny = TaskAny, Exception = any, Dynamic = any, Static = any> = (
   e: Exception,
   s: Static,
@@ -47,9 +48,9 @@ type TaskStep$Dynamic<S> =
 type RecoveryStep$Dynamic<S> =
   S extends RecoveryStep<infer T, any, any, any, infer P> ? { [k in Step$Path<T["Id"], P>]: Task$ResultOK<T> } : never;
 
-type _Steps$Dynamic<SS, ALL> = SS extends readonly [infer S extends Step, ...infer R]
-  ? S[0] extends "_"
-    ? RecoveryStep$Dynamic<S>
+type _Steps$Dynamic<SS, ALL> = SS extends readonly [...infer R, infer S extends Step]
+  ? S[3] extends "_"
+    ? RecoveryStep$Dynamic<S> & Partial<_Steps$Dynamic<R, ALL>> // TODO: This could be bit more precise: the initial chunk till first Error present could be non-partial
     : TaskStep$Dynamic<S> & _Steps$Dynamic<R, ALL>
   : {};
 type Steps$Dynamic<SS> = Simplify<_Steps$Dynamic<SS, SS>>;
@@ -86,10 +87,10 @@ class Seq<const SS extends ARR1<Step>, Deps extends DepsC = __> {
 
   _<T extends TaskAny, const Re extends Task$Params<T>, P extends __<string> = __>(
     task: T,
-    params: (ERR: Steps$Errors<SS, never>, L: AwaiTreed<Deps>, R: Partial<Steps$Dynamic<SS>>) => Re,
+    params: (ERR: Steps$Errors<SS>, L: AwaiTreed<Deps>, R: Partial<Steps$Dynamic<SS>>) => Re,
     path = __ as P,
   ) {
-    return new Seq(this.L, [...this.R, ["_", task, params, path]]);
+    return new Seq(this.L, [...this.R, [task, params, path, "_"]]);
   }
 
   asTask<Ctx extends CtxIdRequired>(ctx: Ctx) {
@@ -103,17 +104,18 @@ export const sequence = <T extends TaskAny, D extends DepsC = __, P extends __<s
   p = __ as P,
 ) => new Seq(d, [[t, p] as TaskStep0<T, P>]);
 
-export const asTask = <SS extends Steps, Deps extends DepsC>(L: () => Deps, R: SS) =>
-  task({
-    _01: 0,
-    partial: {} as Partial<TaskStep$Dynamic<SS>>,
-    total: R.length,
-  })(L, { __: ["~>", R] })(async (p: Steps$InitParams<SS>, L, a, u) => {
+const runSequence =
+  <SS extends Steps>(R: SS) =>
+  async (p: Steps$InitParams<SS>, L: any, a: (f: () => void) => void, u: ProgressUpdate<any>) => {
     const abort = new AbortController();
     a(() => abort.abort());
-    for (let i = 0; i < R.length; i++) {
+    let i = 0;
+    let recovering = false;
+    for (; i < R.length; i++) {
       const s = R[i]!;
-      const x = run(s[0])(i === 0 ? p : (s[1] as any)(u().partial, L), abort.signal);
+      if (!recovering && s["3"] === "_") continue; // regularly skip recovery steps
+      recovering = false;
+      const x = run(s["0"])(i === 0 ? p : (s[1] as any)(u().partial, L), abort.signal);
 
       const progress = (re?: any) => (x: any) => {
         const t = u();
@@ -135,12 +137,28 @@ export const asTask = <SS extends Steps, Deps extends DepsC>(L: () => Deps, R: S
       };
       const d = x.progress(progress(), 1);
       const re = await x;
+
+      if (re instanceof Error) {
+        while (++i && i < R.length) R[i]![3] !== "_";
+        if (i === R.length) {
+          throw CRITIC(re, { task: s[0], progress: x.progress() as any });
+        }
+        recovering = true;
+      }
+
       d();
       progress(re)(x.progress());
     }
 
     return u().partial as TaskStep$Dynamic<SS>;
-  }) as <Ctx extends CtxIdRequired>(
+  };
+
+export const asTask = <SS extends Steps, Deps extends DepsC>(L: () => Deps, R: SS) =>
+  task({
+    _01: 0,
+    partial: {} as Partial<TaskStep$Dynamic<SS>>,
+    total: R.length,
+  })(L, { __: ["~>", R] })(runSequence(R)) as <Ctx extends CtxIdRequired>(
     ctx: Ctx,
   ) => Task$<
     { __: ["~>", SS] } & (Ctx extends string ? {} : Ctx),
