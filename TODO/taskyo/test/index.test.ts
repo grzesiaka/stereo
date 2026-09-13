@@ -125,6 +125,23 @@ describe(choice, ({ eq, res }) => ({
     eq(err instanceof AbortError, true);
     eq(err, rp.progress().failed);
   },
+
+  error: async () => {
+    const s = choice([...tasks(), TSK((p: "!") => Promise.reject(p))("!!")])("⨁");
+    const abort = new AbortController();
+    const r = run(s)(["!!", "!"], abort.signal);
+
+    let err = {} as CriticalError;
+    try {
+      await r;
+    } catch (e) {
+      err = e as never;
+    }
+    eq(err instanceof CriticalError, true);
+    eq(err.cause.source, "!");
+    eq(err.taskIds, ["!!", "⨁"]);
+    eq(err.cause.progress.failed instanceof CriticalError, true);
+  },
 }));
 
 describe(parallel, ({ eq, res }) => ({

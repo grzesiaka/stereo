@@ -38,8 +38,7 @@ export const choice = <const TT extends ARR1<TaskAny>>(tt: TT) =>
     abo(() => (dis(), abort.abort()));
     const r = run(t, pr)(params[1], abort.signal);
     dis = r.progress((x) => pu(x.curr, x));
-    r.finally(dis);
-    return r;
+    return r.finally(dis);
   }) as <Ctx extends CtxIdRequired>(
     ctx: Ctx,
   ) => Task$<
