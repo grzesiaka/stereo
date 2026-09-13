@@ -1,9 +1,8 @@
 import { __, AbortController, ARR, ARR1, CtxId$Id, CtxIdRequired } from "jsyoyo";
-import { Task$Params, Task$ResultOK, TaskAny, DepsC, task, run, Task$, Task, Task$Error } from "./task";
+import { Task$Params, Task$ResultOK, TaskAny, DepsC, task, run, Task$, Task, Task$Error, TaskRun } from "./task";
 import { ProgressBase, ProgressUpdate } from "./progress";
 import { Simplify } from "type-fest";
 import { AwaiTreed } from "treeo";
-import { CRITIC } from "./errors";
 
 type TaskStep<
   T extends TaskAny = TaskAny,
@@ -58,7 +57,7 @@ type Steps$Dynamic<SS> = Simplify<_Steps$Dynamic<SS, SS>>;
 type Steps$Errors<SS> = SS extends readonly [...infer R, infer S extends Step]
   ? S extends RecoveryStep
     ? Task$Error<S>
-    : Task$Error<S> | Steps$Errors<R>
+    : Task$Error<S[0]> | Steps$Errors<R>
   : never;
 
 type Steps$InitParams<SS> = SS extends readonly [infer S, ...infer R]
@@ -110,12 +109,17 @@ const runSequence =
     const abort = new AbortController();
     a(() => abort.abort());
     let i = 0;
-    let recovering = false;
-    for (; i < R.length; i++) {
+    let err = null;
+    while (i < R.length) {
       const s = R[i]!;
-      if (!recovering && s["3"] === "_") continue; // regularly skip recovery steps
-      recovering = false;
-      const x = run(s["0"])(i === 0 ? p : (s[1] as any)(u().partial, L), abort.signal);
+      if (!err && s[3] === "_") continue; // regularly skip recovery steps
+
+      const x: TaskRun<any> = run(s[0])(
+        i === 0 ? p : err ? (s[1] as any)(err, L, u().partial) : (s[1] as any)(u().partial, L),
+        abort.signal,
+      );
+
+      err = null;
 
       const progress = (re?: any) => (x: any) => {
         const t = u();
@@ -138,16 +142,21 @@ const runSequence =
       const d = x.progress(progress(), 1);
       const re = await x;
 
-      if (re instanceof Error) {
-        while (++i && i < R.length) R[i]![3] !== "_";
-        if (i === R.length) {
-          throw CRITIC(re, { task: s[0], progress: x.progress() as any });
-        }
-        recovering = true;
-      }
-
       d();
-      progress(re)(x.progress());
+      if (re instanceof Error) {
+        while (i < R.length) {
+          if (R[i]![3] !== "_") i++;
+          else break;
+        }
+        if (i === R.length) {
+          // no recovery - error reported as such
+          return re;
+        }
+        err = re;
+      } else {
+        progress(re)(x.progress());
+        i++;
+      }
     }
 
     return u().partial as TaskStep$Dynamic<SS>;
@@ -162,5 +171,5 @@ export const asTask = <SS extends Steps, Deps extends DepsC>(L: () => Deps, R: S
     ctx: Ctx,
   ) => Task$<
     { __: ["~>", SS] } & (Ctx extends string ? {} : Ctx),
-    Task<CtxId$Id<Ctx>, Promise<Steps$Dynamic<SS>>, Steps$InitParams<SS>, Deps, [SeqProgress<SS>]>
+    Task<CtxId$Id<Ctx>, Promise<Steps$Dynamic<SS> | Steps$Errors<SS>>, Steps$InitParams<SS>, Deps, [SeqProgress<SS>]>
   >;

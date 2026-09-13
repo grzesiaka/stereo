@@ -6,12 +6,12 @@ interface ErrorTrace {
   progress: ProgressBase;
 }
 
-interface ErrorCause extends ErrorTrace {
-  source: unknown;
+interface ErrorCause<Source = unknown> extends ErrorTrace {
+  source: Source;
 }
 
-export class CriticalError extends Error {
-  constructor(public readonly trace: [ErrorCause, ...ErrorTrace[]]) {
+export class CriticalError<Source = unknown> extends Error {
+  constructor(public readonly trace: [ErrorCause<Source>, ...ErrorTrace[]]) {
     super("critical");
   }
   get cause() {
@@ -21,7 +21,6 @@ export class CriticalError extends Error {
     return this.trace.map((t) => t.task["Id"]);
   }
 }
-
 export const CRITIC = (err: unknown, cause: ErrorTrace) => {
   if (err instanceof CriticalError) {
     return new CriticalError([...err.trace, cause]);

@@ -107,6 +107,30 @@ describe(sequence, ({ eq, res }) => ({
     eq(err.taskIds, ["!", "1"]);
     eq(err.cause.progress.failed instanceof CriticalError, true);
   },
+
+  recovery_0_step: async () => {
+    const ERR = new Error("!");
+    let err = __ as __ | CriticalError<Exclude<typeof ERR, 0>>;
+
+    const t = sequence(TSK(() => ERR as 0 | Error)("0"));
+    const r0 = run(t.asTask("!"))("!");
+
+    let x: unknown;
+    try {
+      x = await r0;
+    } catch (e) {
+      err = e as never;
+    }
+    eq(err, __);
+    eq(x, ERR);
+
+    const t2 = t.$(IO("A"), () => "A");
+    eq(ERR as unknown, await run(t2.asTask("t2"))("!"));
+
+    const t3 = t2.$(IO("B"), () => "B")._(TSK((p) => p)("OK"), (e) => [e, e]);
+    const x3 = await run(t3.asTask("t3"))("!");
+    eq([ERR, ERR] as unknown, x3.OK);
+  },
 }));
 
 describe(choice, ({ eq, res }) => ({
