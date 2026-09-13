@@ -10,8 +10,8 @@ import { parallel } from "../src/parallel";
 import { sequence } from "../src/sequence";
 
 const deps = () => ({
-  // tree: { o: import("treeo") },
-  // ioioy: import("ioioy"),
+  tree: { o: import("treeo") },
+  ioioy: import("ioioy"),
 });
 const TSK = task({ units: "%", total: 100, _01: 0 as number, failed: __ as __<"abort"> }, (i) => {
   i._01 = _01(i.curr, i.total);
@@ -75,9 +75,37 @@ describe(sequence, ({ eq, res }) => ({
 
     const r = await x;
 
-    // re.eq(sequenceSimpleResult());
     re.eq(sequenceSimpleResult());
     eq(r, { "0": [0, "A"], A: 1, B: 1, C: 1, sum: 3 });
+  },
+
+  error: async () => {
+    const { A, B, C } = taskObj();
+    const t = sequence(TSK((p: 0) => [p, "A"] as const)("0"))
+      .$(A, (x) => x["0"][1])
+      .$(B, () => "B")
+      .$(C, () => "C")
+      .$(TSK((p: readonly number[]) => p.reduce((a, n) => a + n, 0))("sum"), (x) => [x.A, x.B, x.C])
+      .$(
+        TSK((p) => {
+          throw p;
+        })("!"),
+        (x) => x.sum,
+      )
+      .asTask("1");
+
+    const r = run(t)(0);
+
+    let err = {} as CriticalError;
+    try {
+      await r;
+    } catch (e) {
+      err = e as never;
+    }
+    eq(err instanceof CriticalError, true);
+    eq(err.cause.source, 3);
+    eq(err.taskIds, ["!", "1"]);
+    eq(err.cause.progress.failed instanceof CriticalError, true);
   },
 }));
 
