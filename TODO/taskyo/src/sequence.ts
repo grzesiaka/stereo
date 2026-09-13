@@ -1,41 +1,67 @@
 import { __, AbortController, ARR, ARR1, CtxId$Id, CtxIdRequired } from "jsyoyo";
-import { Task$Params, Task$ResultOK, TaskAny, DepsC, task, run, Task$, Task } from "./task";
+import { Task$Params, Task$ResultOK, TaskAny, DepsC, task, run, Task$, Task, Task$Error } from "./task";
 import { ProgressBase } from "./progress";
 import { Simplify } from "type-fest";
 import { AwaiTreed } from "treeo";
 
-type RunTaskStep<
+type TaskStep<
   T extends TaskAny = TaskAny,
   Dynamic = any,
   Static = any,
   ResultPath extends __<string> = __<string>,
-> = readonly [task: T, params: StepParams<T, Dynamic, Static>, result_path?: ResultPath];
-
-type RunTaskStep0<T extends TaskAny = TaskAny, ResultPath extends __<string> = __<string>> = readonly [
+> = readonly [task: T, params: TaskStepParams<T, Dynamic, Static>, result_path?: ResultPath];
+type TaskStep0<T extends TaskAny = TaskAny, ResultPath extends __<string> = __<string>> = readonly [
   task: T,
   __,
   result_path?: ResultPath,
 ];
+type TaskStepParams<T extends TaskAny = TaskAny, Dynamic = any, Static = any> = (
+  d: Dynamic,
+  s: Static,
+) => Task$Params<T>;
 
-type StepParams<T extends TaskAny = TaskAny, Dynamic = any, Static = any> = (d: Dynamic, s: Static) => Task$Params<T>;
+type RecoveryStep<
+  T extends TaskAny = TaskAny,
+  Exception = any,
+  Dynamic = any,
+  Static = any,
+  ResultPath extends __<string> = __<string>,
+> = readonly ["_", task: T, params: RecoveryStepParams<T, Exception, Dynamic, Static>, result_path?: ResultPath];
+type RecoveryStepParams<T extends TaskAny = TaskAny, Exception = any, Dynamic = any, Static = any> = (
+  e: Exception,
+  s: Static,
+  d: Dynamic,
+) => Task$Params<T>;
 
-type Step = RunTaskStep0 | RunTaskStep;
-
+type Step = TaskStep0 | TaskStep | RecoveryStep;
 type Steps = ARR<Step>;
-
 type Step$Path<ID extends string, Path extends __<string>> = Path extends string ? Path : ID;
-type Step$Dynamic<S> =
-  S extends RunTaskStep<infer T, any, any, infer P>
+
+type TaskStep$Dynamic<S> =
+  S extends TaskStep<infer T, any, any, infer P>
     ? { [k in Step$Path<T["Id"], P>]: Task$ResultOK<T> }
-    : S extends RunTaskStep0<infer T, infer P>
+    : S extends TaskStep0<infer T, infer P>
       ? { [k in Step$Path<T["Id"], P>]: Task$ResultOK<T> }
       : never;
 
-type _Steps$Dynamic<SS> = SS extends readonly [infer S, ...infer R] ? Step$Dynamic<S> & _Steps$Dynamic<R> : {};
-type Steps$Dynamic<SS> = Simplify<_Steps$Dynamic<SS>>;
+type RecoveryStep$Dynamic<S> =
+  S extends RecoveryStep<infer T, any, any, any, infer P> ? { [k in Step$Path<T["Id"], P>]: Task$ResultOK<T> } : never;
+
+type _Steps$Dynamic<SS, ALL> = SS extends readonly [infer S extends Step, ...infer R]
+  ? S[0] extends "_"
+    ? RecoveryStep$Dynamic<S>
+    : TaskStep$Dynamic<S> & _Steps$Dynamic<R, ALL>
+  : {};
+type Steps$Dynamic<SS> = Simplify<_Steps$Dynamic<SS, SS>>;
+
+type Steps$Errors<SS> = SS extends readonly [...infer R, infer S extends Step]
+  ? S extends RecoveryStep
+    ? Task$Error<S>
+    : Task$Error<S> | Steps$Errors<R>
+  : never;
 
 type Steps$InitParams<SS> = SS extends readonly [infer S, ...infer R]
-  ? S extends RunTaskStep0<infer T>
+  ? S extends TaskStep0<infer T>
     ? Task$Params<T>
     : Steps$InitParams<R>
   : never;
@@ -58,6 +84,14 @@ class Seq<const SS extends ARR1<Step>, Deps extends DepsC = __> {
     return new Seq(this.L, [...this.R, [task, params, path]]);
   }
 
+  _<T extends TaskAny, const Re extends Task$Params<T>, P extends __<string> = __>(
+    task: T,
+    params: (ERR: Steps$Errors<SS, never>, L: AwaiTreed<Deps>, R: Partial<Steps$Dynamic<SS>>) => Re,
+    path = __ as P,
+  ) {
+    return new Seq(this.L, [...this.R, ["_", task, params, path]]);
+  }
+
   asTask<Ctx extends CtxIdRequired>(ctx: Ctx) {
     return asTask(this.L, this.R)(ctx);
   }
@@ -67,12 +101,12 @@ export const sequence = <T extends TaskAny, D extends DepsC = __, P extends __<s
   t: T,
   d = () => __ as D,
   p = __ as P,
-) => new Seq(d, [[t, p] as RunTaskStep0<T, P>]);
+) => new Seq(d, [[t, p] as TaskStep0<T, P>]);
 
 export const asTask = <SS extends Steps, Deps extends DepsC>(L: () => Deps, R: SS) =>
   task({
     _01: 0,
-    partial: {} as Partial<Step$Dynamic<SS>>,
+    partial: {} as Partial<TaskStep$Dynamic<SS>>,
     total: R.length,
   })(L, { __: ["~>", R] })(async (p: Steps$InitParams<SS>, L, a, u) => {
     const abort = new AbortController();
@@ -105,7 +139,7 @@ export const asTask = <SS extends Steps, Deps extends DepsC>(L: () => Deps, R: S
       progress(re)(x.progress());
     }
 
-    return u().partial as Step$Dynamic<SS>;
+    return u().partial as TaskStep$Dynamic<SS>;
   }) as <Ctx extends CtxIdRequired>(
     ctx: Ctx,
   ) => Task$<
