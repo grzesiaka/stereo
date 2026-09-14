@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "ififify": "workspace:^",
+    "numyo": "workspace:^",
     "objoy": "workspace:^",
     "txtxt": "workspace:^",
     "~testing": "workspace:^",

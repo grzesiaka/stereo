@@ -1,5 +1,6 @@
 // oxlint-disable no-undef
-import { __ } from "./deps";
+import { Product } from "numyo";
+import { __, WithTag, Dispose } from "./deps";
 import ON from "./on";
 import { AbortSignal, AbortError } from "./polyfills/AbortController";
 
@@ -9,14 +10,14 @@ declare const clearTimeout: (t: unknown) => void;
 declare const setInterval: (cb: () => void, after: number) => unknown;
 declare const clearInterval: (t: unknown) => void;
 
-export const timeout = (ms: number, cb: () => void) => {
+export const timeout = <Ms extends MsOrNumber, Info = never>(ms: Ms, cb: () => void) => {
   const t = setTimeout(cb, ms);
-  return () => clearTimeout(t);
+  return (() => clearTimeout(t)) as Dispose<"timeout", Ms | Info>;
 };
 
-export const interval = (ms: number, cb: () => void) => {
+export const interval = <Ms extends MsOrNumber, Info = never>(ms: Ms, cb: () => void) => {
   const t = setInterval(cb, ms);
-  return () => clearInterval(t);
+  return (() => clearInterval(t)) as Dispose<"interval", Ms | Info>;
 };
 
 export const wait = <Ms extends number = 0, const Value = __>(
@@ -32,3 +33,15 @@ export const wait = <Ms extends number = 0, const Value = __>(
 };
 
 export const tick = (n = 1): Promise<void> => (n <= 1 ? Promise.resolve() : tick(n - 1).then(() => Promise.resolve()));
+
+export type Millisecond<N extends number = number> = WithTag<N, "millisecond">;
+export type Ms<N extends number = number> = Millisecond<N>;
+
+export type MsOrNumber = Ms | (number & {});
+
+export const ms = {
+  s: <N extends number>(n: N) => (n * 1000) as Ms<Product<[N, 1_000]>>,
+  m: <N extends number>(n: N) => (n * 1000 * 60) as Ms<Product<[N, 60_000]>>,
+  h: <N extends number>(n: N) => (n * 1000 * 60 * 60) as Ms<Product<[N, 3_600_000]>>,
+  day: <N extends number>(n: N) => (n * 1000 * 60 * 60 * 24) as Ms<Product<[N, 86_400_000]>>,
+};
