@@ -1,10 +1,10 @@
 import { describe } from "~testing";
 
-import { __, a, AbortController } from "jsyoyo";
+import { __, a, AbortController, tick } from "jsyoyo";
 import { awaiT, Tree } from "treeo";
 import { indexify } from "proyij";
 
-import { $progress, load, run, task, NEVER, _01, parallelTree, tick, AbortError, CriticalError, TaskAny } from "../src";
+import { $progress, load, run, task, NEVER, _01, parallelTree, AbortError, CriticalError, TaskAny } from "../src";
 import { choice } from "../src/choice";
 import { parallel } from "../src/parallel";
 import { sequence } from "../src/sequence";

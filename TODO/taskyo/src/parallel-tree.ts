@@ -1,11 +1,10 @@
-import { __, AbortController, CtxId$Id, CtxIdRequired } from "jsyoyo";
+import { __, AbortController, CtxId$Id, CtxIdRequired, tick } from "jsyoyo";
 import { Tree, awaiT, get, map as _map, set } from "treeo";
 
 import { run, task, Task$Params, Task$ResultOK, TaskAny, Task, Task$, TaskRun } from "./task";
 import { disposyo } from "disposyo";
 import { ProgressBase, ProgressUpdate } from "./progress";
 import { Simplify } from "type-fest";
-import { tick } from "./utils";
 
 export type ParallelTreeParams<TT extends Tree<TaskAny>> = TT extends { [K in string]: any }
   ? { [K in keyof TT]: TT[K] extends TaskAny ? Task$Params<TT[K]> : ParallelTreeParams<TT[K]> }

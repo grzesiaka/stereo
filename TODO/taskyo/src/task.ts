@@ -1,4 +1,4 @@
-import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON } from "jsyoyo";
+import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON, deferred } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import {
   $progress,
@@ -9,7 +9,7 @@ import {
   ProgressCalc,
   ProgressBase,
 } from "./progress";
-import { deferred, fakeAbort } from "./utils";
+import { fakeAbort } from "./utils";
 import { Simplify } from "type-fest";
 import { AbortError, CRITIC } from "./errors";
 import { disposyo } from "disposyo";
