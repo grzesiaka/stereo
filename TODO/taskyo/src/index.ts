@@ -1,9 +1,10 @@
+export * from "./cache/index"
+
 export * from "./choice"
 export * from "./errors"
 export * from "./parallel-tree"
 export * from "./parallel"
 export * from "./progress"
-export * from "./retry"
 export * from "./sequence"
 export * from "./task"
 export * from "./utils"
