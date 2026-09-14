@@ -17,4 +17,19 @@ export const ON =
       () => (t.off || t.removeEventListener || id)(kvo[0], kvo[1])
     );
 
+ON.CE =
+  <T extends Partial<OnOff> = Partial<OnOff>>(t: T) =>
+  (...kvo: ResolveCbs<T>) => {
+    // @ts-expect-error
+    const d = ON(t)(kvo[0], (...x: any[]) => (d(), kvo[1](...x)), kvo[2]);
+    return d;
+  };
+
+ON.promise =
+  <T extends Partial<OnOff> = Partial<OnOff>>(t: T) =>
+  <K extends ResolveCbs<T>[0]>(k: K): Promise<Extract<ResolveCbs<T>, [K, any, any?]>[1]> =>
+    // TODO allow passing options
+    // @ts-expect-error
+    new Promise((r) => ON.CE(t)(k, r));
+
 export default ON;

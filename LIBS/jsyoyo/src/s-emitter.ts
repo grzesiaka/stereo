@@ -4,23 +4,23 @@ import { __, ARR, Dict, Fn, Fn$O } from "~types";
 
 export type OnOff<Events extends Dict<ARR> = Dict<ARR>> = Fn$O<typeof sEmit<Events>>["$"];
 
-export const sEmit = <Events extends Dict<ARR>>(cbs = {} as Partial<Dict<Set<Fn>, keyof Events>>) => {
+export const sEmit = <Events extends Dict<ARR>>(CBs = {} as Partial<Dict<Set<Fn>, keyof Events>>) => {
   const off = <Key extends keyof Events>(key: Key, cb: (...ev: Events[Key]) => void) => {
-    cbs[key]?.delete(cb);
-    if (cbs[key]?.size === 0) delete cbs[key];
+    CBs[key]?.delete(cb);
+    if (CBs[key]?.size === 0) delete CBs[key];
   };
   const on = <Key extends keyof Events>(
     key: Key,
     cb: (...ev: Events[Key]) => void,
     _opt?: boolean | { once?: boolean },
   ) => {
-    cbs[key] = cbs[key] || new Set();
-    cbs[key].add(cb);
+    CBs[key] = CBs[key] || new Set();
+    CBs[key].add(cb);
     // return () => off(key, cb) as __<() => void>;
   };
-  return {
-    listners: cbs,
-    emit: <Key extends keyof Events>(key: Key, ...ev: Events[Key]) => cbs[key]?.forEach((c) => c(...ev)),
+  const $ = {
+    CBs,
+    emit: <Key extends keyof Events>(key: Key, ...ev: Events[Key]) => $.CBs[key]?.forEach((c) => c(...ev)),
     $: {
       on,
       off,
@@ -28,4 +28,5 @@ export const sEmit = <Events extends Dict<ARR>>(cbs = {} as Partial<Dict<Set<Fn>
       removeEventListener: off,
     },
   };
+  return $;
 };

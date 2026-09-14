@@ -19,6 +19,15 @@ interface _AbortController {
   abort(reason?: unknown): void;
 }
 
+export class AbortError<Reason = unknown> extends Error {
+  constructor(
+    public readonly reason: Reason,
+    public readonly signal: AbortSignal,
+  ) {
+    super("abort");
+  }
+}
+
 export class AbortController implements _AbortController {
   #$ = sEmit<Events>();
   signal: AbortSignal;
@@ -26,6 +35,8 @@ export class AbortController implements _AbortController {
     this.signal = this.#$.$;
   }
   abort(reason?: unknown) {
+    // @ts-expect-error readonly write
+    this.signal.aborted = true;
     this.#$.emit("abort", { target: this.signal, type: "abort", reason });
   }
 }
