@@ -1,3 +1,5 @@
+import { Tagged } from "./type-fest";
+
 /**
  *  Potential / Hole / Future
  *
@@ -27,7 +29,7 @@ export type ARR<X = any> = ReadonlyArray<X>;
 export type ARR1<X = any, R = X> = readonly [X, ...R[]];
 
 /**
- * Dictionay.
+ * Dictionary.
  *
  * An alias for Record<Key, Value>
  *
@@ -54,6 +56,15 @@ export type Fn1<I = any, O = unknown, E = {}> = Fn<[I], O, E>;
  * A callback
  */
 export type Cb<X = any, R extends ARR = []> = (x: X, ...r: R) => void;
+
+/**
+ * Dispose with optional info about what to dispose
+ */
+export type Dispose<What extends string = never, Info = never> = What extends never
+  ? Dispose
+  : // : Info extends never
+    //   ? WithTag<() => void, What> WTF?! results in never; when calling underlying type directly works fine. Really: how much time one can waste on such weird stuff.
+    Tagged<() => void, What, Info>;
 
 /**
  * Function to its input

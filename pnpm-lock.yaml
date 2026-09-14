@@ -380,6 +380,9 @@ importers:
       ififify:
         specifier: workspace:^
         version: link:../ififify
+      numyo:
+        specifier: workspace:^
+        version: link:../numyo
       objoy:
         specifier: workspace:^
         version: link:../objoy
@@ -944,6 +947,9 @@ importers:
       ioioy:
         specifier: workspace:^
         version: link:../DONE/ioioy
+      taskyo:
+        specifier: workspace:^
+        version: link:../TODO/taskyo
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
