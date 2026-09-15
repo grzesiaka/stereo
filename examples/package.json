@@ -10,11 +10,12 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "weweber": "workspace:^",
     "ioioy": "workspace:^",
+    "taskyo": "workspace:^",
     "typescript": "catalog:",
     "typier": "workspace:^",
     "uiyui": "workspace:^",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "weweber": "workspace:^"
   }
 }
