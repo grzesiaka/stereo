@@ -2,8 +2,10 @@ import { Simplify } from "type-fest";
 import { __ } from "~types";
 import { a } from "objoy";
 
-export type CtxIdConstraint = __ | PropertyKey | { Id?: PropertyKey; [k: PropertyKey]: unknown };
-export type CtxIdRequired = PropertyKey | { Id: PropertyKey; [k: PropertyKey]: unknown };
+export type CtxIdConstraint = __ | string | { Id?: string; [k: PropertyKey]: unknown };
+export type CtxIdRequired<Ctx extends object = object, Other extends object = object> =
+  | string
+  | Simplify<{ Id: string } & Ctx & Other>;
 
 export type CtxId$Id<L extends CtxIdConstraint> = L extends { Id: infer S extends string }
   ? S
