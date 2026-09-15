@@ -1,5 +1,6 @@
-import { __, a, MsOrNumber } from "jsyoyo";
+import { __, a, MsOrNumber, Tagged } from "jsyoyo";
 import { Json } from "~types";
+import { register, registry } from "./_register";
 
 let _config = {
   prefix: __ as __<string>,
@@ -7,13 +8,18 @@ let _config = {
   ttl: __ as __<MsOrNumber>,
 } satisfies SharedCacheConfig;
 
-export const config = (cfg?: Partial<SharedCacheConfig>): SharedCacheConfig =>
-  !cfg ? _config : (_config = a({}, _config, cfg));
+const config = (cfg?: Partial<SharedCacheConfig>): SharedCacheConfig => (!cfg ? _config : (_config = a(_config, cfg)));
+
+export const cache = {
+  config,
+  register,
+  registry,
+};
 
 export interface CacheService {
-  get: (key: string, withPrefix?: boolean) => Promise<Json>;
-  set: (key: string, value: Json, withPrefix?: boolean, ttl?: MsOrNumber) => Promise<Json>;
-  clear: (staleOnly?: boolean) => Promise<void>;
+  get: (key: string, withPrefix?: boolean) => Promise<Json> | Json;
+  set: (key: string, value: Json, withPrefix?: boolean, ttl?: MsOrNumber) => Promise<Json> | Json;
+  clear: (staleOnly?: boolean) => Promise<unknown> | unknown;
 }
 
 export interface SharedCacheConfig {
@@ -32,11 +38,18 @@ export interface SharedCacheConfig {
   now: () => number;
 }
 
+type Prefix = Tagged<__<boolean>, `include-prefix?`, [__<false>, "no"] | [true, "yes"]>;
+type TTL = Tagged<
+  MsOrNumber,
+  `time-to-live`,
+  [__, "ignored / infinity"] | [0, "use global (if set)"] | [Exclude<MsOrNumber, 0>, "use this value"]
+>;
+
 export interface CacheOption {
   /** Use globally defined prefix. `undefined | false` to ignore global prefix. (default / missing: `true`) */
-  prefix?: __ | boolean;
-  /** missing - Infinity, `undefined | 0` - use default, `number` (ms) - use that number  */
-  ttl?: MsOrNumber;
+  prefix?: Prefix;
+  /** `undefined` - ignore / Infinity, `0` - use global, `number` (ms) - use that number  */
+  ttl?: TTL;
 }
 
 /**
