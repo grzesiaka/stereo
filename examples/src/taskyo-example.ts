@@ -1,9 +1,12 @@
+// oxlint-disable no-undef
+
+// import "taskyo/cache/index-db";
+
 import "taskyo/cache/memory";
-import "taskyo/cache/index-db";
-
 import { task, CACHE } from "taskyo";
+import type { CacheRegistry } from "taskyo";
 
-console.log(CACHE.registry);
+const r = {} as CacheRegistry;
 
 const t = task.$<1, 2>(() => 2)({
   Id: "",
@@ -13,3 +16,5 @@ const t = task.$<1, 2>(() => 2)({
     ttl: 1,
   },
 });
+
+console.log(CACHE.registry as CacheRegistry, t);

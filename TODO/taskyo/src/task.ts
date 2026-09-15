@@ -62,7 +62,7 @@ export const task =
     progress = {} as ProgressShape,
     map = id as ProgressCalc<ProgressShape>,
   ) =>
-  <Deps extends DepsC, E = __>(load = (() => __) as () => Deps, extra = __ as E) =>
+  <Deps extends DepsC = __, E = {}>(load = (() => __) as () => Deps, extra = {} as E) =>
   <const Params, Result>(
     run: (
       p: Params,
