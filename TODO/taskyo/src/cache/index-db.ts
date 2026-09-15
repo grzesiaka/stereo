@@ -1,9 +1,17 @@
-import { CacheService } from "./main";
+import { TODO } from "jsyoyo/TODO";
+import { CacheService, CACHE } from "./main";
 
-declare module "./_register" {
+// @ts-expect-error SEE ./memory.ts
+declare module "taskyo" {
   interface CacheRegistry {
     index_db: CacheService;
   }
 }
 
-export default "TODO-index-db";
+const $ = {
+  get: TODO,
+  set: TODO,
+  clear: TODO,
+} as CacheService;
+
+CACHE.register("index_db", $);

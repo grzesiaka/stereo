@@ -1,9 +1,17 @@
-import { CacheService } from "./main";
+import { TODO } from "jsyoyo/TODO";
+import { CACHE, CacheService } from "./main";
 
-declare module "./_register" {
+// @ts-expect-error SEE ./memory.ts
+declare module "taskyo" {
   interface CacheRegistry {
     local_storage: CacheService;
   }
 }
 
-export default "TODO-local-storage";
+const $ = {
+  get: TODO,
+  set: TODO,
+  clear: TODO,
+} as CacheService;
+
+CACHE.register("local_storage", $);

@@ -1,16 +1,19 @@
 import { __, a, MsOrNumber, Tagged } from "jsyoyo";
 import { Json } from "~types";
-import { register, registry } from "./_register";
 
 let _config = {
-  prefix: __ as __<string>,
+  prefix: `${Date.now()}`, // init to _unique_ value to reduce potential harm
   now: () => Date.now() as MsOrNumber,
   ttl: __ as __<MsOrNumber>,
 } satisfies SharedCacheConfig;
 
 const config = (cfg?: Partial<SharedCacheConfig>): SharedCacheConfig => (!cfg ? _config : (_config = a(_config, cfg)));
 
-export const cache = {
+const registry = {} as CacheRegistry;
+
+const register = (key: string, srv: CacheService) => ((registry as any)[key] = srv);
+
+export const CACHE = {
   config,
   register,
   registry,
@@ -25,9 +28,9 @@ export interface CacheService {
 export interface SharedCacheConfig {
   /**
    * Prefix for keys (for example: a `user-id` / `hash(user-id)`) to create a namespace.
-   * Set once globally
+   * Set once globally, so no need to pass it to each task separately.
    */
-  prefix: __<string>;
+  prefix: string;
   /**
    * Time to live
    */
@@ -57,4 +60,8 @@ export interface CacheOption {
  */
 export interface CacheRegistry {}
 
-export type CacheOptions = { [K in keyof CacheRegistry]: CacheOptions };
+type _CacheOptions = {
+  [K in keyof CacheRegistry as CacheRegistry[K] extends CacheService ? K : never]: CacheOption;
+};
+
+export type CacheOptions = Partial<_CacheOptions>;

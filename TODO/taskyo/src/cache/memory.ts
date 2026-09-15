@@ -1,8 +1,7 @@
-import { CacheService, cache } from "./main";
-import { register } from "./_register";
+import { CacheService, CACHE } from "./main";
 import { __, Dict, es, Json, MsOrNumber } from "jsyoyo";
 
-const cfg = cache.config();
+const cfg = CACHE.config();
 const $: CacheService & { $$: Dict<[MsOrNumber | __, Json]> } = {
   $$: {} as Dict<[MsOrNumber, Json]>,
   get: (k, p) => {
@@ -31,10 +30,11 @@ const $: CacheService & { $$: Dict<[MsOrNumber | __, Json]> } = {
   },
 };
 
-register("memory", $);
+CACHE.register("memory", $);
 
-declare module "./_register" {
-  interface CacheRegistry {
+// @ts-expect-error It seems to be limitation of typescript; ideally module path should be relative
+declare module "taskyo" {
+  export interface CacheRegistry {
     memory: CacheService;
   }
 }
