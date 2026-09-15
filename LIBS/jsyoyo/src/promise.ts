@@ -8,3 +8,5 @@ export const deferred = <T = unknown>() => {
   // @ts-expect-error used before assigned
   return { resolve, reject, promise };
 };
+
+export type OrPromise<N> = N | Promise<N>;

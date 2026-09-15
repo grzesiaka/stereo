@@ -1,4 +1,4 @@
-import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON, deferred, NoExtraKeys } from "jsyoyo";
+import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON, deferred, Json, OrPromise } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import {
   $progress,
@@ -13,15 +13,18 @@ import { fakeAbort } from "./utils";
 import { Simplify } from "type-fest";
 import { AbortError, CRITIC } from "./errors";
 import { disposyo } from "disposyo";
-import { CacheOptions } from "./cache";
+import { CacheOption, CacheStore } from "./cache";
 
 /**
  * Dependencies constraint
  */
 export type DepsC = Tree | Promise<any> | __;
 
-export interface TaskExtra {
-  cache?: CacheOptions;
+export interface TaskExtra<Params = any, Deps = any> {
+  cache?: {
+    key: (params: Params, taskDeps: Deps, taskId: string) => OrPromise<string>;
+    store?: CacheStore | CacheStore[];
+  } & CacheOption;
 }
 
 // export type TaskAny = Task<any, any, any, any, [any, any]>; - makes Typescript unhappy
@@ -59,10 +62,7 @@ export const task =
     progress = {} as ProgressShape,
     map = id as ProgressCalc<ProgressShape>,
   ) =>
-  <Deps extends DepsC, E extends TaskExtra = {}>(
-    load: () => Deps,
-    extra = {} as E & { cache?: keyof CacheOptions | NoExtraKeys<E["cache"], CacheOptions> },
-  ) =>
+  <Deps extends DepsC, E = __>(load = (() => __) as () => Deps, extra = __ as E) =>
   <const Params, Result>(
     run: (
       p: Params,
@@ -72,7 +72,7 @@ export const task =
       s: Task<string, any, NoInfer<Params>, NoInfer<Deps>, any>,
     ) => Result,
   ) =>
-  <Ctx extends CtxIdRequired<TaskExtra>>(
+  <Ctx extends CtxIdRequired<TaskExtra<Params, Deps>>>(
     Ctx: Ctx,
   ): CtxId<Ctx, E & Task<CtxId$Id<Ctx>, Result, Params, Deps, ProgressSpec<ProgressShape & ProgressBase>>> =>
     CtxId(
@@ -84,6 +84,9 @@ export const task =
       },
       Ctx,
     );
+
+task.$ = task()();
+task.val = <X extends Json>(x: X) => task.$(() => x);
 
 export type Task$Result<S> = S extends { run: any } ? Awaited<ReturnType<S["run"]>> : never;
 export type Task$ResultOK<S> = Exclude<Task$Result<S>, Error>;

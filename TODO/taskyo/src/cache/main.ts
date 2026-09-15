@@ -1,4 +1,4 @@
-import { __, a, MsOrNumber, Tagged } from "jsyoyo";
+import { __, a, MsOrNumber } from "jsyoyo";
 import { Json } from "~types";
 
 let _config = {
@@ -41,17 +41,20 @@ export interface SharedCacheConfig {
   now: () => number;
 }
 
-type Prefix = Tagged<__<boolean>, `include-prefix?`, [__<false>, "no"] | [true, "yes"]>;
-type TTL = Tagged<
-  MsOrNumber,
-  `time-to-live`,
-  [__, "ignored / infinity"] | [0, "use global (if set)"] | [Exclude<MsOrNumber, 0>, "use this value"]
->;
-
+type Prefix = __<string>;
+type TTL = MsOrNumber;
 export interface CacheOption {
-  /** Use globally defined prefix. `undefined | false` to ignore global prefix. (default / missing: `true`) */
+  /**
+   * `undefined` or not set - use globally defined
+   * `""` - off
+   * `string` - use it as prefix
+   */
   prefix?: Prefix;
-  /** `undefined` - ignore / Infinity, `0` - use global, `number` (ms) - use that number  */
+  /**
+   * `undefined` - ignore / Infinity,
+   * `0` - use global,
+   * `number` (milliseconds) - use that number
+   */
   ttl?: TTL;
 }
 
@@ -60,8 +63,8 @@ export interface CacheOption {
  */
 export interface CacheRegistry {}
 
-type _CacheOptions = {
+type _CacheStores = {
   [K in keyof CacheRegistry as CacheRegistry[K] extends CacheService ? K : never]: CacheOption;
 };
 
-export type CacheOptions = Partial<_CacheOptions>;
+export type CacheStore = keyof _CacheStores;
