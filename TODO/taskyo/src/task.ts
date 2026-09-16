@@ -29,7 +29,7 @@ export interface TaskExtra<Params = any, Deps = any> {
 
 // export type TaskAny = Task<any, any, any, any, [any, any]>; - makes Typescript unhappy
 export interface TaskAny<Params = any, Result = any> extends TaskExtra {
-  Id: string;
+  Id?: string;
   progress: any;
   load: () => any;
   loaded?: any;
@@ -42,7 +42,7 @@ export interface Task<
   Deps extends DepsC = any,
   Progress extends ProgressSpec = any,
 > extends TaskExtra {
-  Id: ID;
+  Id?: ID;
   progress: Progress;
   run: (
     p: Params,
@@ -56,6 +56,8 @@ export interface Task<
 }
 
 export type Task$<E extends {}, T extends TaskAny> = Simplify<E & T>;
+
+// const $$task = <pT extends Partial<Task>>(p: ) => 1
 
 export const task =
   <ProgressShape extends ProgressCreateOptions = {}>(

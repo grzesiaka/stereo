@@ -1,4 +1,4 @@
-import { AbortSignal, ARR, id } from "jsyoyo";
+import { $$, AbortSignal, ARR, id } from "jsyoyo";
 import { indexify } from "proyij";
 import { TaskAny } from "./task";
 
@@ -8,7 +8,7 @@ export const fakeAbort = new Proxy({} as any, { get: () => () => 1 }) as AbortSi
 
 export type Tasks = ARR<TaskAny>;
 export type Tasks$Obj<TT extends Tasks> = TT extends readonly [infer T extends TaskAny, ...infer R extends Tasks]
-  ? { [k in T["Id"]]: T } & Tasks$Obj<R>
+  ? { [k in $$<T["Id"]>]: T } & Tasks$Obj<R>
   : {};
 export const tasks$obj = indexify("Id") as <TT extends Tasks>(tt: TT) => Tasks$Obj<TT>;
 

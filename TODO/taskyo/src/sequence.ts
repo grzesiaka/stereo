@@ -1,4 +1,4 @@
-import { __, AbortController, ARR, ARR1, CtxId$Id, CtxIdRequired } from "jsyoyo";
+import { $$, __, AbortController, ARR, ARR1, CtxId$Id, CtxIdRequired } from "jsyoyo";
 import { Task$Params, Task$ResultOK, TaskAny, DepsC, task, run, Task$, Task, Task$Error, TaskRun } from "./task";
 import { ProgressBase, ProgressUpdate } from "./progress";
 import { Simplify } from "type-fest";
@@ -35,7 +35,11 @@ type RecoveryStepParams<T extends TaskAny = TaskAny, Exception = any, Dynamic = 
 
 type Step = TaskStep0 | TaskStep | RecoveryStep;
 type Steps = ARR<Step>;
-type Step$Path<ID extends string, Path extends __<string>> = Path extends string ? Path : ID;
+type Step$Path<ID extends __<string>, Path extends __<string>> = Path extends string
+  ? Path
+  : __ extends ID
+    ? ""
+    : $$<ID>;
 
 type TaskStep$Dynamic<S> =
   S extends TaskStep<infer T, any, any, infer P>
@@ -155,7 +159,7 @@ const runSequence =
             _01: n === t.total ? 1 : (i + 1) / t.total,
             partial: {
               ...t.partial,
-              [s[2] || s[0]["Id"]]: re,
+              [s[2] || s[0]["Id"] || ""]: re,
             },
           });
         } else {
