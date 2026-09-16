@@ -38,3 +38,5 @@ declare module "taskyo" {
     memory: CacheService;
   }
 }
+
+export default $;

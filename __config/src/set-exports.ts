@@ -2,6 +2,9 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
+/**
+ * Does not include files in index.ts nor in package.json/exports. Rolldown is configured to not include these files in output.
+ */
 const ignoredSourceFilesRE = /-.ts$/;
 
 type PrepareIndicesResult = [string, string, { dir: string[]; files: string[] }?];

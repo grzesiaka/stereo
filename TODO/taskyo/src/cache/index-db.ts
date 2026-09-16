@@ -15,3 +15,5 @@ const $ = {
 } as CacheService;
 
 CACHE.register("index_db", $);
+
+export default $;

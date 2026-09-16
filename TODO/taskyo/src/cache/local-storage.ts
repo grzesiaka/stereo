@@ -15,3 +15,5 @@ const $ = {
 } as CacheService;
 
 CACHE.register("local_storage", $);
+
+export default $;
