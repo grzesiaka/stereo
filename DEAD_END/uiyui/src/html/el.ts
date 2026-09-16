@@ -1,5 +1,5 @@
 import { a, ARR, fromStrings, ifArray, NoExtraKeys, k1, mb, ObjectFromStrings, Split, Fn$O } from "jsyoyo";
-import type __TYPES__ from "./__members__.gen";
+import type __TYPES__ from "./__members__.gen-";
 import { Simplify } from "type-fest";
 import { actedFn, AST1 } from "deacted";
 

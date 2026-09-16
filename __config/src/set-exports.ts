@@ -2,7 +2,7 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const ignoredSourceFilesRE = /^[_$]/;
+const ignoredSourceFilesRE = /-.ts$/;
 
 type PrepareIndicesResult = [string, string, { dir: string[]; files: string[] }?];
 const prepareIndices = async (root: string, withDirs: boolean): Promise<PrepareIndicesResult[]> => {

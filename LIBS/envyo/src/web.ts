@@ -1,7 +1,7 @@
 // oxlint-disable-next-line typescript/triple-slash-reference
 /// <reference path="../node_modules/@types/web/index.d.ts" preserve="true" />
 
-import { RemoveNoise } from "./_types";
+import { RemoveNoise } from "./types-";
 
 export const web = globalThis as WebEssence;
 
