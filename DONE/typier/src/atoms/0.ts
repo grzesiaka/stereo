@@ -1,7 +1,7 @@
 import { Simplify } from "type-fest";
 import { __ } from "~types";
 import type { TypierBase, WithTag, Tagged } from "../0";
-import { resolveKey, ResolveKey } from "../_";
+import { resolveKey, ResolveKey } from "../0-";
 
 type Rekey<Schema extends object, Type, $TYP extends string, $KEY extends string, $META> = <
   const K extends string,

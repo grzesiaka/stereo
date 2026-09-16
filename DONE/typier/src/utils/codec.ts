@@ -1,7 +1,7 @@
 import { Static, TSchema, TCodec } from "typebox";
 import { __, Tagged, WithTag } from "~types";
 import { TypierBase } from "../0";
-import { resolveKey, ResolveKey } from "../_";
+import { resolveKey, ResolveKey } from "../0-";
 
 type Rekey<Schema extends object, Type, $TYP extends string, $KEY extends string, $META> = <const K extends string>(
   key: K,

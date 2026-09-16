@@ -1,5 +1,5 @@
 import { TypierBase } from "../0";
-import { resolveKey, ResolveKey } from "../_";
+import { resolveKey, ResolveKey } from "../0-";
 import { TRefine, Static, TSchema } from "typebox";
 import { __, Tagged, WithTag } from "~types";
 

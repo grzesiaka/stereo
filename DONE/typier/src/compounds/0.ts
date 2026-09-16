@@ -1,5 +1,5 @@
 import { TypierBase } from "../0";
-import { resolveKey, ResolveKey } from "../_";
+import { resolveKey, ResolveKey } from "../0-";
 import { __ } from "~types";
 
 export type { TSchema } from "../0";
