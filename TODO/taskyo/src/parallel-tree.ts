@@ -45,6 +45,7 @@ export const runTree =
       const r = run(t)(get(p)(k as never), abort.signal) as TaskRun<
         Task<any, any, any, any, [ProgressBase & { _01: number }]>
       >;
+      let prev = 0;
       const d = r.progress(async (x: ProgressBase & { _01: number }) => {
         const subDone = x.curr === x.total ? 1 : 0;
         if (subDone) {
@@ -52,9 +53,8 @@ export const runTree =
           d();
         }
 
-        const prev = x.prev || 0;
         const diff = (x.curr - prev) / x.total;
-        x.prev = x.curr;
+        prev = x.curr;
         const top = u();
 
         const topCurr = top.curr + subDone;

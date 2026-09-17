@@ -5,7 +5,6 @@ import { Simplify, Writable } from "type-fest";
 interface Base {
   curr: number;
   total: number;
-  prev?: number;
   failed?: unknown;
 }
 export interface ProgressBase extends Base {
@@ -45,6 +44,7 @@ export const $progress = <const O extends ProgressCreateOptions = {}>(
         curr: Math.min(vf[0] || 0, x.X.total),
       } as ProgressInfo<O>;
       calc(i as never);
+      // console.log("UP", i, ...vf);
       x.I(i);
       return x.X;
     }) as ProgressUpdate<ProgressInfo<O>>,

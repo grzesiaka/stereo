@@ -215,7 +215,7 @@ describe(parallel, ({ eq, res }) => ({
     r.progress((x) => pr.add([x.curr, x.total, x._01, { ...x.partial }]), true);
     eq(await r, { A: 1, B: 1, C: 1 });
     eq(await r.progress()["⨂"]!.A, 1);
-    eq(r.progress()["⨂"]!.B.progress(), { curr: 2, prev: 2, total: 2 });
+    eq(r.progress()["⨂"]!.B.progress(), { curr: 2, total: 2 });
     pr.eq(parallelTreeSimpleResults().map((x) => [x.curr, x.total, x._01, x.partial]));
   },
 }));
