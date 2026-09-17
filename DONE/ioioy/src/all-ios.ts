@@ -1,7 +1,7 @@
 import { Simplify } from "type-fest";
 import { __, Cb } from "~types";
 import type { ij_Project } from "proyij";
-import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
+import cId, { type CtxIdOptional } from "jsyoyo/ctxid";
 import { disposyo as D, DISPOSE, type Disposyo } from "disposyo";
 import { mb } from "jsyoyo";
 import { OP, WithOP, KeyValues$Object } from "jsyoyo";
@@ -13,7 +13,7 @@ export type And_I<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id
 export type And_O<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "O"], IOs$FlatTypes<IOs>>>>;
 export type And_X<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
 
-export interface And_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = IdIOs>
+export interface And_IOs<Ctx extends CtxIdOptional = __, IOs extends IdIOs = IdIOs>
   extends WithOP<"OLL", IOs>, IO<Partial<And_I<IOs>>, And_O<IOs>, And_X<IOs>, Ctx> {
   OO: Set<Cb<And_O<IOs>>>;
   IOs: IOsById<IOs>;
@@ -21,7 +21,7 @@ export interface And_IOs<Ctx extends CtxIdConstraint = __, IOs extends IdIOs = I
 }
 
 export const AndIOs =
-  <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
+  <const Ctx extends CtxIdOptional = __>(L?: Ctx) =>
   <const IOs extends IdIOs>(IOs: IOs): And_IOs<Ctx, IOs> => {
     let updating = false;
     let O = {} as And_O<IOs>;

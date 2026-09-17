@@ -1,5 +1,5 @@
 import { __, Cb, Fn, ARR } from "jsyoyo";
-import CTX, { type CtxIdConstraint } from "jsyoyo/ctxid";
+import CTX, { type CtxIdOptional } from "jsyoyo/ctxid";
 import type { Dispose } from "disposyo";
 
 /**
@@ -9,13 +9,13 @@ import type { Dispose } from "disposyo";
  * There is a special `.X` property that can be read synchronously and may provide additional information about process internal state.
  * `Ctx` is extra description of the process, and is present on both `.I` and `.O`. If `Ctx` is a PropertyKey it will be present as `{ Id: Ctx }`.
  */
-export interface IO<I = any, O = any, X = any, Ctx extends CtxIdConstraint = CtxIdConstraint, OI = I> {
+export interface IO<I = any, O = any, X = any, Ctx extends CtxIdOptional = CtxIdOptional, OI = I> {
   I: Fn<[I], OI>;
   O: OUT<O, Ctx, X>;
   readonly X: X; // readonly when access from outside;
 }
 
-export type OUT<O, Ctx extends CtxIdConstraint, X> = Fn<[], X> &
+export type OUT<O, Ctx extends CtxIdOptional, X> = Fn<[], X> &
   Fn<[Cb<O>, skipInitial?: boolean | 1], Dispose> &
   CTX<Ctx>;
 

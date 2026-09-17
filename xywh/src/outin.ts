@@ -1,9 +1,9 @@
 import { ARR } from "~types";
 import { rect, Rect } from "./base";
-import cId, { type CtxIdConstraint, CtxId } from "jsyoyo/ctxid";
+import cId, { type CtxIdOptional, CtxId } from "jsyoyo/ctxid";
 import { Subtract, Sum } from "numyo";
 
-type Split<V extends number = number, Ctx extends CtxIdConstraint = CtxIdConstraint> = V | [V, Ctx];
+type Split<V extends number = number, Ctx extends CtxIdOptional = CtxIdOptional> = V | [V, Ctx];
 type Splits = ARR<Split>;
 
 export type SplitVertical<
@@ -14,7 +14,7 @@ export type SplitVertical<
 > = S extends readonly [Split<infer W, infer Ctx>, ...infer R]
   ? [
       CtxId<
-        CtxIdConstraint extends Ctx ? {} : Ctx,
+        CtxIdOptional extends Ctx ? {} : Ctx,
         Rect<X, P["y"], -1 extends W ? Subtract<Sum<[P["w"], P["x"]]>, X> & number : W, H>
       >,
       ...SplitVertical<P, R, -1 extends W ? Subtract<Sum<[P["w"], P["x"]]>, X> & number : Sum<[X, W]>, H>,
@@ -46,7 +46,7 @@ export type SplitHorizontal<
 > = S extends readonly [Split<infer H, infer Ctx>, ...infer R]
   ? [
       CtxId<
-        CtxIdConstraint extends Ctx ? {} : Ctx,
+        CtxIdOptional extends Ctx ? {} : Ctx,
         Rect<P["x"], Y, W, -1 extends H ? Subtract<Sum<[P["h"], P["y"]]>, Y> & number : H>
       >,
       ...SplitHorizontal<P, R, -1 extends H ? Subtract<Sum<[P["h"], P["y"]]>, Y> & number : Sum<[Y, H]>, W>,

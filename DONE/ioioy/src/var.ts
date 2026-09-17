@@ -1,16 +1,16 @@
 import { __, Cb, is_fun } from "jsyoyo";
-import cId, { CtxIdConstraint } from "jsyoyo/ctxid";
+import cId, { CtxIdOptional } from "jsyoyo/ctxid";
 import { IO } from "./io";
 import { ARR } from "~types";
 import { OP, WithOP } from "jsyoyo";
 
-export type Var<Ctx extends CtxIdConstraint = __, X = unknown, IX = X, Params = __> = IO<IX, X, X, Ctx, IX> &
+export type Var<Ctx extends CtxIdOptional = __, X = unknown, IX = X, Params = __> = IO<IX, X, X, Ctx, IX> &
   WithOP<"VR", Params> & { OO: Set<Cb<X>> };
 
 export type IdVar = Var<any, any, any, any> & { O: { Id: string } };
 export type IdVars = ARR<IdVar>;
 
-export const Var = <X, const Ctx extends CtxIdConstraint = __>(X: X, L?: Ctx): Var<Ctx, X> => {
+export const Var = <X, const Ctx extends CtxIdOptional = __>(X: X, L?: Ctx): Var<Ctx, X> => {
   const $ = OP("VR")(__)({
     X: X,
     I: (x: X) => ($.OO.forEach((c) => c(x)), ($.X = x), x),
@@ -26,10 +26,10 @@ export const Var = <X, const Ctx extends CtxIdConstraint = __>(X: X, L?: Ctx): V
 };
 Var.$ =
   <X>(x: X) =>
-  <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
+  <const Ctx extends CtxIdOptional = __>(L?: Ctx) =>
     Var(x, L);
 Var.$L =
-  <const Ctx extends CtxIdConstraint = __>(L = __ as Ctx) =>
+  <const Ctx extends CtxIdOptional = __>(L = __ as Ctx) =>
   <X>(x: X | ((L: Ctx) => X)) =>
     is_fun(x) ? Var(x(L), L) : Var(x, L);
 Var.B = Var.$(false);

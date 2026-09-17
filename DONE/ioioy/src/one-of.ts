@@ -1,6 +1,6 @@
 import { __, ARR, Cb } from "~types";
 import type { ij_Project } from "proyij";
-import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
+import cId, { type CtxIdOptional } from "jsyoyo/ctxid";
 import { disposyo as D, DISPOSE, type Disposyo, Dispose } from "disposyo";
 import { OP, WithOP } from "jsyoyo";
 
@@ -12,7 +12,7 @@ export type OneOf_O<IOs extends IdIOs> = ij_Project<["Id", "O"], IOs$FlatTypes<I
 export type OneOf_X<IOs extends IdIOs> = ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>[number];
 
 export interface OneOf_IOs<
-  Ctx extends CtxIdConstraint = __,
+  Ctx extends CtxIdOptional = __,
   IOs extends IdIOs = IdIOs,
   NullableValues extends ARR<__ | null> = [],
 >
@@ -31,7 +31,7 @@ export interface OneOf_IOs<
 }
 
 export const OneOf =
-  <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
+  <const Ctx extends CtxIdOptional = __>(L?: Ctx) =>
   <const IOs extends IdIOs, NullableValues extends ARR<__ | null> = []>(
     IOs: IOs,
     ..._nullable: NullableValues

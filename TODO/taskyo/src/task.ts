@@ -1,4 +1,4 @@
-import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON, deferred, Json, OrPromise, tick } from "jsyoyo";
+import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON, deferred, Json, OrPromise, timeout, MsOrNumber } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import {
   $progress,
@@ -21,6 +21,8 @@ import { CacheOption, CacheStore } from "./cache";
 export type DepsC = Tree | Promise<any> | __;
 
 export interface TaskExtra<Params = any, Deps = any> {
+  timeout?: MsOrNumber;
+  loaded?: AwaiTreed<Deps>;
   cache?: {
     key: (params: Params, taskDeps: Deps, taskId: string) => OrPromise<string>;
     store?: CacheStore | CacheStore[];
@@ -32,7 +34,6 @@ export interface TaskAny<Params = any, Result = any> extends TaskExtra {
   Id?: string;
   progress: any;
   load: () => any;
-  loaded?: any;
   run: (p: Params, d: any, a: any, u: any, s: any) => Result;
 }
 export interface Task<
@@ -51,13 +52,11 @@ export interface Task<
     u: ProgressUpdate<Progress[0]>,
     s: Task<string, any, Params, Deps, Progress>,
   ) => Result;
-  loaded?: AwaiTreed<Deps>;
+
   load: () => Deps;
 }
 
 export type Task$<E extends {}, T extends TaskAny> = Simplify<E & T>;
-
-// const $$task = <pT extends Partial<Task>>(p: ) => 1
 
 export const task =
   <ProgressShape extends ProgressCreateOptions = {}>(
@@ -123,7 +122,7 @@ export const $run =
           return task.progress[0].total === Infinity
             ? r.then((x: never) => {
                 const u = update();
-                u.total === Infinity && tick().then(() => update(1));
+                u.total === Infinity && timeout(0, () => update(1));
                 return x;
               })
             : r;

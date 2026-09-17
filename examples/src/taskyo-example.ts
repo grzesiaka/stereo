@@ -8,6 +8,7 @@ import { task, run } from "taskyo";
 const LOG =
   (msg = "") =>
   (p?: unknown) => {
+    console.log(msg, p);
     const div = document.createElement("div");
     Object.assign(div.style, { padding: "2px", margin: "2px", backgroundColor: "rgba(0,0,0,0.1)" });
     if (msg) {
@@ -24,8 +25,9 @@ const LOG =
   };
 const LG = LOG();
 
-const t = task.$((p: 1) => Promise.resolve(2))({
+const t = task.$((p: 1) => Promise.resolve(p + p))({
   Id: "",
+  abc: 1,
   cache: {
     key: (p) => `${p}`,
     store: "memory",
@@ -36,3 +38,7 @@ const t = task.$((p: 1) => Promise.resolve(2))({
 const x = run(t)(1);
 x.progress(LOG("%"));
 x.then(LG);
+
+// const IO = "ioioy" as const;
+// const p = import(IO as "ioioy");
+// const z = import("ioioy" as "") as any as typeof import("ioioy");

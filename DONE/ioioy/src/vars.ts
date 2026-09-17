@@ -1,7 +1,7 @@
 import { Simplify } from "type-fest";
 import type { ij_Project } from "proyij";
 import { ARR, Cb } from "~types";
-import cId, { type CtxIdConstraint } from "jsyoyo/ctxid";
+import cId, { type CtxIdOptional } from "jsyoyo/ctxid";
 
 import type { IO, IOs$FlatTypes, IdIOs } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
@@ -13,7 +13,7 @@ import type { Var } from "./var";
 export type And_Vars_X<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "X"], IOs$FlatTypes<IOs>>>>;
 
 export interface And_Vars<
-  Ctx extends CtxIdConstraint = __,
+  Ctx extends CtxIdOptional = __,
   IOs extends IdIOs = IdIOs,
   NullableValues extends ARR<__ | null> = [],
 > extends Var<Ctx, And_Vars_X<IOs> | NullableValues[number], Partial<And_Vars_X<IOs>> | NullableValues[number], IOs> {
@@ -22,7 +22,7 @@ export interface And_Vars<
 }
 
 export const Vars =
-  <const Ctx extends CtxIdConstraint = __>(L?: Ctx) =>
+  <const Ctx extends CtxIdOptional = __>(L?: Ctx) =>
   <const IOs extends IdIOs, NullableValues extends ARR<__ | null> = []>(
     IOs: IOs,
     ..._nullable: NullableValues
