@@ -1,4 +1,4 @@
-import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON, deferred, Json, OrPromise } from "jsyoyo";
+import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON, deferred, Json, OrPromise, tick } from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import {
   $progress,
@@ -118,7 +118,16 @@ export const $run =
     const def = deferred();
     const $ = Promise.race([
       load(task)
-        .then((s) => s.run(params, s.loaded, _abort, update, s))
+        .then((s) => {
+          const r = s.run(params, s.loaded, _abort, update, s);
+          return task.progress[0].total === Infinity
+            ? r.then((x: never) => {
+                const u = update();
+                u.total === Infinity && tick().then(() => update(1));
+                return x;
+              })
+            : r;
+        })
         .catch((e) => {
           const err = CRITIC(e, { task, progress: update() });
           update().failed = err;
