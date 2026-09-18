@@ -33,7 +33,7 @@ const $: CacheService & { $$: Dict<[MsOrNumber | __, Json]> } = {
 CACHE.register("memory", $);
 
 // @ts-expect-error It seems to be limitation of typescript; ideally module path should be relative
-declare module "taskyo" {
+declare module "taskyold" {
   export interface CacheRegistry {
     memory: CacheService;
   }

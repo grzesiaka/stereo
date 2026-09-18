@@ -1,0 +1,32 @@
+{
+  "name": "taskyold",
+  "version": "1.0.0-alpha.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./out/index.mjs",
+    "./*": "./out/*.mjs",
+    "./cache": "./out/cache/index.mjs",
+    "./cache/*": "./out/cache/*.mjs"
+  },
+  "scripts": {
+    "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/*-/*.ts !./src/*/*-.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
+    "build$": "turbo run build --filter='taskyold'...",
+    "dev": "pnpm build --watch",
+    "dev$": "turbo run dev --filter='taskyold'...",
+    "test": "vitest test --passWithNoTests --project unit",
+    "test-ci": "vitest test --passWithNoTests --project unit/out",
+    "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
+  },
+  "dependencies": {
+    "composyo": "workspace:^",
+    "disposyo": "workspace:^",
+    "ioioy": "workspace:^",
+    "jsyoyo": "workspace:^",
+    "proyij": "workspace:^",
+    "treeo": "workspace:^"
+  },
+  "devDependencies": {
+    "type-fest": "catalog:"
+  }
+}

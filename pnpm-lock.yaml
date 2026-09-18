@@ -779,43 +779,6 @@ importers:
         specifier: 'workspace:'
         version: link:../../LIBS/types
 
-  TODO/taskyo:
-    dependencies:
-      composyo:
-        specifier: workspace:^
-        version: link:../../DONE/composyo
-      disposyo:
-        specifier: workspace:^
-        version: link:../../LIBS/disposyo
-      ioioy:
-        specifier: workspace:^
-        version: link:../../DONE/ioioy
-      jsyoyo:
-        specifier: workspace:^
-        version: link:../../LIBS/jsyoyo
-      proyij:
-        specifier: workspace:^
-        version: link:../../LIBS/proyij
-      treeo:
-        specifier: workspace:^
-        version: link:../../DONE/treeo
-    devDependencies:
-      type-fest:
-        specifier: 'catalog:'
-        version: 5.7.0
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
-      ~cfg:
-        specifier: 'workspace:'
-        version: link:../../__config
-      ~testing:
-        specifier: 'workspace:'
-        version: link:../../LIBS/testing
-      ~types:
-        specifier: 'workspace:'
-        version: link:../../LIBS/types
-
   TODO/treefree:
     devDependencies:
       vitest:
@@ -949,7 +912,7 @@ importers:
         version: link:../DONE/ioioy
       taskyo:
         specifier: workspace:^
-        version: link:../TODO/taskyo
+        version: link:../taskyo
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -1010,6 +973,21 @@ importers:
       typier:
         specifier: workspace:^
         version: link:../DONE/typier
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../__config
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../LIBS/testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../LIBS/types
+
+  taskyo:
+    devDependencies:
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))

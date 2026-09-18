@@ -1,6 +1,6 @@
 import { describe } from "~testing";
 
-import { __, a, AbortController, tick, timeout } from "jsyoyo";
+import { __, a, AbortController, tick } from "jsyoyo";
 import { awaiT, Tree } from "treeo";
 import { indexify } from "proyij";
 
