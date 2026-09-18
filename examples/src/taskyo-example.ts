@@ -38,7 +38,3 @@ const t = task.$((p: 1) => Promise.resolve(p + p))({
 const x = run(t)(1);
 x.progress(LOG("%"));
 x.then(LG);
-
-// const IO = "ioioy" as const;
-// const p = import(IO as "ioioy");
-// const z = import("ioioy" as "") as any as typeof import("ioioy");

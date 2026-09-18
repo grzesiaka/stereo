@@ -1,4 +1,18 @@
-import { __, a, CtxId, CtxId$Id, CtxIdRequired, id, ON, deferred, Json, OrPromise, timeout, MsOrNumber } from "jsyoyo";
+import {
+  __,
+  a,
+  CtxId,
+  CtxId$Id,
+  CtxIdRequired,
+  id,
+  ON,
+  deferred,
+  Json,
+  OrPromise,
+  timeout,
+  MsOrNumber,
+  wait,
+} from "jsyoyo";
 import { awaiT, AwaiTreed, Tree } from "treeo";
 import {
   $progress,
@@ -11,7 +25,7 @@ import {
 } from "./progress";
 import { fakeAbort } from "./utils";
 import { Simplify } from "type-fest";
-import { AbortError, CRITIC } from "./errors";
+import { AbortError, rrERROR, TimeoutError } from "./errors";
 import { disposyo } from "disposyo";
 import { CacheOption, CacheStore } from "./cache";
 
@@ -111,11 +125,14 @@ export const $run =
   <Params extends Task$Params<Task>>(params: Params, abort = fakeAbort) => {
     const on = ON(abort);
     let _f: undefined | (() => void);
-    const d = disposyo(on("abort", () => ((p.X.failed = new AbortError()), def.reject(p.X.failed), d(), _f?.())));
+    const d = disposyo(on("abort", () => fail(new AbortError())));
     const _abort = (f: () => void) => (_f = f);
 
+    const fail = (err: Error) => ((p.X.failed = err), def.reject(p.X.failed), d(), _f?.(), err);
+
     const def = deferred();
-    const $ = Promise.race([
+
+    const r = [
       load(task)
         .then((s) => {
           const r = s.run(params, s.loaded, _abort, update, s);
@@ -128,12 +145,18 @@ export const $run =
             : r;
         })
         .catch((e) => {
-          const err = CRITIC(e, { task, progress: update() });
+          const err = rrERROR(e, { task, progress: update() });
           update().failed = err;
           return Promise.reject(err);
         }),
       def.promise,
-    ]).finally(d);
+    ];
+
+    if (task.timeout) {
+      r.push(wait(task.timeout).then(() => fail(new TimeoutError(task, r[0] as never))));
+    }
+
+    const $ = Promise.race(r).finally(d);
 
     return [$, p, update] as const;
   };

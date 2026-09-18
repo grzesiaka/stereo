@@ -1,10 +1,22 @@
 import { describe } from "~testing";
 
-import { __, a, AbortController, tick } from "jsyoyo";
+import { __, a, AbortController, tick, timeout } from "jsyoyo";
 import { awaiT, Tree } from "treeo";
 import { indexify } from "proyij";
 
-import { $progress, load, run, task, NEVER, _01, parallelTree, AbortError, CriticalError, TaskAny } from "../src";
+import {
+  $progress,
+  load,
+  run,
+  task,
+  NEVER,
+  _01,
+  parallelTree,
+  AbortError,
+  CriticalError,
+  TaskAny,
+  TimeoutError,
+} from "../src";
 import { choice } from "../src/choice";
 import { parallel } from "../src/parallel";
 import { sequence } from "../src/sequence";
@@ -216,8 +228,11 @@ describe(parallel, ({ eq, res }) => ({
     eq(await r, { A: 1, B: 1, C: 1 });
     eq(await r.progress()["⨂"]!.A, 1);
     eq(r.progress()["⨂"]!.B.progress(), { curr: 2, total: 2 });
+
     pr.eq(parallelTreeSimpleResults().map((x) => [x.curr, x.total, x._01, x.partial]));
   },
+
+  timeout: async () => {},
 }));
 
 describe(parallelTree, ({ eq, res }) => ({
@@ -252,11 +267,14 @@ describe(parallelTree, ({ eq, res }) => ({
     eq(err, rp.progress().failed);
   },
   error: async () => {
-    const s = parallelTree(taskObj({ eRR: { or: TSK((x: unknown) => tick(3).then(() => Promise.reject(x)))("!") } }))(
-      "II",
-    );
+    const s = parallelTree(
+      taskObj({
+        long: TSK((p) => NEVER.then(() => p))("long"),
+        eRR: { or: TSK((x) => tick(3).then(() => Promise.reject(x)))("!") },
+      }),
+    )("II");
     const abort = new AbortController();
-    const r = run(s)({ A: "A", B: "B", C: "C", eRR: { or: abort } }, abort.signal);
+    const r = run(s)({ A: "A", B: "B", C: "C", long: "L", eRR: { or: abort } }, abort.signal);
 
     let err = {} as CriticalError;
     try {
@@ -268,6 +286,31 @@ describe(parallelTree, ({ eq, res }) => ({
     eq(err.cause.source, abort);
     eq(err.taskIds, ["!", "II"]);
     eq(err.cause.progress.failed instanceof CriticalError, true);
+
+    const p = r.progress()["⨂"]!;
+    await p.long.catch((err) => eq(err instanceof AbortError, true));
+  },
+
+  timeout: async () => {
+    const s = parallelTree(
+      taskObj({
+        long: TSK((p) => NEVER.then(() => p))({ Id: "long", timeout: 5 }),
+        eRR: { or: TSK((x) => NEVER.then(() => Promise.reject(x)))("!") },
+      }),
+    )("II");
+    const abort = new AbortController();
+    const r = run(s)({ A: "A", B: "B", C: "C", long: "L", eRR: { or: abort } }, abort.signal);
+
+    let err = {} as CriticalError;
+    try {
+      await r;
+    } catch (e) {
+      err = e as never;
+    }
+
+    eq(err instanceof TimeoutError, true); // this should be a timeout error
+    const p = r.progress()["⨂"]!;
+    await p.long.catch((err) => eq(err instanceof TimeoutError, true));
   },
 }));
 

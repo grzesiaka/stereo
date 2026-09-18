@@ -1,5 +1,5 @@
 import { ProgressBase } from "./progress";
-import { Task } from "./task";
+import { Task, TaskAny, TaskRun } from "./task";
 
 interface ErrorTrace {
   task: Task;
@@ -21,9 +21,11 @@ export class CriticalError<Source = unknown> extends Error {
     return this.trace.map((t) => t.task["Id"]);
   }
 }
-export const CRITIC = (err: unknown, cause: ErrorTrace) => {
+export const rrERROR = (err: unknown, cause: ErrorTrace) => {
   if (err instanceof CriticalError) {
     return new CriticalError([...err.trace, cause]);
+  } else if (err instanceof TimeoutError) {
+    return err;
   }
   return new CriticalError([{ ...cause, source: err }]);
 };
@@ -31,5 +33,14 @@ export const CRITIC = (err: unknown, cause: ErrorTrace) => {
 export class AbortError extends Error {
   constructor() {
     super("abort");
+  }
+}
+
+export class TimeoutError<T extends TaskAny = TaskAny, R extends TaskRun<T> = TaskRun<T>> extends Error {
+  constructor(
+    public readonly task: T,
+    public readonly run: R,
+  ) {
+    super("timeout");
   }
 }

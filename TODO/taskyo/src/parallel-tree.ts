@@ -71,6 +71,7 @@ export const runTree =
     });
 
     // optionally subtasks could be exposed from the promise itself, but run does not support it right now
+    // ^ actually it should be moved there
     u(0, { "⨂": tasks });
 
     return awaiT(tasks)
