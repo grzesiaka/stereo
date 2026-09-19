@@ -13,7 +13,7 @@ export type IdVars = ARR<IdVar>;
 export const Var = <X, const Ctx extends CtxIdOptional = __>(X: X, L?: Ctx): Var<Ctx, X> => {
   const $ = OP("VR")(__)({
     X: X,
-    I: (x: X) => ($.OO.forEach((c) => c(x)), ($.X = x), x),
+    I: (x: X) => (($.X = x), $.OO.forEach((c) => c(x)), x),
     O: cId(
       // @ts-expect-error upon `pnpm refresh` it is reported; but sometimes in IDE it disappears
       // oxlint-disable-next-line no-unused-vars apparently skipInitial is not used; seems to be a bug in oxc

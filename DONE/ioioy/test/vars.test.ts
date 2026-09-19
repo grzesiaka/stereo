@@ -42,6 +42,19 @@ describe(A, ({ eq, res }) => ({
     r.last(3)({ str: "S", num: 1, bool: true });
   },
 
+  proper_value: () => {
+    const T = A()([V("a" as "a" | "A", "A"), V("b" as "b" | "B", "B")]);
+    eq(T.X, { A: "a", B: "b" });
+    const r = res();
+    T.O((x) => r.add(x));
+    T.IOs.A.I("A");
+    eq(T.X, { A: "A", B: "b" });
+    r.eq([
+      { A: "a", B: "b" },
+      { A: "A", B: "b" },
+    ]);
+  },
+
   nullable: () => {
     const parts = [V("", "str"), V(0, { Id: "num" }), V(false, "bool")];
     const a = A("AND")(parts, null, undefined);
