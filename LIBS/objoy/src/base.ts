@@ -1,3 +1,5 @@
+import { Dict } from "~types";
+
 /**
  * An alias for:
  *
@@ -68,3 +70,7 @@ export const mb =
     }
     return r as { [K in keyof O]: X };
   };
+
+/** Define Property */
+export const dp = <X extends {}, Props extends Dict<unknown>>(x: X, props: Props) =>
+  Object.defineProperties(x, mb((v) => ({ value: v }))(props)) as X & Props;
