@@ -1,31 +1,37 @@
-import { __, ARR, dp, Fn, Fn$O, is_str, Join } from "jsyoyo";
+import { __, ARR, dethunk, dp, Fn, Fn$O, is_str, Join } from "jsyoyo";
 import { map, Tree } from "treeo";
 
-export const ERR = <N extends string, cCtx extends ARR = [string?]>(n: N) => {
-  class RRERRORR<Ctx extends cCtx> extends Error {
+export type RRERRORR<N extends string, Ctx extends ARR = ARR> = Error & { readonly name: N; readonly ctx: Ctx };
+
+export interface RRERRORR$<N extends string = string, cCtx extends ARR = ARR> {
+  new <Ctx extends cCtx>(...args: Ctx): RRERRORR<N, Ctx>;
+
+  readonly name: N;
+  readonly prototype: RRERRORR<N>;
+}
+
+export const ERR = <N extends string = string, cCtx extends ARR = ARR>(n: N) => {
+  class _RRERRORR<const Ctx extends cCtx> extends Error {
     override readonly name = n;
     constructor(...ctx: Ctx) {
       super(is_str(ctx[0]) ? ctx[0] : n);
     }
-    static is(x: unknown): x is RRERRORR<any> {
-      return x instanceof RRERRORR;
-    }
-    is(x: unknown): x is RRERRORR<Ctx> {
-      return x instanceof RRERRORR;
+    is(x: unknown): x is _RRERRORR<Ctx> {
+      return x instanceof _RRERRORR;
     }
   }
-  return dp(RRERRORR, { name: n });
+  return dp(_RRERRORR, { name: n }) as never as RRERRORR$<N, cCtx>;
 };
 
-export type ERR<N extends string = string, cCtx extends ARR = ARR> = Fn$O<typeof ERR<N, cCtx>>;
+export type ERR<N extends string = string, cCtx extends ARR = ARR<any>> = Fn$O<typeof ERR<N, cCtx>>;
 
 export const $ERR =
-  <cCtx extends ARR = [string?]>() =>
+  <cCtx extends ARR>() =>
   <N extends string>(name: N) =>
     ERR<N, cCtx>(name);
 
 type Txt = string | number;
-export type $ERRs<DEF, P extends readonly Txt[] = []> = DEF extends Fn
+export type $ERRs<DEF, P extends Txt[] = []> = DEF extends Fn
   ? ERR<Join<P, ".">, Fn$O<DEF> extends ERR<string, infer A> ? A : []>
   : DEF extends Txt
     ? ERR<Join<[...P, DEF], ".">, []>
@@ -33,5 +39,11 @@ export type $ERRs<DEF, P extends readonly Txt[] = []> = DEF extends Fn
       ? { [k in keyof DEF & Txt]: $ERRs<DEF[k], [...P, k]> }
       : never;
 
-export const ERRs = <const DEF extends Tree<string | ((n: string) => ERR)>>(def: ($: typeof $ERR) => DEF) =>
-  map(([v, k]) => ERR(`${k}:${v}`))(def) as $ERRs<DEF>;
+type ERR_DEF = string | ((n: string) => ERR) | (() => (n: string) => ERR);
+export const ERRs = <const DEF extends Tree<ERR_DEF>>(def: ($: typeof $ERR) => DEF) =>
+  map(([v, k]: [ERR_DEF, string]) => ERR(`${k}:${typeof v === "string" ? v : dethunk(v)(k)}`))(
+    // @ts-expect-error no clue about root cause >> Type 'Tree<ERR_DEF>' is not assignable to type 'string'.ts(2345)
+    def($ERR),
+  ) as $ERRs<DEF>;
+
+export default ERRs;
