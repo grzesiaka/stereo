@@ -1,3 +1,5 @@
+import { ARR } from "~types";
+
 export type Remove<A extends readonly any[], E> = A extends readonly []
   ? []
   : A extends readonly [infer Head, ...infer Tail]
@@ -8,7 +10,12 @@ export type Remove<A extends readonly any[], E> = A extends readonly []
 
 export const remove =
   <const E, const S = E>(E: E[], S = new Set<S>(E as never as S[])) =>
-  <const A extends readonly any[]>(A: A) =>
+  <const A extends ARR>(A: A) =>
     A.filter((item) => !S.has(item)) as Remove<A, S>;
+
+remove.byEQ =
+  <const E>(e: E) =>
+  <const A extends ARR>(A: A) =>
+    A.filter((item) => item !== e) as Remove<A, E>;
 
 export default remove;
