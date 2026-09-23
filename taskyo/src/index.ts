@@ -1,1 +1,1 @@
-export default "taskyo"
+export * from "./core";

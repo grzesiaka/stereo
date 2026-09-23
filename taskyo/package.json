@@ -1,6 +1,12 @@
 {
   "name": "taskyo",
   "version": "0.0.0-alpha.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./out/index.mjs",
+    "./*": "./out/*.mjs"
+  },
   "scripts": {
     "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/*-/*.ts !./src/*/*-.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
     "build$": "turbo run build --filter='taskyo'...",
@@ -10,10 +16,8 @@
     "test-ci": "vitest test --passWithNoTests --project unit/out",
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
-  "type": "module",
-  "exports": {
-    ".": "./out/index.mjs",
-    "./*": "./out/*.mjs"
-  },
-  "sideEffects": false
+  "devDependencies": {
+    "jsyoyo": "workspace:*",
+    "rrerrorr": "workspace:*"
+  }
 }
