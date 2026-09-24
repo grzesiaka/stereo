@@ -1,4 +1,3 @@
-export * from "./_declassify"
 export * from "./async"
 export * from "./dethunk"
 export * from "./flatten"

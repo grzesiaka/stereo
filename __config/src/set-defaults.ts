@@ -35,7 +35,7 @@ const setDefaults = (root: string, files: string[]) => {
     pkg.type = "module";
 
     !pkg.scripts.build &&
-      (pkg.scripts.build = `tsdown ./src/*.ts ./src/*/*.ts !./src/_*.ts !./src/*-/*.ts !./src/*/*-.ts --minify --sourcemap --dts --clean -d=./out --tsconfig ${pkg_to_tsconfig(pkg)}`);
+      (pkg.scripts.build = `tsdown ./src/*.ts ./src/*/*.ts !./src/*-.ts !./src/*-/*.ts !./src/*/*-.ts --minify --sourcemap --dts --clean -d=./out --tsconfig ${pkg_to_tsconfig(pkg)}`);
     !pkg.scripts.dev && (pkg.scripts.dev = "pnpm build --watch");
 
     !pkg.scripts.dev$ && (pkg.scripts.dev$ = `turbo run dev --filter='${pkg.name}'...`);
