@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import { ERR, load, run, spec } from "../src";
+import { ERR, load, loadSpec, run, spec } from "../src";
 
 import * as jsyoyo from "jsyoyo";
 
@@ -11,10 +11,10 @@ describe("run", ({ eq }) => ({
   emptish: async () => {
     const s = spec({ Id: "proto" })()((params: 1 | 2) => [params], { Id: "run" })("last");
     eq(s.Id, "last");
+    const l = await loadSpec(s);
+    const r = run(l)(1);
 
-    const r = run(s)(1);
-
-    eq(r.spec, s);
+    eq(r.spec, l);
     eq(await r.promise, [1]);
   },
 }));

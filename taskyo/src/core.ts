@@ -40,11 +40,28 @@ export interface Spec<
 > extends SpecExtra {
   Id: Id;
   load: Lo;
-  deps?: Load$Deps<Lo>;
   ctx: Load$Ctx<Lo, Ctx>;
   update: UpdateFn<Lo, Ctx>;
   run: RunFn<Params, Result, Lo, Ctx>;
 }
+
+export interface LoadedSpec<
+  Id extends string = string,
+  Params = any,
+  Result = any,
+  Lo extends __<Load> = any,
+  Ctx extends RunContext = any,
+> extends Spec<Id, Params, Result, Lo, Ctx> {
+  deps: Load$Deps<Lo>;
+}
+
+export type LoadSpec<S extends SpecAny> = LoadedSpec<
+  S["Id"],
+  Spec$Params<S>,
+  Spec$Result<S>,
+  Spec$Deps<S>,
+  Spec$Ctx<S>
+>;
 
 export interface SpecAny<
   Id extends string = string,
@@ -54,7 +71,7 @@ export interface SpecAny<
   Ctx extends RunContext = any,
 > extends Spec<Id, Params, Result, Lo, Ctx> {}
 
-export type ProtoSpec<
+export type PartialSpec<
   Id extends string = string,
   Params = unknown,
   Result = unknown,
@@ -62,14 +79,14 @@ export type ProtoSpec<
   Ctx extends RunContext = RunContext,
 > = Partial<Spec<Id, Params, Result, Lo, Ctx>>;
 
-type Spec$Id<S> = S extends SpecAny<infer X> ? X : never;
+// type Spec$Id<S> = S extends SpecAny<infer X> ? X : never;
 type Spec$Params<S> = S extends SpecAny<string, infer X> ? X : never;
-type Spec$Result<S> = S extends SpecAny<string, any, infer X> ? Awaited<X> : never;
+type Spec$Result<S> = S extends SpecAny<string, any, infer X> ? X : never;
 type Spec$Deps<S> = S extends SpecAny<string, any, any, infer X> ? X : never;
 type Spec$Ctx<S> = S extends SpecAny<string, any, any, any, infer X> ? X : never;
 
 export const spec =
-  <const Proto extends ProtoSpec>(proto = {} as Proto) =>
+  <const Proto extends PartialSpec>(proto = {} as Proto) =>
   <Lo extends Load = __, Ctx extends RunContext = RunContext>(
     load = __ as Lo,
     ctx = (() => ({}) as Ctx) as Load$Ctx<Lo, Ctx>,
@@ -97,16 +114,18 @@ export const load = awaiT.$(dethunk) as <T extends $$<Load>>(d: T) => $$<Load$De
 
 export const loadSpec = <S extends SpecAny>(spec: S) =>
   (spec.load ? load(spec.load) : Promise.resolve(__)).then((deps) => {
-    spec.deps = deps;
-    return spec as S & { deps: Load$Deps<S["load"]> };
+    (spec as never as LoadedSpec).deps = deps;
+    return spec as never as LoadSpec<S>;
   });
 
 export const run =
-  <S extends SpecAny>(spec: S) =>
+  <S extends LoadedSpec>(spec: S) =>
   (params: Spec$Params<S>): Run<S> => {
+    const promise = spec.run(params, spec.deps, spec.ctx(spec.deps));
+
     const r = {
       spec,
-      promise: loadSpec(spec).then((spec) => spec.run(params, spec.deps, spec.ctx(spec.deps))),
+      promise,
     } satisfies Run<S>;
 
     return r;
