@@ -21,8 +21,8 @@ export const ERR = <N extends string = string, cCtx extends ARR = readonly [stri
       super(is_str(ctx[0]) ? ctx[0] : n);
       this.ctx = ctx;
     }
-    is(x: unknown): x is _RRERRORR<Ctx> {
-      return x instanceof _RRERRORR;
+    is(x: Error): x is _RRERRORR<Ctx> {
+      return x instanceof _RRERRORR || x.name === this.name;
     }
   }
   return dp(_RRERRORR, { name: n }) as never as RRERRORR$<N, cCtx>;
@@ -70,7 +70,7 @@ export default ERRs;
 type AnyClass = abstract new (...args: any[]) => unknown;
 
 type Declassify<T, P extends Txt[] = []> = T extends AnyClass
-  ? (<Args extends ConstructorParameters<T>>(
+  ? (<const Args extends ConstructorParameters<T>>(
       ...args: Args & ConstructorParameters<T>
     ) => RRERRORR<Join<P, ".">, Args>) & { $: T }
   : { [K in keyof T & Txt]: Declassify<T[K], [...P, K]> };

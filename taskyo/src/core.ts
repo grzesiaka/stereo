@@ -1,36 +1,135 @@
-import { __, ARR, dethunk, Json } from "jsyoyo";
-// import { Remove, remove } from "arryo";
+import { $$, __, ARR, dethunk, FirstMatch, Json, Millisecond, MsOrNumber } from "jsyoyo";
 import { ERRs } from "rrerrorr";
 import { Tree, Dethunk, awaiT, AwaiTreed } from "treeo";
 
-type ERR_COMPAT = Error | { $: Error };
-type ERR_SPEC = ARR<ERR_COMPAT>;
+type ErrorLike = Error | { $: Error };
+type ErrorLikes = ARR<ErrorLike>;
 
-type INIT = Tree<Json | (() => Json) | (() => Promise<unknown>)> & { ERR?: () => Promise<ERR_SPEC> };
-type INIT$CTX<I extends __<INIT>> = __ extends I ? __ : AwaiTreed<Dethunk<I>>;
+type Load = __ | (Tree<Json | (() => Json) | (() => Promise<unknown>)> & { ERR?: () => Promise<ErrorLikes> });
+type Load$Deps<Lo extends Load> = __ extends Lo ? __ : AwaiTreed<Dethunk<Lo>>;
 
-export const init = awaiT.$(dethunk) as <T extends INIT>(d: T) => INIT$CTX<T>;
+interface RunContext {
+  curr?: number;
+  total?: number;
+}
+type Load$Ctx<Lo extends Load, Ctx extends RunContext> = (deps: Load$Deps<Lo>) => Ctx;
+type UpdateFn<Lo extends Load, Ctx extends RunContext> = __ | ((ctx: Ctx, deps: Load$Deps<Lo>) => void);
 
-export interface SPEC<Params = unknown, Init extends __<INIT> = __> {
-  init?: Init;
-  ctx?: INIT$CTX<Init>;
-  params?: Params;
-  run?: (params: NoInfer<Params>, ctx: INIT$CTX<Init>) => unknown;
+type RunFn<Params, Result, Lo extends Load, Ctx extends RunContext> = (
+  params: Params,
+  deps: Load$Deps<Lo>,
+  ctx: Load$Ctx<Lo, Ctx>,
+) => Result;
+
+export interface SpecExtra {
+  Id?: string;
+  // max time of execution
+  timeout?: MsOrNumber;
+  // expected time of execution
+  ms?: MsOrNumber;
+  cache?: "TODO";
+  retry?: "TODO";
 }
 
-export const spec = <S extends SPEC>(s: S) => s;
+export interface Spec<
+  Id extends string = string,
+  Params = unknown,
+  Result = unknown,
+  Lo extends __<Load> = __,
+  Ctx extends RunContext = RunContext,
+> extends SpecExtra {
+  Id: Id;
+  load: Lo;
+  deps?: Load$Deps<Lo>;
+  ctx: Load$Ctx<Lo, Ctx>;
+  update: UpdateFn<Lo, Ctx>;
+  run: RunFn<Params, Result, Lo, Ctx>;
+}
 
-export interface RUN<S extends SPEC> {
+export interface SpecAny<
+  Id extends string = string,
+  Params = any,
+  Result = any,
+  Lo extends __<Load> = any,
+  Ctx extends RunContext = any,
+> extends Spec<Id, Params, Result, Lo, Ctx> {}
+
+export type ProtoSpec<
+  Id extends string = string,
+  Params = unknown,
+  Result = unknown,
+  Lo extends __<Load> = __,
+  Ctx extends RunContext = RunContext,
+> = Partial<Spec<Id, Params, Result, Lo, Ctx>>;
+
+type Spec$Id<S> = S extends SpecAny<infer X> ? X : never;
+type Spec$Params<S> = S extends SpecAny<string, infer X> ? X : never;
+type Spec$Result<S> = S extends SpecAny<string, any, infer X> ? Awaited<X> : never;
+type Spec$Deps<S> = S extends SpecAny<string, any, any, infer X> ? X : never;
+type Spec$Ctx<S> = S extends SpecAny<string, any, any, any, infer X> ? X : never;
+
+export const spec =
+  <const Proto extends ProtoSpec>(proto = {} as Proto) =>
+  <Lo extends Load = __, Ctx extends RunContext = RunContext>(
+    load = __ as Lo,
+    ctx = (() => ({}) as Ctx) as Load$Ctx<Lo, Ctx>,
+    update = __ as UpdateFn<Lo, Ctx>,
+  ) =>
+  <Params, Result, const RunExtra extends SpecExtra>(run: RunFn<Params, Result, Lo, Ctx>, runExtra = {} as RunExtra) =>
+  <const Id extends Proto & RunExtra extends { Id: string } ? [string?] : [string]>(...[Id]: Id) =>
+    ({
+      ...proto,
+      ...runExtra,
+      Id: Id || runExtra["Id"] || proto["Id"] || "",
+      load,
+      ctx,
+      update,
+      run,
+    }) satisfies Spec as never as Spec<
+      FirstMatch<[Id[0], RunExtra["Id"], Proto["Id"]], string>,
+      Params,
+      Result,
+      Lo,
+      Ctx
+    >;
+
+export const load = awaiT.$(dethunk) as <T extends $$<Load>>(d: T) => $$<Load$Deps<T>>;
+
+export const loadSpec = <S extends SpecAny>(spec: S) =>
+  (spec.load ? load(spec.load) : Promise.resolve(__)).then((deps) => {
+    spec.deps = deps;
+    return spec as S & { deps: Load$Deps<S["load"]> };
+  });
+
+export const run =
+  <S extends SpecAny>(spec: S) =>
+  (params: Spec$Params<S>): Run<S> => {
+    const r = {
+      spec,
+      promise: loadSpec(spec).then((spec) => spec.run(params, spec.deps, spec.ctx(spec.deps))),
+    } satisfies Run<S>;
+
+    return r;
+  };
+
+interface Run<S extends Spec = Spec> {
   spec: S;
+  promise: Promise<Spec$Result<S>>;
+  dispose?: () => void;
+}
+
+interface RetryInfo {
+  count: number;
+  total?: number;
 }
 
 export const ERR = ERRs(($) => ({
   taskyo: {
-    err: {
-      retry: $,
-      abort: $(),
-      timeout: $<[how_long: number]>(),
-      critical: $,
+    error: {
+      retry: $<[task?: Run, retryInfo?: RetryInfo]>(),
+      abort: $<[task?: Run, reason?: unknown]>(),
+      timeout: $<[task?: Run, timeout?: Millisecond]>(),
+      critical: $<[task?: Run, error?: unknown]>(),
     },
   },
-}))["taskyo"]["err"];
+}))["taskyo"]["error"];

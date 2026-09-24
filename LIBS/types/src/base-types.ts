@@ -91,3 +91,12 @@ export type WritableKeys<T> = {
  * Do not allow additional keys. Needed to prevent arbitrary assignments when generic param due to TS 2.4 Weak Types.
  */
 export type NoExtraKeys<T, Shape> = T & Record<Exclude<keyof T, keyof Shape>, never>;
+
+/**
+ *  Gets first type / item matching a pattern
+ * */
+export type FirstMatch<Items extends ARR, Match> = Items extends readonly [infer H, ...infer R]
+  ? [H] extends [Match]
+    ? H
+    : FirstMatch<R, Match>
+  : never;
