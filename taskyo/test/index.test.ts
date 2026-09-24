@@ -3,7 +3,7 @@ import { ERR, init } from "../src";
 
 import * as jsyoyo from "jsyoyo";
 
-import j from "jsyoyo/_dyn";
+import j from "jsyoyo/_";
 
 describe("", ({ eq }) => ({
   init: async () => {

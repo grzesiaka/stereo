@@ -6,6 +6,8 @@
   "exports": {
     ".": "./out/index.mjs",
     "./*": "./out/*.mjs",
+    "./dynamic": "./out/dynamic/index.mjs",
+    "./dynamic/*": "./out/dynamic/*.mjs",
     "./num": "./out/num/index.mjs",
     "./num/*": "./out/num/*.mjs",
     "./parse": "./out/parse/index.mjs",
