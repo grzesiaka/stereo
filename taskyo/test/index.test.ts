@@ -24,7 +24,7 @@ describe(
   ({ v, eq }) => ({
     no_timeout_no_abort: async () => {
       const s = spec()()(() => wait(500, 1))("500ms");
-      const r = run(await load1(s))(1);
+      const r = await run(s)(1);
       v.vi.advanceTimersByTime(500);
       eq(await r.promise, 1);
     },
@@ -43,7 +43,7 @@ describe(
     abort_before_timeout: async () => {
       const s = spec({ timeout: 200 })()(() => wait(500, 1))("500ms");
       const abort = new jsyoyo.AbortController();
-      const r = run(await load1(s))(1, abort.signal);
+      const r = await run(s)(1, abort.signal);
       v.vi.advanceTimersByTime(100);
       abort.abort();
       const x = await r.promise;

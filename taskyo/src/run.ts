@@ -1,5 +1,5 @@
 import { ifFunction, ON } from "jsyoyo";
-import { $Progress, $progress, fakeAbort } from "./utils";
+import { $Progress, $progress, fakeAbort, load1 } from "./utils";
 import type { LoadedSpec, Spec$Ctx, Spec$Deps, Spec$ERR, Spec$OK, Spec$Params, SpecAny } from "./types";
 
 import { RRERRORR } from "rrerrorr";
@@ -69,9 +69,17 @@ export interface RetryRun<S extends SpecAny = SpecAny> {
   >;
 }
 
+export type Spec$Run<S extends SpecAny> = S extends { deps: any }
+  ? S extends { retry: any }
+    ? RetryRun<S>
+    : Run<S>
+  : Promise<S extends { retry: any } ? RetryRun<S> : Run<S>>;
+
 export const run =
-  <S extends LoadedSpec>(spec: S) =>
-  (params: Spec$Params<S>, abort = fakeAbort) =>
-    (spec.retry ? retry : run1)(spec)(params, abort) as S extends { retry: any } ? RetryRun<S> : Run<S>;
+  <S extends SpecAny>(spec: S) =>
+  (params: Spec$Params<S>, abort = fakeAbort): Spec$Run<S> =>
+    "deps" in spec
+      ? ((spec.retry ? retry : run1)(spec as LoadedSpec)(params, abort) as never)
+      : (load1(spec).then((s) => (spec.retry ? retry : run1)(s)(params, abort)) as never);
 
 run[1] = run1;
