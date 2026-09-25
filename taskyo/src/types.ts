@@ -1,4 +1,4 @@
-import type { __, ARR, AbortSignal, Json, MsOrNumber } from "jsyoyo";
+import type { __, ARR, Json, MsOrNumber } from "jsyoyo";
 
 import type { Tree, Dethunk, AwaiTreed } from "treeo";
 
@@ -21,7 +21,7 @@ export type RunFn<Params, Result, Lo extends Load, Ctx extends RunContext> = (
   params: Params,
   deps: Load$Deps<Lo>,
   progress: ProgressRunFn<Ctx>,
-  abort: AbortSignal,
+  onabort: (dispose: () => void) => void,
   spec: LoadedSpec<string, Params, Result, Lo, Ctx>,
 ) => Result | readonly [Result, () => void];
 
@@ -65,7 +65,8 @@ export type LoadSpec<S extends SpecAny> = LoadedSpec<
   Spec$Result<S>,
   Spec$Deps<S>,
   Spec$Ctx<S>
->;
+> &
+  S;
 
 export type LoadSpecs<T extends Tree<SpecAny>> = T extends SpecAny
   ? LoadSpec<T>

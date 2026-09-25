@@ -14,6 +14,9 @@ import type {
   SpecAny,
 } from "./types";
 
+export const asERR = <P>(p: P) => p as Extract<P, Error>;
+export const asOK = <P>(p: P) => p as Exclude<P, Error>;
+
 export const loadDeps = awaiT.$(dethunk) as <T extends $$<Load>>(d: T) => $$<Load$Deps<T>>;
 
 export const load1 = <S extends SpecAny>(spec: S) =>

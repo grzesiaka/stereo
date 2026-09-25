@@ -1,4 +1,4 @@
-import { __, FirstMatch } from "jsyoyo";
+import { __, FirstMatch, MsOrNumber } from "jsyoyo";
 
 import type { Load, Load$Ctx, PartialSpec, RunContext, RunFn, Spec, SpecExtra, UpdateFn } from "./types";
 
@@ -25,6 +25,8 @@ export const spec =
       Result,
       Lo,
       Ctx
-    >;
+    > & {
+      timeout: FirstMatch<[RunExtra["timeout"], Proto["timeout"]], MsOrNumber>;
+    };
 
 export default spec;

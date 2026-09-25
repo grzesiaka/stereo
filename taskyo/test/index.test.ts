@@ -1,11 +1,11 @@
 import { describe } from "~testing";
-import { ERR, loadDeps, load1, run, spec } from "../src";
+import { ERR, loadDeps, load1, run, spec, asERR } from "../src";
 
 import * as jsyoyo from "jsyoyo";
 
 import j from "jsyoyo/_";
 
-import { __ } from "jsyoyo";
+import { __, wait } from "jsyoyo";
 
 describe("run", ({ eq }) => ({
   emptish: async () => {
@@ -18,6 +18,57 @@ describe("run", ({ eq }) => ({
     eq(await r.promise, [1]);
   },
 }));
+
+describe(
+  "timeout & abort",
+  ({ v, eq }) => ({
+    no_timeout_no_abort: async () => {
+      const s = spec()()(() => wait(500, 1))("500ms");
+      const r = run(await load1(s))(1);
+      v.vi.advanceTimersByTime(500);
+      eq(await r.promise, 1);
+    },
+
+    timeout_no_abort: async () => {
+      const s = spec({ timeout: 200 })()(() => wait(500, 1))("500ms");
+      const r = run(await load1(s))(1);
+      v.vi.advanceTimersByTime(200); // v.vi.advanceTimersByTime(500); delivers `1` 99% an issue in vitest
+      const x = await r.promise;
+      const p = asERR(x);
+
+      eq(p.name, "taskyo.error.timeout");
+      eq(p.ctx[0], r);
+    },
+
+    abort_before_timeout: async () => {
+      const s = spec({ timeout: 200 })()(() => wait(500, 1))("500ms");
+      const abort = new jsyoyo.AbortController();
+      const r = run(await load1(s))(1, abort.signal);
+      v.vi.advanceTimersByTime(100);
+      abort.abort();
+      const x = await r.promise;
+      const p = asERR(x);
+      eq(p.name, "taskyo.error.abort");
+      eq(p.ctx[0], r);
+    },
+
+    abort_after_timeout: async () => {
+      const s = spec({ timeout: 200 })()(() => wait(500, 1))("500ms");
+      const abort = new jsyoyo.AbortController();
+      const r = run(await load1(s))(1, abort.signal);
+      v.vi.advanceTimersByTime(300);
+      abort.abort();
+      const x = await r.promise;
+      const p = asERR(x);
+      eq(p.name, "taskyo.error.timeout");
+      eq(p.ctx[0], r);
+    },
+  }),
+  (v) => {
+    v.beforeEach(() => v.vi.useFakeTimers());
+    v.afterEach(() => v.vi.clearAllTimers());
+  },
+);
 
 describe("load / ERR", ({ eq }) => ({
   load: async () => {
