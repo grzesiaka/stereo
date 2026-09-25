@@ -4,7 +4,10 @@ export const defaultKeepTraversing = (item: unknown, _path: string): item is obj
   typeof item === "object" && !Array.isArray(item) && item !== null;
 
 export const map =
-  <X, T extends TreeOrLeaves>(f: (vk: Tree$ValueKeyPairs<T>) => X, keepTraversing = defaultKeepTraversing) =>
+  <X, T extends TreeOrLeaves>(
+    f: (vk: Tree$ValueKeyPairs<T>) => X,
+    keepTraversing = defaultKeepTraversing as typeof defaultKeepTraversing,
+  ) =>
   (item: T, path = ""): MapTree<T, X> => {
     if (keepTraversing(item, path)) {
       return Object.entries(item).reduce((a, [k, v]) => {

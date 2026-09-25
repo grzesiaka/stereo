@@ -1,7 +1,20 @@
-import { $$, __, AbortSignal, ARR, dethunk, FirstMatch, Json, Millisecond, MsOrNumber } from "jsyoyo";
+import {
+  $$,
+  __,
+  AbortSignal,
+  ARR,
+  CtxIdRequired,
+  dethunk,
+  FirstMatch,
+  ifFunction,
+  Json,
+  Millisecond,
+  MsOrNumber,
+  ifString,
+} from "jsyoyo";
 import { Var } from "ioioy";
 import { ERRs } from "rrerrorr";
-import { Tree, Dethunk, awaiT, AwaiTreed } from "treeo";
+import { Tree, Dethunk, awaiT, AwaiTreed, map } from "treeo";
 import { fakeAbort } from "./utils";
 
 type ErrorLike = Error | { $: Error };
@@ -46,7 +59,7 @@ export interface Spec<
 > extends SpecExtra {
   Id: Id;
   load: Lo;
-  ctx: Load$Ctx<Lo, Ctx>;
+  ctx: Ctx | Load$Ctx<Lo, Ctx>;
   update: UpdateFn<Lo, Ctx>;
   run: RunFn<Params, Result, Lo, Ctx>;
 }
@@ -69,6 +82,10 @@ export type LoadSpec<S extends SpecAny> = LoadedSpec<
   Spec$Ctx<S>
 >;
 
+export type LoadSpecs<T extends Tree<SpecAny>> = T extends SpecAny
+  ? LoadSpec<T>
+  : { [K in keyof T]: LoadSpecs<T[K] & Tree<SpecAny>> };
+
 export interface SpecAny<
   Id extends string = string,
   Params = any,
@@ -79,23 +96,25 @@ export interface SpecAny<
 
 export type PartialSpec<
   Id extends string = string,
-  Params = unknown,
-  Result = unknown,
-  Lo extends __<Load> = __,
-  Ctx extends RunContext = RunContext,
+  Params = any,
+  Result = any,
+  Lo extends __<Load> = any,
+  Ctx extends RunContext = any,
 > = Partial<Spec<Id, Params, Result, Lo, Ctx>>;
 
-// type Spec$Id<S> = S extends SpecAny<infer X> ? X : never;
 type Spec$Params<S> = S extends SpecAny<string, infer X> ? X : never;
 type Spec$Result<S> = S extends SpecAny<string, any, infer X> ? X : never;
 type Spec$Deps<S> = S extends SpecAny<string, any, any, infer X> ? X : never;
 type Spec$Ctx<S> = S extends SpecAny<string, any, any, any, infer X> ? X : never;
 
+export type Spec$OK<S> = Exclude<Awaited<Spec$Result<S>>, Error>;
+export type Spec$ERR<S> = Extract<Awaited<Spec$Result<S>>, Error>;
+
 export const spec =
   <const Proto extends PartialSpec>(proto = {} as Proto) =>
   <Lo extends Load = __, Ctx extends RunContext = RunContext>(
     load = __ as Lo,
-    ctx = (() => ({}) as Ctx) as Load$Ctx<Lo, Ctx>,
+    ctx = {} as Ctx as Ctx | Load$Ctx<Lo, Ctx>,
     update = __ as UpdateFn<Lo, Ctx>,
   ) =>
   <Params, Result, const RunExtra extends SpecExtra>(run: RunFn<Params, Result, Lo, Ctx>, runExtra = {} as RunExtra) =>
@@ -116,13 +135,24 @@ export const spec =
       Ctx
     >;
 
-export const load = awaiT.$(dethunk) as <T extends $$<Load>>(d: T) => $$<Load$Deps<T>>;
+export const loadDeps = awaiT.$(dethunk) as <T extends $$<Load>>(d: T) => $$<Load$Deps<T>>;
 
-export const loadSpec = <S extends SpecAny>(spec: S) =>
-  (spec.load ? load(spec.load) : Promise.resolve(__)).then((deps) => {
+export const load1 = <S extends SpecAny>(spec: S) =>
+  (spec.load ? loadDeps(spec.load) : Promise.resolve(__)).then((deps) => {
     (spec as never as LoadedSpec).deps = deps;
     return spec as never as LoadSpec<S>;
   });
+
+export const isSpec = (s: object): s is Spec => "run" in s && "Id" in s;
+
+export const load = <T extends Tree<SpecAny>>(specs: T) =>
+  awaiT(
+    map(
+      ([s]) => load1(s as SpecAny),
+      // @ts-expect-error should prove `i is object`, but it is handled by the accepted type (Tree<SpecAny>)
+      (i) => !isSpec(i),
+    )(specs) as never,
+  ) as never as LoadSpecs<T>;
 
 type $Progress<Ctx extends RunContext, Deps> = ReturnType<typeof $progress<Ctx, Deps>>;
 const $progress = <Ctx extends RunContext, Deps>(ctx: Ctx, deps: Deps, update?: (ctx: Ctx, deps: Deps) => void) => {
@@ -144,7 +174,7 @@ const $progress = <Ctx extends RunContext, Deps>(ctx: Ctx, deps: Deps, update?: 
 export const run =
   <S extends LoadedSpec>(spec: S) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
-    const ctx = spec.ctx(spec.deps);
+    const ctx = ifFunction(spec.ctx, ($) => $(spec.deps));
     const progress = $progress(ctx, spec.deps, spec.update);
 
     const promise = spec.run(params, spec.deps, progress[1], abort, spec);
@@ -179,3 +209,14 @@ export const ERR = ERRs(($) => ({
     },
   },
 }))["taskyo"]["error"];
+
+export const TODO =
+  <Result, Params = unknown>() =>
+  <S extends CtxIdRequired<PartialSpec<string, Params, Result>>>(todo: S) =>
+    spec(
+      ifString(
+        todo,
+        (Id) => ({ Id, TODO: 1 }),
+        (x) => ({ ...x, TODO: 1 }),
+      ),
+    ) as never as S extends string ? PartialSpec<S, Result, Params, __, RunContext> : S;
