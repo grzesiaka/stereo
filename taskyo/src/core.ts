@@ -1,6 +1,8 @@
-import { $$, __, ARR, dethunk, FirstMatch, Json, Millisecond, MsOrNumber } from "jsyoyo";
+import { $$, __, AbortSignal, ARR, dethunk, FirstMatch, Json, Millisecond, MsOrNumber } from "jsyoyo";
+import { Var } from "ioioy";
 import { ERRs } from "rrerrorr";
 import { Tree, Dethunk, awaiT, AwaiTreed } from "treeo";
+import { fakeAbort } from "./utils";
 
 type ErrorLike = Error | { $: Error };
 type ErrorLikes = ARR<ErrorLike>;
@@ -15,10 +17,14 @@ interface RunContext {
 type Load$Ctx<Lo extends Load, Ctx extends RunContext> = (deps: Load$Deps<Lo>) => Ctx;
 type UpdateFn<Lo extends Load, Ctx extends RunContext> = __ | ((ctx: Ctx, deps: Load$Deps<Lo>) => void);
 
+type Progress<Ctx extends RunContext> = (u?: Partial<Ctx>) => Ctx;
+
 type RunFn<Params, Result, Lo extends Load, Ctx extends RunContext> = (
   params: Params,
   deps: Load$Deps<Lo>,
-  ctx: Load$Ctx<Lo, Ctx>,
+  progress: Progress<Ctx>,
+  abort: AbortSignal,
+  spec: LoadedSpec<string, Params, Result, Lo, Ctx>,
 ) => Result;
 
 export interface SpecExtra {
@@ -118,14 +124,35 @@ export const loadSpec = <S extends SpecAny>(spec: S) =>
     return spec as never as LoadSpec<S>;
   });
 
+type $Progress<Ctx extends RunContext, Deps> = ReturnType<typeof $progress<Ctx, Deps>>;
+const $progress = <Ctx extends RunContext, Deps>(ctx: Ctx, deps: Deps, update?: (ctx: Ctx, deps: Deps) => void) => {
+  const v = Var(ctx);
+  return [
+    v,
+    (u?: Partial<Ctx>) => {
+      if (!u) return v.X;
+      const x = {
+        ...v.X,
+        ...u,
+      };
+      update?.(x, deps);
+      return v.I(x);
+    },
+  ] as [typeof v, Progress<Ctx>];
+};
+
 export const run =
   <S extends LoadedSpec>(spec: S) =>
-  (params: Spec$Params<S>): Run<S> => {
-    const promise = spec.run(params, spec.deps, spec.ctx(spec.deps));
+  (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
+    const ctx = spec.ctx(spec.deps);
+    const progress = $progress(ctx, spec.deps, spec.update);
+
+    const promise = spec.run(params, spec.deps, progress[1], abort, spec);
 
     const r = {
       spec,
       promise,
+      progress,
     } satisfies Run<S>;
 
     return r;
@@ -134,7 +161,7 @@ export const run =
 interface Run<S extends Spec = Spec> {
   spec: S;
   promise: Promise<Spec$Result<S>>;
-  dispose?: () => void;
+  progress: $Progress<Spec$Ctx<S>, Spec$Deps<S>>;
 }
 
 interface RetryInfo {
