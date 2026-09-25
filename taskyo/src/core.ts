@@ -1,19 +1,7 @@
-import {
-  $$,
-  __,
-  AbortSignal,
-  ARR,
-  CtxIdRequired,
-  dethunk,
-  FirstMatch,
-  ifFunction,
-  Json,
-  Millisecond,
-  MsOrNumber,
-  ifString,
-} from "jsyoyo";
+import { __, dethunk, AbortSignal, ARR, ifFunction, ifString } from "jsyoyo";
+import type { $$, CtxIdRequired, FirstMatch, Json, MsOrNumber } from "jsyoyo";
 import { Var } from "ioioy";
-import { ERRs } from "rrerrorr";
+import { ERRs, RRERRORR } from "rrerrorr";
 import { Tree, Dethunk, awaiT, AwaiTreed, map } from "treeo";
 import { fakeAbort } from "./utils";
 
@@ -30,12 +18,12 @@ interface RunContext {
 type Load$Ctx<Lo extends Load, Ctx extends RunContext> = (deps: Load$Deps<Lo>) => Ctx;
 type UpdateFn<Lo extends Load, Ctx extends RunContext> = __ | ((ctx: Ctx, deps: Load$Deps<Lo>) => void);
 
-type Progress<Ctx extends RunContext> = (u?: Partial<Ctx>) => Ctx;
+type ProgressRunFn<Ctx extends RunContext> = (u?: Partial<Ctx>) => Ctx;
 
 type RunFn<Params, Result, Lo extends Load, Ctx extends RunContext> = (
   params: Params,
   deps: Load$Deps<Lo>,
-  progress: Progress<Ctx>,
+  progress: ProgressRunFn<Ctx>,
   abort: AbortSignal,
   spec: LoadedSpec<string, Params, Result, Lo, Ctx>,
 ) => Result;
@@ -168,10 +156,37 @@ const $progress = <Ctx extends RunContext, Deps>(ctx: Ctx, deps: Deps, update?: 
       update?.(x, deps);
       return v.I(x);
     },
-  ] as [typeof v, Progress<Ctx>];
+  ] as [typeof v, ProgressRunFn<Ctx>];
 };
 
 export const run =
+  <S extends LoadedSpec>(spec: S) =>
+  (params: Spec$Params<S>, abort = fakeAbort): S extends { retry: any } ? RetryRun<S> : Run<S> => {
+    if (spec.retry) return retry(spec)(params, abort) as never;
+
+    const ctx = ifFunction(spec.ctx, ($) => $(spec.deps));
+    const progress = $progress(ctx, spec.deps, spec.update);
+
+    let promise = spec.run(params, spec.deps, progress[1], abort, spec);
+
+    const r = {
+      spec,
+      promise,
+      progress: progress[0].O,
+    } satisfies Run<S>;
+
+    return r as never;
+  };
+
+interface Run<S extends Spec = Spec> {
+  spec: S;
+  promise: Promise<
+    Spec$OK<S> | Spec$ERR<S> | (S extends { timeout: any } ? RRERRORR<"taskyo.error.timeout", [Run<S>]> : never)
+  >;
+  progress: $Progress<Spec$Ctx<S>, Spec$Deps<S>>[0]["O"];
+}
+
+const retry =
   <S extends LoadedSpec>(spec: S) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
     const ctx = ifFunction(spec.ctx, ($) => $(spec.deps));
@@ -182,29 +197,28 @@ export const run =
     const r = {
       spec,
       promise,
-      progress,
+      progress: progress[0].O,
     } satisfies Run<S>;
 
     return r;
   };
-
-interface Run<S extends Spec = Spec> {
+interface RetryRun<S extends Spec = Spec> {
   spec: S;
-  promise: Promise<Spec$Result<S>>;
-  progress: $Progress<Spec$Ctx<S>, Spec$Deps<S>>;
+  promise: Promise<
+    | Spec$OK<S>
+    | Spec$ERR<S>
+    | (S extends { timeout: any } ? RRERRORR<"taskyo.error.timeout", [RetryRun<S>]> : never)
+    | (S extends { retry: any } ? RRERRORR<"taskyo.error.retry", [RetryRun<S>]> : never)
+  >;
 }
 
-interface RetryInfo {
-  count: number;
-  total?: number;
-}
-
+export type ERR = typeof ERR;
 export const ERR = ERRs(($) => ({
   taskyo: {
     error: {
-      retry: $<[task?: Run, retryInfo?: RetryInfo]>(),
+      retry: $<[task?: RetryRun]>(),
       abort: $<[task?: Run, reason?: unknown]>(),
-      timeout: $<[task?: Run, timeout?: Millisecond]>(),
+      timeout: $<[task?: Run]>(),
       critical: $<[task?: Run, error?: unknown]>(),
     },
   },
