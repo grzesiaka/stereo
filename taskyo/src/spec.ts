@@ -25,8 +25,13 @@ export const spec =
       Result,
       Lo,
       Ctx
-    > & {
-      timeout: FirstMatch<[RunExtra["timeout"], Proto["timeout"]], MsOrNumber, __>;
-    };
+    > &
+      Omit<Merge<RunExtra, Proto>, "Id">;
+
+type Certain<T> = {
+  [K in keyof T as undefined extends T[K] ? never : K]: T[K];
+};
+
+type Merge<A, B> = Certain<A> & Omit<Certain<B>, keyof Certain<A>>;
 
 export default spec;

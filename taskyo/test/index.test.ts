@@ -30,7 +30,7 @@ describe(
     },
 
     timeout_no_abort: async () => {
-      const s = spec({ timeout: 200 })()(() => wait(500, 1))("500ms");
+      const s = spec({ timeout: 300 })()(() => wait(500, 1), { timeout: 150 })("500ms");
       const r = run(await load1(s))(1);
       v.vi.advanceTimersByTime(200); // v.vi.advanceTimersByTime(500); delivers `1` 99% an issue in vitest
       const x = await r.promise;
