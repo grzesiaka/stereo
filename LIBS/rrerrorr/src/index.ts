@@ -1,4 +1,4 @@
-import { __, ARR, dethunk, dp, Fn, Fn$O, is_str, Join, a } from "jsyoyo";
+import { __, ARR, dethunk, dp, Fn, Fn$O, Join, a } from "jsyoyo";
 import { map, Tree } from "treeo";
 
 export type RRERRORR<N extends string, Ctx extends ARR = readonly [string?]> = Error & {
@@ -8,7 +8,6 @@ export type RRERRORR<N extends string, Ctx extends ARR = readonly [string?]> = E
 
 export interface RRERRORR$<N extends string = string, cCtx extends ARR = readonly [string?]> {
   new <Ctx extends cCtx>(...args: Ctx): RRERRORR<N, Ctx>;
-
   readonly name: N;
   readonly prototype: RRERRORR<N>;
 }
@@ -18,7 +17,7 @@ export const ERR = <N extends string = string, cCtx extends ARR = readonly [stri
     override readonly name = n;
     public readonly ctx: Ctx;
     constructor(...ctx: Ctx) {
-      super(is_str(ctx[0]) ? ctx[0] : n);
+      super();
       this.ctx = ctx;
     }
     is(x: Error): x is _RRERRORR<Ctx> {

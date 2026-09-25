@@ -25,7 +25,9 @@ export const wait = <Ms extends number = 0, const Value = __>(
   value = __ as Value,
   abortSignal?: AbortSignal,
 ): Promise<Value> => {
-  if (!abortSignal) return new Promise((res) => setTimeout(() => res(value), ms));
+  if (!abortSignal) {
+    return new Promise<Value>((res) => setTimeout(() => res(value), ms));
+  }
   return Promise.race([
     wait(ms, value),
     ON.promise(abortSignal)("abort").then((ev) => Promise.reject(new AbortError(ev, abortSignal))),
