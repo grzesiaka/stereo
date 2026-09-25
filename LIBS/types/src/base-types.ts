@@ -95,8 +95,8 @@ export type NoExtraKeys<T, Shape> = T & Record<Exclude<keyof T, keyof Shape>, ne
 /**
  *  Gets first type / item matching a pattern
  * */
-export type FirstMatch<Items extends ARR, Match> = Items extends readonly [infer H, ...infer R]
+export type FirstMatch<Items extends ARR, Match, Def = __> = Items extends readonly [infer H, ...infer R]
   ? [H] extends [Match]
     ? H
     : FirstMatch<R, Match>
-  : never;
+  : Def;

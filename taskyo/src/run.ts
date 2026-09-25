@@ -1,4 +1,4 @@
-import { ifFunction, ON } from "jsyoyo";
+import { ifFunction, MsOrNumber, ON } from "jsyoyo";
 import { $Progress, $progress, fakeAbort, load1 } from "./utils";
 import type { LoadedSpec, Spec$Ctx, Spec$Deps, Spec$ERR, Spec$OK, Spec$Params, SpecAny } from "./types";
 
@@ -64,7 +64,7 @@ export interface RetryRun<S extends SpecAny = SpecAny> {
     | Spec$OK<S>
     | Spec$ERR<S>
     | RRERRORR<ERR["abort"]["$"]["name"], [Run<S>]>
-    | (S extends { timeout: any } ? RRERRORR<ERR["timeout"]["$"]["name"], [Run<S>]> : never)
+    | (S extends { timeout: MsOrNumber } ? RRERRORR<ERR["timeout"]["$"]["name"], [Run<S>]> : never)
     | (S extends { retry: any } ? RRERRORR<ERR["retry"]["$"]["name"], [RetryRun<S>]> : never)
   >;
 }

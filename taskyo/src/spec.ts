@@ -20,13 +20,13 @@ export const spec =
       update,
       run,
     }) satisfies Spec as never as Spec<
-      FirstMatch<[Id[0], RunExtra["Id"], Proto["Id"]], string>,
+      FirstMatch<[Id[0], RunExtra["Id"], Proto["Id"]], string, never>,
       Params,
       Result,
       Lo,
       Ctx
     > & {
-      timeout: FirstMatch<[RunExtra["timeout"], Proto["timeout"]], MsOrNumber>;
+      timeout: FirstMatch<[RunExtra["timeout"], Proto["timeout"]], MsOrNumber, __>;
     };
 
 export default spec;
