@@ -98,9 +98,11 @@ export const test = <R = any>(n: string, fn: TestFn<R>) => v.test(n, () => fn(ct
 export const describe = (
   nameOrFn: string | Function,
   tests: (ctx: Ctx, vitest: typeof v) => Record<string, () => void>,
+  setup?: (vitest: typeof v, ctx: Ctx) => void,
   name: "ONLY" | (string & {}) = typeof nameOrFn === "string" ? nameOrFn : nameOrFn.name,
 ) =>
   (name.startsWith("ONLY") ? v.describe.only : v.describe)(name, () => {
+    setup?.(v, ctx);
     const ts = tests(ctx, v);
     for (const k in ts) {
       (k.startsWith("ONLY") ? v.test.only : v.test)(k.replace(/_/g, " "), ts[k]);
