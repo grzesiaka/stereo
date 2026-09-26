@@ -23,7 +23,7 @@ describe(
   "timeout & abort",
   ({ v, eq }) => ({
     no_timeout_no_abort: async () => {
-      const s = spec()()(() => wait(500, 1))("500ms");
+      const s = spec({ run: __ })()(() => wait(500, 1))("500ms");
       const r = await run(s)(1);
       v.vi.advanceTimersByTime(500);
       eq(await r.promise, 1);
