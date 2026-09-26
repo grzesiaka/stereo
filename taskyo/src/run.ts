@@ -8,7 +8,11 @@ import { ERR, timeout } from "./errors";
 const retry =
   <S extends LoadedSpec>(spec: S) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
-    const ctx = ifFunction(spec.ctx, ($) => $(spec.deps));
+    const ctx = ifFunction(
+      spec.ctx,
+      ($) => $(spec.deps),
+      (x) => ({ ...x }),
+    );
     const progress = $progress(ctx, spec.deps, spec.update);
     const abo = ON.promise(abort)("abort");
     const r = {
@@ -29,7 +33,11 @@ const retry =
 const run1 =
   <S extends LoadedSpec>(spec: S) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
-    const ctx = ifFunction(spec.ctx, ($) => $(spec.deps));
+    const ctx = ifFunction(
+      spec.ctx,
+      ($) => $(spec.deps),
+      (x) => ({ ...x }),
+    );
     const progress = $progress(ctx, spec.deps, spec.update);
     const abo = ON.promise(abort)("abort");
     const r = {

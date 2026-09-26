@@ -1,3 +1,4 @@
+import { Simplify } from "type-fest";
 import type { __, ARR, Json, MsOrNumber } from "jsyoyo";
 
 import type { Tree, Dethunk, AwaiTreed } from "treeo";
@@ -35,19 +36,26 @@ export interface SpecExtra {
   retry?: "TODO";
 }
 
-export interface Spec<
-  Id extends string = string,
+export interface SpecCore<
   Params = unknown,
   Result = unknown,
   Lo extends __<Load> = __,
   Ctx extends RunContext = RunContext,
-> extends SpecExtra {
-  Id: Id;
-  load: Lo;
+> {
+  load?: Lo;
   ctx: Ctx | Load$Ctx<Lo, Ctx>;
-  update: UpdateFn<Lo, Ctx>;
+  update?: UpdateFn<Lo, Ctx>;
   run: RunFn<Params, Result, Lo, Ctx>;
 }
+
+export type Spec<
+  Id extends string = string,
+  Params = unknown,
+  Result = unknown,
+  Lo extends __<Load> = __,
+  Ctx extends RunContext = {},
+  Extra extends SpecExtra = SpecExtra,
+> = Simplify<{ Id: Id } & SpecCore<Params, Result, Lo, Ctx> & Extra>;
 
 export interface LoadedSpec<
   Id extends string = string,

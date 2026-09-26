@@ -2,17 +2,8 @@ import { Var } from "ioioy";
 import { AbortSignal, dethunk, $$, __ } from "jsyoyo";
 import { Tree, awaiT, map } from "treeo";
 
-import type {
-  Load,
-  Load$Deps,
-  LoadedSpec,
-  LoadSpec,
-  LoadSpecs,
-  ProgressRunFn,
-  RunContext,
-  Spec,
-  SpecAny,
-} from "./types";
+import type { Load, Load$Deps, LoadedSpec, LoadSpec, LoadSpecs, ProgressRunFn, RunContext, SpecAny } from "./types";
+import { isSpec } from "./spec";
 
 export const asERR = <P>(p: P) => p as Extract<P, Error>;
 export const asOK = <P>(p: P) => p as Exclude<P, Error>;
@@ -24,8 +15,6 @@ export const load1 = <S extends SpecAny>(spec: S) =>
     (spec as never as LoadedSpec).deps = deps;
     return spec as never as LoadSpec<S>;
   });
-
-export const isSpec = (s: object): s is Spec => "run" in s && "Id" in s;
 
 export const load = <T extends Tree<SpecAny>>(specs: T) =>
   awaiT(

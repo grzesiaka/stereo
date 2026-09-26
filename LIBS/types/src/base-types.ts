@@ -73,7 +73,7 @@ export type Fn$I<F> = F extends Fn<infer I> ? I : never;
 /**
  * Function to its output
  */
-export type Fn$O<F> = F extends Fn<any, infer O> ? O : never;
+export type Fn$O<F, Fallback = never> = F extends Fn<any, infer O> ? O : Fallback;
 
 /**
  * Curried function to its output
@@ -98,5 +98,5 @@ export type NoExtraKeys<T, Shape> = T & Record<Exclude<keyof T, keyof Shape>, ne
 export type FirstMatch<Items extends ARR, Match, Def = __> = Items extends readonly [infer H, ...infer R]
   ? [H] extends [Match]
     ? H
-    : FirstMatch<R, Match>
+    : FirstMatch<R, Match, Def>
   : Def;

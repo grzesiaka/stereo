@@ -10,6 +10,7 @@ import { __, wait } from "jsyoyo";
 describe("run", ({ eq }) => ({
   emptish: async () => {
     const s = spec({ Id: "proto" })()((params: 1 | 2) => [params], { Id: "run" })("last");
+
     eq(s.Id, "last");
     const l = await load1(s);
     const r = run(l)(1);
@@ -23,14 +24,17 @@ describe(
   "timeout & abort",
   ({ v, eq }) => ({
     no_timeout_no_abort: async () => {
-      const s = spec({ run: __ })()(() => wait(500, 1))("500ms");
+      const s = spec()()(() => wait(500, 1))("500ms");
       const r = await run(s)(1);
+
       v.vi.advanceTimersByTime(500);
       eq(await r.promise, 1);
     },
 
-    timeout_no_abort: async () => {
-      const s = spec({ timeout: 300 })()(() => wait(500, 1), { timeout: 150 })("500ms");
+    overwritten_timeout_no_abort: async () => {
+      const s = spec({ Id: "300ms", timeout: 300 })()(() => wait(500, 1), { timeout: 150 })("150ms");
+      eq(s.timeout, 150);
+      eq(s.Id, "150ms");
       const r = run(await load1(s))(1);
       v.vi.advanceTimersByTime(200); // v.vi.advanceTimersByTime(500); delivers `1` 99% an issue in vitest
       const x = await r.promise;
@@ -41,7 +45,7 @@ describe(
     },
 
     abort_before_timeout: async () => {
-      const s = spec({ timeout: 200 })()(() => wait(500, 1))("500ms");
+      const s = spec({ timeout: 200 })()(() => wait(500, 1))("200ms");
       const abort = new jsyoyo.AbortController();
       const r = await run(s)(1, abort.signal);
       v.vi.advanceTimersByTime(100);
@@ -53,7 +57,7 @@ describe(
     },
 
     abort_after_timeout: async () => {
-      const s = spec({ timeout: 200 })()(() => wait(500, 1))("500ms");
+      const s = spec({ timeout: 200 })()(() => wait(500, 1))("200ms");
       const abort = new jsyoyo.AbortController();
       const r = run(await load1(s))(1, abort.signal);
       v.vi.advanceTimersByTime(300);
