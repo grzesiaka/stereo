@@ -1,5 +1,5 @@
 import { Var } from "ioioy";
-import { AbortSignal, dethunk, $$, __ } from "jsyoyo";
+import { AbortSignal, dethunk, $$, __, ifFunction } from "jsyoyo";
 import { Tree, awaiT, map } from "treeo";
 
 import type { Load, Load$Deps, LoadedSpec, LoadSpec, LoadSpecs, ProgressRunFn, RunState, SpecAny } from "./types";
@@ -11,10 +11,17 @@ export const asOK = <P>(p: P) => p as Exclude<P, Error>;
 export const loadDeps = awaiT.$(dethunk) as <T extends $$<Load>>(d: T) => $$<Load$Deps<T>>;
 
 export const load1 = <S extends SpecAny>(spec: S) =>
-  (spec.load ? loadDeps(spec.load) : Promise.resolve(__)).then((deps) => {
+  (spec.load
+    ? ifFunction(
+        spec.load,
+        (x) => x(),
+        () => (loadDeps as any)(spec.load),
+      )
+    : Promise.resolve(__)
+  ).then((deps: $$<Load$Deps<S["load"]>>) => {
     (spec as never as LoadedSpec).deps = deps;
     return spec as never as LoadSpec<S>;
-  });
+  }) as Promise<LoadSpec<S>>;
 
 export const load = <T extends Tree<SpecAny>>(specs: T) =>
   awaiT(

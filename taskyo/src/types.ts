@@ -7,8 +7,15 @@ import { RetryRun, Run } from "./run";
 export type ErrorLike = Error | { $: Error };
 export type ErrorLikes = ARR<ErrorLike>;
 
-export type Load = __ | (Tree<Json | (() => Json) | (() => Promise<unknown>)> & { ERR?: () => Promise<ErrorLikes> });
-export type Load$Deps<Lo extends Load> = __ extends Lo ? __ : AwaiTreed<Dethunk<Lo>>;
+export type Load =
+  | __
+  | (() => Promise<unknown>)
+  | (Tree<Json | (() => Json) | (() => Promise<unknown>)> & { ERR?: () => Promise<ErrorLikes> });
+export type Load$Deps<Lo extends Load> = __ extends Lo
+  ? __
+  : Lo extends () => Promise<infer X>
+    ? X
+    : AwaiTreed<Dethunk<Lo>>;
 
 export interface RunState {
   curr?: number;
