@@ -43,8 +43,8 @@ const retry =
     let stopObserving = () => 1 as unknown;
     const run = (): Promise<unknown> => {
       stopObserving();
-      const r1 = spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec) as Run<S>;
-      stopObserving = r1.state((x) => r.state(x));
+      const r1 = run1(spec)(params, abort);
+      stopObserving = r1.state(state[1]);
       return r1.promise
         .then((x) => {
           if (x instanceof Error) {

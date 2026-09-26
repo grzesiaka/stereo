@@ -7,6 +7,31 @@ import j from "jsyoyo/_";
 
 import { __, wait } from "jsyoyo";
 
+describe("retry", ({ eq, res }) => ({
+  no_error: async () => {
+    const s = spec({ retry: () => wait(0) })()(() => 1)("");
+    const r = await run(s)(1);
+    eq(await r.promise, 1);
+  },
+
+  errors: async () => {
+    let i = -1;
+    const re = res();
+    const s = spec({
+      retry: (err: Error) => {
+        re.add(err.message);
+        return wait(0);
+      },
+    })()(() => {
+      if (++i === 3) return i;
+      return new Error(`err_${i}` as const);
+    })("");
+    const r = await run(s)(1);
+    eq(await r.promise, 3);
+    re.eq(["err_0", "err_1", "err_2"]);
+  },
+}));
+
 describe("run", ({ eq, res }) => ({
   emptish: async () => {
     const s = spec({ Id: "proto" })()((params: 1 | 2) => [params], { Id: "run" })("last");
