@@ -34,10 +34,10 @@ const retry =
     } as RetryRun<S>;
 
     const promise = [def.promise, abo] as Promise<RetryRunResult<S>>[];
-    if (spec.timeout) {
-      // TODO figure out how timeout should behave exactly; should be for all retry-run or for each run
-      promise.push(timeout(spec.timeout, r) as Promise<RetryRunResult<S>>);
-    }
+    // if (spec.timeout) {
+    //   // TODO figure out how timeout should behave exactly; should be for all retry-run or for each run
+    //   promise.push(timeout(spec.timeout, r) as Promise<RetryRunResult<S>>);
+    // }
     r.promise = Promise.race(promise);
 
     let stopObserving = () => 1 as unknown;

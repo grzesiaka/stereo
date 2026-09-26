@@ -30,6 +30,33 @@ describe("retry", ({ eq, res }) => ({
     eq(await r.promise, 3);
     re.eq(["err_0", "err_1", "err_2"]);
   },
+
+  timeout: async () => {
+    let i = -1;
+    const re = res();
+    const s = spec({
+      timeout: 1,
+      retry: (err: Error) => {
+        re.add(err.message);
+        return wait(0);
+      },
+    })(j)(
+      (_, { wait }) => {
+        if (++i < 2) return wait(2);
+        return 2;
+      },
+      {
+        timeout: 1,
+        retry: (err: InstanceType<ERR["timeout"]["$"]>) => {
+          re.add(err.name);
+          return Promise.resolve(1);
+        },
+      },
+    )("");
+    const r = await run(s)(1);
+    eq(await r.promise, 2);
+    re.eq(["taskyo.error.timeout", "taskyo.error.timeout"]);
+  },
 }));
 
 describe("run", ({ eq, res }) => ({
