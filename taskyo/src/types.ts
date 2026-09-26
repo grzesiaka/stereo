@@ -2,7 +2,7 @@ import { Simplify } from "type-fest";
 import type { __, ARR, Json, MsOrNumber } from "jsyoyo";
 
 import type { Tree, Dethunk, AwaiTreed } from "treeo";
-import { RetryRun, Run } from "./run";
+import { RetryRun } from "./run";
 
 export type ErrorLike = Error | { $: Error };
 export type ErrorLikes = ARR<ErrorLike>;
@@ -34,8 +34,8 @@ export type RunFn<Params, Result, Lo extends Load, State extends RunState> = (
   spec: LoadedSpec<string, Params, Result, Lo, State>,
 ) => Result | readonly [Result, () => void];
 
-type RetryOptions<S extends SpecAny = SpecAny> = (
-  lastFailed: Run<S>,
+export type RetryOptions<S extends SpecAny = SpecAny> = (
+  error: Spec$ERR<S>,
   deps: Spec$Deps<S>,
   self: RetryRun<S>,
 ) => Promise<unknown>;
