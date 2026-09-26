@@ -1,6 +1,6 @@
 import { ifFunction, MsOrNumber, ON } from "jsyoyo";
 import { $Progress, $progress, fakeAbort, load1 } from "./utils";
-import type { LoadedSpec, Spec$Ctx, Spec$Deps, Spec$ERR, Spec$OK, Spec$Params, SpecAny } from "./types";
+import type { LoadedSpec, Spec$State, Spec$Deps, Spec$ERR, Spec$OK, Spec$Params, SpecAny } from "./types";
 
 import { RRERRORR } from "rrerrorr";
 import { ERR, timeout } from "./errors";
@@ -8,12 +8,12 @@ import { ERR, timeout } from "./errors";
 const retry =
   <S extends LoadedSpec>(spec: S) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
-    const ctx = ifFunction(
-      spec.ctx,
+    const state = ifFunction(
+      spec.state,
       ($) => $(spec.deps),
       (x) => ({ ...x }),
     );
-    const progress = $progress(ctx, spec.deps, spec.update);
+    const progress = $progress(state, spec.deps, spec.update);
     const abo = ON.promise(abort)("abort");
     const r = {
       spec,
@@ -33,12 +33,12 @@ const retry =
 const run1 =
   <S extends LoadedSpec>(spec: S) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
-    const ctx = ifFunction(
-      spec.ctx,
+    const state = ifFunction(
+      spec.state,
       ($) => $(spec.deps),
       (x) => ({ ...x }),
     );
-    const progress = $progress(ctx, spec.deps, spec.update);
+    const progress = $progress(state, spec.deps, spec.update);
     const abo = ON.promise(abort)("abort");
     const r = {
       spec,
@@ -63,7 +63,7 @@ export interface Run<S extends SpecAny = SpecAny> {
     | RRERRORR<ERR["abort"]["$"]["name"], [Run<S>]>
     | (S extends { timeout: any } ? RRERRORR<ERR["timeout"]["$"]["name"], [Run<S>]> : [[S["timeout"]]])
   >;
-  progress: $Progress<Spec$Ctx<S>, Spec$Deps<S>>[0]["O"];
+  progress: $Progress<Spec$State<S>, Spec$Deps<S>>[0]["O"];
 }
 
 export interface RetryRun<S extends SpecAny = SpecAny> {

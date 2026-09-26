@@ -2,7 +2,7 @@ import { Var } from "ioioy";
 import { AbortSignal, dethunk, $$, __ } from "jsyoyo";
 import { Tree, awaiT, map } from "treeo";
 
-import type { Load, Load$Deps, LoadedSpec, LoadSpec, LoadSpecs, ProgressRunFn, RunContext, SpecAny } from "./types";
+import type { Load, Load$Deps, LoadedSpec, LoadSpec, LoadSpecs, ProgressRunFn, RunState, SpecAny } from "./types";
 import { isSpec } from "./spec";
 
 export const asERR = <P>(p: P) => p as Extract<P, Error>;
@@ -27,16 +27,16 @@ export const load = <T extends Tree<SpecAny>>(specs: T) =>
 
 export const fakeAbort = new Proxy({} as any, { get: () => () => 1 }) as AbortSignal;
 
-export type $Progress<Ctx extends RunContext, Deps> = ReturnType<typeof $progress<Ctx, Deps>>;
-export const $progress = <Ctx extends RunContext, Deps>(
-  ctx: Ctx,
+export type $Progress<State extends RunState, Deps> = ReturnType<typeof $progress<State, Deps>>;
+export const $progress = <State extends RunState, Deps>(
+  state: State,
   deps: Deps,
-  update?: (ctx: Ctx, deps: Deps) => void,
+  update?: (state: State, deps: Deps) => void,
 ) => {
-  const v = Var(ctx);
+  const v = Var(state);
   return [
     v,
-    (u?: Partial<Ctx>) => {
+    (u?: Partial<State>) => {
       if (!u) return v.X;
       const x = {
         ...v.X,
@@ -45,5 +45,5 @@ export const $progress = <Ctx extends RunContext, Deps>(
       update?.(x, deps);
       return v.I(x);
     },
-  ] as [typeof v, ProgressRunFn<Ctx>];
+  ] as [typeof v, ProgressRunFn<State>];
 };

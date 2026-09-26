@@ -76,13 +76,13 @@ describe(
 
 describe("load / ERR", ({ eq }) => ({
   load: async () => {
-    const ctx = await loadDeps({
+    const state = await loadDeps({
       a: () => Promise.resolve(1),
       b: { bb: () => "b.bb" },
       json: [],
       jsyoyo: j,
     });
-    eq(ctx, { a: 1, b: { bb: "b.bb" }, json: [], jsyoyo });
+    eq(state, { a: 1, b: { bb: "b.bb" }, json: [], jsyoyo });
   },
   ERR: () => {
     eq(ERR.abort() instanceof Error, true);
