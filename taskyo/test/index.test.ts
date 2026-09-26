@@ -47,7 +47,7 @@ describe("retry", ({ eq, res }) => ({
       },
       {
         timeout: 1,
-        retry: (err: InstanceType<ERR["timeout"]["$"]>) => {
+        retry: (err) => {
           re.add(err.name);
           return Promise.resolve(1);
         },
@@ -65,6 +65,7 @@ describe("run", ({ eq, res }) => ({
 
     eq(s.Id, "last");
     const l = await load1(s);
+
     const r = run(l)(1);
 
     eq(r.spec, l);

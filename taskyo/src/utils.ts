@@ -2,31 +2,48 @@ import { Var } from "ioioy";
 import { AbortSignal, dethunk, $$, __, ifFunction } from "jsyoyo";
 import { Tree, awaiT, map } from "treeo";
 
-import type { Load, Load$Deps, LoadedSpec, LoadSpec, LoadSpecs, ProgressRunFn, RunState, SpecAny } from "./types";
+import type { Load, Load$Deps, LoadedSpec, ProgressRunFn, RunState } from "./types";
 import { isSpec } from "./spec";
+import { Simplify } from "type-fest";
 
 export const asERR = <P>(p: P) => p as Extract<P, Error>;
 export const asOK = <P>(p: P) => p as Exclude<P, Error>;
 
 export const loadDeps = awaiT.$(dethunk) as <T extends $$<Load>>(d: T) => $$<Load$Deps<T>>;
 
-export const load1 = <S extends SpecAny>(spec: S) =>
-  (spec.load
+type Loadable =
+  | {}
+  | {
+      load?: __<Load>;
+    };
+
+type LoadSpec<S extends Loadable> = Simplify<
+  S & {
+    deps: S extends { load: any } ? Load$Deps<S["load"]> : __;
+  }
+>;
+
+export const load1 = <S extends Loadable>(spec: S) =>
+  ((spec as any).load
     ? ifFunction(
-        spec.load,
+        (spec as any).load,
         (x) => x(),
-        () => (loadDeps as any)(spec.load),
+        () => (loadDeps as any)((spec as any).load),
       )
     : Promise.resolve(__)
-  ).then((deps: $$<Load$Deps<S["load"]>>) => {
+  ).then((deps: any) => {
     (spec as never as LoadedSpec).deps = deps;
-    return spec as never as LoadSpec<S>;
+    return spec as never;
   }) as Promise<LoadSpec<S>>;
 
-export const load = <T extends Tree<SpecAny>>(specs: T) =>
+export type LoadSpecs<T extends Tree<Loadable>> = T extends Loadable
+  ? LoadSpec<T>
+  : { [K in keyof T]: LoadSpecs<T[K] & Tree<Loadable>> };
+
+export const load = <T extends Tree<Loadable>>(specs: T) =>
   awaiT(
     map(
-      ([s]) => load1(s as SpecAny),
+      ([s]) => load1(s as Loadable),
       // @ts-expect-error should prove `i is object`, but it is handled by the accepted type (Tree<SpecAny>)
       (i) => !isSpec(i),
     )(specs) as never,

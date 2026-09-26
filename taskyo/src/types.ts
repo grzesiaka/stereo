@@ -34,20 +34,35 @@ export type RunFn<Params, Result, Lo extends Load, State extends RunState> = (
   spec: LoadedSpec<string, Params, Result, Lo, State>,
 ) => Result | readonly [Result, () => void];
 
-export type RetryOptions<S extends SpecAny = SpecAny> = (
-  error: Spec$ERR<S>,
-  deps: Spec$Deps<S>,
-  self: RetryRun<S>,
-) => Promise<unknown>;
+export type RetryOptions<
+  Id extends string = string,
+  Params = any,
+  Result = any,
+  Lo extends __<Load> = any,
+  State extends RunState = any,
+> = (
+  error: Extract<Awaited<Result>, Error>,
+  deps: Spec$Deps<Lo>,
+  self: RetryRun<SpecAny<Id, Params, Result, Lo, State>>,
+) => Promise<any>;
 
-export interface SpecExtra<S extends SpecAny = SpecCore> {
+export type CacheOptions<Params, Lo extends __<Load>> = {
+  key: (p: Params, deps: Load$Deps<Lo>) => string;
+};
+export interface SpecExtra<
+  Id extends string = string,
+  Params = any,
+  Result = any,
+  Lo extends __<Load> = any,
+  State extends RunState = any,
+> {
   Id?: string;
   // max time of execution
   timeout?: MsOrNumber;
   // expected time of execution
   ms?: MsOrNumber;
-  cache?: "TODO";
-  retry?: RetryOptions<S>;
+  cache?: CacheOptions<Params, Lo>;
+  retry?: RetryOptions<Id, Params, Result, Lo, State>;
 }
 
 export interface SpecCore<
@@ -69,7 +84,7 @@ export type Spec<
   Result = unknown,
   Lo extends __<Load> = __,
   State extends RunState = {},
-  Extra extends SpecExtra = SpecExtra,
+  Extra extends SpecExtra<Id, Params, Result, Lo, State> = SpecExtra<Id, Params, Result, Lo, State>,
 > = Simplify<{ Id: Id } & SpecCore<Params, Result, Lo, State> & Extra>;
 
 export interface LoadedSpec<
@@ -90,10 +105,6 @@ export type LoadSpec<S extends SpecAny> = LoadedSpec<
   Spec$State<S>
 > &
   S;
-
-export type LoadSpecs<T extends Tree<SpecAny>> = T extends SpecAny
-  ? LoadSpec<T>
-  : { [K in keyof T]: LoadSpecs<T[K] & Tree<SpecAny>> };
 
 export interface SpecAny<
   Id extends string = string,
