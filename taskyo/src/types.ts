@@ -2,6 +2,7 @@ import { Simplify } from "type-fest";
 import type { __, ARR, Json, MsOrNumber } from "jsyoyo";
 
 import type { Tree, Dethunk, AwaiTreed } from "treeo";
+import { RetryRun, Run } from "./run";
 
 export type ErrorLike = Error | { $: Error };
 export type ErrorLikes = ARR<ErrorLike>;
@@ -26,14 +27,20 @@ export type RunFn<Params, Result, Lo extends Load, State extends RunState> = (
   spec: LoadedSpec<string, Params, Result, Lo, State>,
 ) => Result | readonly [Result, () => void];
 
-export interface SpecExtra {
+type RetryOptions<S extends SpecAny = SpecAny> = (
+  lastFailed: Run<S>,
+  deps: Spec$Deps<S>,
+  self: RetryRun<S>,
+) => Promise<unknown>;
+
+export interface SpecExtra<S extends SpecAny = SpecCore> {
   Id?: string;
   // max time of execution
   timeout?: MsOrNumber;
   // expected time of execution
   ms?: MsOrNumber;
   cache?: "TODO";
-  retry?: "TODO";
+  retry?: RetryOptions<S>;
 }
 
 export interface SpecCore<
@@ -42,6 +49,7 @@ export interface SpecCore<
   Lo extends __<Load> = __,
   State extends RunState = RunState,
 > {
+  Id: string;
   load?: Lo;
   state: State | Load$State<Lo, State>;
   update?: UpdateFn<Lo, State>;

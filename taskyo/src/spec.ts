@@ -2,7 +2,7 @@ import { __, Dict, FirstMatch, Fn, Fn$O } from "jsyoyo";
 
 import type { Load, Load$State, PartialSpec, RunState, RunFn, Spec, SpecCore, SpecExtra, UpdateFn } from "./types";
 
-type SpecCoreKeys = keyof SpecCore;
+type SpecCoreKeys = Exclude<keyof SpecCore, "Id">;
 type SpecNonCore = Omit<PartialSpec, SpecCoreKeys>;
 export const isSpec = (s: object): s is Spec => "run" in s && "Id" in s;
 export const spec =

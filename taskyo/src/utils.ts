@@ -27,8 +27,8 @@ export const load = <T extends Tree<SpecAny>>(specs: T) =>
 
 export const fakeAbort = new Proxy({} as any, { get: () => () => 1 }) as AbortSignal;
 
-export type $Progress<State extends RunState, Deps> = ReturnType<typeof $progress<State, Deps>>;
-export const $progress = <State extends RunState, Deps>(
+export type $State<State extends RunState, Deps> = ReturnType<typeof $state<State, Deps>>;
+export const $state = <State extends RunState, Deps>(
   state: State,
   deps: Deps,
   update?: (state: State, deps: Deps) => void,
