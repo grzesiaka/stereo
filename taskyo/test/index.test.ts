@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import { ERR, loadDeps, load1, run, spec, asERR } from "../src";
+import { ERR, loadDeps, load1, run, spec, asERR, RunState } from "../src";
 
 import * as jsyoyo from "jsyoyo";
 
@@ -7,7 +7,7 @@ import j from "jsyoyo/_";
 
 import { __, wait } from "jsyoyo";
 
-describe("run", ({ eq }) => ({
+describe("run", ({ eq, res }) => ({
   emptish: async () => {
     const s = spec({ Id: "proto" })()((params: 1 | 2) => [params], { Id: "run" })("last");
 
@@ -17,6 +17,28 @@ describe("run", ({ eq }) => ({
 
     eq(r.spec, l);
     eq(await r.promise, [1]);
+  },
+
+  state: async () => {
+    const s = spec()(j, { curr: 0, total: 2 })(async (params: 0 | 1, { wait }, state) => {
+      await wait(0);
+      for (let i = params; i <= state().total; i++) {
+        state({ curr: i });
+        await wait(0);
+      }
+      return state();
+    })("");
+
+    const x = res<RunState>();
+    const r = await run(s)(1);
+    r.state(x.add);
+    const e = await r.promise;
+    eq(e, { curr: 2, total: 2 });
+    x.eq([
+      { curr: 0, total: 2 },
+      { curr: 1, total: 2 },
+      { curr: 2, total: 2 },
+    ]);
   },
 }));
 
