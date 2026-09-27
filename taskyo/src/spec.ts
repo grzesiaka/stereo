@@ -84,8 +84,8 @@ export interface SpecAny<
   Id: Id;
 }
 
-export type Spec$Params<S> = S extends SpecAny<string, infer X> ? X : never;
-export type Spec$Result<S> = S extends SpecAny<string, any, infer X> ? X : never;
+export type Spec$Params<S> = S extends { run: RunFn<infer X, any, any, any> } ? X : never;
+export type Spec$Result<S> = S extends { run: RunFn<any, infer X, any, any> } ? X : never;
 export type Spec$Deps<S> = S extends SpecAny<string, any, any, infer X> ? X : never;
 export type Spec$State<S> = S extends SpecAny<string, any, any, any, infer X> ? X : never;
 

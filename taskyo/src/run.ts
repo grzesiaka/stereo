@@ -7,21 +7,23 @@ import type {
   Spec$ERR,
   Spec$OK,
   Spec$Params,
-  SpecAny,
   RetryOptions,
+  Spec,
   SpecCore,
 } from "./spec";
 
 import { RRERRORR } from "rrerrorr";
 import { critical, ERR, timeout } from "./errors";
 
-type RetryRunResult<S extends SpecCore<any, any, any, any>> =
+type Runnable = Spec<any, SpecCore<any, any, any, any>, any, any>;
+
+type RetryRunResult<S extends Runnable> =
   | Spec$OK<S>
   | Spec$ERR<S>
   | RRERRORR<ERR["abort"]["$"]["name"], [Run<S>]>
   | (S extends { timeout: MsOrNumber } ? RRERRORR<ERR["timeout"]["$"]["name"], [Run<S>]> : never)
   | (S extends { retry: any } ? RRERRORR<ERR["retry"]["$"]["name"], [RetryRun<S>]> : never);
-export interface RetryRun<S extends SpecCore<any, any, any, any> = SpecCore> {
+export interface RetryRun<S extends Runnable = Runnable> {
   spec: S;
   promise: Promise<RetryRunResult<S>>;
   state: $State<Spec$State<S> & { runs: [Run<S>, ...Run<S>[]] }, Spec$Deps<S>>[0]["O"];
@@ -73,7 +75,7 @@ const retry =
     return r as never;
   };
 
-export interface Run<S extends SpecCore<any, any, any, any> = SpecAny> {
+export interface Run<S extends Runnable = Runnable> {
   spec: S;
   promise: Promise<
     | Spec$OK<S>
@@ -97,11 +99,11 @@ const run1 =
     const r = {
       spec,
       state: state[0].O,
-    } as Run<S & SpecAny>;
+    } as Run<S>;
 
     const promise = [
       spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec as any),
-      abo.then(() => ERR.abort(r)),
+      abo.then(() => ERR.abort(r as any)),
     ];
     if ((spec as any).timeout) {
       promise.push(timeout((spec as any).timeout, r));
@@ -112,14 +114,14 @@ const run1 =
     return r as never;
   };
 
-export type Spec$Run<S extends SpecCore> = S extends { deps: any }
+export type Spec$Run<S extends Runnable> = S extends { deps: any }
   ? S extends { retry: any }
     ? RetryRun<S>
     : Run<S>
   : Promise<S extends { retry: any } ? RetryRun<S> : Run<S>>;
 
 export const run =
-  <S extends SpecCore>(spec: S) =>
+  <S extends Runnable>(spec: S) =>
   (params: Spec$Params<S>, abort = fakeAbort): Spec$Run<S> =>
     "deps" in spec
       ? (((spec as any).retry ? retry : run1)(spec as any)(params, abort) as never)
