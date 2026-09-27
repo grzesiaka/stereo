@@ -16,9 +16,13 @@ export const spec =
     state = {} as State,
     update = __ as Update,
   ) =>
-  <Params, Result, const RunExtra extends SpecExtra>(
+  <
+    Params,
+    Result,
+    const RunExtra extends SpecExtra<string, NoInfer<Params>, NoInfer<Result>, Lo, Fn$O<State, State & RunState>>,
+  >(
     run: RunFn<Params, Result, Lo, Fn$O<State, State & RunState>>,
-    runExtra = {} as RunExtra & SpecNonCore & Dict<never, Extract<keyof RunExtra, SpecCoreKeys>>,
+    runExtra = {} as RunExtra,
   ) =>
   <const Id extends Proto & RunExtra extends { Id: string } ? [string?] : [string]>(...[Id]: Id) =>
     ({

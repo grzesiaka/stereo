@@ -18,7 +18,7 @@ describe("retry", ({ eq, res }) => ({
     let i = -1;
     const re = res();
     const s = spec({
-      retry: (err: Error) => {
+      retry: (err) => {
         re.add(err.message);
         return wait(0);
       },
@@ -26,6 +26,7 @@ describe("retry", ({ eq, res }) => ({
       if (++i === 3) return i;
       return new Error(`err_${i}` as const);
     })("");
+    s.run;
     const r = await run(s)(1);
     eq(await r.promise, 3);
     re.eq(["err_0", "err_1", "err_2"]);
