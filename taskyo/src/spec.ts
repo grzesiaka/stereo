@@ -1,52 +1,86 @@
-import { __, Dict, FirstMatch, Fn, Fn$O } from "jsyoyo";
+import { __, MsOrNumber } from "jsyoyo";
+import { Load, Load$Deps, RunFn, RunState } from "./types";
+import { ERR } from "./errors";
+import { Simplify } from "type-fest";
 
-import type { Load, Load$State, PartialSpec, RunState, RunFn, Spec, SpecCore, SpecExtra, UpdateFn } from "./types";
+export type Result$ERR<R> = Extract<Awaited<R>, Error>;
+export type Result$OK<R> = Exclude<Awaited<R>, Error>;
 
-type SpecCoreKeys = Exclude<keyof SpecCore, "Id">;
-type SpecNonCore = Omit<PartialSpec, SpecCoreKeys>;
-export const isSpec = (s: object): s is Spec => "run" in s && "Id" in s;
+export type RetryOptions<Result, Deps, Err> = (err: Err | Result$ERR<Result>, deps: Deps) => Promise<unknown>;
+
+export type Load$State<Lo extends Load, State extends RunState> = (deps: Load$Deps<Lo>) => State;
+export type UpdateFn<State extends RunState, Deps> = __ | ((state: State, deps: Deps) => void);
+
+export interface SpecOptions<
+  Timeout,
+  Params = unknown,
+  Result = unknown,
+  Deps = unknown,
+  State extends RunState = RunState,
+> {
+  Id?: string;
+  avgTime?: MsOrNumber;
+  retry?: RetryOptions<Result, Deps, Timeout extends 0 | __ ? never : InstanceType<ERR["timeout"]["$"]>>;
+  update?: UpdateFn<State, Deps>;
+}
+
+export interface SpecCore<
+  Params = unknown,
+  Result = unknown,
+  Lo extends __<Load> = __,
+  State extends RunState = RunState,
+> {
+  run: RunFn<Params, Result, Lo, State>;
+  state: State | Load$State<Lo, State>;
+  load?: Lo;
+}
+
+export type Spec<
+  Id extends string,
+  Core,
+  Options,
+  Timeout,
+  Spec = { Id: Id } & Core & Options & { timeout: Timeout },
+> = Simplify<{
+  [K in keyof Spec as __ extends Spec[K] ? never : K]: Spec[K];
+}>;
+
 export const spec =
-  <const Proto extends Dict>(proto = {} as Proto & SpecNonCore & Dict<never, Extract<keyof Proto, SpecCoreKeys>>) =>
-  <
-    Lo extends Load = __,
-    State extends RunState | Load$State<Lo, RunState> = {},
-    Update extends UpdateFn<Lo, Fn$O<State, State & RunState>> = __,
-  >(
-    load = __ as Lo,
-    state = {} as State,
-    update = __ as Update,
+  <Params, Result, Lo extends Load, State extends RunState>(
+    load: Lo,
+    state: State | ((deps: Load$Deps<NoInfer<Lo>>, params: NoInfer<Params>) => State),
+    run: RunFn<Params, Result, NoInfer<Lo>, NoInfer<State>>,
   ) =>
   <
-    Params,
-    Result,
-    const RunExtra extends SpecExtra<string, NoInfer<Params>, NoInfer<Result>, Lo, Fn$O<State, State & RunState>>,
+    Options extends SpecOptions<NoInfer<Timeout>, Params, Result, Load$Deps<Lo>, State>,
+    const Id extends string = "",
+    const Timeout extends __<MsOrNumber> = __,
   >(
-    run: RunFn<Params, Result, Lo, Fn$O<State, State & RunState>>,
-    runExtra = {} as RunExtra,
+    Id = "" as Id,
+    timeout = __ as Timeout,
+    opt = {} as Options,
   ) =>
-  <const Id extends Proto & RunExtra extends { Id: string } ? [string?] : [string]>(...[Id]: Id) =>
     ({
-      ...proto,
-      ...runExtra,
-      Id: Id || runExtra["Id"] || proto["Id"] || "",
+      Id,
+      run,
+      ...opt,
+      timeout,
       load,
       state,
-      update,
-      run,
-    }) as never as Certain<
-      {
-        Id: FirstMatch<[Id[0], RunExtra["Id"], Proto["Id"]], string, never>;
-        load: Lo;
-        state: State;
-        run: RunFn<Params, Result, Lo, State extends Fn ? Fn$O<State> : State>;
-        update: Update;
-      } & Omit<Merge<RunExtra, Proto>, "Id" | SpecCoreKeys>
-    >; // TODO if needed try to pack it in a type (but exactness is more important)
+    }) as Spec<Id, SpecCore<Params, Result, Lo, State>, Options, Timeout>;
 
-type Certain<T> = {
-  [K in keyof T as undefined extends T[K] ? never : K]: T[K];
-};
-
-type Merge<A, B> = Certain<A> & Omit<Certain<B>, keyof Certain<A>>;
+spec.is = (e: object): e is SpecCore => "load" in e && "state" in e && "run" in e;
 
 export default spec;
+
+const s = spec(__, {}, (p: "a" | "b") => (Math.random() > 0.5 ? ERR.critical(1, {} as never) : "ok"))("", __, {
+  retry: (t, d) => Promise.resolve(1),
+});
+
+const r = spec(
+  __,
+  (d, p) => ({}),
+  (p: "a" | "b") => (Math.random() > 0.5 ? ERR.critical(1, {} as never) : "ok"),
+)();
+
+s.retry;

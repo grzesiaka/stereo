@@ -2,9 +2,9 @@ import { Var } from "ioioy";
 import { AbortSignal, dethunk, $$, __, ifFunction } from "jsyoyo";
 import { Tree, awaiT, map } from "treeo";
 
-import type { Load, Load$Deps, LoadedSpec, StateRunFn, RunState } from "./types";
+import type { Load, Load$Deps, LoadedSpec, ProgressRunFn, RunState } from "./types";
+import { isSpec } from "./spec";
 import { Simplify } from "type-fest";
-import { spec } from "./spec";
 
 export const asERR = <P>(p: P) => p as Extract<P, Error>;
 export const asOK = <P>(p: P) => p as Exclude<P, Error>;
@@ -45,7 +45,7 @@ export const load = <T extends Tree<Loadable>>(specs: T) =>
     map(
       ([s]) => load1(s as Loadable),
       // @ts-expect-error should prove `i is object`, but it is handled by the accepted type (Tree<SpecAny>)
-      (i) => !spec.is(i),
+      (i) => !isSpec(i),
     )(specs) as never,
   ) as never as LoadSpecs<T>;
 
@@ -69,5 +69,5 @@ export const $state = <State extends RunState, Deps>(
       update?.(x, deps);
       return v.I(x);
     },
-  ] as [typeof v, StateRunFn<State>];
+  ] as [typeof v, ProgressRunFn<State>];
 };
