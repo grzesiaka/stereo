@@ -1,4 +1,5 @@
 export * from "./1"
+// (initial '_'; skipped from index)export * from "./_"
 export * from "./c"
 export * from "./compose-async"
 export * from "./compose-merge"
