@@ -1,8 +1,8 @@
-import { __, Dethunk, Fn$O, Json, MsOrNumber } from "jsyoyo";
+import { __, Fn$O, Json, MsOrNumber } from "jsyoyo";
 
 import { ERR, ErrorLikes } from "./errors";
 import { Simplify } from "type-fest";
-import { AwaiTreed, Tree } from "treeo";
+import { AwaiTreed, Dethunk, Tree } from "treeo";
 
 export type Load =
   | __
@@ -99,12 +99,12 @@ export const spec =
     Params,
     Result,
     Lo extends Load,
-    State extends RunStateOption<Params, Load$Deps<Lo>>,
-    Update extends __ | UpdateFn<ToRunState<State>, Load$Deps<Lo>>,
+    State extends RunStateOption<NoInfer<Params>, Load$Deps<NoInfer<Lo>>>,
+    Update extends __ | UpdateFn<ToRunState<NoInfer<State>>, Load$Deps<NoInfer<Lo>>>,
   >(
     load: Lo,
     state: State,
-    run: RunFn<Params, Result, NoInfer<Lo>, ToRunState<State>>,
+    run: RunFn<Params, Result, NoInfer<Lo>, ToRunState<NoInfer<State>>>,
     update = __ as Update,
   ) =>
   <

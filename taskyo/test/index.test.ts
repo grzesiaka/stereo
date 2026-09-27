@@ -9,7 +9,7 @@ import { __, wait } from "jsyoyo";
 
 describe("retry", ({ eq, res }) => ({
   no_error: async () => {
-    const s = spec({ retry: () => wait(0) })()(() => 1)("");
+    const s = spec(__, {}, () => 1)("", 0, { retry: () => wait(0) });
     const r = await run(s)(1);
     eq(await r.promise, 1);
   },
@@ -17,15 +17,15 @@ describe("retry", ({ eq, res }) => ({
   errors: async () => {
     let i = -1;
     const re = res();
-    const s = spec({
+    const s = spec(__, {}, () => {
+      if (++i === 3) return i;
+      return new Error(`err_${i}` as const);
+    })("", 0, {
       retry: (err) => {
         re.add(err.message);
         return wait(0);
       },
-    })()(() => {
-      if (++i === 3) return i;
-      return new Error(`err_${i}` as const);
-    })("");
+    });
     s.run;
     const r = await run(s)(1);
     eq(await r.promise, 3);
@@ -35,25 +35,16 @@ describe("retry", ({ eq, res }) => ({
   timeout: async () => {
     let i = -1;
     const re = res();
-    const s = spec({
-      timeout: 1,
-      retry: (err: Error) => {
-        re.add(err.message);
-        return wait(0);
+    // @ts-expect-error
+    const s = spec(j, {}, (_, { wait }) => {
+      if (++i < 2) return wait(2);
+      return 2;
+    })("", 1, {
+      retry: (err) => {
+        re.add(err.name);
+        return Promise.resolve(1);
       },
-    })(j)(
-      (_, { wait }) => {
-        if (++i < 2) return wait(2);
-        return 2;
-      },
-      {
-        timeout: 1,
-        retry: (err) => {
-          re.add(err.name);
-          return Promise.resolve(1);
-        },
-      },
-    )("");
+    });
     const r = await run(s)(1);
     eq(await r.promise, 2);
     re.eq(["taskyo.error.timeout", "taskyo.error.timeout"]);
@@ -62,9 +53,9 @@ describe("retry", ({ eq, res }) => ({
 
 describe("run", ({ eq, res }) => ({
   emptish: async () => {
-    const s = spec({ Id: "proto" })()((params: 1 | 2) => [params], { Id: "run" })("last");
+    const s = spec(__, {}, (params: 1 | 2) => [params])("id");
 
-    eq(s.Id, "last");
+    eq(s.Id, "id");
     const l = await load1(s);
 
     const r = run(l)(1);
@@ -74,7 +65,7 @@ describe("run", ({ eq, res }) => ({
   },
 
   state: async () => {
-    const s = spec()(j, { curr: 0, total: 2 })(async (params: 0 | 1, { wait }, state) => {
+    const s = spec(j, { curr: 0, total: 2 }, async (params: 0 | 1, { wait }, state) => {
       await wait(0);
       for (let i = params; i <= state().total; i++) {
         state({ curr: i });
@@ -100,7 +91,7 @@ describe(
   "timeout & abort",
   ({ v, eq }) => ({
     no_timeout_no_abort: async () => {
-      const s = spec()()(() => wait(500, 1))("500ms");
+      const s = spec(__, {}, () => wait(500, 1))("500ms");
       const r = await run(s)(1);
 
       v.vi.advanceTimersByTime(500);
@@ -108,7 +99,7 @@ describe(
     },
 
     overwritten_timeout_no_abort: async () => {
-      const s = spec({ Id: "300ms", timeout: 300 })()(() => wait(500, 1), { timeout: 150 })("150ms");
+      const s = spec(__, {}, () => wait(500, 1))("150ms", 150);
       eq(s.timeout, 150);
       eq(s.Id, "150ms");
       const r = run(await load1(s))(1);
@@ -121,7 +112,7 @@ describe(
     },
 
     abort_before_timeout: async () => {
-      const s = spec({ timeout: 200 })()(() => wait(500, 1))("200ms");
+      const s = spec(__, {}, () => wait(500, 1))("200ms", 200);
       const abort = new jsyoyo.AbortController();
       const r = await run(s)(1, abort.signal);
       v.vi.advanceTimersByTime(100);
@@ -133,9 +124,10 @@ describe(
     },
 
     abort_after_timeout: async () => {
-      const s = spec({ timeout: 200 })()(() => wait(500, 1))("200ms");
+      const s = spec(__, {}, () => wait(500, 1))("200ms", 200);
       const abort = new jsyoyo.AbortController();
-      const r = run(await load1(s))(1, abort.signal);
+      const l = await load1(s);
+      const r = run(l)(1, abort.signal);
       v.vi.advanceTimersByTime(300);
       abort.abort();
       const x = await r.promise;

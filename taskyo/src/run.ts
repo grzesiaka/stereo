@@ -112,14 +112,14 @@ const run1 =
     return r as never;
   };
 
-export type Spec$Run<S extends SpecAny> = S extends { deps: any }
+export type Spec$Run<S extends SpecCore> = S extends { deps: any }
   ? S extends { retry: any }
     ? RetryRun<S>
     : Run<S>
   : Promise<S extends { retry: any } ? RetryRun<S> : Run<S>>;
 
 export const run =
-  <S extends SpecAny>(spec: S) =>
+  <S extends SpecCore>(spec: S) =>
   (params: Spec$Params<S>, abort = fakeAbort): Spec$Run<S> =>
     "deps" in spec
       ? (((spec as any).retry ? retry : run1)(spec as any)(params, abort) as never)
