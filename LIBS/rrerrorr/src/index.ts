@@ -58,7 +58,10 @@ type ERR_DEF = string | ((n: string) => ERR) | (() => (n: string) => ERR);
 export const ERRs = <const DEF extends Tree<ERR_DEF>>(def: ($: typeof $ERR) => DEF) =>
   map(([v, k]: [ERR_DEF, string]) => {
     const $ = typeof v === "string" ? ERR(`${k}.${v}`) : dethunk(v)(k);
-    return a((...args: ARR) => new $(...args), { $ });
+    return a((...args: ARR) => new $(...args), {
+      $,
+      is: (e: unknown) => e instanceof $ /* for cross boundary: e instanceof Error && e.name = $.name */,
+    });
   })(
     // @ts-expect-error no clue about root cause >> Type 'Tree<ERR_DEF>' is not assignable to type 'string'.ts(2345)
     def($ERR),
@@ -71,5 +74,5 @@ type AnyClass = abstract new (...args: any[]) => unknown;
 type Declassify<T, P extends Txt[] = []> = T extends AnyClass
   ? (<const Args extends ConstructorParameters<T>>(
       ...args: Args & ConstructorParameters<T>
-    ) => RRERRORR<Join<P, ".">, Args>) & { $: T }
+    ) => RRERRORR<Join<P, ".">, Args>) & { $: T; is: (e: unknown) => e is InstanceType<T> }
   : { [K in keyof T & Txt]: Declassify<T[K], [...P, K]> };
