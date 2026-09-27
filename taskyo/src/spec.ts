@@ -14,11 +14,14 @@ export type Load$Deps<Lo extends Load> = __ extends Lo
     ? X
     : AwaiTreed<Dethunk<Lo>>;
 
-export type LoadedSpec<S = {}> = {
+export type LoadedSpec<S extends SpecCore<any, any, any, any> = SpecCore> = S & {
   deps: S extends { load?: __<Load> } ? Load$Deps<S["load"]> : __;
 };
 
-export type RetryOptions<Result, Deps, Err> = (err: Err | Result$ERR<Result>, deps: Deps) => Promise<unknown>;
+export type RetryOptions<Result = unknown, Deps = unknown, Err = unknown> = (
+  err: Err | Result$ERR<Result>,
+  deps: Deps,
+) => Promise<unknown>;
 
 export type StateRunFn<State extends RunState> = (u?: Partial<State>) => State;
 export type RunFn<Params, Result, Lo extends Load, State extends RunState> = (
@@ -40,7 +43,12 @@ type RunStateOption<Params, Deps> = RunState | ((params: Params, deps: Deps) => 
 type ToRunState<O extends RunStateOption<any, any>> = Fn$O<O, O> & RunState;
 export type UpdateFn<State, Deps> = (state: State, deps: Deps) => void;
 
-export interface SpecOptions<Timeout, Params = unknown, Result = unknown, Deps = unknown> {
+export interface SpecOptions<
+  Timeout extends __<MsOrNumber> = __<MsOrNumber>,
+  Params = unknown,
+  Result = unknown,
+  Deps = unknown,
+> {
   Id?: string;
   avgTime?: MsOrNumber;
   retry?: RetryOptions<Result, Deps, Timeout extends 0 | __ ? never : InstanceType<ERR["timeout"]["$"]>>;
@@ -80,8 +88,11 @@ export type Spec$Params<S> = S extends SpecAny<string, infer X> ? X : never;
 export type Spec$Result<S> = S extends SpecAny<string, any, infer X> ? X : never;
 export type Spec$Deps<S> = S extends SpecAny<string, any, any, infer X> ? X : never;
 export type Spec$State<S> = S extends SpecAny<string, any, any, any, infer X> ? X : never;
+
 export type Result$ERR<R> = Extract<Awaited<R>, Error>;
 export type Result$OK<R> = Exclude<Awaited<R>, Error>;
+export type Spec$ERR<S> = Result$ERR<Spec$Result<S>>;
+export type Spec$OK<S> = Result$OK<Spec$Result<S>>;
 
 export const spec =
   <
