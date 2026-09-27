@@ -8,29 +8,35 @@ describe(ERRs, ({ eq }) => ({
     eq(e, {});
   },
 
-  nested: () => {
+  small: () => {
     const es = ERRs(($) => ({
       http: {
-        404: $<[url: string]>(),
-        500: "", // same as `500: $`
+        404: { not_found: $<[url: string]>() },
+        500: "server_down",
       },
       ws: {
-        lost: "connection_lost",
+        lost: $,
       },
     }));
 
     eq(Object.keys(es.http), ["404", "500"]);
     const lost = es.ws.lost();
-    const notFound = new es.http[404].$("abc.com");
+    const notFound = new es.http[404].not_found.$("abc.com");
     const down = es.http[500]();
 
+    eq(lost.name, "ws.lost");
+    eq(lost.ctx, []);
     eq(es.ws.lost.is(lost), true);
-    eq(es.http[404].is(lost), false);
+    eq(es.http[404].not_found.is(lost), false);
 
+    eq(notFound.name, "http.404.not_found");
+    eq(notFound.ctx, ["abc.com"]);
     eq(es.ws.lost.is(notFound), false);
-    eq(es.http[404].is(notFound), true);
+    eq(es.http[404].not_found.is(notFound), true);
 
+    eq(down.name, "http.500.server_down");
+    eq(down.ctx, []);
     eq(es.ws.lost.is(down), false);
-    eq(es.http[404].is(down), false);
+    eq(es.http[404].not_found.is(down), false);
   },
 }));

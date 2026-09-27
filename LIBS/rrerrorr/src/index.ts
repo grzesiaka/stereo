@@ -37,7 +37,7 @@ export const $ERR =
 type Txt = string | number;
 export type $ERRsRaw<DEF, P extends Txt[] = []> = DEF extends Fn
   ? ERR<
-      Join<P, ".">,
+      Join<[...P], ".">,
       Fn$O<DEF> extends ERR<string, infer A>
         ? A
         : Fn$O<Fn$O<DEF>> extends ERR<string, infer A>
@@ -74,5 +74,8 @@ type AnyClass = abstract new (...args: any[]) => unknown;
 type Declassify<T, P extends Txt[] = []> = T extends AnyClass
   ? (<const Args extends ConstructorParameters<T>>(
       ...args: Args & ConstructorParameters<T>
-    ) => RRERRORR<Join<P, ".">, Args>) & { $: T; is: (e: unknown) => e is InstanceType<T> }
+    ) => RRERRORR<T extends { name: string } ? T["name"] : never, Args>) & {
+      $: T;
+      is: (e: unknown) => e is InstanceType<T>;
+    }
   : { [K in keyof T & Txt]: Declassify<T[K], [...P, K]> };
