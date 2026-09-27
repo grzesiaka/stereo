@@ -5,6 +5,10 @@
 // import { RRERRORR } from "rrerrorr";
 // import { critical, ERR, timeout } from "./errors";
 
+export interface Run {}
+
+export interface RetryRun {}
+
 // type RetryRunResult<S extends SpecAny> =
 //   | Spec$OK<S>
 //   | Spec$ERR<S>

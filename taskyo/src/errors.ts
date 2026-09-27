@@ -1,6 +1,9 @@
 import ERRs from "rrerrorr";
 import type { Run, RetryRun } from "./run";
-import { MsOrNumber, wait } from "jsyoyo";
+import { ARR, MsOrNumber, wait } from "jsyoyo";
+
+export type ErrorLike = Error | { $: Error };
+export type ErrorLikes = ARR<ErrorLike>;
 
 export type ERR = typeof ERR;
 export const ERR = ERRs(($) => ({

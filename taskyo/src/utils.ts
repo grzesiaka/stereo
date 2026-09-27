@@ -2,7 +2,7 @@ import { Var } from "ioioy";
 import { AbortSignal, dethunk, $$, __, ifFunction } from "jsyoyo";
 import { Tree, awaiT, map } from "treeo";
 
-import type { Load, Load$Deps, LoadedSpec, StateRunFn, RunState } from "./types";
+import type { Load, Load$Deps, LoadedSpec, StateRunFn, RunState } from "./spec";
 import { Simplify } from "type-fest";
 import { spec } from "./spec";
 
