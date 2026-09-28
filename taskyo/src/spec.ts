@@ -101,7 +101,7 @@ const $spec =
     Result,
     Lo extends Load,
     State extends RunStateOption<NoInfer<Params>, Load$Deps<NoInfer<Lo>>>,
-    Update extends __ | UpdateFn<ToRunState<NoInfer<State>>, Load$Deps<NoInfer<Lo>>>,
+    Update extends __ | UpdateFn<ToRunState<NoInfer<State>>, Load$Deps<NoInfer<Lo>>> = __,
   >(
     load: Lo,
     state: State,

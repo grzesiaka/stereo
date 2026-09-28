@@ -1,4 +1,4 @@
-import { describe } from "~testing";
+import { describe, $describe, setupFakeTimers } from "~testing";
 import { ERR, loadDeps, load1, run, spec, asERR, RunState } from "../src";
 
 import * as jsyoyo from "jsyoyo";
@@ -7,7 +7,7 @@ import j from "jsyoyo/_";
 
 import { __, wait } from "jsyoyo";
 
-describe("retry", ({ eq, res }) => ({
+$describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
   no_error: async () => {
     const s = spec(__, {}, () => 1)("", 0, { retry: () => wait(0) });
     const r = await run(s)(1);
@@ -23,12 +23,12 @@ describe("retry", ({ eq, res }) => ({
     })("", 0, {
       retry: (err) => {
         re.add(err.message);
-        return wait(0);
+        return wait(100);
       },
     });
-    s.run;
-    const r = await run(s)(1);
-    eq(await r.promise, 3);
+    const r = run(s)(1);
+    v.vi.advanceTimersByTimeAsync(300);
+    eq(await (await r).promise, 3);
     re.eq(["err_0", "err_1", "err_2"]);
   },
 
@@ -36,16 +36,24 @@ describe("retry", ({ eq, res }) => ({
     let i = -1;
     const re = res();
     // @ts-expect-error
-    const s = spec(j, {}, (_, { wait }) => {
-      if (++i < 2) return wait(2);
-      return 2;
-    })("", 1, {
+    const s = spec(
+      j,
+      {},
+      (_, { wait }) => {
+        if (++i < 2) return wait(50);
+        return 2;
+      },
+      __,
+    )("", 1, {
       retry: (err) => {
         re.add(err.name);
-        return Promise.resolve(1);
+        return wait(100);
       },
     });
+
     const r = await run(s)(1);
+
+    v.vi.advanceTimersByTimeAsync(300);
     eq(await r.promise, 2);
     re.eq(["taskyo.error.timeout", "taskyo.error.timeout"]);
   },
@@ -87,60 +95,53 @@ describe("run", ({ eq, res }) => ({
   },
 }));
 
-describe(
-  "timeout & abort",
-  ({ v, eq }) => ({
-    no_timeout_no_abort: async () => {
-      const s = spec(__, {}, () => wait(500, 1))("500ms");
-      const r = await run(s)(1);
+$describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
+  no_timeout_no_abort: async () => {
+    const s = spec(__, {}, () => wait(500, 1))("500ms");
+    const r = await run(s)(1);
 
-      v.vi.advanceTimersByTime(500);
-      eq(await r.promise, 1);
-    },
-
-    overwritten_timeout_no_abort: async () => {
-      const s = spec(__, {}, () => wait(500, 1))("150ms", 150);
-      eq(s.timeout, 150);
-      eq(s.Id, "150ms");
-      const r = run(await load1(s))(1);
-      v.vi.advanceTimersByTime(200); // v.vi.advanceTimersByTime(500); delivers `1` 99% an issue in vitest
-      const x = await r.promise;
-      const p = asERR(x);
-
-      eq(p.name, "taskyo.error.timeout");
-      eq(p.ctx[0], r);
-    },
-
-    abort_before_timeout: async () => {
-      const s = spec(__, {}, () => wait(500, 1))("200ms", 200);
-      const abort = new jsyoyo.AbortController();
-      const r = await run(s)(1, abort.signal);
-      v.vi.advanceTimersByTime(100);
-      abort.abort();
-      const x = await r.promise;
-      const p = asERR(x);
-      eq(p.name, "taskyo.error.abort");
-      eq(p.ctx[0], r);
-    },
-
-    abort_after_timeout: async () => {
-      const s = spec(__, {}, () => wait(500, 1))("200ms", 200);
-      const abort = new jsyoyo.AbortController();
-      const l = await load1(s);
-      const r = run(l)(1, abort.signal);
-      v.vi.advanceTimersByTime(300);
-      abort.abort();
-      const x = await r.promise;
-      const p = asERR(x);
-      eq(p.name, "taskyo.error.timeout");
-      eq(p.ctx[0], r);
-    },
-  }),
-  (v) => {
-    v.beforeEach(() => v.vi.useFakeTimers());
-    v.afterEach(() => v.vi.clearAllTimers());
+    v.vi.advanceTimersByTime(500);
+    eq(await r.promise, 1);
   },
-);
+
+  overwritten_timeout_no_abort: async () => {
+    const s = spec(__, {}, () => wait(500, 1))("150ms", 150);
+    eq(s.timeout, 150);
+    eq(s.Id, "150ms");
+    const r = run(await load1(s))(1);
+    v.vi.advanceTimersByTime(200); // v.vi.advanceTimersByTime(500); delivers `1` 99% an issue in vitest
+    const x = await r.promise;
+    const p = asERR(x);
+
+    eq(p.name, "taskyo.error.timeout");
+    eq(p.ctx[0], r);
+  },
+
+  abort_before_timeout: async () => {
+    const s = spec(__, {}, () => wait(500, 1))("200ms", 200);
+    const abort = new jsyoyo.AbortController();
+    const r = await run(s)(1, abort.signal);
+    v.vi.advanceTimersByTime(100);
+    abort.abort();
+    const x = await r.promise;
+    const p = asERR(x);
+    eq(p.name, "taskyo.error.abort");
+    eq(p.ctx[0], r);
+  },
+
+  abort_after_timeout: async () => {
+    const s = spec(__, {}, () => wait(500, 1))("200ms", 200);
+    const abort = new jsyoyo.AbortController();
+    const l = await load1(s);
+    const r = run(l)(1, abort.signal);
+    v.vi.advanceTimersByTime(300);
+    abort.abort();
+    const x = await r.promise;
+    const p = asERR(x);
+    eq(p.name, "taskyo.error.timeout");
+    eq(p.ctx[0], r);
+  },
+}));
 
 describe("load / ERR", ({ eq }) => ({
   load: async () => {
