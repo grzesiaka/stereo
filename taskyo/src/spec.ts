@@ -3,6 +3,7 @@ import { __, Fn$O, Json, MsOrNumber } from "jsyoyo";
 import { ERR, ErrorLikes } from "./errors";
 import { Simplify } from "type-fest";
 import { AwaiTreed, Dethunk, Tree } from "treeo";
+import { CacheOption, CacheStore } from "./cache";
 
 export type Load =
   | __
@@ -50,8 +51,9 @@ export interface SpecOptions<Timeout extends __<MsOrNumber> = __<MsOrNumber>, Pa
   avgTime?: MsOrNumber;
   retry?: RetryOptions<Result, Deps, Timeout extends 0 | __ ? never : InstanceType<ERR["timeout"]["$"]>>;
   cache?: {
-    key: (p: Params) => string;
-  };
+    key: (p: Params, deps: Deps, taskId: string) => string;
+    store: CacheStore | CacheStore[];
+  } & CacheOption;
 }
 
 export interface SpecCore<
