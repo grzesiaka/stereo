@@ -34,7 +34,7 @@ const retry =
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
     const _state = ifFunction(
       spec.state,
-      ($) => $(params, spec.deps),
+      ($) => $(spec.deps),
       (x) => ({ ...x }),
     );
     const def = deferred<RetryRunResult<S>>();
@@ -91,7 +91,7 @@ const run1 =
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
     const _state = ifFunction(
       spec.state,
-      ($) => $(params, spec.deps),
+      ($) => $(spec.deps),
       (x) => ({ ...x }),
     );
     const state = $state(_state, spec.deps, spec.update);

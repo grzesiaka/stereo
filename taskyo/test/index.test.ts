@@ -73,8 +73,8 @@ describe("run", ({ eq, res }) => ({
   state: async () => {
     const s = spec(
       j,
-      (p) => ({ curr: 0, total: 2, _01: 0 }),
-      (s) => (s._01 = s.curr / s.total),
+      (d) => ({ curr: 0, total: 2, _01: d.clamp(0, 1)(0 as number) }),
+      (s, d) => (s._01 = d.clamp(0, 1)(s.curr / s.total)),
     )(async (params: 0 | 1, { wait }, state) => {
       await wait(0);
       for (let i = params; i <= state().total; i++) {
@@ -88,7 +88,7 @@ describe("run", ({ eq, res }) => ({
     const r = await run(s)(1);
     r.state(x.add);
     const e = await r.promise;
-    eq(e, { curr: 2, total: 2, _01: 1 });
+    eq(e, { curr: 2, total: 2, _01: 1 as never /* clamped */ });
     x.eq([
       { curr: 0, total: 2, _01: 0 },
       { curr: 1, total: 2, _01: 1 / 2 },

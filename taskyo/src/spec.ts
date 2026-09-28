@@ -38,9 +38,9 @@ export interface RunState {
   total?: number;
 }
 
-type RunStateOption<Params, Deps> = RunState | ((params: Params, deps: Deps) => RunState);
+type RunStateOption<Deps> = RunState | ((deps: Deps) => RunState);
 
-type ToRunState<O extends RunStateOption<any, any>> = Fn$O<O, O> & RunState;
+type ToRunState<O extends RunStateOption<any>> = Fn$O<O, O> & RunState;
 export type UpdateFn<State, Deps> = (state: State, deps: Deps) => void;
 
 export interface SpecOptions<
@@ -61,7 +61,7 @@ export interface SpecCore<
   Params = unknown,
   Result = unknown,
   Lo extends Load = __,
-  State extends RunStateOption<Params, Load$Deps<Lo>> = RunStateOption<Params, Load$Deps<Lo>>,
+  State extends RunStateOption<Load$Deps<Lo>> = RunStateOption<Load$Deps<Lo>>,
   Update extends __ | UpdateFn<ToRunState<State>, Load$Deps<Lo>> = __,
 > {
   run: RunFn<Params, Result, Lo, ToRunState<State>>;
@@ -97,16 +97,15 @@ export type Spec$OK<S> = Result$OK<Spec$Result<S>>;
 const $spec =
   <Extra extends object>(extra = {} as Extra) =>
   <
-    cParams,
     Lo extends Load,
-    State extends RunStateOption<cParams, Load$Deps<NoInfer<Lo>>>,
+    State extends RunStateOption<Load$Deps<NoInfer<Lo>>>,
     Update extends __ | UpdateFn<ToRunState<NoInfer<State>>, Load$Deps<NoInfer<Lo>>>,
   >(
     load = __ as Lo,
     state = {} as State,
     update = __ as Update,
   ) =>
-  <Params extends cParams, Result>(run: RunFn<Params, Result, NoInfer<Lo>, ToRunState<NoInfer<State>>>) =>
+  <Params, Result>(run: RunFn<Params, Result, NoInfer<Lo>, ToRunState<NoInfer<State>>>) =>
   <
     Options extends SpecOptions<NoInfer<Timeout>, Params, Result, Load$Deps<Lo>>,
     const Id extends string = "",

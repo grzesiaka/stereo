@@ -69,7 +69,7 @@ export type Dispose<What extends string = never, Info = never> = What extends ne
 /**
  * Function to its input
  */
-export type Fn$I<F> = F extends Fn<infer I> ? I : never;
+export type Fn$I<F, Fallback = never> = F extends Fn<infer I> ? I : Fallback;
 /**
  * Function to its output
  */
