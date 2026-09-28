@@ -9,7 +9,7 @@ import { __, wait } from "jsyoyo";
 
 $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
   no_error: async () => {
-    const s = spec(__, {}, () => 1)("", 0, { retry: () => wait(0) });
+    const s = spec()(() => 1)("", 0, { retry: () => wait(0) });
     const r = await run(s)(1);
     eq(await r.promise, 1);
   },
@@ -17,7 +17,7 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
   errors: async () => {
     let i = -1;
     const re = res();
-    const s = spec(__, {}, () => {
+    const s = spec()(() => {
       if (++i === 3) return i;
       return new Error(`err_${i}` as const);
     })("", 0, {
@@ -35,16 +35,14 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
   timeout: async () => {
     let i = -1;
     const re = res();
-    // @ts-expect-error
+
     const s = spec(
       j,
       {},
-      (_, { wait }) => {
-        if (++i < 2) return wait(50);
-        return 2;
-      },
-      __,
-    )("", 1, {
+    )((_, { wait }) => {
+      if (++i < 2) return wait(50);
+      return 2;
+    })("", 1, {
       retry: (err) => {
         re.add(err.name);
         return wait(100);
@@ -61,7 +59,7 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
 
 describe("run", ({ eq, res }) => ({
   emptish: async () => {
-    const s = spec(__, {}, (params: 1 | 2) => [params])("id");
+    const s = spec()((params: 1 | 2) => [params])("id");
 
     eq(s.Id, "id");
     const l = await load1(s);
@@ -73,7 +71,11 @@ describe("run", ({ eq, res }) => ({
   },
 
   state: async () => {
-    const s = spec(j, { curr: 0, total: 2 }, async (params: 0 | 1, { wait }, state) => {
+    const s = spec(
+      j,
+      (p) => ({ curr: 0, total: 2, _01: 0 }),
+      (s) => (s._01 = s.curr / s.total),
+    )(async (params: 0 | 1, { wait }, state) => {
       await wait(0);
       for (let i = params; i <= state().total; i++) {
         state({ curr: i });
@@ -86,18 +88,18 @@ describe("run", ({ eq, res }) => ({
     const r = await run(s)(1);
     r.state(x.add);
     const e = await r.promise;
-    eq(e, { curr: 2, total: 2 });
+    eq(e, { curr: 2, total: 2, _01: 1 });
     x.eq([
-      { curr: 0, total: 2 },
-      { curr: 1, total: 2 },
-      { curr: 2, total: 2 },
+      { curr: 0, total: 2, _01: 0 },
+      { curr: 1, total: 2, _01: 1 / 2 },
+      { curr: 2, total: 2, _01: 1 },
     ]);
   },
 }));
 
 $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
   no_timeout_no_abort: async () => {
-    const s = spec(__, {}, () => wait(500, 1))("500ms");
+    const s = spec()(() => wait(500, 1))("500ms");
     const r = await run(s)(1);
 
     v.vi.advanceTimersByTime(500);
@@ -105,7 +107,7 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
   },
 
   overwritten_timeout_no_abort: async () => {
-    const s = spec(__, {}, () => wait(500, 1))("150ms", 150);
+    const s = spec()(() => wait(500, 1))("150ms", 150);
     eq(s.timeout, 150);
     eq(s.Id, "150ms");
     const r = run(await load1(s))(1);
@@ -118,7 +120,7 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
   },
 
   abort_before_timeout: async () => {
-    const s = spec(__, {}, () => wait(500, 1))("200ms", 200);
+    const s = spec()(() => wait(500, 1))("200ms", 200);
     const abort = new jsyoyo.AbortController();
     const r = await run(s)(1, abort.signal);
     v.vi.advanceTimersByTime(100);
@@ -130,7 +132,7 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
   },
 
   abort_after_timeout: async () => {
-    const s = spec(__, {}, () => wait(500, 1))("200ms", 200);
+    const s = spec()(() => wait(500, 1))("200ms", 200);
     const abort = new jsyoyo.AbortController();
     const l = await load1(s);
     const r = run(l)(1, abort.signal);

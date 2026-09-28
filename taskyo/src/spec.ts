@@ -97,17 +97,16 @@ export type Spec$OK<S> = Result$OK<Spec$Result<S>>;
 const $spec =
   <Extra extends object>(extra = {} as Extra) =>
   <
-    Params,
-    Result,
+    cParams,
     Lo extends Load,
-    State extends RunStateOption<NoInfer<Params>, Load$Deps<NoInfer<Lo>>>,
-    Update extends __ | UpdateFn<ToRunState<NoInfer<State>>, Load$Deps<NoInfer<Lo>>> = __,
+    State extends RunStateOption<cParams, Load$Deps<NoInfer<Lo>>>,
+    Update extends __ | UpdateFn<ToRunState<NoInfer<State>>, Load$Deps<NoInfer<Lo>>>,
   >(
-    load: Lo,
-    state: State,
-    run: RunFn<Params, Result, NoInfer<Lo>, ToRunState<NoInfer<State>>>,
+    load = __ as Lo,
+    state = {} as State,
     update = __ as Update,
   ) =>
+  <Params extends cParams, Result>(run: RunFn<Params, Result, NoInfer<Lo>, ToRunState<NoInfer<State>>>) =>
   <
     Options extends SpecOptions<NoInfer<Timeout>, Params, Result, Load$Deps<Lo>>,
     const Id extends string = "",
@@ -133,20 +132,3 @@ export const spec = $spec() as Fn$O<typeof $spec> & { $: typeof $spec; is: (e: o
 spec.is = (e: object): e is SpecCore => "load" in e && "state" in e && "run" in e;
 
 export default spec;
-
-// const s = spec(
-//   __,
-//   { abc: 1 },
-//   (p: "a" | "b") => (Math.random() > 0.5 ? ERR.critical(1, {} as never) : "ok"),
-//   (state, deps) => state.abc++,
-// )("", 2, {
-//   retry: (t, d) => Promise.resolve(1),
-// });
-
-// const r = spec(
-//   __,
-//   (d, p) => ({ abc: 1 }),
-//   (p: "a" | "b") => (Math.random() > 0.5 ? ERR.critical(1, {} as never) : "ok"),
-//   () => 1,
-// )();
-// r.state;
