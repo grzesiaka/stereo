@@ -7,7 +7,7 @@ const $: CacheService & { $$: Dict<[MsOrNumber | __, unknown]> } = {
   get: (k, p) => {
     const v: any = $.$$[`${p}${k}`];
     if (v) {
-      if (!v[0] || v[0] <= cfg.now()) return v[1] as unknown;
+      if (!v[0] || v[0] >= cfg.now()) return v[1] as unknown;
       delete $.$$[k];
     }
     return __;

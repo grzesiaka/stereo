@@ -24,7 +24,7 @@ const count_012 = spec(
   cache: {
     key: (p, _d, id) => `${id}/${p}`,
     stores: ["memory"] as never, // importing is broken as 'taskyo' is only meaningful when 'taskyo' is imported from external module
-    ttl: 1_000,
+    ttl: 10_000,
   },
 });
 
@@ -111,10 +111,12 @@ describe("run", ({ eq, res }) => ({
     const e = await r.promise;
     eq(e, { curr: 2, total: 2, _01: 1 as never /* clamped */ });
     x.eq([
-      { curr: 0, total: 2, _01: 0 },
-      { curr: 1, total: 2, _01: 1 / 2 },
+      // Not reported as the value is served from cache
+      // { curr: 0, total: 2, _01: 0 },
+      // { curr: 1, total: 2, _01: 1 / 2 },
       { curr: 2, total: 2, _01: 1 },
     ]);
+    eq(r.cached, true);
   },
 }));
 

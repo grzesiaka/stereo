@@ -26,6 +26,7 @@ export interface RetryRun<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   spec: S;
   promise: Promise<RetryRunResult<S>>;
   state: $State<Spec$State<S> & { runs: [Run<S>, ...Run<S>[]] }, Spec$Deps<S>>[0]["O"];
+  cached?: boolean;
 }
 
 const initRun = <R = Run>(spec: LoadedSpec, extraState?: object) => {
@@ -91,6 +92,7 @@ export interface Run<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
     | (S extends { timeout: any } ? RRERRORR<ERR["timeout"]["$"]["name"], [Run<S>]> : never)
   >;
   state: $State<Spec$State<S>, Spec$Deps<S>>[0]["O"];
+  cached?: boolean;
 }
 
 const run1 =
@@ -132,7 +134,16 @@ export const run =
     return load1(spec).then(async (s) => {
       const cached = await getCached(s as any, params);
 
-      if (cached !== __) return cached;
+      if (cached !== __) {
+        const [state, r] = initRun(s as any);
+        const t = state[0].X.total;
+        if (t !== __) {
+          state[1]({ curr: t });
+        }
+        r.promise = Promise.resolve(cached);
+        r.cached = true;
+        return r;
+      }
       return (spec.retry ? retry : run1)(s as any)(params, abort);
     }) as never;
   };
@@ -145,9 +156,7 @@ const getCached = (spec: LoadedSpec, params: Spec$Params<typeof spec>) => {
     const prefix = "prefix" in spec.cache ? spec.cache.prefix || "" : CACHE.config().prefix;
     return Promise.all(spec.cache.stores.map((s) => (CACHE.registry[s] as CacheService).get(key, prefix))).then(
       (vs) => {
-        console.log("GET", spec.Id, params);
         for (let v of vs) {
-          console.log("GET", v);
           if (v !== __) return v;
         }
         return __;
@@ -161,7 +170,6 @@ const setCache = (spec: LoadedSpec, params: Spec$Params<typeof spec>, value: unk
   const key = spec.cache!.key(params, spec.deps, spec.Id);
   const prefix = "prefix" in spec.cache! ? spec.cache.prefix || "" : CACHE.config().prefix;
   for (let v of spec.cache!.stores) {
-    console.log("SET", spec.Id, params);
     (CACHE.registry[v] as CacheService).set(key, value, prefix, spec.cache!.ttl);
   }
 };

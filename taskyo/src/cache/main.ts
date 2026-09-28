@@ -1,7 +1,7 @@
 import { __, a, MsOrNumber } from "jsyoyo";
 
 let _config = {
-  prefix: `${Date.now()}`, // init to _unique_ value to reduce potential harm
+  prefix: `${Date.now()}/`, // init to _unique_ value to reduce potential harm
   now: () => Date.now() as MsOrNumber,
   ttl: __ as __<MsOrNumber>,
 } satisfies SharedCacheConfig;
