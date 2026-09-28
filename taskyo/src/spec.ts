@@ -14,9 +14,10 @@ export type Load$Deps<Lo extends Load> = __ extends Lo
     ? X
     : AwaiTreed<Dethunk<Lo>>;
 
-export type LoadedSpec<S extends SpecCore<any, any, any, any> = SpecCore> = S & {
-  deps: S extends { load?: __<Load> } ? Load$Deps<S["load"]> : __;
-};
+export type LoadedSpec<S extends SpecAny = SpecAny, O extends SpecOptions = SpecOptions> = S &
+  O & {
+    deps: S extends { load?: __<Load> } ? Load$Deps<S["load"]> : __;
+  };
 
 export type RetryOptions<Result = unknown, Deps = unknown, Err = unknown> = (
   err: Err | Result$ERR<Result>,
@@ -29,8 +30,8 @@ export type RunFn<Params, Result, Lo extends Load, State extends RunState> = (
   deps: Load$Deps<Lo>,
   state: StateRunFn<State>,
   onabort: (dispose: () => void) => void,
-  spec: LoadedSpec<SpecCore<Params, Result, Lo, State>>,
-) => Result | readonly [Result, () => void];
+  spec: LoadedSpec<SpecAny<string, Params, Result, Lo, State>>,
+) => Result;
 
 export interface RunState {
   [k: PropertyKey]: unknown;
@@ -43,13 +44,9 @@ type RunStateOption<Deps> = RunState | ((deps: Deps) => RunState);
 type ToRunState<O extends RunStateOption<any>> = Fn$O<O, O> & RunState;
 export type UpdateFn<State, Deps> = (state: State, deps: Deps) => void;
 
-export interface SpecOptions<
-  Timeout extends __<MsOrNumber> = __<MsOrNumber>,
-  Params = unknown,
-  Result = unknown,
-  Deps = unknown,
-> {
+export interface SpecOptions<Timeout extends __<MsOrNumber> = __<MsOrNumber>, Params = any, Result = any, Deps = any> {
   Id?: string;
+  timeout?: Timeout;
   avgTime?: MsOrNumber;
   retry?: RetryOptions<Result, Deps, Timeout extends 0 | __ ? never : InstanceType<ERR["timeout"]["$"]>>;
   cache?: {
@@ -70,7 +67,12 @@ export interface SpecCore<
   update: Update;
 }
 
-export type Spec<Id extends string, Core, Options, Spec = { Id: Id } & Core & Options> = Simplify<{
+export type Spec<
+  Id extends string = string,
+  Core = SpecAny,
+  Options = SpecOptions,
+  Spec = { Id: Id } & Core & Options,
+> = Simplify<{
   [K in keyof Spec as __ extends Spec[K] ? never : K]: Spec[K];
 }>;
 

@@ -9,21 +9,19 @@ import type {
   Spec$Params,
   RetryOptions,
   Spec,
-  SpecCore,
+  SpecOptions,
 } from "./spec";
 
 import { RRERRORR } from "rrerrorr";
 import { critical, ERR, timeout } from "./errors";
 
-type Runnable = Spec<any, SpecCore<any, any, any, any>, any, any>;
-
-type RetryRunResult<S extends Runnable> =
+type RetryRunResult<S extends LoadedSpec | Spec> =
   | Spec$OK<S>
   | Spec$ERR<S>
   | RRERRORR<ERR["abort"]["$"]["name"], [Run<S>]>
   | (S extends { timeout: MsOrNumber } ? RRERRORR<ERR["timeout"]["$"]["name"], [Run<S>]> : never)
   | (S extends { retry: any } ? RRERRORR<ERR["retry"]["$"]["name"], [RetryRun<S>]> : never);
-export interface RetryRun<S extends Runnable = Runnable> {
+export interface RetryRun<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   spec: S;
   promise: Promise<RetryRunResult<S>>;
   state: $State<Spec$State<S> & { runs: [Run<S>, ...Run<S>[]] }, Spec$Deps<S>>[0]["O"];
@@ -62,7 +60,7 @@ const retry =
           if (x instanceof Error) {
             return spec.retry(x, spec.deps /* r */).then(run);
           }
-          def.resolve(x as any);
+          def.resolve(x);
           return x;
         })
         .catch((err) => {
@@ -75,7 +73,7 @@ const retry =
     return r as never;
   };
 
-export interface Run<S extends Runnable = Runnable> {
+export interface Run<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   spec: S;
   promise: Promise<
     | Spec$OK<S>
@@ -99,32 +97,29 @@ const run1 =
     const r = {
       spec,
       state: state[0].O,
-    } as Run<S>;
+    } as Run<S & Spec>;
 
-    const promise = [
-      spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec as any),
-      abo.then(() => ERR.abort(r as any)),
-    ];
-    if ((spec as any).timeout) {
-      promise.push(timeout((spec as any).timeout, r));
+    const promise = [spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec), abo.then(() => ERR.abort(r))];
+    if (spec.timeout) {
+      promise.push(timeout(spec.timeout, r));
     }
 
-    (r as any).promise = Promise.race(promise);
+    r.promise = Promise.race(promise);
 
     return r as never;
   };
 
-export type Spec$Run<S extends Runnable> = S extends { deps: any }
+export type Spec$Run<S extends Spec> = S extends { deps: any }
   ? S extends { retry: any }
     ? RetryRun<S>
     : Run<S>
   : Promise<S extends { retry: any } ? RetryRun<S> : Run<S>>;
 
 export const run =
-  <S extends Runnable>(spec: S) =>
+  <S extends Spec & SpecOptions>(spec: S) =>
   (params: Spec$Params<S>, abort = fakeAbort): Spec$Run<S> =>
     "deps" in spec
-      ? (((spec as any).retry ? retry : run1)(spec as any)(params, abort) as never)
-      : (load1(spec).then((s) => ((spec as any).retry ? retry : run1)(s as any)(params, abort)) as never);
+      ? ((spec.retry ? retry : run1)(spec as any)(params, abort) as never)
+      : (load1(spec).then((s) => (spec.retry ? retry : run1)(s as any)(params, abort)) as never);
 
 run[1] = run1;
