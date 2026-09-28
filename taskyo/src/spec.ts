@@ -94,7 +94,8 @@ export type Result$OK<R> = Exclude<Awaited<R>, Error>;
 export type Spec$ERR<S> = Result$ERR<Spec$Result<S>>;
 export type Spec$OK<S> = Result$OK<Spec$Result<S>>;
 
-export const spec =
+const $spec =
+  <Extra extends object>(extra = {} as Extra) =>
   <
     Params,
     Result,
@@ -117,6 +118,7 @@ export const spec =
     opt = {} as Options,
   ) =>
     ({
+      ...extra,
       ...opt,
       Id,
       run,
@@ -124,7 +126,9 @@ export const spec =
       timeout,
       load,
       state,
-    }) as Spec<Id, SpecCore<Params, Result, Lo, State, Update>, Options & { timeout: Timeout }>;
+    }) as Spec<Id, SpecCore<Params, Result, Lo, State, Update>, Options & { timeout: Timeout } & Extra>;
+
+export const spec = $spec() as Fn$O<typeof $spec> & { $: typeof $spec; is: (e: object) => e is SpecCore };
 
 spec.is = (e: object): e is SpecCore => "load" in e && "state" in e && "run" in e;
 
