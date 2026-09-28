@@ -1,2 +1,2 @@
-export * from "./ij"
-export * from "./indexify"
+export * from "./ij";
+export * from "./indexify";

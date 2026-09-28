@@ -1,1 +1,1 @@
-export * from "./disposyo"
+export * from "./disposyo";

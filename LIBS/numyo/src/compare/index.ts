@@ -1,3 +1,3 @@
-export * from "./max"
-export * from "./min"
-export * from "./rel"
+export * from "./max";
+export * from "./min";
+export * from "./rel";

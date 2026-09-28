@@ -1,2 +1,2 @@
-export * from "./el"
-export * from "./uy"
+export * from "./el";
+export * from "./uy";

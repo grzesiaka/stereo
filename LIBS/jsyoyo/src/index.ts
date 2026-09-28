@@ -3,17 +3,17 @@ export * from "./num/index"
 export * from "./parse/index"
 export * from "./polyfills/index"
 
-export * from "./TODO"
-// (initial '_'; skipped from index)export * from "./_"
-export * from "./capped"
-export * from "./ctxid"
-export * from "./deps"
-export * from "./fun"
-export * from "./id"
-export * from "./is"
-export * from "./on"
-export * from "./predicate"
-export * from "./promise"
-export * from "./s-emitter"
-export * from "./time"
-export * from "./with-op"
+export * from "./TODO";
+// (initial '_'; skipped from index)export * from "./_";
+export * from "./capped";
+export * from "./ctxid";
+export * from "./deps";
+export * from "./fun";
+export * from "./id";
+export * from "./is";
+export * from "./on";
+export * from "./predicate";
+export * from "./promise";
+export * from "./s-emitter";
+export * from "./time";
+export * from "./with-op";

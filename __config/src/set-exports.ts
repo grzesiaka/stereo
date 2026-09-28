@@ -29,7 +29,7 @@ const prepareIndices = async (root: string, withDirs: boolean): Promise<PrepareI
       files.map((f) =>
         f === "_default"
           ? `\nimport X from "./_default";\nexport default X;`
-          : `${f.startsWith("_") ? "// (initial '_'; skipped from index)" : ""}export * from "./${f}"`,
+          : `${f.startsWith("_") ? "// (initial '_'; skipped from index)" : ""}export * from "./${f}";`,
       ),
     )
     .join("\n")

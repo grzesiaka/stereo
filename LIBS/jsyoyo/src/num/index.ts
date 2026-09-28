@@ -1,2 +1,2 @@
-export * from "./interval"
-export * from "./percent"
+export * from "./interval";
+export * from "./percent";
