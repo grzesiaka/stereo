@@ -52,7 +52,7 @@ export interface SpecOptions<Timeout extends __<MsOrNumber> = __<MsOrNumber>, Pa
   retry?: RetryOptions<Result, Deps, Timeout extends 0 | __ ? never : InstanceType<ERR["timeout"]["$"]>>;
   cache?: {
     key: (p: Params, deps: Deps, taskId: string) => string;
-    store: CacheStore | CacheStore[];
+    stores: CacheStore[];
   } & CacheOption;
 }
 

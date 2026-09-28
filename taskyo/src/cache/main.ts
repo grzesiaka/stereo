@@ -19,8 +19,8 @@ export const CACHE = {
 };
 
 export interface CacheService {
-  get: (key: string, withPrefix?: boolean) => Promise<unknown> | unknown;
-  set: (key: string, value: unknown, withPrefix?: boolean, ttl?: MsOrNumber) => Promise<unknown> | unknown;
+  get: (key: string, prefix: string) => Promise<unknown> | unknown;
+  set: (key: string, value: unknown, prefix: string, ttl?: MsOrNumber) => Promise<unknown> | unknown;
   clear: (staleOnly?: boolean) => Promise<unknown> | unknown;
 }
 
@@ -40,13 +40,13 @@ export interface SharedCacheConfig {
   now: () => number;
 }
 
-type Prefix = __<string>;
+type Prefix = string;
 type TTL = MsOrNumber;
 export interface CacheOption {
   /**
-   * `undefined` or not set - use globally defined
-   * `""` - off
+   *  not set - use globally defined
    * `string` - use it as prefix
+   * `""` - empty string: off
    */
   prefix?: Prefix;
   /**
