@@ -22,7 +22,7 @@ const $: CacheService & { $$: Dict<[MsOrNumber | __, unknown]> } = {
     const now = cfg.now();
     es($.$$).reduce(
       (a, [k, v]) => {
-        if (!v[0] || v[0] <= now) a[k] = v;
+        if (!v[0] || v[0] >= now) a[k] = v;
         return a;
       },
       {} as Dict<[MsOrNumber | __, unknown]>,
