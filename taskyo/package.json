@@ -18,10 +18,15 @@
   },
   "devDependencies": {
     "arryo": "workspace:*",
+    "fake-indexeddb": "catalog:",
+    "idb-keyval": "catalog:",
     "ioioy": "workspace:*",
     "jsyoyo": "workspace:*",
     "rrerrorr": "workspace:*",
     "treeo": "workspace:*",
     "typier": "workspace:*"
+  },
+  "peerDependencies": {
+    "idb-keyval": "catalog:"
   }
 }

@@ -1,5 +1,7 @@
 import * as v from "vitest";
 
+export { v };
+
 type EQ = (<const A>(a: A) => (b: NoInfer<A>) => A) & (<const A>(a: A, b: NoInfer<A>) => A);
 
 const eq: EQ = (...a: [any] | [any, any]) => (a.length === 2 ? eq(a[0])(a[1]) : (b) => (v.expect(a[0]).toEqual(b), b));
