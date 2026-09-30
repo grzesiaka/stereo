@@ -10,14 +10,14 @@ declare const clearTimeout: (t: unknown) => void;
 declare const setInterval: (cb: () => void, after: number) => unknown;
 declare const clearInterval: (t: unknown) => void;
 
-export const timeout = <Ms extends MsOrNumber, Info = never>(ms: Ms, cb: () => void) => {
+export const timeout = <Ms extends MsOrNumber>(ms: Ms, cb: () => void) => {
   const t = setTimeout(cb, ms);
-  return (() => clearTimeout(t)) as Dispose<"timeout", Ms | Info>;
+  return (() => clearTimeout(t)) as Dispose;
 };
 
-export const interval = <Ms extends MsOrNumber, Info = never>(ms: Ms, cb: () => void) => {
+export const interval = <Ms extends MsOrNumber>(ms: Ms, cb: () => void) => {
   const t = setInterval(cb, ms);
-  return (() => clearInterval(t)) as Dispose<"interval", Ms | Info>;
+  return (() => clearInterval(t)) as Dispose;
 };
 
 export const wait = <Ms extends number = 0, const Value = __>(

@@ -1,5 +1,3 @@
-import { Tagged } from "./type-fest";
-
 /**
  *  Potential / Hole / Future
  *
