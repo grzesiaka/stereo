@@ -169,7 +169,7 @@ const runSequence =
             });
         }
       };
-      const d = x.progress(progress(), 1);
+      const d = x.progress(1, 1);
       const re = await x;
 
       d();
