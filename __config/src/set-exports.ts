@@ -5,31 +5,37 @@ import { resolve } from "node:path";
 /**
  * Does not include files in index.ts nor in package.json/exports. Rolldown is configured to not include these files in output.
  */
-const ignoredSourceFilesRE = /-.ts$/;
+const ignoreInIndexAndInExports = /-\.ts$/;
+
+const ignoreInIndexDir = /_.*\/index.ts$/;
+const ignoreInIndexFile = /^_/;
 
 type PrepareIndicesResult = [string, string, { dir: string[]; files: string[] }?];
 const prepareIndices = async (root: string, withDirs: boolean): Promise<PrepareIndicesResult[]> => {
   const path = (...sub: string[]) => resolve(root, ...sub);
   const dir = await readdir(path());
   const files = dir
-    .filter((x) => x.endsWith(".ts") && x !== "index.ts" && !ignoredSourceFilesRE.test(x))
+    .filter((x) => x.endsWith(".ts") && x !== "index.ts" && !ignoreInIndexAndInExports.test(x))
     .map((f) => f.replace(/\.ts$/, ""));
   let sub = [] as PrepareIndicesResult[];
+
   if (withDirs) {
     sub = await Promise.all(
       dir
-        .filter((t) => !t.endsWith(".ts") && !ignoredSourceFilesRE.test(t))
+        .filter((t) => !t.endsWith(".ts") && !ignoreInIndexAndInExports.test(t))
         .flatMap((sub) => prepareIndices(path(sub), false)),
     ).then((x) => x.flat());
   }
+
   const indexContent = sub
+    .flatMap((f) => (ignoreInIndexDir.test(f[0]) ? [] : [f]))
     .map((f) => `export * from ".${f[0].replace(path(), "").replace(/\.ts$/, "")}"`)
     .concat(sub.length ? [""] : [])
     .concat(
       files.map((f) =>
         f === "_default"
           ? `\nimport X from "./_default";\nexport default X;`
-          : `${f.startsWith("_") ? "// (initial '_'; skipped from index)" : ""}export * from "./${f}";`,
+          : `${ignoreInIndexFile.test(f) ? "// (initial '_'; skipped from index)" : ""}export * from "./${f}";`,
       ),
     )
     .join("\n")
@@ -82,4 +88,4 @@ const handleDown = (path: string, isRoot: boolean) => {
 };
 
 // oxlint-disable-next-line no-undef
-handleDown(process.argv[2] || process.cwd(), true);
+handleDown(process.argv[2] || process.cwd(), !process.argv[2]);
