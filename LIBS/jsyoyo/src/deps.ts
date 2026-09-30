@@ -1,3 +1,4 @@
+export * from "disposyo";
 export * from "ififify";
 export * from "objoy";
 export * from "txtxt";

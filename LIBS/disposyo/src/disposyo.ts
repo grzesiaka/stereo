@@ -1,5 +1,6 @@
-import { __ } from "jsyoyo";
 import { ARR } from "~types";
+
+type __<X = never> = void | X;
 
 export type Dispose = () => unknown;
 
@@ -13,7 +14,7 @@ export type DISPOSE = typeof DISPOSE;
 
 export const disposyo = <T extends __<{}> = __>(
   D = [] as Disposes | Dispose,
-  target = __ as T,
+  target = void 0 as T,
 ): __ extends T ? Disposyo : T & { [DISPOSE]: Disposyo } => {
   const $: Disposyo = (...ds: Disposes) =>
     (ds.length === 0 ? $.__.forEach((d) => d()) : (($.__ as never as any[]).push(...ds), $)) as never;

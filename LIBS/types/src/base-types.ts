@@ -58,15 +58,6 @@ export type Fn1<I = any, O = unknown, E = {}> = Fn<[I], O, E>;
 export type Cb<X = any, R extends ARR = []> = (x: X, ...r: R) => void;
 
 /**
- * Dispose with optional info about what to dispose
- */
-export type Dispose<What extends string = never, Info = never> = What extends never
-  ? Dispose
-  : // : Info extends never
-    //   ? WithTag<() => void, What> WTF?! results in never; when calling underlying type directly works fine. Really: how much time one can waste on such weird stuff.
-    Tagged<() => void, What, Info>;
-
-/**
  * Function to its input
  */
 export type Fn$I<F, Fallback = never> = F extends Fn<infer I> ? I : Fallback;

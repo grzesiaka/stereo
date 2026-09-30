@@ -25,6 +25,7 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
+    "disposyo": "workspace:^",
     "ififify": "workspace:^",
     "numyo": "workspace:^",
     "objoy": "workspace:^",
