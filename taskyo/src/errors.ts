@@ -25,5 +25,8 @@ export const critical = (err: unknown, run: Run | RetryRun) => {
     const ctx = err.ctx as never as [error: unknown, runs: (Run | RetryRun)[]];
     return ERR.critical(ctx[0], [...(ctx[1] as []), run]);
   }
+  if (err instanceof Error && err.name.startsWith("taskyo.error")) {
+    return err;
+  }
   return ERR.critical(err, [run]);
 };

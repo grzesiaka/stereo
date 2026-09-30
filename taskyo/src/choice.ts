@@ -25,9 +25,11 @@ export const choice = (<const Ss extends ARR<Spec>>(ss: Ss) =>
     let dis = () => 1 as unknown;
     const abort = new AbortController();
     abo(() => (dis(), abort.abort()));
-    const r = await run(s)(params[1], abort.signal);
-    state(r.state());
-    dis = r.state(state);
+    const r = await run(s, (r) => {
+      state(r.state());
+      dis = r.state(state);
+    })(params[1], abort.signal);
+
     return r.promise.finally(dis);
   })) as <const Ss extends ARR<Spec>>(
   ss: Ss,

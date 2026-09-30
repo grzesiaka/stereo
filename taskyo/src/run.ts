@@ -1,4 +1,4 @@
-import { __, a, deferred, ifFunction, MsOrNumber, ON } from "jsyoyo";
+import { __, a, deferred, Fn$O, ifFunction, MsOrNumber, ON } from "jsyoyo";
 import { $State, $state, fakeAbort, load1 } from "./utils";
 import type {
   LoadedSpec,
@@ -29,7 +29,9 @@ export interface RetryRun<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   cached?: boolean;
 }
 
-const initRun = <R extends Run = Run>(spec: LoadedSpec, r = {} as Run) => {
+type InitRun = Fn$O<typeof initRun>;
+const initRun = <R extends Run = Run>(spec: LoadedSpec) => {
+  const r = {} as R;
   const _state = ifFunction(
     spec.state,
     ($) => $(spec.deps),
@@ -38,14 +40,12 @@ const initRun = <R extends Run = Run>(spec: LoadedSpec, r = {} as Run) => {
   const state = $state(a(_state, spec.retry ? { runs: [] } : []), spec.deps, spec.update);
   r.spec = spec;
   r.state = state[0].O;
-  return state;
+  return [r, state] as [run: R, state: typeof state];
 };
 
 const retry =
-  <S extends LoadedSpec & { retry: RetryOptions }>(spec: S, r = {} as Run) =>
+  <S extends LoadedSpec & { retry: RetryOptions }>(spec: S, [r, state] = initRun(spec)) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
-    const state = initRun<RetryRun>(spec, r);
-
     const def = deferred<RetryRunResult<S>>();
 
     const abo = ON.promise(abort)("abort");
@@ -71,7 +71,8 @@ const retry =
         })
         .catch((err) => {
           throw critical(err, r);
-        });
+        })
+        .finally(stopObserving);
     };
 
     run();
@@ -92,23 +93,26 @@ export interface Run<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
 }
 
 const run1 =
-  <S extends LoadedSpec>(spec: S, r = {} as Run) =>
+  <S extends LoadedSpec>(spec: S, [r, state] = initRun(spec)) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
-    const state = initRun(spec, r);
     const abo = ON.promise(abort)("abort");
     const promise = [spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec), abo.then(() => ERR.abort(r))];
     if (spec.timeout) {
       promise.push(timeout(spec.timeout, r));
     }
 
-    r.promise = spec.cache
-      ? Promise.race(promise).then((x) => {
-          if (!(x instanceof Error)) {
-            setCache(spec, params, x);
-          }
-          return x;
-        })
-      : Promise.race(promise);
+    r.promise = (
+      spec.cache
+        ? Promise.race(promise).then((x) => {
+            if (!(x instanceof Error)) {
+              setCache(spec, params, x);
+            }
+            return x;
+          })
+        : Promise.race(promise)
+    ).catch((e) => {
+      throw critical(e, r);
+    });
 
     return r as never;
   };
@@ -122,26 +126,29 @@ export type Spec$Run<S extends Spec> = S extends { deps: any }
   : Promise<S extends { retry: any } ? RetryRun<S> : Run<S>>;
 
 export const run =
-  <S extends Spec & SpecOptions>(spec: S, $r = () => ({}) as Run) =>
+  <S extends Spec & SpecOptions>(spec: S, onLoaded?: (...r: InitRun) => void) =>
   (params: Spec$Params<S>, abort = fakeAbort): Spec$Run<S> => {
-    const r = $r();
     if (("deps" in spec || !("load" in spec)) && !("cache" in spec)) {
-      return (spec.retry ? retry : run1)(spec as any, r)(params, abort) as never;
+      const i = initRun(spec as never as LoadedSpec);
+      onLoaded?.(...i);
+      return (spec.retry ? retry : run1)(spec as any, i)(params, abort) as never;
     }
     return load1(spec).then(async (s) => {
+      const i = initRun(spec as never as LoadedSpec);
+      onLoaded?.(...i);
       const cached = await getCached(s as any, params);
 
       if (cached !== __) {
-        const state = initRun(s as any, r);
-        const t = state[0].X.total;
+        const i = initRun(s as any);
+        const t = i[1][0].X.total;
         if (t !== __) {
-          state[1]({ curr: t });
+          i[1][1]({ curr: t });
         }
-        r.promise = Promise.resolve(cached);
-        r.cached = true;
-        return r;
+        i[0].promise = Promise.resolve(cached);
+        i[0].cached = true;
+        return i[0];
       }
-      return (spec.retry ? retry : run1)(s as any, r)(params, abort);
+      return (spec.retry ? retry : run1)(s as any, i)(params, abort);
     }) as never;
   };
 
