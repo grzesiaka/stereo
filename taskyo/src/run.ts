@@ -29,26 +29,22 @@ export interface RetryRun<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   cached?: boolean;
 }
 
-const initRun = <R = Run>(spec: LoadedSpec) => {
+const initRun = <R extends Run = Run>(spec: LoadedSpec, r = {} as Run) => {
   const _state = ifFunction(
     spec.state,
     ($) => $(spec.deps),
     (x) => ({ ...x }),
   );
   const state = $state(a(_state, spec.retry ? { runs: [] } : []), spec.deps, spec.update);
-  return [
-    state,
-    {
-      spec,
-      state: state[0].O,
-    },
-  ] as [typeof state, R];
+  r.spec = spec;
+  r.state = state[0].O;
+  return state;
 };
 
 const retry =
-  <S extends LoadedSpec & { retry: RetryOptions }>(spec: S) =>
+  <S extends LoadedSpec & { retry: RetryOptions }>(spec: S, r = {} as Run) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
-    const [state, r] = initRun<RetryRun>(spec);
+    const state = initRun<RetryRun>(spec, r);
 
     const def = deferred<RetryRunResult<S>>();
 
@@ -96,9 +92,9 @@ export interface Run<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
 }
 
 const run1 =
-  <S extends LoadedSpec>(spec: S) =>
+  <S extends LoadedSpec>(spec: S, r = {} as Run) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
-    const [state, r] = initRun(spec);
+    const state = initRun(spec, r);
     const abo = ON.promise(abort)("abort");
     const promise = [spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec), abo.then(() => ERR.abort(r))];
     if (spec.timeout) {
@@ -126,16 +122,16 @@ export type Spec$Run<S extends Spec> = S extends { deps: any }
   : Promise<S extends { retry: any } ? RetryRun<S> : Run<S>>;
 
 export const run =
-  <S extends Spec & SpecOptions>(spec: S) =>
+  <S extends Spec & SpecOptions>(spec: S, r = {} as Run) =>
   (params: Spec$Params<S>, abort = fakeAbort): Spec$Run<S> => {
-    if ("deps" in spec && !("cache" in spec)) {
-      return (spec.retry ? retry : run1)(spec as any)(params, abort) as never;
+    if (("deps" in spec || !("load" in spec)) && !("cache" in spec)) {
+      return (spec.retry ? retry : run1)(spec as any, r)(params, abort) as never;
     }
     return load1(spec).then(async (s) => {
       const cached = await getCached(s as any, params);
 
       if (cached !== __) {
-        const [state, r] = initRun(s as any);
+        const state = initRun(s as any, r);
         const t = state[0].X.total;
         if (t !== __) {
           state[1]({ curr: t });
@@ -144,7 +140,7 @@ export const run =
         r.cached = true;
         return r;
       }
-      return (spec.retry ? retry : run1)(s as any)(params, abort);
+      return (spec.retry ? retry : run1)(s as any, r)(params, abort);
     }) as never;
   };
 
