@@ -1,45 +1,30 @@
 import { $$, __, AbortController, ARR, ARR1, MsOrNumber } from "jsyoyo";
-import {
-  RunState,
-  Spec$Params,
-  Spec$OK,
-  SpecAny,
-  Load,
-  spec,
-  Spec,
-  Spec$ERR,
-  SpecCore,
-  SpecOptions,
-  StateRunFn,
-} from "./spec";
+import { RunState, Spec$Params, Spec$OK, Load, spec, Spec, Spec$ERR, SpecCore, SpecOptions, StateRunFn } from "./spec";
 import { run, Run } from "./run";
 import { Simplify } from "type-fest";
 import { AwaiTreed } from "treeo";
 
 type SpecStep<
-  T extends SpecAny = SpecAny,
+  T extends Spec = Spec,
   Dynamic = any,
   Static = any,
   ResultPath extends __<string> = __<string>,
 > = readonly [spec: T, params: SpecStepParams<T, Dynamic, Static>, result_path?: ResultPath];
-type SpecStep0<T extends SpecAny = SpecAny, ResultPath extends __<string> = __<string>> = readonly [
+type SpecStep0<T extends Spec = Spec, ResultPath extends __<string> = __<string>> = readonly [
   spec: T,
   __,
   result_path?: ResultPath,
 ];
-type SpecStepParams<T extends SpecAny = SpecAny, Dynamic = any, Static = any> = (
-  d: Dynamic,
-  s: Static,
-) => Spec$Params<T>;
+type SpecStepParams<T extends Spec = Spec, Dynamic = any, Static = any> = (d: Dynamic, s: Static) => Spec$Params<T>;
 
 type RecoveryStep<
-  T extends SpecAny = SpecAny,
+  T extends Spec = Spec,
   Exception = any,
   Dynamic = any,
   Static = any,
   ResultPath extends __<string> = __<string>,
 > = readonly [spec: T, params: RecoveryStepParams<T, Exception, Dynamic, Static>, result_path: __<ResultPath>, "_"];
-type RecoveryStepParams<T extends SpecAny = SpecAny, Exception = any, Dynamic = any, Static = any> = (
+type RecoveryStepParams<T extends Spec = Spec, Exception = any, Dynamic = any, Static = any> = (
   e: Exception,
   s: Static,
   d: Dynamic,
@@ -99,7 +84,7 @@ class Seq<const SS extends ARR1<Step>, Deps extends Load = __> {
    * @param path where result should be reported back to dynamic (defaults to spec.Id)
    * @returns
    */
-  $<T extends SpecAny, const Re extends Spec$Params<T>, P extends __<string> = __>(
+  $<T extends Spec, const Re extends Spec$Params<T>, P extends __<string> = __>(
     spec: T,
     params: (R: Steps$Dynamic<SS>, L: AwaiTreed<Deps>) => Re,
     path = __ as P,
@@ -112,7 +97,7 @@ class Seq<const SS extends ARR1<Step>, Deps extends Load = __> {
    * Ideally it should be possible via `.$` but seems impossible while respecting `const Re`,
    * which is vital to good DX.
    */
-  S<T extends SpecAny, P extends __<string> = __>(spec: T, path = __ as P) {
+  S<T extends Spec, P extends __<string> = __>(spec: T, path = __ as P) {
     return new Seq(this.L, [...this.R, [spec, () => __, path]]);
   }
 
@@ -123,7 +108,7 @@ class Seq<const SS extends ARR1<Step>, Deps extends Load = __> {
    * @param path
    * @returns where result should be reported back to dynamic (defaults to spec.Id)
    */
-  _<T extends SpecAny, const Re extends Spec$Params<T>, P extends __<string> = __>(
+  _<T extends Spec, const Re extends Spec$Params<T>, P extends __<string> = __>(
     spec: T,
     params: (ERR: Steps$Errors<SS>, L: AwaiTreed<Deps>, R: Partial<Steps$Dynamic<SS>>) => Re,
     path = __ as P,
@@ -145,7 +130,7 @@ class Seq<const SS extends ARR1<Step>, Deps extends Load = __> {
   }
 }
 
-export const sequence = <T extends SpecAny, D extends Load = __, P extends __<string> = __>(
+export const sequence = <T extends Spec, D extends Load = __, P extends __<string> = __>(
   t: T,
   d = __ as D,
   p = __ as P,

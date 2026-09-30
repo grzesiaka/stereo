@@ -1024,6 +1024,9 @@ importers:
       jsyoyo:
         specifier: workspace:*
         version: link:../LIBS/jsyoyo
+      proyij:
+        specifier: workspace:*
+        version: link:../LIBS/proyij
       rrerrorr:
         specifier: workspace:*
         version: link:../LIBS/rrerrorr
