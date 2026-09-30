@@ -514,6 +514,9 @@ importers:
       proyij:
         specifier: workspace:^
         version: link:../proyij
+      ~types:
+        specifier: workspace:^
+        version: link:../types
     devDependencies:
       vitest:
         specifier: 'catalog:'
@@ -524,9 +527,6 @@ importers:
       ~testing:
         specifier: 'workspace:'
         version: link:../testing
-      ~types:
-        specifier: 'workspace:'
-        version: link:../types
 
   LIBS/types:
     dependencies:

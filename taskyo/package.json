@@ -2,6 +2,7 @@
   "name": "taskyo",
   "version": "0.0.0-alpha.0",
   "type": "module",
+  "sideEffects": true,
   "exports": {
     ".": "./out/index.mjs",
     "./*": "./out/*.mjs",
@@ -29,6 +30,5 @@
   },
   "peerDependencies": {
     "idb-keyval": "catalog:"
-  },
-  "sideEffects": false
+  }
 }

@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/turbo/schema.json",
   "ui": "tui",
-  "concurrency": "20",
+  "concurrency": "30",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -14,10 +14,10 @@
       "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": ["build"]
+      "dependsOn": ["^build"]
     },
     "test-ci": {
-      "dependsOn": ["build"]
+      "dependsOn": ["^build"]
     },
     "dev": {
       "dependsOn": ["^build"],
