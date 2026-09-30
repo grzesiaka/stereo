@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import { run, choice, spec, ERR } from "../src";
+import { run, choice, parallel, spec, ERR } from "../src";
 import { __, AbortController, tick } from "jsyoyo";
 
 const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) =>
@@ -72,5 +72,32 @@ describe(choice, ({ eq, res }) => ({
     } else {
       throw "NOT_CRITICAL";
     }
+  },
+}));
+
+describe(`ONLYparallel`, ({ eq, res }) => ({
+  simple: async () => {
+    const ss = specs();
+    const s = parallel(ss)("II", __, {});
+    const r = await run(s)({ A: "A", B: "B", C: "C" });
+
+    const pr = res();
+    eq(r.state(), {
+      curr: 0,
+      total: 3,
+      runs: {}, // TODO populate
+    });
+
+    r.state((x) => pr.add([x.curr, x.total]), true);
+    eq(await r.promise, { A: 1, B: 1, C: 1 });
+    // eq(await r.progress()["⨂"]!.A, 1);
+    // eq(r.progress()["⨂"]!.B.progress(), { curr: 2, total: 2 });
+
+    pr.eq([
+      //  [0, 3],
+      [1, 3],
+      [2, 3],
+      [3, 3],
+    ]);
   },
 }));

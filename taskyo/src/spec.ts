@@ -42,9 +42,9 @@ export interface RunState {
 
 export type Spec$RunState<S> = S extends { state: any } ? ToRunState<S["state"]> : {};
 
-type RunStateOption<Deps> = RunState | ((deps: Deps) => RunState);
+export type RunStateOption<Deps> = RunState | ((deps: Deps) => RunState);
 
-type ToRunState<O extends RunStateOption<any>> = Fn$O<O, O> & RunState;
+export type ToRunState<O extends RunStateOption<any>> = Fn$O<O, O> & RunState;
 export type UpdateFn<State, Deps> = (state: State, deps: Deps) => void;
 
 export interface SpecOptions<Timeout extends __<MsOrNumber> = __<MsOrNumber>, Params = any, Result = any, Deps = any> {
@@ -92,8 +92,8 @@ export interface SpecAny<
 
 export type Spec$Params<S> = S extends { run: RunFn<infer X, any, any, any> } ? X : never;
 export type Spec$Result<S> = S extends { run: RunFn<any, infer X, any, any> } ? X : never;
-export type Spec$Deps<S> = S extends SpecAny<string, any, any, infer X> ? X : never;
-export type Spec$State<S> = S extends SpecAny<string, any, any, any, infer X> ? X : never;
+export type Spec$Deps<S> = S extends { load: any } ? Load$Deps<S["load"]> : never;
+export type Spec$State<S> = S extends { state: any } ? ToRunState<S["state"]> : never;
 
 export type Result$ERR<R> = Extract<Awaited<R>, Error>;
 export type Result$OK<R> = Exclude<Awaited<R>, Error>;
