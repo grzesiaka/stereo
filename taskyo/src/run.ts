@@ -29,13 +29,13 @@ export interface RetryRun<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   cached?: boolean;
 }
 
-const initRun = <R = Run>(spec: LoadedSpec, extraState?: object) => {
+const initRun = <R = Run>(spec: LoadedSpec) => {
   const _state = ifFunction(
     spec.state,
     ($) => $(spec.deps),
     (x) => ({ ...x }),
   );
-  const state = $state(a(_state, extraState), spec.deps, spec.update);
+  const state = $state(a(_state, spec.retry ? { runs: [] } : []), spec.deps, spec.update);
   return [
     state,
     {
@@ -48,7 +48,7 @@ const initRun = <R = Run>(spec: LoadedSpec, extraState?: object) => {
 const retry =
   <S extends LoadedSpec & { retry: RetryOptions }>(spec: S) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
-    const [state, r] = initRun<RetryRun>(spec, { runs: [] });
+    const [state, r] = initRun<RetryRun>(spec);
 
     const def = deferred<RetryRunResult<S>>();
 
