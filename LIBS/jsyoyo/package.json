@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/*-.ts !./src/*-/*.ts !./src/*/*-.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
     "build$": "turbo run build --filter='jsyoyo'...",
-    "dev": "pnpm build --watch",
+    "dev": "pnpm build && pnpm build --watch",
     "dev$": "turbo run dev --filter='jsyoyo'...",
     "test": "vitest test --passWithNoTests --project unit",
     "test-ci": "vitest test --passWithNoTests --project unit/out",

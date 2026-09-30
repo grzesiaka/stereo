@@ -14,7 +14,7 @@ const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) 
 
 const specs = () => [IO("A", 1), IO("B", 2), IO("C", 4)] as const;
 
-describe(`ONLYchoice`, ({ eq, res }) => ({
+describe(choice, ({ eq, res }) => ({
   simple_choice: async () => {
     const ts = specs();
     const c = choice(ts)("⨁");
@@ -72,9 +72,5 @@ describe(`ONLYchoice`, ({ eq, res }) => ({
     } else {
       throw "NOT_CRITICAL";
     }
-
-    // eq(err.cause.source, "!");
-    // eq(err.taskIds, ["!!", "⨁"]);
-    // eq(err.cause.progress.failed instanceof CriticalError, true);
   },
 }));
