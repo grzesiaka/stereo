@@ -40,6 +40,8 @@ export interface RunState {
   total?: number;
 }
 
+export type Spec$RunState<S> = S extends { state: any } ? ToRunState<S["state"]> : {};
+
 type RunStateOption<Deps> = RunState | ((deps: Deps) => RunState);
 
 type ToRunState<O extends RunStateOption<any>> = Fn$O<O, O> & RunState;
@@ -133,5 +135,6 @@ const $spec =
 export const spec = $spec() as Fn$O<typeof $spec> & { $: typeof $spec; is: (e: object) => e is SpecCore };
 
 spec.is = (e: object): e is SpecCore => "load" in e && "state" in e && "run" in e;
+spec.$ = $spec;
 
 export default spec;

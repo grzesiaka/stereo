@@ -6,7 +6,7 @@ import "fake-indexeddb/auto";
 
 import { __ } from "jsyoyo";
 
-import { count_012 } from "./index.test";
+import { count_012 } from "./base.test";
 
 import { CACHE, CacheService } from "../src/cache";
 import { run, RunState } from "../src";
