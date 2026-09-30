@@ -19,25 +19,18 @@ describe(`ONLYchoice`, ({ eq, res }) => ({
     const ts = specs();
     const c = choice(ts)("⨁");
     eq(c.__, ["⨁", ts]);
-    type S = Specs$ChoiceParams<typeof ts>;
-    type R = Specs$ChoiceResult<typeof ts>;
     const rp = await run(c)(["C", "C"]);
-    console.log(rp);
     const re = res();
 
-    const p = <N extends number>(curr: N) => ({ curr, total: 4, "⨁": "C" });
-
-    const s0 = { curr: 0 };
-    // eq(rp.state(), s0);
-
+    const p = <N extends number>(curr: N) => ({ curr, total: 4 });
+    const s = rp.state();
     rp.state((x) => {
       re.add(x);
-      //   !x["⨁"] && eq(rp.state(), s0);
     });
 
     const r = await rp.promise;
 
-    re.eq([s0, p(0), p(1), p(2), p(3), p(4)]);
+    re.eq([{}, p(1), p(1), p(2), p(3), p(4)]);
 
     eq(r, 1);
   },

@@ -122,8 +122,9 @@ export type Spec$Run<S extends Spec> = S extends { deps: any }
   : Promise<S extends { retry: any } ? RetryRun<S> : Run<S>>;
 
 export const run =
-  <S extends Spec & SpecOptions>(spec: S, r = {} as Run) =>
+  <S extends Spec & SpecOptions>(spec: S, $r = () => ({}) as Run) =>
   (params: Spec$Params<S>, abort = fakeAbort): Spec$Run<S> => {
+    const r = $r();
     if (("deps" in spec || !("load" in spec)) && !("cache" in spec)) {
       return (spec.retry ? retry : run1)(spec as any, r)(params, abort) as never;
     }

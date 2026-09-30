@@ -41,7 +41,7 @@ export const choice = (<const Ss extends ARR<Spec>>(ss: Ss) =>
   opt?: Options,
 ) => Spec<
   Id,
-  SpecCore<Specs$ChoiceParams<Ss>, Specs$ChoiceResult<Ss>, any, Specs$ChoiceState<Ss>, any>,
+  SpecCore<Specs$ChoiceParams<Ss>, Specs$ChoiceResult<Ss>, __, Specs$ChoiceState<Ss>, __>,
   Options & { timeout: Timeout } & {
     __: ["⨁", Ss];
   }
