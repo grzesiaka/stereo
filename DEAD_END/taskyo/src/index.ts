@@ -1,4 +1,3 @@
-export * from "./cache/index"
 
 export * from "./choice";
 export * from "./errors";

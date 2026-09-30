@@ -2,10 +2,10 @@ import { describe, $describe, setupFakeTimers } from "~testing";
 import { ERR, loadDeps, load1, run, spec, asERR, RunState } from "../src";
 
 import * as jsyoyo from "jsyoyo";
-
 import j from "jsyoyo/_";
-
 import { __, wait } from "jsyoyo";
+
+import "../src/_cache/memory";
 
 export const count_012 = spec(
   j,

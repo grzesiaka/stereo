@@ -1,4 +1,4 @@
-import { CacheService, CACHE } from "./main";
+import { CacheService, CACHE } from "../cache";
 import { __, MsOrNumber } from "jsyoyo";
 
 import * as idb from "idb-keyval";

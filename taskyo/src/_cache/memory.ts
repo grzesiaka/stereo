@@ -1,4 +1,4 @@
-import { CacheService, CACHE } from "./main";
+import { CacheService, CACHE } from "../cache";
 import { __, Dict, es, MsOrNumber } from "jsyoyo";
 
 const cfg = CACHE.config();

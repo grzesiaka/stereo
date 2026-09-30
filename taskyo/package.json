@@ -5,7 +5,9 @@
   "sideEffects": false,
   "exports": {
     ".": "./out/index.mjs",
-    "./*": "./out/*.mjs"
+    "./*": "./out/*.mjs",
+    "./_cache": "./out/_cache/index.mjs",
+    "./_cache/*": "./out/_cache/*.mjs"
   },
   "scripts": {
     "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/*-.ts !./src/*-/*.ts !./src/*/*-.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",

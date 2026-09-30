@@ -1,5 +1,5 @@
 // oxlint-disable no-undef
-import { CacheService, CACHE } from "./main";
+import { CacheService, CACHE } from "../cache";
 import { __, MsOrNumber } from "jsyoyo";
 
 declare const localStorage: {

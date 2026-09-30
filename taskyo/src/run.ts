@@ -154,14 +154,14 @@ const getCached = (spec: LoadedSpec, params: Spec$Params<typeof spec>) => {
   if (spec.cache) {
     const key = spec.cache.key(params, spec.deps, spec.Id);
     const prefix = "prefix" in spec.cache ? spec.cache.prefix || "" : CACHE.config().prefix;
-    return Promise.all(spec.cache.stores.map((s) => (CACHE.registry[s] as CacheService).get(key, prefix))).then(
-      (vs) => {
-        for (let v of vs) {
-          if (v !== __) return v;
-        }
-        return __;
-      },
-    );
+    return Promise.all(
+      spec.cache.stores.map((s: any) => (CACHE.registry[s as never] as CacheService).get(key, prefix)),
+    ).then((vs) => {
+      for (let v of vs) {
+        if (v !== __) return v;
+      }
+      return __;
+    });
   }
   return __;
 };
@@ -170,6 +170,6 @@ const setCache = (spec: LoadedSpec, params: Spec$Params<typeof spec>, value: unk
   const key = spec.cache!.key(params, spec.deps, spec.Id);
   const prefix = "prefix" in spec.cache! ? spec.cache.prefix || "" : CACHE.config().prefix;
   for (let v of spec.cache!.stores) {
-    (CACHE.registry[v] as CacheService).set(key, value, prefix, spec.cache!.ttl);
+    (CACHE.registry[v as never] as CacheService).set(key, value, prefix, spec.cache!.ttl);
   }
 };

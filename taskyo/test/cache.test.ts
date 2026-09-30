@@ -13,6 +13,10 @@ import { run, RunState } from "../src";
 
 CACHE.config({ prefix: "test/" });
 
+import "../src/_cache/memory";
+import "../src/_cache/local-storage";
+import "../src/_cache/index-db";
+
 declare const setImmediate: (cb: () => void) => void;
 
 $describe(setupFakeTimers)("cache", ({ eq, res, v }) => ({
