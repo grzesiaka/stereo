@@ -51,7 +51,7 @@ export interface SpecOptions<Timeout extends __<MsOrNumber> = __<MsOrNumber>, Pa
   Id?: string;
   timeout?: Timeout;
   avgTime?: MsOrNumber;
-  retry?: RetryOptions<Result, Deps, Timeout extends 0 | __ ? never : InstanceType<ERR["timeout"]["$"]>>;
+  retry?: RetryOptions<Result, Deps, Timeout extends 0 | __ ? never : ERR["timeout"]>;
   cache?: {
     key: (p: Params, deps: Deps, taskId: string) => string;
     stores: CacheStore[];

@@ -1,18 +1,19 @@
-import ERRs from "rrerrorr";
+import { ERRs, AsInstances } from "rrerrorr";
 import type { Run, RetryRun } from "./run";
 import { ARR, MsOrNumber, wait } from "jsyoyo";
 
 export type ErrorLike = Error | { $: Error };
 export type ErrorLikes = ARR<ErrorLike>;
 
-export type ERR = typeof ERR;
+type Runs = ARR<Run | RetryRun>;
+export type ERR = AsInstances<typeof ERR>;
 export const ERR = ERRs(($) => ({
   taskyo: {
     error: {
       retry: $<[task?: RetryRun]>(),
       abort: $<[task?: Run, reason?: unknown]>(),
       timeout: $<[task: Run]>(),
-      critical: $<[error: unknown, runs: (Run | RetryRun)[]]>(),
+      critical: $<[error: unknown, runs: Runs]>(),
     },
   },
 }))["taskyo"]["error"];

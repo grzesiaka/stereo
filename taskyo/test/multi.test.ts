@@ -1,23 +1,7 @@
 import { describe } from "~testing";
-
-import { __, a, AbortController, tick } from "jsyoyo";
-import { Tree } from "treeo";
-import { indexify } from "proyij";
-
-import { run, choice, parallel, spec, ERR, Spec } from "../src";
-
-export const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) =>
-  spec(__, { curr: 0, total: T })<ID, Promise<number>>(async (p, _d, u) => {
-    for (let i = 0; i < T; i++) {
-      await tick(2);
-      i && u({ curr: i }); // zero is the start value any way, so no point to report it twice
-    }
-    u({ curr: T });
-    return p.length;
-  })(I);
-
-export const specs = () => [IO("A", 1), IO("B", 2), IO("C", 4)] as const;
-export const specObj = <E extends Tree<Spec> = {}>(e = {} as E) => a(indexify("Id")(specs()), e);
+import { __, AbortController, ifError, tick, THROW } from "jsyoyo";
+import { run, choice, parallel, spec, ERR, Spec$Result } from "../src";
+import { specs } from "./test-utils";
 
 describe(choice, ({ eq, res }) => ({
   simple_choice: async () => {
@@ -40,23 +24,16 @@ describe(choice, ({ eq, res }) => ({
     const c = choice(specs())("⨁");
     const abort = new AbortController();
     const rp = await run(c)(["C", "C"], abort.signal);
-    let err: unknown;
+    let err: ERR["abort"] | Awaited<Spec$Result<typeof c>>;
     try {
       await tick(1);
-
       abort.abort();
-
       err = await rp.promise;
     } catch (e) {
-      err = e;
+      err = e as never;
     }
 
-    if (ERR["abort"].is(err)) {
-      eq(err.ctx[0], rp);
-    } else {
-      eq(err, 1);
-      throw "NOT_CRITICAL";
-    }
+    ifError(err, (err) => eq(err.ctx[0], rp), THROW);
   },
 
   error: async () => {
@@ -64,19 +41,22 @@ describe(choice, ({ eq, res }) => ({
     const abort = new AbortController();
     const r = await run(s)(["!!", "!"], abort.signal);
 
-    let err = {} as ERR["critical"]["$"];
+    let err = {} as ERR["critical"];
     try {
       await r.promise;
     } catch (e) {
       err = e as never;
     }
 
-    if (ERR["critical"].is(err)) {
-      eq(err.ctx[0], "!");
-      eq(err.ctx[1][1], r);
-    } else {
-      throw "NOT_CRITICAL";
-    }
+    ifError(
+      err,
+      (err) => {
+        eq(err.name, "taskyo.error.critical");
+        eq(err.ctx[0], "!");
+        eq(err.ctx[1][1], r);
+      },
+      THROW,
+    );
   },
 }));
 

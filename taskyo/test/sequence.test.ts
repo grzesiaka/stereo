@@ -1,9 +1,9 @@
 import { describe } from "~testing";
-import { __ } from "jsyoyo";
+import { __, ifError } from "jsyoyo";
 
 import { run, spec, ERR, sequence } from "../src";
 
-import { IO, specObj } from "./multi.test";
+import { IO, specObj } from "./test-utils";
 
 describe(sequence, ({ eq, res }) => ({
   step_0_only: async () => {
@@ -55,7 +55,7 @@ describe(sequence, ({ eq, res }) => ({
     eq(r, { "0": [0, "A"], A: 1, B: 1, C: 1, sum: 3 });
   },
 
-  error: async () => {
+  critical_error: async () => {
     const { A, B, C } = specObj();
     const t = sequence(spec()((p: 0) => [p, "A"] as const)("0"))
       .$(A, (x) => x["0"][1])
@@ -66,7 +66,7 @@ describe(sequence, ({ eq, res }) => ({
         spec()((p) => {
           throw p;
         })("!"),
-        (x) => `sum:${x.sum}`,
+        (x) => `error_sum:${x.sum}`,
       )
       .asSpec("1");
 
@@ -75,7 +75,7 @@ describe(sequence, ({ eq, res }) => ({
     const x = await r;
     x.state(re.add);
 
-    let err = {} as ERR["critical"]["$"];
+    let err = {} as ERR["critical"];
     try {
       await x.promise;
     } catch (e) {
@@ -89,8 +89,14 @@ describe(sequence, ({ eq, res }) => ({
       total: 6,
     });
 
+    ifError(
+      err,
+      (e) => e,
+      (x) => x,
+    );
+
     if (ERR["critical"].is(err)) {
-      eq(err.ctx[0], "sum:3");
+      eq(err.ctx[0], "error_sum:3");
       eq(
         err.ctx[1].map((x) => x.spec.Id),
         ["!", "1"],
@@ -99,34 +105,34 @@ describe(sequence, ({ eq, res }) => ({
       throw "NOT_CRITICAL";
     }
 
-    eq(err instanceof ERR["critical"]["$"], true);
+    eq(ERR["critical"].is(err), true);
   },
 
-  recovery_0_step: async () => {
-    const ERR = new Error("!");
-    let err = __ as __ | ERR["critical"]["$"];
+  recovery: async () => {
+    const error = new Error("!");
+    let errFromRun = __ as __ | ERR["critical"];
 
-    const t = sequence(spec()(() => ERR as 0 | Error)("0"));
+    const t = sequence(spec()(() => error as 0 | Error)("0"));
     const r0 = run(t.asSpec("!"))("!");
 
     let x: unknown;
     try {
       x = await (await r0).promise;
     } catch (e) {
-      err = e as never;
+      errFromRun = e as never;
     }
-    eq(err, __);
-    eq(x, ERR);
+    eq(errFromRun, __); // not critical
+    eq(x, error);
 
     const t2 = t.$(IO("A"), () => "A");
-    eq(ERR as unknown, await (await run(t2.asSpec("t2"))("!")).promise);
+    eq(error as unknown, await (await run(t2.asSpec("t2"))("!")).promise);
 
     const t3 = t2
       .$(IO("B"), () => "B")
-      ._(spec()((p: readonly [Error, Error]) => p)("OK"), (e) => [e, e])
+      ._(spec()((p: readonly [Error, Error]) => p)("recovered"), (e) => [e, e])
       .S(spec()(() => 1 as const)("NO_PARAM"));
     const x3 = await run(t3.asSpec("t3"))("!");
-    eq(await x3.promise, { OK: [ERR, ERR], NO_PARAM: 1 });
+    eq(await x3.promise, { recovered: [error, error], NO_PARAM: 1 });
   },
 }));
 
