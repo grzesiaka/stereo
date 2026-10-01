@@ -3,6 +3,7 @@ export * from "./num/index"
 export * from "./parse/index"
 export * from "./polyfills/index"
 
+export * from "./ASSERT";
 export * from "./THROW";
 export * from "./TODO";
 // (initial '_'; skipped from index)export * from "./_";

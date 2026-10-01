@@ -1,5 +1,5 @@
 import { describe } from "~testing";
-import { __, ifError } from "jsyoyo";
+import { __, ASSERT } from "jsyoyo";
 
 import { run, spec, ERR, sequence } from "../src";
 
@@ -65,17 +65,17 @@ describe(sequence, ({ eq, res }) => ({
       .$(
         spec()((p) => {
           throw p;
-        })("!"),
+        })("err"),
         (x) => `error_sum:${x.sum}`,
       )
-      .asSpec("1");
+      .asSpec("seq");
 
     const r = run(t)(0);
     const re = res();
     const x = await r;
     x.state(re.add);
 
-    let err = {} as ERR["critical"];
+    let err: unknown;
     try {
       await x.promise;
     } catch (e) {
@@ -89,23 +89,12 @@ describe(sequence, ({ eq, res }) => ({
       total: 6,
     });
 
-    ifError(
-      err,
-      (e) => e,
-      (x) => x,
+    const e = ASSERT(ERR["critical"].is)(err);
+    eq(e.ctx[0], "error_sum:3");
+    eq(
+      e.ctx[1].map((x) => x.spec.Id),
+      ["err", "seq"], // trace
     );
-
-    if (ERR["critical"].is(err)) {
-      eq(err.ctx[0], "error_sum:3");
-      eq(
-        err.ctx[1].map((x) => x.spec.Id),
-        ["!", "1"],
-      );
-    } else {
-      throw "NOT_CRITICAL";
-    }
-
-    eq(ERR["critical"].is(err), true);
   },
 
   recovery: async () => {
