@@ -96,9 +96,17 @@ const run1 =
   <S extends LoadedSpec>(spec: S, [r, state] = initRun(spec)) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
     const abo = ON.promise(abort)("abort");
-    const promise = [spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec), abo.then(() => ERR.abort(r))];
+
+    let run: Run | Promise<Run>;
+    try {
+      run = spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec);
+    } catch (e) {
+      throw critical(e, r);
+    }
+
+    const promise = [run, abo.then(() => ERR.abort(r))];
     if (spec.timeout) {
-      promise.push(timeout(spec.timeout, r));
+      promise.push(timeout(spec.timeout, r) as never);
     }
 
     r.promise = (

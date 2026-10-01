@@ -55,7 +55,7 @@ describe(sequence, ({ eq, res }) => ({
     eq(r, { "0": [0, "A"], A: 1, B: 1, C: 1, sum: 3 });
   },
 
-  ONLYerror: async () => {
+  error: async () => {
     const { A, B, C } = specObj();
     const t = sequence(spec()((p: 0) => [p, "A"] as const)("0"))
       .$(A, (x) => x["0"][1])
@@ -93,7 +93,7 @@ describe(sequence, ({ eq, res }) => ({
       eq(err.ctx[0], "sum:3");
       eq(
         err.ctx[1].map((x) => x.spec.Id),
-        ["1"],
+        ["!", "1"],
       );
     } else {
       throw "NOT_CRITICAL";
