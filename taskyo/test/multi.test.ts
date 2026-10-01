@@ -68,21 +68,22 @@ describe(`parallel`, ({ eq, res }) => ({
 
     const pr = res();
     eq(r.state(), {
+      "%": 0,
       curr: 0,
       total: 3,
       runs: {}, // TODO populate
     });
 
-    r.state((x) => pr.add([x.curr, x.total]), true);
+    r.state((x) => pr.add([x.curr, x.total, x["%"]]), true);
     eq(await r.promise, { A: 1, B: 1, C: 1 });
     // eq(await r.state()["⨂"]!.A, 1);
     // eq(r.state()["⨂"]!.B.state(), { curr: 2, total: 2 });
 
     pr.eq([
       //  [0, 3],
-      [1, 3],
-      [2, 3],
-      [3, 3],
+      [1, 3, 33],
+      [2, 3, 67],
+      [3, 3, 100],
     ]);
   },
 }));

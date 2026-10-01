@@ -3,6 +3,7 @@ import { RunState, Spec$Params, Spec$OK, Load, spec, Spec, Spec$ERR, SpecCore, S
 import { run, Run } from "./run";
 import { Simplify } from "type-fest";
 import { AwaiTreed } from "treeo";
+import { percent } from "./utils";
 
 type SpecStep<
   T extends Spec = Spec,
@@ -68,7 +69,7 @@ type Steps$InitParams<SS> = SS extends readonly [infer S, ...infer R]
   : never;
 
 interface SeqState<SS extends Steps> extends RunState {
-  _01: number;
+  "%": number;
   curr: number;
   total: SS["length"];
   partial: Partial<Steps$Dynamic<SS>>;
@@ -163,7 +164,7 @@ const runSequence =
           const n = t.curr + 1;
           state({
             curr: n,
-            _01: n === t.total ? 1 : (i + 1) / t.total,
+            "%": n === t.total ? 100 : percent(i + 1, t.total),
             partial: {
               ...t.partial,
               [s[2] || s[0]["Id"] || ""]: re,
@@ -173,7 +174,7 @@ const runSequence =
           x.curr !== x.total && // no update in such a case - next will comes update with result
             state({
               curr: t.curr,
-              _01: (i + x.curr / x.total) / t.total,
+              "%": percent(i + x.curr / x.total, t.total),
             });
         }
       };
@@ -202,7 +203,7 @@ const runSequence =
 
 export const asSpec = <SS extends Steps, Lo extends Load>(L: Lo, R: SS) =>
   spec.$({ __: ["~>", R] })(L, {
-    _01: 0,
+    "%": 0,
     curr: 0,
     partial: {},
     total: R.length,

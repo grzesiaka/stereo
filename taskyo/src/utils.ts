@@ -71,3 +71,5 @@ export const $state = <State extends RunState, Deps>(
     },
   ] as [typeof v, StateRunFn<State>];
 };
+
+export const percent = (dividend: number, divisor = 1) => Math.round((100 * dividend) / divisor);

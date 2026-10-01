@@ -3,8 +3,10 @@ import { RunFn, Spec, spec, Spec$ERR, Spec$OK, Spec$Params, SpecCore, SpecOption
 import { run, Spec$Run } from "./run";
 import { Simplify } from "type-fest";
 import { critical } from "./errors";
+import { percent } from "./utils";
 
 export type Specs$ParallelState<S extends ARR> = {
+  "%": number;
   curr: number;
   total: S["length"];
   runs: Partial<Simplify<_Specs$Run<S>>>;
@@ -35,7 +37,7 @@ type _Specs$ParallelParams<Ss extends ARR> = Ss extends readonly [infer S extend
 export const parallel = (<const Ss extends ARR<Spec>>(ss: Ss) =>
   spec.$({
     __: ["⨂", ss],
-  })(__, { curr: 0, total: ss.length, runs: {} } as Specs$ParallelState<Ss>)<Specs$ParallelParams<Ss>, any>(
+  })(__, { "%": 0, curr: 0, total: ss.length, runs: {} } as Specs$ParallelState<Ss>)<Specs$ParallelParams<Ss>, any>(
     async (params, _, state, abo) => {
       let dis = disposyo();
       const abort = new AbortController();
@@ -50,7 +52,8 @@ export const parallel = (<const Ss extends ARR<Spec>>(ss: Ss) =>
               if (x instanceof Error) {
                 def.resolve(x);
               }
-              state({ curr: state().curr + 1 } as never);
+              const curr = state().curr + 1;
+              state({ curr, "%": percent(curr, ss.length) } as never);
             })
             .catch((err) => def.reject(critical(err, r)));
           return r.promise;

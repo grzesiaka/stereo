@@ -21,13 +21,13 @@ describe(sequence, ({ eq, res }) => ({
 
     re.eq([
       {
-        _01: 0,
+        "%": 0,
         curr: 0,
         partial: {},
         total: 1,
       },
       {
-        _01: 1,
+        "%": 100,
         curr: 1,
         partial: {
           step_0: 112,
@@ -83,7 +83,7 @@ describe(sequence, ({ eq, res }) => ({
     }
 
     eq(x.state(), {
-      _01: 0.8333333333333334,
+      "%": 83,
       curr: 5,
       partial: { "0": [0, "A"], A: 1, B: 1, C: 1, sum: 3 },
       total: 6,
@@ -128,13 +128,13 @@ describe(sequence, ({ eq, res }) => ({
 const results = {
   simple: [
     {
-      _01: 0,
+      "%": 0,
       curr: 0,
       partial: {},
       total: 5,
     },
     {
-      _01: 0.2,
+      "%": 20,
       curr: 1,
       partial: {
         "0": [0, "A"],
@@ -142,7 +142,7 @@ const results = {
       total: 5,
     },
     {
-      _01: 0.4,
+      "%": 40,
       curr: 2,
       partial: {
         "0": [0, "A"],
@@ -151,7 +151,7 @@ const results = {
       total: 5,
     },
     {
-      _01: 0.5, // B 50%
+      "%": 50, // B 50%
       curr: 2,
       partial: {
         "0": [0, "A"],
@@ -160,7 +160,7 @@ const results = {
       total: 5,
     },
     {
-      _01: 0.6,
+      "%": 60,
       curr: 3,
       partial: {
         "0": [0, "A"],
@@ -170,7 +170,7 @@ const results = {
       total: 5,
     },
     {
-      _01: 0.65, // C 25%
+      "%": 65, // C 25%
       curr: 3,
       partial: {
         "0": [0, "A"],
@@ -180,7 +180,7 @@ const results = {
       total: 5,
     },
     {
-      _01: 0.7, // C 50%
+      "%": 70, // C 50%
       curr: 3,
       partial: {
         "0": [0, "A"],
@@ -190,7 +190,7 @@ const results = {
       total: 5,
     },
     {
-      _01: 0.75, // C 75%
+      "%": 75, // C 75%
       curr: 3,
       partial: {
         "0": [0, "A"],
@@ -200,7 +200,7 @@ const results = {
       total: 5,
     },
     {
-      _01: 0.8,
+      "%": 80,
       curr: 4,
       partial: {
         "0": [0, "A"],
@@ -211,7 +211,7 @@ const results = {
       total: 5,
     },
     {
-      _01: 1,
+      "%": 100,
       curr: 5,
       partial: {
         "0": [0, "A"],
