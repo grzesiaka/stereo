@@ -6,7 +6,7 @@ export type RRERRORR<N extends string, Ctx extends ARR = readonly [string?]> = E
   readonly ctx: Ctx;
 };
 
-export interface RRERRORR$<N extends string = string, cCtx extends ARR = readonly [string?]> {
+export interface RRERRORR$<N extends string = string, cCtx extends ARR = readonly [string?]> extends Error {
   new <Ctx extends cCtx>(...args: Ctx): RRERRORR<N, Ctx>;
   readonly name: N;
   readonly prototype: RRERRORR<N>;
