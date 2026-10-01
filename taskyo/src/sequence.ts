@@ -67,7 +67,10 @@ type Steps$InitParams<SS> = SS extends readonly [infer S, ...infer R]
     : Steps$InitParams<R>
   : never;
 
-interface SeqProgress<SS extends Steps> extends RunState {
+interface SeqState<SS extends Steps> extends RunState {
+  _01: number;
+  curr: number;
+  total: SS["length"];
   partial: Partial<Steps$Dynamic<SS>>;
 }
 
@@ -189,7 +192,7 @@ const runSequence =
         }
         err = re;
       } else {
-        _state(re)(x.state());
+        _state(await re.promise)(x.state());
         i++;
       }
     }
@@ -199,7 +202,9 @@ const runSequence =
 
 export const asSpec = <SS extends Steps, Lo extends Load>(L: Lo, R: SS) =>
   spec.$({ __: ["~>", R] })(L, {
+    _01: 0,
     curr: 0,
+    partial: {},
     total: R.length,
   })(runSequence(R) as any) as never as <
     Options extends SpecOptions<
@@ -216,7 +221,7 @@ export const asSpec = <SS extends Steps, Lo extends Load>(L: Lo, R: SS) =>
     opt?: Options,
   ) => Spec<
     Id,
-    SpecCore<Steps$InitParams<SS>, Promise<Steps$Dynamic<SS> | Steps$Errors<SS>>, __, SeqProgress<SS>, __>,
+    SpecCore<Steps$InitParams<SS>, Promise<Steps$Dynamic<SS> | Steps$Errors<SS>>, __, SeqState<SS>, __>,
     Options & { timeout: Timeout } & {
       __: ["~>", SS];
     }
