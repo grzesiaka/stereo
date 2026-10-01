@@ -9,7 +9,7 @@ import { run, choice, parallel, spec, ERR, Spec } from "../src";
 export const IO = <ID extends string, Ticks extends number = 2>(I: ID, T = 2 as Ticks) =>
   spec(__, { curr: 0, total: T })<ID, Promise<number>>(async (p, _d, u) => {
     for (let i = 0; i < T; i++) {
-      await tick();
+      await tick(2);
       i && u({ curr: i }); // zero is the start value any way, so no point to report it twice
     }
     u({ curr: T });

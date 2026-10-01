@@ -156,6 +156,15 @@ const results = {
       total: 5,
     },
     {
+      _01: 0.5, // B 50%
+      curr: 2,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+      },
+      total: 5,
+    },
+    {
       _01: 0.6,
       curr: 3,
       partial: {
@@ -166,7 +175,7 @@ const results = {
       total: 5,
     },
     {
-      _01: 0.7,
+      _01: 0.65, // C 25%
       curr: 3,
       partial: {
         "0": [0, "A"],
@@ -176,7 +185,17 @@ const results = {
       total: 5,
     },
     {
-      _01: 0.75,
+      _01: 0.7, // C 50%
+      curr: 3,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+        B: 1,
+      },
+      total: 5,
+    },
+    {
+      _01: 0.75, // C 75%
       curr: 3,
       partial: {
         "0": [0, "A"],
