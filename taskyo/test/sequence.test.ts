@@ -111,7 +111,7 @@ describe(sequence, ({ eq, res }) => ({
 
     let x: unknown;
     try {
-      x = await r0;
+      x = await (await r0).promise;
     } catch (e) {
       err = e as never;
     }
@@ -119,7 +119,7 @@ describe(sequence, ({ eq, res }) => ({
     eq(x, ERR);
 
     const t2 = t.$(IO("A"), () => "A");
-    eq(ERR as unknown, await run(t2.asSpec("t2"))("!"));
+    eq(ERR as unknown, await (await run(t2.asSpec("t2"))("!")).promise);
 
     const t3 = t2
       .$(IO("B"), () => "B")
@@ -167,6 +167,16 @@ const results = {
     },
     {
       _01: 0.7,
+      curr: 3,
+      partial: {
+        "0": [0, "A"],
+        A: 1,
+        B: 1,
+      },
+      total: 5,
+    },
+    {
+      _01: 0.75,
       curr: 3,
       partial: {
         "0": [0, "A"],

@@ -178,7 +178,7 @@ const runSequence =
         }
       };
       const d = x.state(_state(), 1);
-      const re = await x;
+      const re = await x.promise;
 
       d();
       if (re instanceof Error) {
@@ -192,7 +192,7 @@ const runSequence =
         }
         err = re;
       } else {
-        _state(await re.promise)(x.state());
+        _state(re)(x.state());
         i++;
       }
     }
