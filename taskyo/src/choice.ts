@@ -1,4 +1,4 @@
-import { __, AbortController, ARR, MsOrNumber } from "jsyoyo";
+import { __, AbortController, ARR } from "jsyoyo";
 import { Spec, spec, Spec$Params, Spec$Result, Spec$RunState, SpecCore, SpecOptions } from "./spec";
 import { run } from "./run";
 
@@ -33,18 +33,13 @@ export const choice = (<const Ss extends ARR<Spec>>(ss: Ss) =>
     return r.promise.finally(dis);
   })) as <const Ss extends ARR<Spec>>(
   ss: Ss,
-) => <
-  Options extends SpecOptions<NoInfer<Timeout>, Specs$ChoiceParams<Ss>, Specs$ChoiceResult<Ss>, any>,
-  const Id extends string = "",
-  const Timeout extends __<MsOrNumber> = __,
->(
+) => <Options extends SpecOptions<Specs$ChoiceParams<Ss>, Specs$ChoiceResult<Ss>, any>, const Id extends string = "">(
   Id?: Id,
-  timeout?: Timeout,
   opt?: Options,
 ) => Spec<
   Id,
   SpecCore<Specs$ChoiceParams<Ss>, Specs$ChoiceResult<Ss>, __, Specs$ChoiceState<Ss>, __>,
-  Options & { timeout: Timeout } & {
+  Options & {
     __: ["⨁", Ss];
   }
 >;

@@ -20,8 +20,8 @@ export type LoadedSpec<S extends SpecAny = SpecAny, O extends SpecOptions = Spec
     deps: S extends { load?: __<Load> } ? Load$Deps<S["load"]> : __;
   };
 
-export type RetryOptions<Result = unknown, Deps = unknown, Err = unknown> = (
-  err: Err | Result$ERR<Result>,
+export type RetryOptions<Result = unknown, Deps = unknown> = (
+  err: Result$ERR<Result> | ERR["timeout"],
   deps: Deps,
 ) => Promise<unknown>;
 
@@ -47,11 +47,11 @@ export type RunStateOption<Deps> = RunState | ((deps: Deps) => RunState);
 export type ToRunState<O extends RunStateOption<any>> = Fn$O<O, O> & RunState;
 export type UpdateFn<State, Deps> = (state: State, deps: Deps) => void;
 
-export interface SpecOptions<Timeout extends __<MsOrNumber> = __<MsOrNumber>, Params = any, Result = any, Deps = any> {
+export interface SpecOptions<Params = any, Result = any, Deps = any> {
   Id?: string;
-  timeout?: Timeout;
+  timeout?: MsOrNumber;
   avgTime?: MsOrNumber;
-  retry?: RetryOptions<Result, Deps, Timeout extends 0 | __ ? never : ERR["timeout"]>;
+  retry?: RetryOptions<Result, Deps>;
   cache?: {
     key: (p: Params, deps: Deps, taskId: string) => string;
     stores: CacheStore[];
@@ -112,13 +112,8 @@ const $spec =
     update = __ as Update,
   ) =>
   <Params, Result>(run: RunFn<Params, Result, NoInfer<Lo>, ToRunState<NoInfer<State>>>) =>
-  <
-    Options extends SpecOptions<NoInfer<Timeout>, Params, Result, Load$Deps<Lo>>,
-    const Id extends string = "",
-    const Timeout extends __<MsOrNumber> = __,
-  >(
+  <Options extends SpecOptions<Params, Result, Load$Deps<Lo>>, const Id extends string = "">(
     Id = "" as Id,
-    timeout = __ as Timeout,
     opt = {} as Options,
   ) =>
     ({
@@ -127,10 +122,9 @@ const $spec =
       Id,
       run,
       update,
-      timeout,
       load,
       state,
-    }) as Spec<Id, SpecCore<Params, Result, Lo, State, Update>, Options & { timeout: Timeout } & Extra>;
+    }) as Spec<Id, SpecCore<Params, Result, Lo, State, Update>, Options & Extra>;
 
 export const spec = $spec() as Fn$O<typeof $spec> & { $: typeof $spec; is: (e: object) => e is SpecCore };
 

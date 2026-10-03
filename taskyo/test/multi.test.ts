@@ -63,7 +63,7 @@ describe(choice, ({ eq, res }) => ({
 describe(`parallel`, ({ eq, res }) => ({
   simple: async () => {
     const ss = specs();
-    const s = parallel(ss)("II", __, {});
+    const s = parallel(ss)("II", {});
     const r = await run(s)({ A: "A", B: "B", C: "C" });
 
     const pr = res();

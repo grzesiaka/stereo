@@ -1,4 +1,4 @@
-import { $$, __, AbortController, ARR, ARR1, MsOrNumber } from "jsyoyo";
+import { $$, __, AbortController, ARR, ARR1 } from "jsyoyo";
 import { RunState, Spec$Params, Spec$OK, Load, spec, Spec, Spec$ERR, SpecCore, SpecOptions, StateRunFn } from "./spec";
 import { run, Run } from "./run";
 import { Simplify } from "type-fest";
@@ -121,16 +121,10 @@ class Seq<const SS extends ARR1<Step>, Deps extends Load = __> {
   }
 
   asSpec<
-    Options extends SpecOptions<
-      NoInfer<Timeout>,
-      Steps$InitParams<SS>,
-      Promise<Steps$Dynamic<SS> | Steps$Errors<SS>>,
-      __
-    > = {},
+    Options extends SpecOptions<Steps$InitParams<SS>, Promise<Steps$Dynamic<SS> | Steps$Errors<SS>>, __> = {},
     const Id extends string = "",
-    const Timeout extends __<MsOrNumber> = __,
-  >(Id?: Id, timeout?: Timeout, opt?: Options) {
-    return asSpec(this.L, this.R)(Id, timeout, opt);
+  >(Id?: Id, opt?: Options) {
+    return asSpec(this.L, this.R)(Id, opt);
   }
 }
 
@@ -208,22 +202,15 @@ export const asSpec = <SS extends Steps, Lo extends Load>(L: Lo, R: SS) =>
     partial: {},
     total: R.length,
   })(runSequence(R) as any) as never as <
-    Options extends SpecOptions<
-      NoInfer<Timeout>,
-      Steps$InitParams<SS>,
-      Promise<Steps$Dynamic<SS> | Steps$Errors<SS>>,
-      __
-    > = {},
+    Options extends SpecOptions<Steps$InitParams<SS>, Promise<Steps$Dynamic<SS> | Steps$Errors<SS>>, __> = {},
     const Id extends string = "",
-    const Timeout extends __<MsOrNumber> = __,
   >(
     Id?: Id,
-    timeout?: Timeout,
     opt?: Options,
   ) => Spec<
     Id,
     SpecCore<Steps$InitParams<SS>, Promise<Steps$Dynamic<SS> | Steps$Errors<SS>>, __, SeqState<SS>, __>,
-    Options & { timeout: Timeout } & {
+    Options & {
       __: ["~>", SS];
     }
   >;

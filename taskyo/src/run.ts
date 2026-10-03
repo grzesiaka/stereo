@@ -106,7 +106,7 @@ const run1 =
 
     const promise = [run, abo.then(() => ERR.abort(r))];
     if (spec.timeout) {
-      promise.push(timeout(spec.timeout, r) as never);
+      promise.push(timeout(spec.timeout, [r]) as never);
     }
 
     r.promise = (

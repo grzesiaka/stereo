@@ -5,21 +5,21 @@ import { ARR, MsOrNumber, wait } from "jsyoyo";
 export type ErrorLike = Error | { $: Error };
 export type ErrorLikes = ARR<ErrorLike>;
 
-type Runs = ARR<Run | RetryRun>;
+type Trace = ARR<Run | RetryRun>;
 export type ERR = AsInstances<typeof ERR>;
 export const ERR = ERRs(($) => ({
   taskyo: {
     error: {
-      retry: $<[task?: RetryRun]>(),
-      abort: $<[task?: Run, reason?: unknown]>(),
-      timeout: $<[task: Run]>(),
-      critical: $<[error: unknown, runs: Runs]>(),
+      retry: $<[run: RetryRun]>(),
+      abort: $<[run?: Run, reason?: unknown]>(),
+      timeout: $<[trace: Trace[0]]>(),
+      critical: $<[error: unknown, trace: Trace]>(),
     },
   },
 }))["taskyo"]["error"];
 
-// ideally should be cancelled
-export const timeout = (ms: MsOrNumber, run: Run) => wait(ms).then(() => ERR.timeout(run));
+// ideally should be cancellable
+export const timeout = (ms: MsOrNumber, trace: Trace = []) => wait(ms).then(() => ERR.timeout(trace[0]!)); // TODO - improve context
 
 export const critical = (err: unknown, run: Run | RetryRun) => {
   if (err instanceof ERR.critical.$) {

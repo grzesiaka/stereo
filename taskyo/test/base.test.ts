@@ -1,9 +1,8 @@
 import { describe, $describe, setupFakeTimers } from "~testing";
-import { ERR, loadDeps, load1, run, spec, asERR, RunState } from "../src";
-
+import { ERR, loadDeps, load1, run, spec, RunState } from "../src";
+import { __, wait, ASSERT } from "jsyoyo";
 import * as jsyoyo from "jsyoyo";
 import j from "jsyoyo/_";
-import { __, wait } from "jsyoyo";
 
 import "../src/_cache/memory";
 
@@ -18,7 +17,7 @@ export const count_012 = spec(
     await wait(0);
   }
   return state();
-})("count_012", 0, {
+})("count_012", {
   cache: {
     key: (p, _d, id) => `${id}/${p}`,
     stores: ["memory"] as never, // importing is broken as 'taskyo' is only meaningful when 'taskyo' is imported from external module
@@ -28,7 +27,7 @@ export const count_012 = spec(
 
 $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
   no_error: async () => {
-    const s = spec()(() => 1)("", 0, { retry: () => wait(0) });
+    const s = spec()(() => 1)("", { retry: () => wait(0) });
     const r = await run(s)(1);
     eq(await r.promise, 1);
   },
@@ -39,7 +38,7 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
     const s = spec()(() => {
       if (++i === 3) return i;
       return new Error(`err_${i}` as const);
-    })("", 0, {
+    })("", {
       retry: (err) => {
         re.add(err.message);
         return wait(100);
@@ -61,7 +60,8 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
     )((_, { wait }) => {
       if (++i < 2) return wait(50);
       return 2;
-    })("", 1, {
+    })("", {
+      timeout: 1,
       retry: (err) => {
         re.add(err.name);
         return wait(100);
@@ -114,39 +114,39 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
   },
 
   overwritten_timeout_no_abort: async () => {
-    const s = spec()(() => wait(500, 1))("150ms", 150);
+    const s = spec()(() => wait(500, 1))("150ms", { timeout: 150 });
     eq(s.timeout, 150);
     eq(s.Id, "150ms");
     const r = run(await load1(s))(1);
     v.vi.advanceTimersByTime(200); // v.vi.advanceTimersByTime(500); delivers `1` 99% an issue in vitest
     const x = await r.promise;
-    const p = asERR(x);
+    const p = ASSERT.ERR(x);
 
     eq(p.name, "taskyo.error.timeout");
     eq(p.ctx[0], r);
   },
 
   abort_before_timeout: async () => {
-    const s = spec()(() => wait(500, 1))("200ms", 200);
+    const s = spec()(() => wait(500, 1))("200ms", { timeout: 200 });
     const abort = new jsyoyo.AbortController();
     const r = await run(s)(1, abort.signal);
     v.vi.advanceTimersByTime(100);
     abort.abort();
     const x = await r.promise;
-    const p = asERR(x);
+    const p = ASSERT.ERR(x);
     eq(p.name, "taskyo.error.abort");
     eq(p.ctx[0], r);
   },
 
   abort_after_timeout: async () => {
-    const s = spec()(() => wait(500, 1))("200ms", 200);
+    const s = spec()(() => wait(500, 1))("200ms", { timeout: 200 });
     const abort = new jsyoyo.AbortController();
     const l = await load1(s);
     const r = run(l)(1, abort.signal);
     v.vi.advanceTimersByTime(300);
     abort.abort();
     const x = await r.promise;
-    const p = asERR(x);
+    const p = ASSERT.ERR(x);
     eq(p.name, "taskyo.error.timeout");
     eq(p.ctx[0], r);
   },

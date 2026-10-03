@@ -1,4 +1,4 @@
-import { __, AbortController, ARR, deferred, disposyo, MsOrNumber } from "jsyoyo";
+import { __, AbortController, ARR, deferred, disposyo } from "jsyoyo";
 import { RunFn, Spec, spec, Spec$ERR, Spec$OK, Spec$Params, SpecCore, SpecOptions } from "./spec";
 import { run, Spec$Run } from "./run";
 import { Simplify } from "type-fest";
@@ -65,17 +65,16 @@ export const parallel = (<const Ss extends ARR<Spec>>(ss: Ss) =>
   )) as <const Ss extends ARR<Spec>>(
   ss: Ss,
 ) => <
-  Options extends SpecOptions<NoInfer<Timeout>, Specs$ParallelParams<Ss>, Spec$ParallelResult<Ss>, __> = {},
+  Options extends SpecOptions<Specs$ParallelParams<Ss>, Spec$ParallelResult<Ss>, __> = {},
   const Id extends string = "",
-  const Timeout extends __<MsOrNumber> = __,
 >(
   Id?: Id,
-  timeout?: Timeout,
+
   opt?: Options,
 ) => Spec<
   Id,
   SpecCore<Specs$ParallelParams<Ss>, Spec$ParallelResult<Ss>, __, Specs$ParallelState<Ss>, __>,
-  Options & { timeout: Timeout } & {
+  Options & {
     __: ["⨂", Ss];
   }
 >;
