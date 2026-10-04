@@ -1,6 +1,6 @@
 import { describe } from "~testing";
 
-import { ERRs } from "../src";
+import { ErrMethods, ERRs } from "../src";
 import { __ } from "jsyoyo";
 
 describe(ERRs, ({ eq }) => ({
@@ -10,9 +10,17 @@ describe(ERRs, ({ eq }) => ({
   },
 
   small: () => {
+    interface Data {
+      url: string;
+    }
+    const methods = {
+      splitUrl() {
+        return this.url.split(".");
+      },
+    } satisfies ErrMethods<Data>;
     const es = ERRs(($) => ({
       http: {
-        404: { not_found: $<{ url: string }>() },
+        404: { not_found: $<{ url: string }, typeof methods>(methods) },
         500: "server_down",
       },
       ws: {
@@ -23,6 +31,7 @@ describe(ERRs, ({ eq }) => ({
     eq(Object.keys(es.http), ["404", "500"]);
     const lost = es.ws.lost();
     const notFound = new es.http[404].not_found.$({ url: "abc.com" });
+
     const down = es.http[500]();
 
     eq(lost.name, "ws.lost");
@@ -31,6 +40,7 @@ describe(ERRs, ({ eq }) => ({
 
     eq(notFound.name, "http.404.not_found");
     eq(notFound.url, "abc.com");
+    eq(notFound.splitUrl(), ["abc", "com"]);
     eq(es.ws.lost.is(notFound), false);
     eq(es.http[404].not_found.is(notFound), true);
 
