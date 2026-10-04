@@ -16,5 +16,13 @@ export const OK = <X, Ok>(x: X, ok = id as (x: Exclude<X, Error>) => Ok) =>
 
 ASSERT.ERR = ERR;
 ASSERT.OK = OK;
+ASSERT.TAG =
+  <const Key extends PropertyKey>(key: Key) =>
+  <const Tag extends string>(tag: Tag) =>
+    ASSERT((x): x is never => x[key] === tag, `[key] !== ${tag}`) as <X, Ok = X>(
+      x: X,
+      ok?: (x: X) => Ok,
+    ) => Extract<X, { [k in Key]: Tag }>;
+ASSERT.NAME = ASSERT.TAG("name");
 
 export default ASSERT;
