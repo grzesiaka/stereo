@@ -1,43 +1,55 @@
 import { __, dethunk, dp, Fn, Fn$O, Join, a } from "jsyoyo";
 import { map, Tree } from "treeo";
 
-export type RRERRORR<N extends string, Data extends object> = Error &
-  Data & {
+export type ErrMethods<cData extends object, N extends string = string> = Record<
+  string,
+  (this: { name: N } & cData) => any
+>;
+
+export type RRERRORR<N extends string, Data extends object, Methods extends ErrMethods<Data, N> = {}> = Error &
+  Data &
+  Methods & {
     readonly name: N;
   };
 
-export interface RRERRORR$<N extends string = string, cData extends object = {}> extends Error {
-  new <Data extends cData>(...CTX: __ | unknown extends Data ? [Data?] : [Data]): RRERRORR<N, Data>;
+export interface RRERRORR$<N extends string, cData extends object, Methods extends ErrMethods<cData, N>> extends Error {
+  new <Data extends cData>(...CTX: __ | unknown extends Data ? [Data?] : [Data]): RRERRORR<N, Data, Methods>;
   readonly name: N;
-  readonly prototype: RRERRORR<N, cData>;
+  readonly prototype: RRERRORR<N, cData, Methods>;
 }
 
-export const ERR = <N extends string = string, cData extends object = {}>(n: N) => {
+export const ERR = <N extends string = string, cData extends object = {}, Methods extends ErrMethods<cData, N> = {}>(
+  name: N,
+  methods?: Methods,
+) => {
   class _RRERRORR<const Data extends cData> extends Error {
-    override readonly name = n;
+    override readonly name = name;
     constructor(data: Data) {
       super();
       a(this, data);
     }
-    is(x: Error): x is _RRERRORR<Data> {
-      return x instanceof _RRERRORR || x.name === this.name;
-    }
   }
-  return dp(_RRERRORR, { name: n }) as never as RRERRORR$<N, cData>;
+  methods && dp(_RRERRORR.prototype, methods);
+  return dp(_RRERRORR, { name }) as never as RRERRORR$<N, cData, Methods>;
 };
 
-export type ERR<N extends string = string, cData extends object = {}> = Fn$O<typeof ERR<N, cData>>;
+export type ERR<
+  N extends string = string,
+  cData extends object = {},
+  Methods extends ErrMethods<cData, string> = {},
+> = Fn$O<typeof ERR<N, cData, Methods>>;
 
 export const $ERR =
-  <cData extends object = {}>() =>
+  <cData extends object = {}, Methods extends ErrMethods<cData, string> = {}>(...m: [Methods?]) =>
   <N extends string>(name: N) =>
-    ERR<N, cData>(name);
+    ERR<N, cData, Methods>(name, m[0]);
 
 type Txt = string | number;
 export type $ERRsRaw<DEF, P extends Txt[] = []> = DEF extends Fn
   ? ERR<
       Join<[...P], ".">,
-      Fn$O<DEF> extends ERR<string, infer A> ? A : Fn$O<Fn$O<DEF>> extends ERR<string, infer A> ? A : {}
+      Fn$O<DEF> extends ERR<string, infer A> ? A : Fn$O<Fn$O<DEF>> extends ERR<string, infer A> ? A : {},
+      Fn$O<DEF> extends ERR<string, any, infer M> ? M : Fn$O<Fn$O<DEF>> extends ERR<string, any, infer M> ? M : {}
     >
   : DEF extends Txt
     ? ERR<Join<[...P, DEF], ".">, {}>
@@ -71,9 +83,9 @@ export default ERRs;
 type AnyClass = abstract new (...args: any[]) => unknown;
 
 type Declassify<T, P extends Txt[] = []> = T extends AnyClass
-  ? (<const CTX extends ConstructorParameters<T>[0]>(
-      ...CTX: {} extends CTX ? [CTX?] : [CTX]
-    ) => RRERRORR<T extends { name: string } ? T["name"] : never, CTX>) & {
+  ? (<const Data extends ConstructorParameters<T>[0]>(
+      ...Data: {} extends Data ? [Data?] : [Data]
+    ) => RRERRORR<T extends { name: string } ? T["name"] : never, Data, {}>) & {
       $: T;
       is: (e: unknown) => e is InstanceType<T>;
     }
