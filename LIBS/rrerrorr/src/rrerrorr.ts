@@ -1,24 +1,22 @@
-import { __, ARR, dethunk, dp, Fn, Fn$O, Join, a } from "jsyoyo";
+import { __, dethunk, dp, Fn, Fn$O, Join, a } from "jsyoyo";
 import { map, Tree } from "treeo";
 
-export type RRERRORR<N extends string, Ctx extends ARR = readonly [string?]> = Error & {
+export type RRERRORR<N extends string, Ctx> = Error & {
   readonly name: N;
   readonly ctx: Ctx;
 };
 
-export interface RRERRORR$<N extends string = string, cCtx extends ARR = readonly [string?]> extends Error {
-  new <Ctx extends cCtx>(...args: Ctx): RRERRORR<N, Ctx>;
+export interface RRERRORR$<N extends string = string, cCtx = unknown> extends Error {
+  new <Ctx extends cCtx>(...CTX: __ | unknown extends Ctx ? [Ctx?] : [Ctx]): RRERRORR<N, Ctx>;
   readonly name: N;
-  readonly prototype: RRERRORR<N>;
+  readonly prototype: RRERRORR<N, cCtx>;
 }
 
-export const ERR = <N extends string = string, cCtx extends ARR = readonly [string?]>(n: N) => {
+export const ERR = <N extends string = string, cCtx = unknown>(n: N) => {
   class _RRERRORR<const Ctx extends cCtx> extends Error {
     override readonly name = n;
-    public readonly ctx: Ctx;
-    constructor(...ctx: Ctx) {
+    constructor(public readonly ctx: Ctx) {
       super();
-      this.ctx = ctx;
     }
     is(x: Error): x is _RRERRORR<Ctx> {
       return x instanceof _RRERRORR || x.name === this.name;
@@ -27,10 +25,10 @@ export const ERR = <N extends string = string, cCtx extends ARR = readonly [stri
   return dp(_RRERRORR, { name: n }) as never as RRERRORR$<N, cCtx>;
 };
 
-export type ERR<N extends string = string, cCtx extends ARR = readonly [string?]> = Fn$O<typeof ERR<N, cCtx>>;
+export type ERR<N extends string = string, cCtx = unknown> = Fn$O<typeof ERR<N, cCtx>>;
 
 export const $ERR =
-  <cCtx extends ARR = readonly [string?]>() =>
+  <cCtx = __<string>>() =>
   <N extends string>(name: N) =>
     ERR<N, cCtx>(name);
 
@@ -38,16 +36,10 @@ type Txt = string | number;
 export type $ERRsRaw<DEF, P extends Txt[] = []> = DEF extends Fn
   ? ERR<
       Join<[...P], ".">,
-      Fn$O<DEF> extends ERR<string, infer A>
-        ? A
-        : Fn$O<Fn$O<DEF>> extends ERR<string, infer A>
-          ? ARR extends A
-            ? [string?]
-            : A
-          : []
+      Fn$O<DEF> extends ERR<string, infer A> ? A : Fn$O<Fn$O<DEF>> extends ERR<string, infer A> ? A : __
     >
   : DEF extends Txt
-    ? ERR<Join<[...P, DEF], ".">, []>
+    ? ERR<Join<[...P, DEF], ".">, unknown>
     : DEF extends { readonly [k in Txt]: any }
       ? { [k in keyof DEF & Txt]: $ERRsRaw<DEF[k], [...P, k]> }
       : never;
@@ -58,7 +50,7 @@ type ERR_DEF = string | ((n: string) => ERR) | (() => (n: string) => ERR);
 export const ERRs = <const DEF extends Tree<ERR_DEF>>(def: ($: typeof $ERR) => DEF) =>
   map(([v, k]: [ERR_DEF, string]) => {
     const $ = typeof v === "string" ? ERR(`${k}.${v}`) : dethunk(v)(k);
-    return a((...args: ARR) => new $(...args), {
+    return a((ctx: any) => new $(ctx), {
       $,
       is: (e: unknown) => e instanceof $ /* for cross boundary: e instanceof Error && e.name = $.name */,
     });
@@ -78,9 +70,9 @@ export default ERRs;
 type AnyClass = abstract new (...args: any[]) => unknown;
 
 type Declassify<T, P extends Txt[] = []> = T extends AnyClass
-  ? (<const Args extends ConstructorParameters<T>>(
-      ...args: Args & ConstructorParameters<T>
-    ) => RRERRORR<T extends { name: string } ? T["name"] : never, Args>) & {
+  ? (<const CTX extends ConstructorParameters<T>[0]>(
+      ...CTX: unknown extends CTX ? [CTX?] : [CTX]
+    ) => RRERRORR<T extends { name: string } ? T["name"] : never, CTX>) & {
       $: T;
       is: (e: unknown) => e is InstanceType<T>;
     }
