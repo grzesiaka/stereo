@@ -34,7 +34,7 @@ describe(choice, ({ eq, res }) => ({
       err = e as never;
     }
 
-    ifError(err, (err) => eq(err.ctx.run, rp), THROW);
+    ifError(err, (err) => eq(err.run, rp), THROW);
   },
 
   error: async () => {
@@ -53,8 +53,8 @@ describe(choice, ({ eq, res }) => ({
       err,
       (err) => {
         eq(err.name, "taskyo.error.critical");
-        eq(err.ctx.error, "!");
-        eq(err.ctx.trace[1], r);
+        eq(err.error, "!");
+        eq(err.trace[1], r);
       },
       THROW,
     );

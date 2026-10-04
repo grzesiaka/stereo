@@ -23,10 +23,9 @@ export const timeout = (ms: MsOrNumber, trace: Trace = []) => wait(ms).then(() =
 
 export const critical = (err: unknown, run: Run | RetryRun) => {
   if (err instanceof ERR.critical.$) {
-    const ctx = err.ctx;
     return ERR.critical({
-      error: ctx.error,
-      trace: [...ctx.trace, run],
+      error: err.error,
+      trace: [...err.trace, run],
     });
   }
   if (err instanceof Error && err.name.startsWith("taskyo.error")) {

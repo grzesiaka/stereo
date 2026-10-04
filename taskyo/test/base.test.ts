@@ -122,7 +122,7 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
     const x = await r.promise;
     if (ERR.timeout.is(x)) {
       eq(x.name, "taskyo.error.timeout");
-      eq(x.ctx.trace, [r]);
+      eq(x.trace, [r]);
     }
   },
 
@@ -134,7 +134,7 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
     abort.abort();
     const x = await r.promise;
     const p = ASSERT.NAME("taskyo.error.abort")(x);
-    eq(p.ctx.run, r);
+    eq(p.run, r);
   },
 
   abort_after_timeout: async () => {
@@ -146,7 +146,7 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
     abort.abort();
     const x = await r.promise;
     const p = ASSERT.NAME("taskyo.error.timeout")(x);
-    eq(p.ctx.trace, [r]);
+    eq(p.trace, [r]);
   },
 }));
 
@@ -166,6 +166,6 @@ describe("load / ERR", ({ eq }) => ({
     eq(e instanceof Error, true);
     eq(e instanceof ERR.abort.$, true);
     eq(e.name, "taskyo.error.abort");
-    eq(e.ctx, { reason: "!" });
+    eq(e.reason, "!");
   },
 }));

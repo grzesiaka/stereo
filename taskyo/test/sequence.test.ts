@@ -90,9 +90,9 @@ describe(sequence, ({ eq, res }) => ({
     });
 
     const e = ASSERT(ERR["critical"].is)(err);
-    eq(e.ctx.error, "error_sum:3");
+    eq(e.error, "error_sum:3");
     eq(
-      e.ctx.trace.map((x) => x.spec.Id),
+      e.trace.map((x) => x.spec.Id),
       ["err", "seq"], // trace
     );
   },
