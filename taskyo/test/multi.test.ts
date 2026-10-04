@@ -1,6 +1,6 @@
 import { describe } from "~testing";
 import { __, AbortController, ifError, tick, THROW } from "jsyoyo";
-import { run, choice, parallel, spec, ERR, Spec$Result } from "../src";
+import { run, choice, parallel, spec, ERR } from "../src";
 import { specs } from "./test-utils";
 
 describe(choice, ({ eq, res }) => ({
@@ -24,7 +24,8 @@ describe(choice, ({ eq, res }) => ({
     const c = choice(specs())("⨁");
     const abort = new AbortController();
     const rp = await run(c)(["C", "C"], abort.signal);
-    let err: ERR["abort"] | Awaited<Spec$Result<typeof c>>;
+    // let err: ERR["abort"] | Awaited<Spec$Result<typeof c>>;
+    let err: Awaited<(typeof rp)["promise"]>;
     try {
       await tick(1);
       abort.abort();
@@ -33,7 +34,7 @@ describe(choice, ({ eq, res }) => ({
       err = e as never;
     }
 
-    ifError(err, (err) => eq(err.ctx[0], rp), THROW);
+    ifError(err, (err) => eq(err.ctx.run, rp), THROW);
   },
 
   error: async () => {
@@ -52,8 +53,8 @@ describe(choice, ({ eq, res }) => ({
       err,
       (err) => {
         eq(err.name, "taskyo.error.critical");
-        eq(err.ctx[0], "!");
-        eq(err.ctx[1][1], r);
+        eq(err.ctx.error, "!");
+        eq(err.ctx.trace[1], r);
       },
       THROW,
     );

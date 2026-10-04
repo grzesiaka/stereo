@@ -19,9 +19,9 @@ import { CACHE, CacheService } from "./cache";
 type RetryRunResult<S extends LoadedSpec | Spec> =
   | Spec$OK<S>
   | Spec$ERR<S>
-  | RRERRORR<ERR["abort"]["name"], [Run<S>]>
-  | (S extends { timeout: MsOrNumber } ? RRERRORR<ERR["timeout"]["name"], [Run<S>]> : never)
-  | (S extends { retry: any } ? RRERRORR<ERR["retry"]["name"], [RetryRun<S>]> : never);
+  | RRERRORR<ERR["abort"]["name"], { run: Run<S> }>
+  | (S extends { timeout: MsOrNumber } ? RRERRORR<ERR["timeout"]["name"], { trace: [Run<S>] }> : never)
+  | (S extends { retry: any } ? RRERRORR<ERR["retry"]["name"], { run: RetryRun<S> }> : never);
 export interface RetryRun<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   spec: S;
   promise: Promise<RetryRunResult<S>>;
@@ -30,6 +30,7 @@ export interface RetryRun<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
 }
 
 type InitRun = Fn$O<typeof initRun>;
+
 const initRun = <R extends Run = Run>(spec: LoadedSpec) => {
   const r = {} as R;
   const _state = ifFunction(
@@ -85,8 +86,8 @@ export interface Run<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   promise: Promise<
     | Spec$OK<S>
     | Spec$ERR<S>
-    | RRERRORR<ERR["abort"]["name"], [Run<S>]>
-    | (S extends { timeout: any } ? RRERRORR<ERR["timeout"]["name"], [Run<S>]> : never)
+    | RRERRORR<ERR["abort"]["name"], { run: Run<S> }>
+    | (S extends { timeout: any } ? RRERRORR<ERR["timeout"]["name"], { trace: [Run<S>] }> : never)
   >;
   state: $State<Spec$State<S>, Spec$Deps<S>>[0]["O"];
   cached?: boolean;
@@ -104,7 +105,7 @@ const run1 =
       throw critical(e, r);
     }
 
-    const promise = [run, abo.then(() => ERR.abort(r))];
+    const promise = [run, abo.then(() => ERR.abort({ run: r }))];
     if (spec.timeout) {
       promise.push(timeout(spec.timeout, [r]) as never);
     }

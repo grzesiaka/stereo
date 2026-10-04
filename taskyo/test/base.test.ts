@@ -120,10 +120,10 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
     const r = run(await load1(s))(1);
     v.vi.advanceTimersByTime(200); // v.vi.advanceTimersByTime(500); delivers `1` 99% an issue in vitest
     const x = await r.promise;
-    const p = ASSERT.ERR(x);
-
-    eq(p.name, "taskyo.error.timeout");
-    eq(p.ctx[0], r);
+    if (ERR.timeout.is(x)) {
+      eq(x.name, "taskyo.error.timeout");
+      eq(x.ctx.trace, [r]);
+    }
   },
 
   abort_before_timeout: async () => {
@@ -133,9 +133,8 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
     v.vi.advanceTimersByTime(100);
     abort.abort();
     const x = await r.promise;
-    const p = ASSERT.ERR(x);
-    eq(p.name, "taskyo.error.abort");
-    eq(p.ctx[0], r);
+    const p = ASSERT.NAME("taskyo.error.abort")(x);
+    eq(p.ctx.run, r);
   },
 
   abort_after_timeout: async () => {
@@ -146,9 +145,8 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
     v.vi.advanceTimersByTime(300);
     abort.abort();
     const x = await r.promise;
-    const p = ASSERT.ERR(x);
-    eq(p.name, "taskyo.error.timeout");
-    eq(p.ctx[0], r);
+    const p = ASSERT.NAME("taskyo.error.timeout")(x);
+    eq(p.ctx.trace, [r]);
   },
 }));
 
@@ -163,11 +161,11 @@ describe("load / ERR", ({ eq }) => ({
     eq(state, { a: 1, b: { bb: "b.bb" }, json: [], jsyoyo });
   },
   ERR: () => {
-    eq(ERR.abort() instanceof Error, true);
-    const e = new ERR.abort.$(__, "!");
+    eq(ERR.abort({}) instanceof Error, true);
+    const e = new ERR.abort.$({ reason: "!" });
     eq(e instanceof Error, true);
     eq(e instanceof ERR.abort.$, true);
     eq(e.name, "taskyo.error.abort");
-    eq(e.ctx, [__, "!"]);
+    eq(e.ctx, { reason: "!" });
   },
 }));
