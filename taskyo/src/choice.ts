@@ -1,6 +1,7 @@
 import { __, AbortController, ARR } from "jsyoyo";
 import { Spec, spec, Spec$Params, Spec$Result, Spec$RunState, SpecCore, SpecOptions } from "./spec";
 import { run } from "./run";
+import { maxAvgTime, WithMaxAvgTime } from "./avg-time";
 
 export type Specs$ChoiceState<Ss extends ARR> = Ss extends readonly [infer S, ...infer R]
   ? Spec$RunState<S> | Specs$ChoiceState<R>
@@ -17,6 +18,9 @@ export type Specs$ChoiceParams<Ss extends ARR> = Ss extends readonly [infer S ex
 export const choice = (<const Ss extends ARR<Spec>>(ss: Ss) =>
   spec.$({
     __: ["⨁", ss],
+    get avgTime() {
+      return maxAvgTime(ss);
+    },
   })(
     __,
     {} as Specs$ChoiceState<Ss>,
@@ -41,7 +45,7 @@ export const choice = (<const Ss extends ARR<Spec>>(ss: Ss) =>
   SpecCore<Specs$ChoiceParams<Ss>, Specs$ChoiceResult<Ss>, __, Specs$ChoiceState<Ss>, __>,
   Options & {
     __: ["⨁", Ss];
-  }
+  } & WithMaxAvgTime<Ss>
 >;
 
 export default choice;

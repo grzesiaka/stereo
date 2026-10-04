@@ -4,6 +4,7 @@ import { ERR, ErrorLikes } from "./errors";
 import { Simplify } from "type-fest";
 import { AwaiTreed, Dethunk, Tree } from "treeo";
 import { CacheOption, CacheStore } from "./cache";
+import { WithFallback } from "~types";
 
 export type Load =
   | __
@@ -48,6 +49,7 @@ export type ToRunState<O extends RunStateOption<any>> = Fn$O<O, O> & RunState;
 export type UpdateFn<State, Deps> = (state: State, deps: Deps) => void;
 
 export interface SpecOptions<Params = any, Result = any, Deps = any> {
+  [k: string]: unknown;
   Id?: string;
   timeout?: MsOrNumber;
   avgTime?: MsOrNumber;
@@ -101,7 +103,7 @@ export type Spec$ERR<S> = Result$ERR<Spec$Result<S>>;
 export type Spec$OK<S> = Result$OK<Spec$Result<S>>;
 
 const $spec =
-  <Extra extends object>(extra = {} as Extra) =>
+  <Options0 extends SpecOptions<unknown, unknown, unknown>>(extra = {} as Options0) =>
   <
     Lo extends Load,
     State extends RunStateOption<Load$Deps<NoInfer<Lo>>>,
@@ -124,7 +126,7 @@ const $spec =
       update,
       load,
       state,
-    }) as Spec<Id, SpecCore<Params, Result, Lo, State, Update>, Options & Extra>;
+    }) as Spec<Id, SpecCore<Params, Result, Lo, State, Update>, WithFallback<Options, Options0>>;
 
 export const spec = $spec() as Fn$O<typeof $spec> & { $: typeof $spec; is: (e: object) => e is SpecCore };
 

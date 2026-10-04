@@ -138,7 +138,7 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
   },
 
   abort_after_timeout: async () => {
-    const s = spec()(() => wait(500, 1))("200ms", { timeout: 200 });
+    const s = spec.$({ timeout: 150 })()(() => wait(500, 1))("200ms", { timeout: 200 });
     const abort = new jsyoyo.AbortController();
     const l = await load1(s);
     const r = run(l)(1, abort.signal);

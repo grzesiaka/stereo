@@ -4,6 +4,8 @@ import { run, Run } from "./run";
 import { Simplify } from "type-fest";
 import { AwaiTreed } from "treeo";
 import { percent } from "./utils";
+import { sumAvgTime, WithSumAvgTime } from "./avg-time";
+import { ij_Project } from "proyij";
 
 type SpecStep<
   T extends Spec = Spec,
@@ -196,7 +198,12 @@ const runSequence =
   };
 
 export const asSpec = <SS extends Steps, Lo extends Load>(L: Lo, R: SS) =>
-  spec.$({ __: ["~>", R] })(L, {
+  spec.$({
+    __: ["~>", R],
+    get avgTime() {
+      return sumAvgTime(R.map((x) => x[0]));
+    },
+  })(L, {
     "%": 0,
     curr: 0,
     partial: {},
@@ -212,5 +219,5 @@ export const asSpec = <SS extends Steps, Lo extends Load>(L: Lo, R: SS) =>
     SpecCore<Steps$InitParams<SS>, Promise<Steps$Dynamic<SS> | Steps$Errors<SS>>, __, SeqState<SS>, __>,
     Options & {
       __: ["~>", SS];
-    }
+    } & WithSumAvgTime<ij_Project<[0], SS>>
   >;

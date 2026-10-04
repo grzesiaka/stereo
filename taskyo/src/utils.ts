@@ -1,11 +1,10 @@
 import { Var } from "ioioy";
-import { AbortSignal, dethunk, $$, __, ifFunction, MsOrNumber, ARR } from "jsyoyo";
+import { AbortSignal, dethunk, $$, __, ifFunction } from "jsyoyo";
 import { Tree, awaiT, map } from "treeo";
 
-import type { Load, Load$Deps, LoadedSpec, StateRunFn, RunState, Spec } from "./spec";
+import type { Load, Load$Deps, LoadedSpec, StateRunFn, RunState } from "./spec";
 import { Simplify } from "type-fest";
 import { spec } from "./spec";
-import parallel from "./parallel";
 
 export const loadDeps = awaiT.$(dethunk) as <T extends $$<Load>>(d: T) => $$<Load$Deps<T>>;
 
@@ -72,6 +71,6 @@ export const $state = <State extends RunState, Deps>(
 
 export const percent = (dividend: number, divisor = 1) => Math.round((100 * dividend) / divisor);
 
-import { timeout } from "./errors";
-export const orTimeout = <const Ms extends MsOrNumber, S extends ARR<Spec>>(ms: Ms, ...specs: S) =>
-  parallel([spec()(() => timeout(ms))(), ...specs]);
+// import { timeout } from "./errors";
+// export const orTimeout = <const Ms extends MsOrNumber, S extends ARR<Spec>>(ms: Ms, ...specs: S) =>
+//   parallel([spec()(() => timeout(ms))(), ...specs]);

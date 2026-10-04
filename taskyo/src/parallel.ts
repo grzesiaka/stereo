@@ -4,6 +4,7 @@ import { run, Spec$Run } from "./run";
 import { Simplify } from "type-fest";
 import { critical } from "./errors";
 import { percent } from "./utils";
+import { maxAvgTime, WithMaxAvgTime } from "./avg-time";
 
 export type Specs$ParallelState<S extends ARR> = {
   "%": number;
@@ -37,6 +38,9 @@ type _Specs$ParallelParams<Ss extends ARR> = Ss extends readonly [infer S extend
 export const parallel = (<const Ss extends ARR<Spec>>(ss: Ss) =>
   spec.$({
     __: ["⨂", ss],
+    get avgTime() {
+      return maxAvgTime(ss);
+    },
   })(__, { "%": 0, curr: 0, total: ss.length, runs: {} } as Specs$ParallelState<Ss>)<Specs$ParallelParams<Ss>, any>(
     async (params, _, state, abo) => {
       let dis = disposyo();
@@ -76,7 +80,7 @@ export const parallel = (<const Ss extends ARR<Spec>>(ss: Ss) =>
   SpecCore<Specs$ParallelParams<Ss>, Spec$ParallelResult<Ss>, __, Specs$ParallelState<Ss>, __>,
   Options & {
     __: ["⨂", Ss];
-  }
+  } & WithMaxAvgTime<Ss>
 >;
 
 export default parallel;

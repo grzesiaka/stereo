@@ -1,5 +1,6 @@
 export * from "disposyo";
 export * from "ififify";
+export * from "numyo";
 export * from "objoy";
 export * from "txtxt";
 export * from "~types";
