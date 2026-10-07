@@ -19,7 +19,11 @@ export interface RetryWithExpBackoff {
   jitter?: boolean; // | (() => number);
 }
 
-export type RetryOptions<Result = unknown, Deps = unknown> = RetryFn<Result, Deps> | RetryAfter | MsOrNumber;
+export type RetryOptions<Result = unknown, Deps = unknown> =
+  | RetryFn<Result, Deps>
+  | RetryAfter
+  | MsOrNumber
+  | RetryWithExpBackoff;
 
 export const ASAP = () => 0;
 
@@ -28,7 +32,7 @@ export const withExpBackoff = (opt: RetryWithExpBackoff, run: RetryRun) => {
   let attempt = 0;
   return () => {
     if (opt.retries && attempt++ >= opt.retries) return failed(run);
-    const ms = Math.min(opt.maxDelay || 60_000, (opt.initDelay || 1_000) * (opt.exponent || 2) ** attempt);
+    const ms = Math.min(opt.maxDelay || 60_000, (opt.initDelay || 1_000) * (opt.exponent || 2) ** attempt++);
     return wait(opt.jitter ? Math.random() * ms : ms);
   };
 };
@@ -56,7 +60,7 @@ export const initRetry = (
         retry,
         (r) => {
           let i = 0;
-          return () => (i++ < r.length ? wait(r[i++]) : failed(run));
+          return () => (i < r.length ? wait(r[i++]) : failed(run));
         },
         (r) => {
           return withExpBackoff(r, run);

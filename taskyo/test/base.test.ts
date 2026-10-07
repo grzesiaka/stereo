@@ -77,7 +77,38 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
   },
 
   array: async () => {
-    // const s = spec()(() => Promise.reject(1))();
+    const r = await run(
+      spec()(() => new Error())({
+        retry: [1, 1, 1],
+      }),
+    )(1);
+    v.vi.advanceTimersByTimeAsync(200);
+    let e: unknown;
+    try {
+      e = await r.promise;
+    } catch (_e) {
+      e = _e;
+    }
+    const x = ASSERT(ERR.retry.is)(e);
+    eq(x.run.runs.length, 4); // 1 + 3 retries
+  },
+
+  backoff: async () => {
+    let i = 0;
+    const re = res<number>();
+    const r = await run(
+      spec()(() => (i++ < 5 ? (re.add(Date.now()), new Error()) : i))({
+        retry: {
+          initDelay: 10,
+          maxDelay: 1000,
+        },
+      }),
+    )(1);
+    v.vi.advanceTimersByTimeAsync(20_000);
+    const x = await r.promise;
+    eq(x, 6); // 1 + 5 retries
+    eq(re.items.length, 5);
+    eq(re.items[4]! - re.items[0]!, 10 + 20 + 40 + 80);
   },
 }));
 

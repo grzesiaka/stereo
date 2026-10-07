@@ -1,5 +1,5 @@
 import { RRERRORR } from "rrerrorr";
-import { __, a, deferred, Fn$O, ifFunction, MsOrNumber, ON } from "jsyoyo";
+import { __, deferred, Fn$O, ifFunction, MsOrNumber, ON } from "jsyoyo";
 
 import { $State, $state, fakeAbort, load1 } from "./utils";
 import type { LoadedSpec, Spec$State, Spec$Deps, Spec$ERR, Spec$OK, Spec$Params, Spec, SpecOptions } from "./spec";
@@ -31,9 +31,10 @@ const initRun = <R extends Run = Run>(spec: LoadedSpec) => {
     ($) => $(spec.deps),
     (x) => ({ ...x }),
   );
-  const state = $state(a(_state, spec.retry ? { runs: [] } : []), spec.deps, spec.update);
+  const state = $state(_state, spec.deps, spec.update);
   r.spec = spec;
   r.state = state[0].O;
+  spec.retry && ((r as never as RetryRun).runs = []);
   return [r, state] as [run: R, state: typeof state];
 };
 
@@ -55,12 +56,13 @@ const retry =
     const run = (): Promise<unknown> => {
       stopObserving();
       const r1 = run1(spec)(params, abort);
+      r.runs.push(r1);
 
       stopObserving = r1.state(state[1]);
       return r1.promise
         .then((x) => {
           if (x instanceof Error) {
-            return retry(x).then(run);
+            return retry(x).then(run).catch(def.reject);
           }
           def.resolve(x);
           return x;
