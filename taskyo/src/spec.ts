@@ -1,4 +1,4 @@
-import { __, Fn$O, Json, MsOrNumber } from "jsyoyo";
+import { __, a, CtxId, CtxIdOptional, Fn$O, Json, MsOrNumber } from "jsyoyo";
 
 import { ErrorLikes } from "./errors";
 import { Simplify } from "type-fest";
@@ -99,7 +99,7 @@ export type Spec$ERR<S> = Result$ERR<Spec$Result<S>>;
 export type Spec$OK<S> = Result$OK<Spec$Result<S>>;
 
 const $spec =
-  <Options0 extends SpecOptions<unknown, unknown, unknown>>(extra = {} as Options0) =>
+  <Options0 extends SpecOptions<unknown, unknown, unknown>>(topOptions = {} as Options0) =>
   <
     Lo extends Load,
     State extends RunStateOption<Load$Deps<NoInfer<Lo>>>,
@@ -110,19 +110,23 @@ const $spec =
     update = __ as Update,
   ) =>
   <Params, Result>(run: RunFn<Params, Result, NoInfer<Lo>, ToRunState<NoInfer<State>>>) =>
-  <Options extends SpecOptions<Params, Result, Load$Deps<Lo>>, const Id extends string = "">(
-    Id = "" as Id,
-    opt = {} as Options,
-  ) =>
-    ({
-      ...extra,
-      ...opt,
-      Id,
-      run,
-      update,
-      load,
-      state,
-    }) as Spec<Id, SpecCore<Params, Result, Lo, State, Update>, WithFallback<Options, Options0>>;
+  <Options extends CtxIdOptional<SpecOptions<Params, Result, Load$Deps<Lo>>>>(opt = {} as Options) =>
+    a(
+      {
+        Id: "",
+        run,
+        update,
+        load,
+        state,
+      },
+      topOptions,
+      typeof opt === "string" ? { Id: opt } : opt,
+    ) as never as Spec<
+      // TODO simplify Id
+      string, // WithFallback<CtxId<Options>, Options0> extends { Id: infer Id extends string } ? Id : "",
+      SpecCore<Params, Result, Lo, State, Update>,
+      WithFallback<CtxId<Options>, Options0>
+    >;
 
 export const spec = $spec() as Fn$O<typeof $spec> & { $: typeof $spec; is: (e: object) => e is SpecCore };
 

@@ -17,7 +17,8 @@ export const count_012 = spec(
     await wait(0);
   }
   return state();
-})("count_012", {
+})({
+  Id: "count_012",
   cache: {
     key: (p, _d, id) => `${id}/${p}`,
     stores: ["memory"] as never, // importing is broken as 'taskyo' is only meaningful when 'taskyo' is imported from external module
@@ -27,7 +28,7 @@ export const count_012 = spec(
 
 $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
   no_error: async () => {
-    const s = spec()(() => 1)("", { retry: () => wait(0) });
+    const s = spec()(() => 1)({ retry: () => wait(0) });
     const r = await run(s)(1);
     eq(await r.promise, 1);
   },
@@ -38,7 +39,7 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
     const s = spec()(() => {
       if (++i === 3) return i;
       return new Error(`err_${i}` as const);
-    })("", {
+    })({
       retry: ([err]) => {
         re.add(err.message);
         return wait(100);
@@ -60,7 +61,7 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
     )((_, { wait }) => {
       if (++i < 2) return wait(2);
       return 2;
-    })("", {
+    })({
       timeout: 1,
       retry: ([err]) => {
         re.add(err.name);
@@ -118,7 +119,7 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
   },
 
   overwritten_timeout_no_abort: async () => {
-    const s = spec()(() => wait(500, 1))("150ms", { timeout: 150 });
+    const s = spec()(() => wait(500, 1))({ Id: "150ms", timeout: 150 });
     eq(s.timeout, 150);
     eq(s.Id, "150ms");
     const r = run(await load1(s))(1);
@@ -131,7 +132,7 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
   },
 
   abort_before_timeout: async () => {
-    const s = spec()(() => wait(500, 1))("200ms", { timeout: 200 });
+    const s = spec()(() => wait(500, 1))({ timeout: 200 });
     const abort = new jsyoyo.AbortController();
     const r = await run(s)(1, abort.signal);
     v.vi.advanceTimersByTime(100);
@@ -142,7 +143,7 @@ $describe(setupFakeTimers)("timeout & abort", ({ v, eq }) => ({
   },
 
   abort_after_timeout: async () => {
-    const s = spec.$({ timeout: 150 })()(() => wait(500, 1))("200ms", { timeout: 200 });
+    const s = spec.$({ timeout: 150 })()(() => wait(500, 1))({ timeout: 200 });
     const abort = new jsyoyo.AbortController();
     const l = await load1(s);
     const r = run(l)(1, abort.signal);

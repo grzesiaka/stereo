@@ -6,7 +6,7 @@ import type { MsOrNumber } from "jsyoyo";
 import d from "jsyoyo/_";
 import { maxAvgTime, sumAvgTime } from "../src/avg-time";
 
-const s = <N extends MsOrNumber>(n: N) => spec.$()(d)((_, d) => d.wait(n))(`${n}ms`, { avgTime: n });
+const s = <N extends MsOrNumber>(n: N) => spec.$()(d)((_, d) => d.wait(n))({ Id: `${n}ms`, avgTime: n });
 
 describe("avg-time", ({ eq }) => ({
   ops: () => {
