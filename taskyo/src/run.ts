@@ -1,18 +1,10 @@
-import { __, a, deferred, Fn$O, ifFunction, MsOrNumber, ON } from "jsyoyo";
-import { $State, $state, fakeAbort, load1 } from "./utils";
-import type {
-  LoadedSpec,
-  Spec$State,
-  Spec$Deps,
-  Spec$ERR,
-  Spec$OK,
-  Spec$Params,
-  RetryOptions,
-  Spec,
-  SpecOptions,
-} from "./spec";
-
 import { RRERRORR } from "rrerrorr";
+import { __, a, deferred, Fn$O, ifFunction, MsOrNumber, ON } from "jsyoyo";
+
+import { $State, $state, fakeAbort, load1 } from "./utils";
+import type { LoadedSpec, Spec$State, Spec$Deps, Spec$ERR, Spec$OK, Spec$Params, Spec, SpecOptions } from "./spec";
+import { initRetry, RetryOptions } from "./retry";
+
 import { critical, ERR, timeout } from "./errors";
 import { CACHE, CacheService } from "./cache";
 
@@ -25,6 +17,7 @@ type RetryRunResult<S extends LoadedSpec | Spec> =
 export interface RetryRun<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   spec: S;
   promise: Promise<RetryRunResult<S>>;
+  runs: Run[];
   state: $State<Spec$State<S> & { runs: [Run<S>, ...Run<S>[]] }, Spec$Deps<S>>[0]["O"];
   cached?: boolean;
 }
@@ -45,7 +38,7 @@ const initRun = <R extends Run = Run>(spec: LoadedSpec) => {
 };
 
 const retry =
-  <S extends LoadedSpec & { retry: RetryOptions }>(spec: S, [r, state] = initRun(spec)) =>
+  <S extends LoadedSpec & { retry: RetryOptions }>(spec: S, [r, state] = initRun<RetryRun>(spec)) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
     const def = deferred<RetryRunResult<S>>();
 
@@ -58,14 +51,16 @@ const retry =
     r.promise = Promise.race(promise);
 
     let stopObserving = () => 1 as unknown;
+    const retry = initRetry(spec, r);
     const run = (): Promise<unknown> => {
       stopObserving();
       const r1 = run1(spec)(params, abort);
+
       stopObserving = r1.state(state[1]);
       return r1.promise
         .then((x) => {
           if (x instanceof Error) {
-            return spec.retry(x, spec.deps /* r */).then(run);
+            return retry(x).then(run);
           }
           def.resolve(x);
           return x;
@@ -138,12 +133,12 @@ export const run =
   <S extends Spec & SpecOptions>(spec: S, onLoaded?: (...r: InitRun) => void) =>
   (params: Spec$Params<S>, abort = fakeAbort): Spec$Run<S> => {
     if (("deps" in spec || !("load" in spec)) && !("cache" in spec)) {
-      const i = initRun(spec as never as LoadedSpec);
+      const i = initRun<RetryRun>(spec as never as LoadedSpec);
       onLoaded?.(...i);
       return (spec.retry ? retry : run1)(spec as any, i)(params, abort) as never;
     }
     return load1(spec).then(async (s) => {
-      const i = initRun(spec as never as LoadedSpec);
+      const i = initRun<RetryRun>(spec as never as LoadedSpec);
       onLoaded?.(...i);
       const cached = await getCached(s as any, params);
 

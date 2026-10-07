@@ -1,10 +1,11 @@
 import { __, Fn$O, Json, MsOrNumber } from "jsyoyo";
 
-import { ERR, ErrorLikes } from "./errors";
+import { ErrorLikes } from "./errors";
 import { Simplify } from "type-fest";
 import { AwaiTreed, Dethunk, Tree } from "treeo";
 import { CacheOption, CacheStore } from "./cache";
 import { WithFallback } from "~types";
+import { RetryOptions } from "./retry";
 
 export type Load =
   | __
@@ -20,11 +21,6 @@ export type LoadedSpec<S extends SpecAny = SpecAny, O extends SpecOptions = Spec
   O & {
     deps: S extends { load?: __<Load> } ? Load$Deps<S["load"]> : __;
   };
-
-export type RetryOptions<Result = unknown, Deps = unknown> = (
-  err: Result$ERR<Result> | ERR["timeout"],
-  deps: Deps,
-) => Promise<unknown>;
 
 export type StateRunFn<State extends RunState> = (u?: Partial<State>) => State;
 export type RunFn<Params, Result, Lo extends Load, State extends RunState> = (

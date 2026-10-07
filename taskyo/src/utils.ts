@@ -70,7 +70,3 @@ export const $state = <State extends RunState, Deps>(
 };
 
 export const percent = (dividend: number, divisor = 1) => Math.round((100 * dividend) / divisor);
-
-// import { timeout } from "./errors";
-// export const orTimeout = <const Ms extends MsOrNumber, S extends ARR<Spec>>(ms: Ms, ...specs: S) =>
-//   parallel([spec()(() => timeout(ms))(), ...specs]);

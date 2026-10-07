@@ -39,7 +39,7 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
       if (++i === 3) return i;
       return new Error(`err_${i}` as const);
     })("", {
-      retry: (err) => {
+      retry: ([err]) => {
         re.add(err.message);
         return wait(100);
       },
@@ -58,21 +58,25 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
       j,
       {},
     )((_, { wait }) => {
-      if (++i < 2) return wait(50);
+      if (++i < 2) return wait(2);
       return 2;
     })("", {
       timeout: 1,
-      retry: (err) => {
+      retry: ([err]) => {
         re.add(err.name);
-        return wait(100);
+        return wait(2);
       },
     });
 
     const r = await run(s)(1);
 
-    v.vi.advanceTimersByTimeAsync(300);
+    v.vi.advanceTimersByTimeAsync(10);
     eq(await r.promise, 2);
     re.eq(["taskyo.error.timeout", "taskyo.error.timeout"]);
+  },
+
+  array: async () => {
+    // const s = spec()(() => Promise.reject(1))();
   },
 }));
 
