@@ -1,5 +1,5 @@
 import { describe, $describe, setupFakeTimers } from "~testing";
-import { ERR, loadDeps, load1, run, spec, RunState } from "../src";
+import { ERR, loadDeps, load1, run, spec, RunState, params } from "../src";
 import { __, wait, ASSERT } from "jsyoyo";
 import * as jsyoyo from "jsyoyo";
 import j from "jsyoyo/_";
@@ -114,12 +114,12 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
 
 $describe(setupFakeTimers)("run", ({ eq, res, v }) => ({
   emptish: async () => {
-    const s = spec()((params: 1 | 2) => [params])("id");
+    const s = params(spec()((params: 1 | 2) => [params])("id"), 1);
 
     eq(s.Id, "id");
     const l = await load1(s);
 
-    const r = run(l)(1);
+    const r = run(l)();
 
     eq(r.spec, l);
     eq(await r.promise, [1]);

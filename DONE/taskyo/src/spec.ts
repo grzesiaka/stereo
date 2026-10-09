@@ -1,7 +1,7 @@
-import { __, a, CtxId, CtxIdOptional, Fn$O, Json, MsOrNumber } from "jsyoyo";
+import { __, a, CtxId, CtxIdOptional, Fn$I, Fn$O, Json, MsOrNumber, u } from "jsyoyo";
 
 import { ErrorLikes } from "./errors";
-import { Simplify } from "type-fest";
+import { ArrayTail, Simplify } from "type-fest";
 import { AwaiTreed, Dethunk, Tree } from "treeo";
 import { CacheOption, CacheStore } from "./cache";
 import { WithFallback } from "~types";
@@ -88,7 +88,9 @@ export interface SpecAny<
   Id: Id;
 }
 
-export type Spec$Params<S> = S extends { run: RunFn<infer X, any, any, any> } ? X : never;
+export type Spec$Params<S> = S extends { run: any } ? Fn$I<S["run"]>[0] : never;
+// Weirdly this does not picks up `undefined` after params provided
+// export type Spec$Params<S> = S extends { run: RunFn<infer X, any, any, any> } ? X : never;
 export type Spec$Result<S> = S extends { run: RunFn<any, infer X, any, any> } ? X : never;
 export type Spec$Deps<S> = S extends { load: any } ? Load$Deps<S["load"]> : never;
 export type Spec$State<S> = S extends { state: any } ? ToRunState<S["state"]> : never;
@@ -132,5 +134,23 @@ export const spec = $spec() as Fn$O<typeof $spec> & { $: typeof $spec; is: (e: o
 
 spec.is = (e: object): e is SpecCore => "load" in e && "state" in e && "run" in e;
 spec.$ = $spec;
+
+export const params = <S extends Spec, const P extends Spec$Params<S>>(s: S, p: P) =>
+  u(
+    {
+      ...s,
+      params: p,
+      run_: s["run"],
+    },
+    (s) => ({
+      run: (p: any, ...rest: [any, any, any, any]) => s.run_(p === __ ? s.params : p, ...rest),
+    }),
+  ) as never as Simplify<
+    Omit<S, "run"> & {
+      params: P;
+      run_: S["run"];
+      run: (...params: [Fn$I<S["run"]>[0] | __, ...ArrayTail<Fn$I<S["run"]>>]) => Spec$Result<S>;
+    }
+  >;
 
 export default spec;

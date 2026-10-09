@@ -21,7 +21,6 @@
   "devDependencies": {
     "arryo": "workspace:*",
     "fake-indexeddb": "catalog:",
-    "idb-keyval": "catalog:",
     "ioioy": "workspace:*",
     "jsyoyo": "workspace:*",
     "proyij": "workspace:*",
