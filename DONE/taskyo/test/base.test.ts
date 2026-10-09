@@ -29,7 +29,7 @@ export const count_012 = spec(
 $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
   no_error: async () => {
     const s = spec()(() => 1)({ retry: () => wait(0) });
-    const r = await run(s)(1);
+    const r = await run(s)();
     eq(await r.promise, 1);
   },
 
@@ -45,7 +45,7 @@ $describe(setupFakeTimers)("retry", ({ eq, res, v }) => ({
         return wait(100);
       },
     });
-    const r = run(s)(1);
+    const r = run(s)();
     v.vi.advanceTimersByTimeAsync(300);
     eq(await (await r).promise, 3);
     re.eq(["err_0", "err_1", "err_2"]);

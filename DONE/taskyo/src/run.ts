@@ -1,5 +1,5 @@
 import { RRERRORR } from "rrerrorr";
-import { __, deferred, Fn$O, ifFunction, MsOrNumber, ON } from "jsyoyo";
+import { __, AbortSignal, deferred, Fn$O, ifFunction, MsOrNumber, ON } from "jsyoyo";
 
 import { $State, $state, fakeAbort, load1 } from "./utils";
 import type { LoadedSpec, Spec$State, Spec$Deps, Spec$ERR, Spec$OK, Spec$Params, Spec, SpecOptions } from "./spec";
@@ -133,7 +133,9 @@ export type Spec$Run<S extends Spec> = S extends { deps: any }
 
 export const run =
   <S extends Spec & SpecOptions>(spec: S, onLoaded?: (...r: InitRun) => void) =>
-  (params: Spec$Params<S>, abort = fakeAbort): Spec$Run<S> => {
+  (
+    ...[params, abort]: __ extends Spec$Params<S> ? [Spec$Params<S>?, AbortSignal?] : [Spec$Params<S>, AbortSignal?]
+  ): Spec$Run<S> => {
     if (("deps" in spec || !("load" in spec)) && !("cache" in spec)) {
       const i = initRun<RetryRun>(spec as never as LoadedSpec);
       onLoaded?.(...i);
