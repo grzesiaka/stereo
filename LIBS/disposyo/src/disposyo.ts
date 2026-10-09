@@ -12,6 +12,10 @@ export type Disposyo = Dispose & { __: Disposes } & ((...disposes: Disposes) => 
 export const DISPOSE: unique symbol = Symbol.dispose || Symbol.for("dispose");
 export type DISPOSE = typeof DISPOSE;
 
+export interface Disposable {
+  [DISPOSE]: Dispose;
+}
+
 export const disposyo = <T extends __<{}> = __>(
   D = [] as Disposes | Dispose,
   target = void 0 as T,

@@ -145,6 +145,49 @@ importers:
         specifier: 'workspace:'
         version: link:../../LIBS/types
 
+  DONE/taskyo:
+    dependencies:
+      idb-keyval:
+        specifier: 'catalog:'
+        version: 6.3.0
+    devDependencies:
+      arryo:
+        specifier: workspace:*
+        version: link:../../LIBS/arryo
+      fake-indexeddb:
+        specifier: 'catalog:'
+        version: 6.2.5
+      ioioy:
+        specifier: workspace:*
+        version: link:../ioioy
+      jsyoyo:
+        specifier: workspace:*
+        version: link:../../LIBS/jsyoyo
+      proyij:
+        specifier: workspace:*
+        version: link:../../LIBS/proyij
+      rrerrorr:
+        specifier: workspace:*
+        version: link:../../LIBS/rrerrorr
+      treeo:
+        specifier: workspace:*
+        version: link:../treeo
+      typier:
+        specifier: workspace:*
+        version: link:../typier
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../../__config
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../../LIBS/testing
+      ~types:
+        specifier: 'workspace:'
+        version: link:../../LIBS/types
+
   DONE/treeo:
     dependencies:
       jsyoyo:
@@ -584,36 +627,6 @@ importers:
         specifier: 'workspace:'
         version: link:../../LIBS/types
 
-  TODO/exexe:
-    devDependencies:
-      ioioy:
-        specifier: workspace:^
-        version: link:../../DONE/ioioy
-      jsyoyo:
-        specifier: workspace:^
-        version: link:../../LIBS/jsyoyo
-      oyoyo:
-        specifier: workspace:^
-        version: link:../../oyoyo
-      treeo:
-        specifier: workspace:^
-        version: link:../../DONE/treeo
-      typier:
-        specifier: workspace:^
-        version: link:../../DONE/typier
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
-      ~cfg:
-        specifier: 'workspace:'
-        version: link:../../__config
-      ~testing:
-        specifier: 'workspace:'
-        version: link:../../LIBS/testing
-      ~types:
-        specifier: 'workspace:'
-        version: link:../../LIBS/types
-
   TODO/extensy:
     devDependencies:
       vite:
@@ -933,7 +946,7 @@ importers:
         version: link:../DONE/ioioy
       taskyo:
         specifier: workspace:^
-        version: link:../taskyo
+        version: link:../DONE/taskyo
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -952,6 +965,39 @@ importers:
       ~cfg:
         specifier: 'workspace:'
         version: link:../__config
+      ~types:
+        specifier: 'workspace:'
+        version: link:../LIBS/types
+
+  exexe:
+    devDependencies:
+      ioioy:
+        specifier: workspace:^
+        version: link:../DONE/ioioy
+      jsyoyo:
+        specifier: workspace:^
+        version: link:../LIBS/jsyoyo
+      oyoyo:
+        specifier: workspace:^
+        version: link:../oyoyo
+      taskyo:
+        specifier: workspace:^
+        version: link:../DONE/taskyo
+      treeo:
+        specifier: workspace:^
+        version: link:../DONE/treeo
+      typier:
+        specifier: workspace:^
+        version: link:../DONE/typier
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
+      ~cfg:
+        specifier: 'workspace:'
+        version: link:../__config
+      ~testing:
+        specifier: 'workspace:'
+        version: link:../LIBS/testing
       ~types:
         specifier: 'workspace:'
         version: link:../LIBS/types
@@ -993,48 +1039,6 @@ importers:
         version: link:../DONE/composyo
       typier:
         specifier: workspace:^
-        version: link:../DONE/typier
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(jsdom@29.1.1)(vite@8.1.2(@types/node@26.1.0)(esbuild@0.27.4))
-      ~cfg:
-        specifier: 'workspace:'
-        version: link:../__config
-      ~testing:
-        specifier: 'workspace:'
-        version: link:../LIBS/testing
-      ~types:
-        specifier: 'workspace:'
-        version: link:../LIBS/types
-
-  taskyo:
-    devDependencies:
-      arryo:
-        specifier: workspace:*
-        version: link:../LIBS/arryo
-      fake-indexeddb:
-        specifier: 'catalog:'
-        version: 6.2.5
-      idb-keyval:
-        specifier: 'catalog:'
-        version: 6.3.0
-      ioioy:
-        specifier: workspace:*
-        version: link:../DONE/ioioy
-      jsyoyo:
-        specifier: workspace:*
-        version: link:../LIBS/jsyoyo
-      proyij:
-        specifier: workspace:*
-        version: link:../LIBS/proyij
-      rrerrorr:
-        specifier: workspace:*
-        version: link:../LIBS/rrerrorr
-      treeo:
-        specifier: workspace:*
-        version: link:../DONE/treeo
-      typier:
-        specifier: workspace:*
         version: link:../DONE/typier
       vitest:
         specifier: 'catalog:'
