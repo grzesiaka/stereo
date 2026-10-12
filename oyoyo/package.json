@@ -17,11 +17,6 @@
     "tsc": "tsc --noEmit -p node_modules/~cfg/tsconfig.build.json"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "catalog:",
-    "composyo": "workspace:^",
-    "jsyoyo": "workspace:^",
-    "type-fest": "catalog:",
-    "vitest": "catalog:",
-    "xpresyo": "workspace:^"
+    "ioioy": "workspace:*"
   }
 }
