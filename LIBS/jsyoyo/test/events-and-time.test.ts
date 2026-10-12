@@ -5,11 +5,11 @@ import { timeout, wait } from "../src/time";
 
 describe(sEmit, ({ eq, res }) => ({
   "/": () => {
-    const { emit, $, CBs: listners } = sEmit<{ a: ["A"]; b: ["b" | "B"] }>();
+    const { emit, $, CBs: listeners } = sEmit<{ a: ["A"]; b: ["b" | "B"] }>();
     const r = res();
     $.on("a", (x) => r.add(["a", x]));
-    eq(listners.a!.size, 1);
-    eq(listners.b, __);
+    eq(listeners.a!.size, 1);
+    eq(listeners.b, __);
     const on_b = (x: unknown) => r.add(["b", x]);
     $.on("b", on_b);
     r.eq([]);

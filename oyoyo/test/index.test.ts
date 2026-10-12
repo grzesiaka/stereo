@@ -1,7 +1,14 @@
 import { describe } from "~testing";
 
-import { I } from "../src/index";
+import { input } from "../src/index";
 
-describe(I, ({ eq }) => ({
-  0: () => eq(I, "i"),
+describe("base", ({ eq, res }) => ({
+  input: () => {
+    const r = res();
+    const i = input(1, "in")()(r.add);
+    eq(i.Id, "in");
+    r.eq([1]);
+    i.I(2);
+    r.eq([1, 2]);
+  },
 }));
