@@ -1,24 +1,25 @@
 import { CtxIdOptional, CtxId, Cb, __ } from "jsyoyo";
 import { pipe, Pipe } from "composyo";
+import { yo } from "./yo";
 
 export type Input_<X = unknown, Ctx extends CtxIdOptional = {}> = CtxId<
   Ctx,
   {
     I: (x: X) => X;
     X: X;
-    o: Cb<X>;
+    y: Cb<X>;
   }
 >;
 
-export type Input<X = unknown, Ctx extends CtxIdOptional = {}> = Pipe<(o: Cb<X>) => Input_<X, Ctx>>;
+export type Input<X = unknown, Ctx extends CtxIdOptional = {}> = Pipe<yo<X, __, Input_<X, Ctx>>>;
 
 export const input = <X, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx): Input<X, Ctx> =>
-  pipe((o: Cb<X>) => {
+  pipe((y: Cb<X>) => {
     const $ = {
-      I: (x) => ((($ as { X: X }).X = x), $.o(x)),
+      I: (x) => ((($ as { X: X }).X = x), $.y(x)),
       X: x,
-      o,
+      y,
     } as Input_<X, Ctx>;
-    $.o(x);
+    $.y(x);
     return CtxId($, ctx);
-  });
+  }) as never as Input<X, Ctx>;
