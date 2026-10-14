@@ -21,6 +21,4 @@ export const scan = $yo<"scan", [Fn, Fn?]>("scan")<{ acc: any }>(($, P, [_, seed
     $.P = P((x) => (($.acc = x), $.P && ($.P.I = up), $.I(x)));
     "acc" in $ && ($.P.I = up); // in case of synchronous update
   }
-
-  return $;
 }) as never as ScanOp;
