@@ -1,24 +1,20 @@
 import { __, dethunk, Fn } from "jsyoyo";
-import { $yo, yo, yo$X } from "./yo";
+import { Yo, oYo, oYo$X } from "./yo";
 
-export type Scan<X, Prev extends yo> = yo<X, Prev, { acc?: X }>;
+export type Scan<X, Prev extends oYo, Acc> = oYo<X, Prev, __ extends Acc ? {} : { X: X }>;
 
-export type ScanOp = <Prev extends yo, X = yo$X<Prev>, Acc = X>(
-  f: Fn<[value: yo$X<Prev>, acc: Acc], X>,
-  seed?: X | (() => X),
-) => (P: Prev) => Scan<X, Prev>;
+export type ScanOp = <Prev extends oYo, X = oYo$X<Prev>, Acc extends __<X> = __>(
+  f: Fn<[acc: X, value: oYo$X<Prev>], X>,
+  seed?: Acc | (() => Acc),
+) => (P: Prev) => Scan<X, Prev, Acc>;
 
-export const scan = $yo<"scan", [Fn, Fn?]>("scan")<{ acc: any }>(($, P, [_, seed]) => {
-  const up = (x: any) => {
-    $.acc = $.__[1][0](x, $.acc);
-    $.I($.acc);
-    return x;
-  };
+export const scan = Yo<"scan", [Fn, unknown?]>("scan")<{ X: unknown }>(($, P, [_, seed]) => {
+  const up = (x: unknown) => (($.X = $.__[1][0]($.X, x)), $.o($.X));
   if (seed !== __) {
-    $.acc = dethunk(seed);
-    $.P = P(up);
+    $.X = dethunk(seed);
+    $.Y = P(up);
   } else {
-    $.P = P((x) => (($.acc = x), $.P && ($.P.I = up), $.I(x)));
-    "acc" in $ && ($.P.I = up); // in case of synchronous update
+    $.Y = P((x) => (($.X = x), $.Y && ($.Y.o = up), $.o(x)));
+    "X" in $ && ($.Y.o = up); // in case of synchronous update
   }
 }) as never as ScanOp;

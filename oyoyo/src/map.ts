@@ -1,8 +1,8 @@
 import { Fn, id } from "jsyoyo";
-import { $yo, yo, yo$X } from "./yo";
+import { Yo, oYo, oYo$X } from "./yo";
 
-export type Map<X, Prev extends yo> = yo<X, Prev>;
+export type Map<X, Prev extends oYo> = oYo<X, Prev>;
 
-export type MapOp = <X, Prev extends yo>(f: Fn<[yo$X<Prev>], X>) => (P: Prev) => Map<X, Prev>;
+export type MapOp = <X, Prev extends oYo>(f: Fn<[oYo$X<Prev>], X>) => (P: Prev) => Map<X, Prev>;
 
-export const map = $yo<"map", [Fn], Fn>("map", id)(($, P) => ($.P = P((x) => $.I($.__[1]!(x))))) as never as MapOp;
+export const map = Yo<"map", [Fn], Fn>("map", id)(($, P) => ($.Y = P((x) => $.o($.__[1](x))))) as never as MapOp;

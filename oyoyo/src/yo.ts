@@ -1,29 +1,27 @@
 import { __, ARR, Cb, Fn$O, WithOP } from "jsyoyo";
 
-export interface WithPrev<X = any, Prev = any> {
-  I: Cb<X>;
-  P: Prev;
+export interface Yo<X = any, Y = any> {
+  Y: Y;
+  o: Cb<X>;
 }
 
-export type yo<X = any, Prev = any, Extra = {}> = (
-  cb: Cb<X>,
-) => WithPrev<X, Prev extends yo ? Fn$O<Prev> : Prev> & Extra;
+export type oYo<X = any, Y = any, Extra = {}> = (o: Cb<X>) => Yo<X, Y extends oYo ? Fn$O<Y> : Y> & Extra;
 
-export type yo$X<y> = y extends yo<infer X> ? X : never;
-export type yo$Prev<y> = y extends yo<any, infer Prev> ? Prev : never;
+export type oYo$X<y> = y extends oYo<infer X> ? X : never;
+export type oYo$Y<y> = y extends oYo<any, infer Y> ? Y : never;
 
-export const $yo =
+export const Yo =
   <OP_ID extends string, ParamsRaw extends ARR, Params = ParamsRaw>(
-    o: OP_ID,
+    op: OP_ID,
     r = ((...x: ParamsRaw) => x) as any as (...p: ParamsRaw) => Params,
   ) =>
-  <cR, cPrev extends __<yo> = yo, cX = unknown>(
-    $: ($: WithPrev<cX> & WithOP<OP_ID, Params> & Partial<cR>, P: cPrev, r: ParamsRaw) => void,
+  <cR, cY extends __<oYo> = oYo, cX = unknown>(
+    $: ($: Yo<cX> & WithOP<OP_ID, Params> & Partial<cR>, P: cY, r: ParamsRaw) => void,
   ) =>
   (...p: ParamsRaw) =>
-  (P: cPrev) =>
-  (I: Cb<cX>) => {
-    const y = { I, __: [o, r(...p)] as [OP_ID, Params] } as WithPrev<cX, cPrev> & WithOP<OP_ID, Params> & Partial<cR>;
+  (P: cY) =>
+  (o: Cb<cX>) => {
+    const y = { o, __: [op, r(...p)] as [OP_ID, Params] } as Yo<cX, cY> & WithOP<OP_ID, Params> & Partial<cR>;
     $(y, P, p);
     return y;
   };

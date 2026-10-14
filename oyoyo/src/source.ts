@@ -1,26 +1,26 @@
 import { CtxIdOptional, CtxId, Cb, __ } from "jsyoyo";
 import { pipe, Pipe } from "composyo";
-import { yo } from "./yo";
+import { oYo } from "./yo";
 
 export type Input_<X = unknown, Ctx extends CtxIdOptional = {}> = CtxId<
   Ctx,
   {
     I: (x: X) => X;
     X: X;
-    y: Cb<X>;
+    o: Cb<X>;
   }
 >;
 
-export type Input<X = unknown, Ctx extends CtxIdOptional = {}> = Pipe<yo<X, __, Input_<X, Ctx>>>;
+export type Input<X = unknown, Ctx extends CtxIdOptional = {}> = Pipe<oYo<X, __, Input_<X, Ctx>>>;
 
 export const input = <X, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx): Input<X, Ctx> =>
-  pipe((y: Cb<X>) => {
+  pipe((o: Cb<X>) => {
     const $ = {
-      I: (x) => ((($ as { X: X }).X = x), $.y(x)),
+      I: (x) => ((($ as { X: X }).X = x), $.o(x)),
       X: x,
-      y,
+      o,
     } as Input_<X, Ctx>;
-    $.y(x);
+    $.o(x);
     return CtxId($, ctx);
   }) as never as Input<X, Ctx>;
 
@@ -29,17 +29,17 @@ export type Event_<X = unknown, Ctx extends CtxIdOptional = {}> = CtxId<
   {
     I: (x: X) => X;
     X: X;
-    y: Cb<X>;
+    o: Cb<X>;
   }
 >;
 
-export type Event<X = unknown, Ctx extends CtxIdOptional = {}> = Pipe<yo<X, __, Event_<X, Ctx>>>;
+export type Event<X = unknown, Ctx extends CtxIdOptional = {}> = Pipe<oYo<X, __, Event_<X, Ctx>>>;
 
 export const event = <X, Ctx extends CtxIdOptional = {}>(ctx?: Ctx): Event<X, Ctx> =>
-  pipe((y: Cb<X>) => {
+  pipe((o: Cb<X>) => {
     const $ = {
-      I: (x) => ((($ as { X: X }).X = x), $.y(x)),
-      y,
+      I: (x) => ((($ as { X: X }).X = x), $.o(x)),
+      o,
     } as Event_<X, Ctx>;
     return CtxId($, ctx);
   }) as never as Event<X, Ctx>;

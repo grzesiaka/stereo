@@ -17,7 +17,7 @@ describe("base", ({ eq, res }) => ({
     const r = res();
     const i = input(1)(map((x) => x + x))(r.add);
     r.eq([2]);
-    i.P.I(2);
+    i.Y.I(2);
     r.eq([2, 4]);
   },
 
@@ -28,9 +28,9 @@ describe("base", ({ eq, res }) => ({
       filter((x) => x % 2 === 0),
     )(r.add);
     r.eq([]);
-    i.P.P.I(2);
-    i.P.P.I(3);
-    i.P.P.I(4);
+    i.Y.Y.I(2);
+    i.Y.Y.I(3);
+    i.Y.Y.I(4);
     r.eq([4, 16]);
   },
 
@@ -38,12 +38,12 @@ describe("base", ({ eq, res }) => ({
     const r = res();
     const i = input(1)(
       map((x) => x * x),
-      scan((x, a) => x + a, 0),
+      scan((acc, x) => acc + x, 0),
     )(r.add);
     r.eq([1]);
-    i.P.P.I(2);
-    i.P.P.I(3);
-    i.P.P.I(4);
+    i.Y.Y.I(2);
+    i.Y.Y.I(3);
+    i.Y.Y.I(4);
     r.eq([1, 1 + 4, 1 + 4 + 9, 1 + 4 + 9 + 16]);
   },
 
@@ -51,12 +51,13 @@ describe("base", ({ eq, res }) => ({
     const r = res();
     const i = input(1)(
       map((x) => x * x),
-      scan((x, a) => x + a),
+      scan((acc, x) => acc + x),
     )(r.add);
     r.eq([1]);
-    i.P.P.I(2);
-    i.P.P.I(3);
-    i.P.P.I(4);
+    i.Y.Y.I(2);
+    i.Y.Y.I(3);
+    i.Y.Y.I(4);
+
     r.eq([1, 1 + 4, 1 + 4 + 9, 1 + 4 + 9 + 16]);
   },
 
@@ -64,13 +65,14 @@ describe("base", ({ eq, res }) => ({
     const r = res();
     const i = event<number>()(
       map((x) => x * x),
-      scan((x, a) => x + a),
+      scan((acc, x) => acc + x),
     )(r.add);
     r.eq([]);
-    i.P.P.I(1);
-    i.P.P.I(2);
-    i.P.P.I(3);
-    i.P.P.I(4);
+
+    i.Y.Y.I(1);
+    i.Y.Y.I(2);
+    i.Y.Y.I(3);
+    i.Y.Y.I(4);
     r.eq([1, 1 + 4, 1 + 4 + 9, 1 + 4 + 9 + 16]);
   },
 }));
