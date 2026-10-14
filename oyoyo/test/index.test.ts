@@ -1,6 +1,6 @@
 import { describe } from "~testing";
 
-import { input, map, filter, scan } from "../src/index";
+import { input, map, filter, scan, event } from "../src/index";
 
 describe("base", ({ eq, res }) => ({
   input: () => {
@@ -54,6 +54,20 @@ describe("base", ({ eq, res }) => ({
       scan((x, a) => x + a),
     )(r.add);
     r.eq([1]);
+    i.P.P.I(2);
+    i.P.P.I(3);
+    i.P.P.I(4);
+    r.eq([1, 1 + 4, 1 + 4 + 9, 1 + 4 + 9 + 16]);
+  },
+
+  scan_no_seed_event: () => {
+    const r = res();
+    const i = event<number>()(
+      map((x) => x * x),
+      scan((x, a) => x + a),
+    )(r.add);
+    r.eq([]);
+    i.P.P.I(1);
     i.P.P.I(2);
     i.P.P.I(3);
     i.P.P.I(4);
