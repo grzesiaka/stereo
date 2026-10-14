@@ -18,9 +18,12 @@ export const $yo =
     r = ((...x: ParamsRaw) => x) as any as (...p: ParamsRaw) => Params,
   ) =>
   <cR, cPrev extends __<yo> = yo, cX = unknown>(
-    $: ($: WithPrev<cX> & WithOP<OP_ID, Params> & Partial<cR>, P: cPrev, r: ParamsRaw) => cR,
+    $: ($: WithPrev<cX> & WithOP<OP_ID, Params> & Partial<cR>, P: cPrev, r: ParamsRaw) => void,
   ) =>
   (...p: ParamsRaw) =>
   (P: cPrev) =>
-  (I: Cb<cX>) =>
-    $({ I, __: [o, r(...p)] as [OP_ID, Params] } as WithPrev<cX, cPrev> & WithOP<OP_ID, Params> & Partial<cR>, P, p);
+  (I: Cb<cX>) => {
+    const y = { I, __: [o, r(...p)] as [OP_ID, Params] } as WithPrev<cX, cPrev> & WithOP<OP_ID, Params> & Partial<cR>;
+    $(y, P, p);
+    return y;
+  };
