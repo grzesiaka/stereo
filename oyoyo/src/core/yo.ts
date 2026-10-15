@@ -35,9 +35,9 @@ export const Yo =
     return y;
   };
 
-export type Y0<X, R extends {}, Ctx extends CtxIdOptional> = Simplify<CtxId<Ctx, Yo<X, __> & R>>;
+export type Y0<X, R extends {}, Ctx extends CtxIdOptional> = Simplify<CtxId<Ctx, Yo<X, __>> & R>;
 
-export type $Y0<X, R extends {}, Ctx extends CtxIdOptional> = Pipe<Y0<X, R, Ctx>>;
+export type $Y0<X, R> = Pipe<(o: Cb<X>) => R>;
 
 export const Y0 = <X, R extends {}, Ctx extends CtxIdOptional = __>($: (o: Cb<X>) => R, ctx = __ as Ctx) =>
-  pipe(ctx === __ ? $ : (o: Cb<X>) => CtxId($(o), ctx)) as never as $Y0<X, R, Ctx>;
+  pipe(ctx === __ ? $ : (o: Cb<X>) => CtxId($(o), ctx)) as never as $Y0<X, Y0<X, R, Ctx>>;
