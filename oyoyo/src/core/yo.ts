@@ -1,9 +1,18 @@
-import { __, ARR, Cb, Fn$O, WithOP } from "jsyoyo";
+import { Pipe, pipe } from "composyo";
+import { __, ARR, Cb, CtxId, CtxIdOptional, Fn$O, WithOP } from "jsyoyo";
+import { Simplify } from "type-fest";
 
 export interface Yo<X = any, Y = any> {
   Y: Y;
   o: Cb<X>;
 }
+
+/** Completable */
+export interface Z<Z = unknown> {
+  Z: Promise<Z>;
+}
+
+export interface YoY<X = any, Y extends Yo = Yo> extends Yo<X, Y> {}
 
 export type oYo<X = any, Y = any, Extra = {}> = (o: Cb<X>) => Yo<X, Y extends oYo ? Fn$O<Y> : Y> & Extra;
 
@@ -25,3 +34,10 @@ export const Yo =
     $(y, P, p);
     return y;
   };
+
+export type Y0<X, R extends {}, Ctx extends CtxIdOptional> = Simplify<CtxId<Ctx, Yo<X, __> & R>>;
+
+export type $Y0<X, R extends {}, Ctx extends CtxIdOptional> = Pipe<Y0<X, R, Ctx>>;
+
+export const Y0 = <X, R extends {}, Ctx extends CtxIdOptional = __>($: (o: Cb<X>) => R, ctx = __ as Ctx) =>
+  pipe(ctx === __ ? $ : (o: Cb<X>) => CtxId($(o), ctx)) as never as $Y0<X, R, Ctx>;

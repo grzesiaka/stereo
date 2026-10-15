@@ -32,9 +32,7 @@ export type Event_<X = unknown, Ctx extends CtxIdOptional = {}> = CtxId<
     o: Cb<X>;
   }
 >;
-
 export type Event<X = unknown, Ctx extends CtxIdOptional = {}> = Pipe<oYo<X, __, Event_<X, Ctx>>>;
-
 export const event = <X, Ctx extends CtxIdOptional = {}>(ctx?: Ctx): Event<X, Ctx> =>
   pipe((o: Cb<X>) => {
     const $ = {
