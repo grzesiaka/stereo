@@ -7,7 +7,9 @@
     ".": "./out/index.mjs",
     "./*": "./out/*.mjs",
     "./core": "./out/core/index.mjs",
-    "./core/*": "./out/core/*.mjs"
+    "./core/*": "./out/core/*.mjs",
+    "./time": "./out/time/index.mjs",
+    "./time/*": "./out/time/*.mjs"
   },
   "scripts": {
     "build": "tsdown ./src/*.ts ./src/*/*.ts !./src/*-.ts !./src/*-/*.ts !./src/*/*-.ts --minify --sourcemap --dts --clean -d=./out --tsconfig node_modules/~cfg/tsconfig.build.json",
