@@ -1,13 +1,11 @@
 import { Pipe, pipe } from "composyo";
 import { __, ARR, Cb, CtxId, CtxIdOptional, DISPOSE, Fn$O, WithOP } from "jsyoyo";
-import { Simplify } from "type-fest";
 
 export interface Yo<X = any, Y = any> {
   Y: Y;
   o: Cb<X>;
 }
-
-/** Completable */
+export type Yo$X<y> = y extends Yo<infer X> ? X : never;
 
 export interface YoY<X = any, Y extends YoY = Yo> extends Yo<X, Y> {}
 
@@ -16,21 +14,15 @@ export type oYo<X = any, Y = any, Extra = {}> = (o: Cb<X>) => Yo<X, Y extends oY
 export type oYo$X<y> = y extends oYo<infer X> ? X : never;
 export type oYo$Y<y> = y extends oYo<any, infer Y> ? Y : never;
 
-export type OP<X = any, Y extends oYo = oYo, Extra = {}, OP_ID extends string = string, OP_PARAMS = any> = Yo<
-  X,
-  Fn$O<Y>
-> &
+export type OP<X = any, Y = any, Extra = {}, OP_ID extends string = string, OP_PARAMS = any> = Yo<X, Y> &
   Extra & {
     __: [OP_ID, OP_PARAMS];
   };
 
 type OP$X<O> = O extends OP<infer X> ? X : never;
-type OP$Y<O> = O extends OP<any, infer Y> ? Y : never;
-
 export type $OP<O extends OP = OP> = (o: Cb<OP$X<O>>) => O;
-type $OP$Y<O> = O extends $OP<infer O> ? OP$Y<O> : never;
 
-export type $$OP<O extends $OP> = (Y: $OP$Y<O>) => O;
+/** Completable */
 export interface Z<Z = unknown> {
   Z: Promise<Z>;
 }
@@ -51,7 +43,7 @@ export const Yo =
     return y;
   };
 
-export type Y0<X, R extends {}, Ctx extends CtxIdOptional> = Simplify<CtxId<Ctx, Yo<X, __>> & R>;
+export type Y0<X, R extends {}, Ctx extends CtxIdOptional> = CtxId<Ctx, Yo<X, __>> & R;
 
 export type $Y0<X, R> = Pipe<(o: Cb<X>) => R>;
 

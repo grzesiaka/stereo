@@ -1,6 +1,6 @@
 import { describe } from "~testing";
 
-import { input, map, filter, scan, event } from "../src/index";
+import { input, map, filter, scan, event, flatten } from "../src/index";
 
 describe("base", ({ eq, res }) => ({
   input: () => {
@@ -34,8 +34,8 @@ describe("base", ({ eq, res }) => ({
     i.Y.Y.I(4);
     r.eq([4, 16]);
 
-    // const yy = flatten(i);
-    // console.log(yy);
+    const yy = flatten(i).map((x) => x.__[0]);
+    eq(yy, ["input", "map", "filter"]);
   },
 
   scan_seed: () => {
