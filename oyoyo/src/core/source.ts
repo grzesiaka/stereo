@@ -1,6 +1,20 @@
 import { CtxIdOptional, __ } from "jsyoyo";
 import { $Y0, Y0 } from "../base/yo";
 
+export type Of<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["of", X] }, Ctx>;
+
+export type Of$<X = unknown, Ctx extends CtxIdOptional = {}> = $Y0<X, Of<X, Ctx>>;
+
+export const of = <X = unknown, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx) =>
+  Y0((o) => {
+    const $ = {
+      o,
+      __: ["of", x],
+    };
+    $.o(x);
+    return $;
+  }, ctx);
+
 export type Input<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<
   X,
   {
