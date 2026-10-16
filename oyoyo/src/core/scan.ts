@@ -1,12 +1,18 @@
 import { __, dethunk, Fn } from "jsyoyo";
-import { Yo, oYo, oYo$X } from "../base/yo";
+import { OP, OPED, Yo, oYo, oYo$X } from "../base/yo";
 
-export type Scan<X, Prev extends oYo, Acc> = oYo<X, Prev, __ extends Acc ? {} : { X: X }>;
+export type Scan<X, Prev extends oYo, Acc> = OPED<
+  X,
+  Prev,
+  { X: X },
+  "scan",
+  [f: Fn<[acc: X, value: oYo$X<Prev>], X>, seed?: Acc | (() => Acc)]
+>;
 
 export type ScanOp = <Prev extends oYo, X = oYo$X<Prev>, Acc extends __<X> = __>(
   f: Fn<[acc: X, value: oYo$X<Prev>], X>,
   seed?: Acc | (() => Acc),
-) => (P: Prev) => Scan<X, Prev, Acc>;
+) => OP<Scan<X, Prev, Acc>>;
 
 export const scan = Yo<"scan", [Fn, unknown?]>("scan")<{ X: unknown }>(($, P, [_, seed]) => {
   const up = (x: unknown) => (($.X = $.__[1][0]($.X, x)), $.o($.X));

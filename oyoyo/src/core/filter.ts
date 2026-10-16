@@ -1,11 +1,10 @@
 import { Fn, id } from "jsyoyo";
-import { Yo, oYo, oYo$X } from "../base/yo";
+import { OPED, OP, Yo, oYo, oYo$X } from "../base/yo";
 
-export type Filter<Prev extends oYo> = oYo<oYo$X<Prev>, Prev>;
+type FilterFn<Prev> = Fn<[oYo$X<Prev>], boolean | 0 | 1 | undefined>;
+export type Filter<Prev extends oYo> = OPED<oYo$X<Prev>, Prev, {}, "filter", FilterFn<Prev>>;
 
-export type FilterOp = <Prev extends oYo>(
-  f: Fn<[oYo$X<Prev>], boolean | 0 | 1 | undefined>,
-) => (P: Prev) => Filter<Prev>;
+export type FilterOp = <Prev extends oYo>(f: FilterFn<Prev>) => OP<Filter<Prev>>;
 
 export const filter = Yo<"filter", [Fn], Fn>(
   "filter",

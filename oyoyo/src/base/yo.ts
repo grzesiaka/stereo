@@ -8,9 +8,6 @@ export interface Yo<X = any, Y = any> {
 }
 
 /** Completable */
-export interface Z<Z = unknown> {
-  Z: Promise<Z>;
-}
 
 export interface YoY<X = any, Y extends YoY = Yo> extends Yo<X, Y> {}
 
@@ -18,6 +15,21 @@ export type oYo<X = any, Y = any, Extra = {}> = (o: Cb<X>) => Yo<X, Y extends oY
 
 export type oYo$X<y> = y extends oYo<infer X> ? X : never;
 export type oYo$Y<y> = y extends oYo<any, infer Y> ? Y : never;
+
+export type OPED<X = any, Y extends oYo = oYo, Extra = {}, OP_ID extends string = string, OP_PARAMS = any> = Yo<
+  X,
+  Fn$O<Y>
+> &
+  Extra & {
+    __: [OP_ID, OP_PARAMS];
+  };
+
+export type OPED$X<O> = O extends OPED<infer X> ? X : never;
+export type OPED$Y<O> = O extends OPED<any, infer Y> ? Y : never;
+export type OP<O extends OPED> = (Y: OPED$Y<O>) => (o: Cb<OPED$X<O>>) => O;
+export interface Z<Z = unknown> {
+  Z: Promise<Z>;
+}
 
 export const Yo =
   <OP_ID extends string, ParamsRaw extends ARR, Params = ParamsRaw>(
