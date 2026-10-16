@@ -1,5 +1,5 @@
 import { CtxIdOptional, __ } from "jsyoyo";
-import { $Y0, Y0 } from "./yo";
+import { $Y0, Y0 } from "../base/yo";
 
 export type Input_<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<
   X,

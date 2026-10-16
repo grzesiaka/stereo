@@ -1,5 +1,5 @@
 import { Pipe, pipe } from "composyo";
-import { __, ARR, Cb, CtxId, CtxIdOptional, Fn$O, WithOP } from "jsyoyo";
+import { __, ARR, Cb, CtxId, CtxIdOptional, DISPOSE, Fn$O, WithOP } from "jsyoyo";
 import { Simplify } from "type-fest";
 
 export interface Yo<X = any, Y = any> {
@@ -12,7 +12,7 @@ export interface Z<Z = unknown> {
   Z: Promise<Z>;
 }
 
-export interface YoY<X = any, Y extends Yo = Yo> extends Yo<X, Y> {}
+export interface YoY<X = any, Y extends YoY = Yo> extends Yo<X, Y> {}
 
 export type oYo<X = any, Y = any, Extra = {}> = (o: Cb<X>) => Yo<X, Y extends oYo ? Fn$O<Y> : Y> & Extra;
 
@@ -41,3 +41,16 @@ export type $Y0<X, R> = Pipe<(o: Cb<X>) => R>;
 
 export const Y0 = <X, R extends {}, Ctx extends CtxIdOptional = __>($: (o: Cb<X>) => R, ctx = __ as Ctx) =>
   pipe(ctx === __ ? $ : (o: Cb<X>) => CtxId($(o), ctx)) as never as $Y0<X, Y0<X, R, Ctx>>;
+
+export type Flatten<Y> = Y extends { Y: infer y } ? [...Flatten<y>, Y] : Y extends __ ? [] : [Y];
+export const flatten = <Y extends YoY>(Y: Y) => {
+  const r = [];
+  let y = Y as Yo;
+  while (y) {
+    y !== __ && r.unshift(y);
+    y = y.Y;
+  }
+  return r as Flatten<Y>;
+};
+
+export const dispose = <YY extends YoY>(YY: YY) => flatten(YY).forEach((y) => DISPOSE in y && y[DISPOSE]());

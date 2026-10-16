@@ -1,5 +1,5 @@
 import { Fn, id } from "jsyoyo";
-import { Yo, oYo, oYo$X } from "./yo";
+import { Yo, oYo, oYo$X } from "../base/yo";
 
 export type Filter<Prev extends oYo> = oYo<oYo$X<Prev>, Prev>;
 

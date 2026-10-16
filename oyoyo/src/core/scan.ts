@@ -1,5 +1,5 @@
 import { __, dethunk, Fn } from "jsyoyo";
-import { Yo, oYo, oYo$X } from "./yo";
+import { Yo, oYo, oYo$X } from "../base/yo";
 
 export type Scan<X, Prev extends oYo, Acc> = oYo<X, Prev, __ extends Acc ? {} : { X: X }>;
 

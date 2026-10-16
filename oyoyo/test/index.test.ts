@@ -32,6 +32,9 @@ describe("base", ({ eq, res }) => ({
     i.Y.Y.I(3);
     i.Y.Y.I(4);
     r.eq([4, 16]);
+
+    // const yy = flatten(i);
+    // console.log(yy);
   },
 
   scan_seed: () => {
