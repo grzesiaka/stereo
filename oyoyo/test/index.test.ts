@@ -1,6 +1,7 @@
 import { describe } from "~testing";
 
-import { input, map, filter, scan, event, flatten } from "../src/index";
+import { input, map, filter, scan, event, tap, flatten } from "../src/index";
+import { id } from "jsyoyo";
 
 describe("base", ({ eq, res }) => ({
   input: () => {
@@ -43,11 +44,12 @@ describe("base", ({ eq, res }) => ({
     const i = input(1)(
       map((x) => x * x),
       scan((acc, x) => acc + x, 0),
-    )(r.add);
+      tap(r.add),
+    )(id);
     r.eq([1]);
-    i.Y.Y.I(2);
-    i.Y.Y.I(3);
-    i.Y.Y.I(4);
+    i.Y.Y.Y.I(2);
+    i.Y.Y.Y.I(3);
+    i.Y.Y.Y.I(4);
     r.eq([1, 1 + 4, 1 + 4 + 9, 1 + 4 + 9 + 16]);
   },
 

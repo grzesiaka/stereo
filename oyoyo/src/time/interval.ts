@@ -1,5 +1,5 @@
 import { CtxIdOptional, DISPOSE, MsOrNumber, __, interval as _interval } from "jsyoyo";
-import { $Y0, Y0 } from "../core";
+import { $Y0, Y0 } from "../base";
 
 type Interval<Ms extends MsOrNumber, Ctx extends CtxIdOptional> = Y0<number, { ms: Ms; [DISPOSE]: () => void }, Ctx>;
 
