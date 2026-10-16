@@ -23,10 +23,11 @@ describe("base", ({ eq, res }) => ({
 
   filter: () => {
     const r = res();
-    const i = input(1)(
+    const y = input(1)(
       map((x) => x * x),
       filter((x) => x % 2 === 0),
-    )(r.add);
+    );
+    const i = y(r.add);
     r.eq([]);
     i.Y.Y.I(2);
     i.Y.Y.I(3);

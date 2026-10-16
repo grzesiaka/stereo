@@ -16,7 +16,7 @@ export type oYo<X = any, Y = any, Extra = {}> = (o: Cb<X>) => Yo<X, Y extends oY
 export type oYo$X<y> = y extends oYo<infer X> ? X : never;
 export type oYo$Y<y> = y extends oYo<any, infer Y> ? Y : never;
 
-export type OPED<X = any, Y extends oYo = oYo, Extra = {}, OP_ID extends string = string, OP_PARAMS = any> = Yo<
+export type OP<X = any, Y extends oYo = oYo, Extra = {}, OP_ID extends string = string, OP_PARAMS = any> = Yo<
   X,
   Fn$O<Y>
 > &
@@ -24,9 +24,13 @@ export type OPED<X = any, Y extends oYo = oYo, Extra = {}, OP_ID extends string 
     __: [OP_ID, OP_PARAMS];
   };
 
-export type OPED$X<O> = O extends OPED<infer X> ? X : never;
-export type OPED$Y<O> = O extends OPED<any, infer Y> ? Y : never;
-export type OP<O extends OPED> = (Y: OPED$Y<O>) => (o: Cb<OPED$X<O>>) => O;
+type OP$X<O> = O extends OP<infer X> ? X : never;
+type OP$Y<O> = O extends OP<any, infer Y> ? Y : never;
+
+export type $OP<O extends OP = OP> = (o: Cb<OP$X<O>>) => O;
+type $OP$Y<O> = O extends $OP<infer O> ? OP$Y<O> : never;
+
+export type $$OP<O extends $OP> = (Y: $OP$Y<O>) => O;
 export interface Z<Z = unknown> {
   Z: Promise<Z>;
 }
