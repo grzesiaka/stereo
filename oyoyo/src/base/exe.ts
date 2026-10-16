@@ -1,5 +1,5 @@
-import { __, DISPOSE } from "jsyoyo";
-import { oYo, Yo, YoY } from "./yo";
+import { __, Cb, DISPOSE, Fn$O, id } from "jsyoyo";
+import { oYo, oYo$X, Yo, YoY } from "./yo";
 
 export type Flatten<Y> = Y extends { Y: infer y } ? [...Flatten<y>, Y] : Y extends __ ? [] : [Y];
 export const flatten = <Y extends YoY>(Y: Y) => {
@@ -12,8 +12,17 @@ export const flatten = <Y extends YoY>(Y: Y) => {
   return r as Flatten<Y>;
 };
 
-export const dispose = <YY extends YoY>(YY: YY) => flatten(YY).forEach((y) => DISPOSE in y && y[DISPOSE]());
+export const dispose = <Y extends Yo>(Y: Y, flat = flatten(Y)) => flat.forEach((y) => DISPOSE in y && y[DISPOSE]());
 
 export const exe =
-  <R, Y extends oYo>() =>
-  (Y: Y) => {};
+  <Y extends oYo, R = () => void>(
+    fn?: (dispose: () => void, flat: Flatten<Fn$O<Y>>) => R,
+    o = id as (x: Cb<oYo$X<Y>>) => void,
+  ) =>
+  (Y: Y): R => {
+    const y = Y(o);
+    const flat = flatten(y);
+    const dis = () => dispose(y, flat);
+    // @ts-expect-error `flat` problem with flat
+    return fn ? fn(dis, flat) : dis;
+  };

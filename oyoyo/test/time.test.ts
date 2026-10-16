@@ -1,15 +1,18 @@
 import { $describe, setupFakeTimers } from "~testing";
-import { interval, map } from "../src";
-import { DISPOSE } from "jsyoyo";
+import { interval, map, tap, exe } from "../src";
 
 $describe(setupFakeTimers)(interval, ({ res, v }) => ({
   simple: () => {
     const r = res();
-    const i = interval(20)(map((x) => x * x))(r.add);
+    const dispose = interval(20)(
+      map((x) => x * x),
+      tap(r.add),
+      exe(),
+    );
     r.eq([]);
     v.vi.advanceTimersByTime(60);
     r.eq([0, 1 * 1, 2 * 2]);
-    i.Y[DISPOSE]();
+    dispose();
     v.vi.advanceTimersByTime(2000);
     r.eq([0, 1 * 1, 2 * 2]);
   },
