@@ -1,19 +1,29 @@
 import { CtxIdOptional, __ } from "jsyoyo";
 import { $Y0, Y0 } from "../base/yo";
 
-export type Of<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["of", X] }, Ctx>;
+export type Never<X = never, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["never", X?] }, Ctx>;
+export type Never$<X = never, Ctx extends CtxIdOptional = {}> = $Y0<X, Never<X, Ctx>>;
+export const never = <Ctx extends CtxIdOptional = {}, X = never>(ctx?: Ctx) =>
+  Y0(() => {
+    const $ = {
+      __: ["never"],
+    };
+    return $;
+  }, ctx) as Never$<X, Ctx>;
 
-export type Of$<X = unknown, Ctx extends CtxIdOptional = {}> = $Y0<X, Of<X, Ctx>>;
+export type Val<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["of", X] }, Ctx>;
 
-export const of = <X = unknown, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx) =>
+export type Val$<X = unknown, Ctx extends CtxIdOptional = {}> = $Y0<X, Val<X, Ctx>>;
+
+export const val = <X = unknown, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx) =>
   Y0((o) => {
     const $ = {
       o,
-      __: ["of", x],
+      __: ["val", x],
     };
     $.o(x);
     return $;
-  }, ctx);
+  }, ctx) as Val$<X, Ctx>;
 
 export type Input<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<
   X,

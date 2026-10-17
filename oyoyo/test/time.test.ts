@@ -1,5 +1,5 @@
 import { $describe, setupFakeTimers } from "~testing";
-import { interval, map, tap, exe, of } from "../src";
+import { interval, map, tap, exe, val } from "../src";
 import { delay } from "../src/time/delay";
 
 $describe(setupFakeTimers)("time", ({ res, v }) => ({
@@ -21,7 +21,7 @@ $describe(setupFakeTimers)("time", ({ res, v }) => ({
   delay: () => {
     const r = res();
     const add = tap(r.add);
-    const dispose = of(1)(delay(1), add, delay(1), add, exe());
+    const dispose = val(1)(delay(1), add, delay(1), add, exe());
     r.eq([]);
     v.vi.advanceTimersByTime(1);
     r.eq([1]);

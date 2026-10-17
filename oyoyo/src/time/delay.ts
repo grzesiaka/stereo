@@ -1,4 +1,4 @@
-import { DISPOSE, Fn$O, id, MsOrNumber, timeout } from "jsyoyo";
+import { __, DISPOSE, Disposyo, disposyo, Fn$O, id, MsOrNumber, timeout } from "jsyoyo";
 import { OP, $OP, Yo, oYo, Yo$X } from "../base/yo";
 
 export type Delay<Ms extends MsOrNumber, Prev extends Yo> = OP<Yo$X<Prev>, Prev, {}, "delay", Ms>;
@@ -8,6 +8,11 @@ export type DelayOp = <Ms extends MsOrNumber, Prev extends oYo>(ms: Ms) => (Y: P
 export const delay = Yo<"delay", [MsOrNumber], MsOrNumber>(
   "delay",
   id,
-)<{ [DISPOSE]: () => void }>(
-  ($, P) => ($.Y = P((x) => ($[DISPOSE] = timeout($.__[1], () => $.o(x))))),
-) as never as DelayOp;
+)<{ [DISPOSE]: Disposyo }>(($, P) => {
+  $ = disposyo(__, $);
+  $.Y = P((x) => {
+    const t = timeout($.__[1], () => ($[DISPOSE]!.__.delete(t), $.o(x)));
+    // (t as any).x = x; Could be of value for
+    $[DISPOSE]!(t);
+  });
+}) as never as DelayOp;
