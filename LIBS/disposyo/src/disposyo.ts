@@ -6,7 +6,7 @@ export type Dispose = () => unknown;
 
 export type Disposes = ARR<Dispose>;
 
-export type Disposyo = Dispose & { __: Disposes } & ((...disposes: Disposes) => void);
+export type Disposyo = Dispose & { __: Set<Dispose> } & ((...disposes: Disposes) => void);
 
 // @ts-expect-error Symbol.dispose might be not present in older engines
 export const DISPOSE: unique symbol = Symbol.dispose || Symbol.for("dispose");
@@ -21,8 +21,8 @@ export const disposyo = <T extends __<{}> = __>(
   target = void 0 as T,
 ): __ extends T ? Disposyo : T & { [DISPOSE]: Disposyo } => {
   const $: Disposyo = (...ds: Disposes) =>
-    (ds.length === 0 ? $.__.forEach((d) => d()) : (($.__ as never as any[]).push(...ds), $)) as never;
-  $.__ = Array.isArray(D) ? D : [D];
+    ds.length === 0 ? $.__.forEach((d) => d()) : ds.forEach((d) => $.__.add(d));
+  $.__ = new Set(Array.isArray(D) ? D : [D]);
   if (target) {
     // @ts-expect-error
     target[DISPOSE] = $;
