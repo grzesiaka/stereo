@@ -10,6 +10,8 @@
     "./base/*": "./out/base/*.mjs",
     "./core": "./out/core/index.mjs",
     "./core/*": "./out/core/*.mjs",
+    "./run": "./out/run/index.mjs",
+    "./run/*": "./out/run/*.mjs",
     "./time": "./out/time/index.mjs",
     "./time/*": "./out/time/*.mjs"
   },
