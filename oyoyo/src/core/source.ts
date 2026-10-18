@@ -1,4 +1,4 @@
-import { CtxIdOptional, __ } from "jsyoyo";
+import { CtxIdOptional, __, id } from "jsyoyo";
 import { $Y0, Y0 } from "../base/yo";
 
 export type Never<X = never, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["never", X?] }, Ctx>;
@@ -10,20 +10,6 @@ export const never = <Ctx extends CtxIdOptional = {}, X = never>(ctx?: Ctx) =>
     };
     return $;
   }, ctx) as Never$<X, Ctx>;
-
-export type Val<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["of", X] }, Ctx>;
-
-export type Val$<X = unknown, Ctx extends CtxIdOptional = {}> = $Y0<X, Val<X, Ctx>>;
-
-export const val = <X = unknown, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx) =>
-  Y0((o) => {
-    const $ = {
-      o,
-      __: ["val", x],
-    };
-    $.o(x);
-    return $;
-  }, ctx) as Val$<X, Ctx>;
 
 export type Input<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<
   X,
@@ -49,13 +35,7 @@ export const input = <X, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx): Input
     return $;
   }, ctx) as never;
 
-export type Event<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<
-  X,
-  {
-    I: (x: X) => X;
-  },
-  Ctx
->;
+export type Event<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["event"]; I: (x: X) => X }, Ctx>;
 export type Event$<X = unknown, Ctx extends CtxIdOptional = {}> = $Y0<X, Event<X, Ctx>>;
 export const event = <X, Ctx extends CtxIdOptional = {}>(ctx?: Ctx): Event$<X, Ctx> =>
   Y0(
@@ -72,3 +52,36 @@ event.$ =
   <X>() =>
   <Ctx extends CtxIdOptional = {}>(ctx?: Ctx) =>
     event<X, Ctx>(ctx);
+
+export type Val<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["val", X]; "#": 1 }, Ctx>;
+export type Val$<X = unknown, Ctx extends CtxIdOptional = {}> = $Y0<X, Val<X, Ctx>>;
+export const val = <X = unknown, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx) =>
+  Y0((o) => {
+    const $ = {
+      o,
+      __: ["val", x],
+    };
+    $.o(x);
+    return $;
+  }, ctx) as Val$<X, Ctx>;
+
+export type OnceEvent<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<
+  X,
+  { __: ["once"]; X?: X; I: (x: X) => __<X>; "#": 1 },
+  Ctx
+>;
+export type OnceEvent$<X = unknown, Ctx extends CtxIdOptional = {}> = $Y0<X, OnceEvent<X, Ctx>>;
+export const once = <X, Ctx extends CtxIdOptional = {}>(ctx?: Ctx): OnceEvent$<X, Ctx> =>
+  Y0((o) => {
+    const $ = {
+      __: ["once"],
+      "#": 1,
+      o,
+      I: (x: X): X => ((($ as any).X = x), ($.I = id), $.o(x), x),
+    };
+    return $;
+  }, ctx) as never;
+once.$ =
+  <X>() =>
+  <Ctx extends CtxIdOptional = {}>(ctx?: Ctx) =>
+    once<X, Ctx>(ctx);

@@ -1,9 +1,23 @@
 import { describe } from "~testing";
 
-import { input, map, filter, scan, event, tap, flatten } from "../src/index";
+import { input, map, filter, scan, event, tap, flatten, once } from "../src/index";
 import { id } from "jsyoyo";
 
 describe("base", ({ eq, res }) => ({
+  once: () => {
+    const r = res();
+    const o = once<1>()()(r.add);
+    eq(o.__, ["once"]);
+    r.eq([]);
+    eq(o["#"], 1);
+    eq("X" in o, false);
+    o.I(1);
+    r.eq([1]);
+    eq(o["X"], 1);
+    o.I(1);
+    r.eq([1]);
+  },
+
   input: () => {
     const r = res();
     const i = input(1, "in")()(r.add);
