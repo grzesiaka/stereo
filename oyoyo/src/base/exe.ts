@@ -15,14 +15,20 @@ export const flatten = <Y extends Yo>(Y: Y) => {
 export const dispose = <Y extends Yo>(Y: Y, flat = flatten(Y)) => flat.forEach((y) => DISPOSE in y && y[DISPOSE]());
 
 export const exe =
-  <Y extends oYo, R = () => void>(
-    fn?: (dispose: () => void, flat: Flatten<Fn$O<Y>>) => R,
-    o = id as (x: Cb<oYo$X<Y>>) => void,
-  ) =>
-  (Y: Y): R => {
-    const y = Y(o);
-    const flat = flatten(y);
-    const dis = () => dispose(y, flat);
-    // @ts-expect-error `flat` problem with flat
-    return fn ? fn(dis, flat) : dis;
+  <Y extends oYo>(o = id as (x: Cb<oYo$X<Y>>) => void) =>
+  (Yo: Y) => {
+    const Y = Yo(o);
+    const flat = flatten(Y);
+    const dispose_ = () => dispose(Y, flat);
+    return {
+      flat,
+      I: flat[0].I,
+      [DISPOSE]: dispose_,
+      0: dispose_,
+    } as {
+      flat: Flatten<Fn$O<Y>>;
+      I: Flatten<Fn$O<Y>>[0] extends { I: infer I } ? I : __;
+      [DISPOSE]: () => void;
+      0: () => void;
+    };
   };
