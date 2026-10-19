@@ -1,5 +1,5 @@
 import { __, Cb, DISPOSE, Fn$O, id } from "jsyoyo";
-import { oYo, oYo$X, Yo } from "./yo";
+import { observeCompleted, oYo, oYo$X, Yo } from "./yo";
 
 export type Flatten<Y> = Y extends { Y: infer y } ? [...Flatten<y>, Y] : Y extends __ ? [] : [Y];
 export const flatten = <Y extends Yo>(Y: Y) => {
@@ -15,11 +15,12 @@ export const flatten = <Y extends Yo>(Y: Y) => {
 export const dispose = <Y extends Yo>(Y: Y, flat = flatten(Y)) => flat.forEach((y) => DISPOSE in y && y[DISPOSE]());
 
 export const exe =
-  <Y extends oYo>(o = id as (x: Cb<oYo$X<Y>>) => void) =>
+  <Y extends oYo>(onNext = id as (x: Cb<oYo$X<Y>>) => void, onCompleted?: () => void) =>
   (Yo: Y) => {
-    const Y = Yo(o);
+    const Y = Yo(onNext);
     const flat = flatten(Y);
     const dispose_ = () => dispose(Y, flat);
+    onCompleted && observeCompleted(Y, onCompleted);
     return {
       flat,
       I: flat[0].I,

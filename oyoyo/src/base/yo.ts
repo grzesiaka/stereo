@@ -1,13 +1,12 @@
 import { Pipe, pipe } from "composyo";
-import { __, ARR, Cb, CtxId, CtxIdOptional, Fn$O, WithOP } from "jsyoyo";
+import { __, ARR, Cb, CtxId, CtxIdOptional, deferred, Fn$O, WithOP } from "jsyoyo";
+import { dispose } from "./exe";
 
 export interface Yo<X = any, Y = any> {
   Y: Y;
   o: Cb<X>;
 }
 export type Yo$X<y> = y extends Yo<infer X> ? X : never;
-
-// export interface YoY<X = any, Y extends YoY = Yo> extends Yo<X, Y> {}
 
 export type oYo<X = any, Y = any, Extra = {}> = (o: Cb<X>) => Yo<X, Y extends oYo ? Fn$O<Y> : Y> & Extra;
 
@@ -21,11 +20,6 @@ export type OP<X = any, Y = any, Extra = {}, OP_ID extends string = string, OP_P
 
 type OP$X<O> = O extends OP<infer X> ? X : never;
 export type $OP<O extends OP = OP> = (o: Cb<OP$X<O>>) => O;
-
-/** Completable */
-export interface Z<Z = unknown> {
-  Z: Promise<Z>;
-}
 
 export const Yo =
   <OP_ID extends string, ParamsRaw extends ARR, Params = ParamsRaw>(
@@ -49,3 +43,33 @@ export type $Y0<X, R> = Pipe<(o: Cb<X>) => R>;
 
 export const Y0 = <X, R extends {}, Ctx extends CtxIdOptional = __>($: (o: Cb<X>) => R, ctx = __ as Ctx) =>
   pipe(ctx === __ ? $ : (o: Cb<X>) => CtxId($(o), ctx)) as never as $Y0<X, Y0<X, R, Ctx>>;
+
+export interface Completable<Z = unknown> {
+  Z: Z | Promise<Z>;
+}
+
+export type WithCompletable<z, Other extends {}> = Completable<z> & Other;
+
+export const makeCompletable = <Base extends Yo, V>($: Base & Partial<Completable>, onComplete?: () => void) => {
+  const d = deferred<V>();
+  $.Z = d.promise;
+  const complete = (v: V) => {
+    $.Z = v;
+    d.resolve(v);
+    dispose($);
+    onComplete?.();
+  };
+  return [complete, $] as [typeof complete, WithCompletable<V, Base>];
+};
+
+export const observeCompleted = <Y extends Yo>(Y: Y, onCompleted: () => void) => {
+  let y = Y as Partial<Completable> & Yo;
+  while (y) {
+    if ("Z" in y) {
+      y.Z instanceof Promise ? y.Z.then(onCompleted) : onCompleted();
+      break;
+    } else {
+      y = y.Y;
+    }
+  }
+};

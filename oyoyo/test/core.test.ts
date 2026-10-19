@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 
-import { input, map, filter, scan, event, tap, flatten, once } from "../src/index";
-import { id } from "jsyoyo";
+import { input, map, filter, scan, event, tap, flatten, once, take, exe } from "../src/index";
+import { id, tick } from "jsyoyo";
 
 describe("base", ({ eq, res }) => ({
   once: () => {
@@ -94,5 +94,42 @@ describe("base", ({ eq, res }) => ({
     i.Y.Y.I(3);
     i.Y.Y.I(4);
     r.eq([1, 1 + 4, 1 + 4 + 9, 1 + 4 + 9 + 16]);
+  },
+}));
+
+describe(take, ({ res }) => ({
+  0: () => {
+    const r = res();
+    const i = input("a")(
+      take(0),
+      exe(r.add, () => r.add("Z")),
+    );
+    r.eq(["Z"]);
+    i.I("b");
+    r.eq(["Z"]);
+  },
+
+  "1_sync/input": () => {
+    const r = res();
+    const i = input("a")(
+      take(1),
+      exe(r.add, () => r.add("Z")),
+    );
+    r.eq(["a", "Z"]);
+    i.I("aa");
+    r.eq(["a", "Z"]);
+  },
+
+  "1_event": async () => {
+    const r = res();
+    const i = event()(
+      take(1),
+      exe(r.add, () => r.add("Z")),
+    );
+    r.eq([]);
+    i.I("a");
+    r.eq(["a"]);
+    await tick(); // completion is delivered via promise TODO fully sync mechanism is better
+    r.eq(["a", "Z"]);
   },
 }));
