@@ -1,5 +1,6 @@
 import { Pipe, pipe } from "composyo";
-import { __, ARR, Cb, CtxId, CtxIdOptional, deferred, Fn$O, WithOP } from "jsyoyo";
+import { __, ARR, Cb, CtxId, CtxIdOptional, Fn$O, WithOP } from "jsyoyo";
+import { Event, Subscribable } from "ioioy";
 import { dispose } from "./exe";
 
 export interface Yo<X = any, Y = any> {
@@ -45,17 +46,18 @@ export const Y0 = <X, R extends {}, Ctx extends CtxIdOptional = __>($: (o: Cb<X>
   pipe(ctx === __ ? $ : (o: Cb<X>) => CtxId($(o), ctx)) as never as $Y0<X, Y0<X, R, Ctx>>;
 
 export interface Completable<Z = unknown> {
-  Z: Z | Promise<Z>;
+  Z: Subscribable<Z> & { X?: Z };
 }
 
 export type WithCompletable<z, Other extends {}> = Completable<z> & Other;
 
 export const makeCompletable = <Base extends Yo, V>($: Base & Partial<Completable>, onComplete?: () => void) => {
-  const d = deferred<V>();
-  $.Z = d.promise;
+  const io = Event<V>()();
+  $.Z = io.O as Subscribable<V> & { X?: V };
   const complete = (v: V) => {
-    $.Z = v;
-    d.resolve(v);
+    if ("X" in $.Z!) return; // may complete only once
+    $.Z!.X = v;
+    io.I(v);
     dispose($);
     onComplete?.();
   };
@@ -66,7 +68,7 @@ export const observeCompleted = <Y extends Yo>(Y: Y, onCompleted: () => void) =>
   let y = Y as Partial<Completable> & Yo;
   while (y) {
     if ("Z" in y) {
-      y.Z instanceof Promise ? y.Z.then(onCompleted) : onCompleted();
+      !("X" in y.Z!) ? y.Z!(onCompleted) : onCompleted();
       break;
     } else {
       y = y.Y;

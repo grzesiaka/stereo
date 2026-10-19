@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 
 import { input, map, filter, scan, event, tap, flatten, once, take, exe } from "../src/index";
-import { id, tick } from "jsyoyo";
+import { id } from "jsyoyo";
 
 describe("base", ({ eq, res }) => ({
   once: () => {
@@ -128,8 +128,6 @@ describe(take, ({ res }) => ({
     );
     r.eq([]);
     i.I("a");
-    r.eq(["a"]);
-    await tick(); // completion is delivered via promise TODO fully sync mechanism is better
     r.eq(["a", "Z"]);
   },
 }));

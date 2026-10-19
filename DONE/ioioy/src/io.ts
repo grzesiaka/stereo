@@ -19,6 +19,8 @@ export type OUT<O, Ctx extends CtxIdOptional, X> = Fn<[], X> &
   Fn<[Cb<O>, skipInitial?: boolean | 1], Dispose> &
   CTX<Ctx>;
 
+export type Subscribable<O, Ctx extends CtxIdOptional = {}, X = __<O>> = OUT<O, Ctx, X>;
+
 export type IdIO = IO & { O: { Id: string } };
 
 export type IO$I<io> = io extends IO<infer X> ? X : never;
