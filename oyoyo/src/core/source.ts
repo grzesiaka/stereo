@@ -40,6 +40,7 @@ export type Event$<X = unknown, Ctx extends CtxIdOptional = {}> = $Y0<X, Event<X
 export const event = <X, Ctx extends CtxIdOptional = {}>(ctx?: Ctx): Event$<X, Ctx> =>
   Y0(
     (o) => ({
+      __: ["event"],
       o,
       get I() {
         return this.o;

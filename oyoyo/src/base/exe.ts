@@ -1,8 +1,8 @@
 import { __, Cb, DISPOSE, Fn$O, id } from "jsyoyo";
-import { oYo, oYo$X, Yo, YoY } from "./yo";
+import { oYo, oYo$X, Yo } from "./yo";
 
 export type Flatten<Y> = Y extends { Y: infer y } ? [...Flatten<y>, Y] : Y extends __ ? [] : [Y];
-export const flatten = <Y extends YoY>(Y: Y) => {
+export const flatten = <Y extends Yo>(Y: Y) => {
   const r = [];
   let y = Y as Yo;
   while (y) {

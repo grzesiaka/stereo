@@ -7,7 +7,7 @@ export interface Yo<X = any, Y = any> {
 }
 export type Yo$X<y> = y extends Yo<infer X> ? X : never;
 
-export interface YoY<X = any, Y extends YoY = Yo> extends Yo<X, Y> {}
+// export interface YoY<X = any, Y extends YoY = Yo> extends Yo<X, Y> {}
 
 export type oYo<X = any, Y = any, Extra = {}> = (o: Cb<X>) => Yo<X, Y extends oYo ? Fn$O<Y> : Y> & Extra;
 

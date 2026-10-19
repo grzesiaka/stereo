@@ -1,8 +1,8 @@
 import { describe } from "~testing";
-import { run, event } from "../src";
+import { run, event, map } from "../src";
 
 describe(run, () => ({
   simple: () => {
-    const y = event<number>()();
+    const y = event<number>()(run(($) => $(map((x) => x * x))));
   },
 }));
