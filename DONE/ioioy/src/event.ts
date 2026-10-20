@@ -24,5 +24,6 @@ export const Event = (<X>() =>
 
 Event.B = Event.N = Event.S = Event<any>();
 Event.$L = (L) => () => Event<any>()(L);
+Event.$ = () => Event<any>()();
 
 export default Event;
