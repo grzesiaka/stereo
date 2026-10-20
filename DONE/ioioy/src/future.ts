@@ -23,10 +23,10 @@ export const Future =
     return $;
   };
 
-Future.$ = <X>() => Future<X>()();
+Future.$ = <X>() => Future<X>()() as Future<__, X>;
 /**
  * Creates a future that emits maximally once.
  */
-Future.$1 = <X>() => Future<X>()({ "#": 1 });
+Future.$1 = <X>() => Future<X>()({ "#": 1 }) as Future<{ readonly "#": 1 }, X>;
 
 export default Future;

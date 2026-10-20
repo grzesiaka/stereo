@@ -1,6 +1,6 @@
 import { Pipe, pipe } from "composyo";
 import { __, ARR, Cb, CtxId, CtxIdOptional, Fn$O, WithOP } from "jsyoyo";
-import { Event, Subscribable } from "ioioy";
+import { Future, Subscribable } from "ioioy";
 import { dispose } from "./exe";
 
 export interface Yo<X = any, Y = any> {
@@ -46,14 +46,14 @@ export const Y0 = <X, R extends {}, Ctx extends CtxIdOptional = __>($: (o: Cb<X>
   pipe(ctx === __ ? $ : (o: Cb<X>) => CtxId($(o), ctx)) as never as $Y0<X, Y0<X, R, Ctx>>;
 
 export interface Completable<Z = unknown> {
-  Z: Subscribable<Z> & { X?: Z };
+  Z: Subscribable<Z, { readonly "#": 1 }> & { X?: Z };
 }
 
 export type WithCompletable<z, Other extends {}> = Completable<z> & Other;
 
 export const makeCompletable = <Base extends Yo, V>($: Base & Partial<Completable>, onComplete?: () => void) => {
-  const io = Event<V>()();
-  $.Z = io.O as Subscribable<V> & { X?: V };
+  const io = Future.$1<V>();
+  $.Z = io.O as Subscribable<V, { "#": 1 }> & { X?: V };
   const complete = (v: V) => {
     if ("X" in $.Z!) return; // may complete only once
     $.Z!.X = v;
