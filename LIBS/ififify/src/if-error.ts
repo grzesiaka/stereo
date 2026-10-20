@@ -1,3 +1,5 @@
+import { id } from "./-";
+
 /**
  * If error
  * @param x value to test
@@ -8,7 +10,7 @@
 export const ifError = <X, A, O = Exclude<X, Error>>(
   x: X,
   errorPath: (a: Extract<X, Error>) => A,
-  nonErrorPath = ((x: any) => x) as any as (n: Exclude<X, Error>) => O,
+  nonErrorPath = id as (n: Exclude<X, Error>) => O,
 ) => (x instanceof Error ? errorPath(x as Extract<X, Error>) : nonErrorPath(x as Exclude<X, Error>));
 
 ifError.$ =

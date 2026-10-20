@@ -1,4 +1,5 @@
 import { Fn } from "~types";
+import { id } from "./-";
 
 /**
  * If function
@@ -10,7 +11,7 @@ import { Fn } from "~types";
 export const ifFunction = <X, A, O = Exclude<X, Fn>>(
   x: X,
   f: (a: Extract<X, Fn>) => A,
-  n = ((x: X) => x) as any as (n: Exclude<X, Fn>) => O,
+  n = id as (n: Exclude<X, Fn>) => O,
 ) => (typeof x === "function" ? f(x as Extract<X, Fn>) : n(x as Exclude<X, Fn>));
 
 export default ifFunction;

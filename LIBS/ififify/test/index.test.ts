@@ -1,6 +1,29 @@
 import { describe } from "~testing";
 
-import { ifFunction } from "../src";
+import { ifFunction, ifKeyDefined } from "../src";
+import { __ } from "../src/-";
+
+describe(ifKeyDefined, ({ eq }) => ({
+  defined: () => {
+    eq(ifKeyDefined("key")({ key: "abc" } as const), "abc");
+    eq(
+      ifKeyDefined("key")({ key: "abc" } as const, (_, o) => o.key.length),
+      3,
+    );
+  },
+  notDefined: () => {
+    eq(
+      ifKeyDefined("key")(
+        {} as const,
+        (_, o) => o.key && 0,
+        () => 1,
+      ),
+      1,
+    );
+    const x = ifKeyDefined("key")({});
+    eq(x, __);
+  },
+}));
 
 describe(ifFunction, ({ eq }) => ({
   fun: () => {

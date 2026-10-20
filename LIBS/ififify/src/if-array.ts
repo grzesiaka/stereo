@@ -1,4 +1,5 @@
 import { ARR } from "~types";
+import { id } from "./-";
 
 /**
  * If array
@@ -10,7 +11,7 @@ import { ARR } from "~types";
 export const ifArray = <X, A, O = Exclude<X, ARR>>(
   x: X,
   arrayPath: (a: Extract<X, ARR>) => A,
-  nonArrayPath = ((x: any) => x) as any as (n: Exclude<X, ARR>) => O,
+  nonArrayPath = id as (n: Exclude<X, ARR>) => O,
 ) => (Array.isArray(x) ? arrayPath(x as Extract<X, ARR>) : nonArrayPath(x as Exclude<X, ARR>));
 
 ifArray.$ =

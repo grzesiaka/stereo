@@ -1,3 +1,5 @@
+import { id } from "./-";
+
 /**
  * If string
  * @param x object to test
@@ -8,7 +10,7 @@
 export const ifString = <X, A, O = Exclude<X, string>>(
   x: X,
   f: (a: Extract<X, string>) => A,
-  n = ((x: X) => x) as any as (n: Exclude<X, string>) => O,
+  n = id as (n: Exclude<X, string>) => O,
 ) => (typeof x === "string" ? f(x as Extract<X, string>) : n(x as Exclude<X, string>));
 
 export default ifString;
