@@ -4,6 +4,7 @@ import { Future, ifResolved, Subscribable } from "ioioy";
 import { dispose } from "./exe";
 
 export interface Yo<X = any, Y = any> {
+  __: [string, ...unknown[]];
   Y: Y;
   o: Cb<X>;
 }
