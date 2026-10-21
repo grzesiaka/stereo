@@ -1,6 +1,17 @@
 import { __, a, DISPOSE, Fn, Fn$O, WithTag } from "jsyoyo";
 import { mutatingRemove } from "arryo";
-import { OP, $OP, Yo, oYo, oYo$X, Yo$X, closestCompletable, makeCompletable } from "../base/yo";
+import {
+  OP,
+  $OP,
+  Yo,
+  oYo,
+  oYo$X,
+  Yo$X,
+  closestCompletable,
+  makeCompletable,
+  ClosestCompletable,
+  Completable,
+} from "../base/yo";
 import { dispose, Flatten } from "../base";
 import { OnceEvent, OnceEvent$, val } from "../core";
 import { ifResolved } from "ioioy";
@@ -12,17 +23,17 @@ type WrapInnerFn<X = unknown, Y extends oYo = oYo> = Fn<[wrapped_value: OnceEven
 
 type Concurrency = WithTag<number, "concurrency"> | (number & {});
 
-export interface WrapCtx {
+export type WrapCtx<Z> = (__ extends Z ? {} : { Z: Z }) & {
   idx: number;
   pending: unknown[];
   running: Yo[];
   [DISPOSE]: () => void;
-}
+};
 
 export type Wrap<Prev extends Yo, Y extends oYo> = OP<
   OnceEvent<Yo$X<Prev>>,
   Prev,
-  WrapCtx,
+  WrapCtx<ClosestCompletable<Prev> extends __ ? __ : Completable<number>>,
   "wrap",
   [WrapInnerFn<Yo$X<Prev>, Y>, Concurrency?]
 >;
@@ -76,7 +87,7 @@ export const wrap = Yo<"wrap", [WrapInnerFn, Concurrency?]>("wrap")((_, P, param
     [DISPOSE]: () => {
       $.running.forEach((r) => dispose(r));
     },
-  } satisfies WrapCtx);
+  } satisfies WrapCtx<any>);
 
   $.Y = P((x) => $.pending.push(x)); // gymnastic around sync emissions
 
@@ -85,7 +96,7 @@ export const wrap = Yo<"wrap", [WrapInnerFn, Concurrency?]>("wrap")((_, P, param
   if (Z) {
     const [c] = makeCompletable($);
     handleComplete = () => {
-      if (!$.running.length && Z.X !== __) {
+      if (!$.running.length && Z.Z.X !== __) {
         c($.idx);
       }
     };
