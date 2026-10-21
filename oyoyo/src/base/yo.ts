@@ -1,6 +1,6 @@
 import { Pipe, pipe } from "composyo";
 import { __, ARR, Cb, CtxId, CtxIdOptional, Fn$O, WithOP } from "jsyoyo";
-import { Future, Subscribable } from "ioioy";
+import { Future, ifResolved, Subscribable } from "ioioy";
 import { dispose } from "./exe";
 
 export interface Yo<X = any, Y = any> {
@@ -64,14 +64,33 @@ export const makeCompletable = <Base extends Yo, V>($: Base & Partial<Completabl
   return [complete, $] as [typeof complete, WithCompletable<V, Base>];
 };
 
-export const observeCompleted = <Y extends Yo>(Y: Y, onCompleted: () => void) => {
+export type ClosestCompletable<Y> = Y extends Completable ? Y : Y extends { Y: infer P } ? ClosestCompletable<P> : __;
+export const closestCompletable = <Y extends Yo>(Y: Y): ClosestCompletable<Y> => {
   let y = Y as Partial<Completable> & Yo;
   while (y) {
     if ("Z" in y) {
-      !("X" in y.Z!) ? y.Z!(onCompleted) : onCompleted();
-      break;
+      return y as never;
     } else {
       y = y.Y;
     }
   }
+  return __ as never;
+};
+
+/**
+ * Finds closest completable ancestor and await its completion
+ * @param Y a starting node in a chain
+ * @param onCompleted callback run upon ancestor completion
+ * @returns true if ancestor may complete; false otherwise
+ */
+export const observeCompleted = <Y extends Yo>(
+  Y: Y,
+  onCompleted: (z: ClosestCompletable<Y>["Z"]["X"]) => void,
+): boolean => {
+  const y = closestCompletable(Y);
+  if (y) {
+    ifResolved(y, onCompleted, () => y.Z(onCompleted));
+  }
+
+  return false;
 };
