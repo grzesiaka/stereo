@@ -1,5 +1,5 @@
 import { __, Cb, DISPOSE, Fn$O, id } from "jsyoyo";
-import { observeCompleted, oYo, oYo$X, Yo } from "./yo";
+import { ClosestCompletable, closestCompletable, observeCompleted, oYo, oYo$X, Yo } from "./yo";
 
 export type Flatten<Y> = Y extends { Y: infer y } ? [...Flatten<y>, Y] : Y extends __ ? [] : [Y];
 export const flatten = <Y extends Yo>(Y: Y) => {
@@ -14,6 +14,14 @@ export const flatten = <Y extends Yo>(Y: Y) => {
 
 export const dispose = <Y extends Yo>(Y: Y, flat = flatten(Y)) => flat.forEach((y) => DISPOSE in y && y[DISPOSE]());
 
+export type ExecutePipeline<Y extends oYo> = {
+  flat: Flatten<Fn$O<Y>>;
+  I: Flatten<Fn$O<Y>>[0] extends { I: infer I } ? I : __;
+  Z: ClosestCompletable<Fn$O<Y>>;
+  [DISPOSE]: () => void;
+  0: () => void;
+};
+
 export const exe =
   <Y extends oYo>(onNext = id as (x: Cb<oYo$X<Y>>) => void, onCompleted?: () => void) =>
   (Yo: Y) => {
@@ -24,12 +32,8 @@ export const exe =
     return {
       flat,
       I: flat[0].I,
+      Z: closestCompletable(Y),
       [DISPOSE]: dispose_,
       0: dispose_,
-    } as {
-      flat: Flatten<Fn$O<Y>>;
-      I: Flatten<Fn$O<Y>>[0] extends { I: infer I } ? I : __;
-      [DISPOSE]: () => void;
-      0: () => void;
-    };
+    } as ExecutePipeline<Y>;
   };

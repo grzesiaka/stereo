@@ -1,7 +1,7 @@
 import { id, __ } from "jsyoyo";
 import { $$ } from "~types";
 
-export const isXSet = <F extends object>(f: F): f is F & { X: unknown } => "X" in f;
+// export const isXSet = <F extends object>(f: F): f is F & { X: unknown } => "X" in f;
 /**
  * Conditional flow depending if X is not `undefined`
  *
