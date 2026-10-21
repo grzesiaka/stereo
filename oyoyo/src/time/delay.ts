@@ -1,5 +1,5 @@
 import { __, DISPOSE, Disposyo, disposyo, Fn$O, id, MsOrNumber, timeout } from "jsyoyo";
-import { OP, $OP, Yo, oYo, Yo$X } from "../base/yo";
+import { OP, $OP, Yo, oYo, Yo$X, closestCompletable, makeCompletable } from "../base/yo";
 
 export type Delay<Ms extends MsOrNumber, Prev extends Yo> = OP<Yo$X<Prev>, Prev, {}, "delay", Ms>;
 export type Delay$<Ms extends MsOrNumber, Prev extends oYo> = $OP<Delay<Ms, Fn$O<Prev>>>;
@@ -11,8 +11,13 @@ export const delay = Yo<"delay", [MsOrNumber], MsOrNumber>(
 )<{ [DISPOSE]: Disposyo }>(($, P) => {
   $ = disposyo(__, $);
   $.Y = P((x) => {
-    const t = timeout($.__[1], () => ($[DISPOSE]!.__.delete(t), $.o(x)));
-    // (t as any).x = x; Could be of value for
+    const t = timeout($.__[1], () => {
+      $[DISPOSE]!.__.delete(t);
+      $.o(x);
+      Z && !$[DISPOSE]?.__.size && Z.Z.X !== __ && complete(1);
+    });
     $[DISPOSE]!(t);
   });
+  const Z = closestCompletable($.Y);
+  const [complete] = makeCompletable($);
 }) as never as DelayOp;
