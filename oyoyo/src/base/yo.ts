@@ -38,7 +38,7 @@ export const Yo =
     return y;
   };
 
-export type Y0<X, R extends {}, Ctx extends CtxIdOptional> = CtxId<Ctx, Yo<X, __>> & R;
+export type Y0<X = any, R extends {} = {}, Ctx extends CtxIdOptional = {}> = CtxId<Ctx, Yo<X, __>> & R;
 
 export type $Y0<X, R> = Pipe<(o: Cb<X>) => R>;
 
@@ -51,7 +51,10 @@ export interface Completable<Z = unknown> {
 
 export type WithCompletable<z, Other extends {}> = Completable<z> & Other;
 
-export const makeCompletable = <Base extends Yo, V>($: Base & Partial<Completable>, onComplete?: () => void) => {
+export const makeCompletable = <Base extends Partial<Yo>, V>(
+  $: Base & Partial<Completable>,
+  onComplete?: () => void,
+) => {
   const io = Future.$1<V>();
   $.Z = io.O as Subscribable<V, { "#": 1 }> & { X?: V };
   const complete = (v: V) => {
