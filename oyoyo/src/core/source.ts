@@ -1,5 +1,5 @@
 import { CtxIdOptional, __, id } from "jsyoyo";
-import { $Y0, Y0 } from "../base/yo";
+import { $Y0, makeCompletable, Y0 } from "../base/yo";
 
 export type Never<X = never, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["never", X?] }, Ctx>;
 export type Never$<X = never, Ctx extends CtxIdOptional = {}> = $Y0<X, Never<X, Ctx>>;
@@ -62,7 +62,9 @@ export const val = <X = unknown, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx
       o,
       __: ["val", x],
     };
+    const [complete] = makeCompletable($);
     $.o(x);
+    complete(1);
     return $;
   }, ctx) as Val$<X, Ctx>;
 
@@ -78,8 +80,9 @@ export const once = <X, Ctx extends CtxIdOptional = {}>(ctx?: Ctx): OnceEvent$<X
       __: ["once"],
       "#": 1,
       o,
-      I: (x: X): X => ((($ as any).X = x), ($.I = id), $.o(x), x),
+      I: (x: X): X => ((($ as any).X = x), ($.I = id), complete(1), $.o(x), x),
     };
+    const [complete] = makeCompletable($);
     return $;
   }, ctx) as never;
 once.$ =

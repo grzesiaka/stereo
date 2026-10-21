@@ -1,4 +1,5 @@
 import { __, a, DISPOSE, Fn, Fn$O, WithTag } from "jsyoyo";
+import { mutatingRemove } from "arryo";
 import { OP, $OP, Yo, oYo, oYo$X, Yo$X, closestCompletable, makeCompletable } from "../base/yo";
 import { dispose, Flatten } from "../base";
 import { OnceEvent, OnceEvent$, val } from "../core";
@@ -37,8 +38,15 @@ export const wrap = Yo<"wrap", [WrapInnerFn, Concurrency?]>("wrap")((_, P, param
     const y = params[0](val(x) as any, $.idx++)($.o);
     const z = closestCompletable(y);
     if (z) {
-      ifResolved(z, nextPending, () => $.running.push(y));
+      ifResolved(z, nextPending, () => {
+        $.running.push(y);
+        z.Z(() => {
+          mutatingRemove(y)($.running);
+          nextPending();
+        });
+      });
     } else {
+      // adding non-completable may result in a deadlock - probably should be enforced by types
       $.running.push(y);
     }
   };

@@ -1001,6 +1001,9 @@ importers:
 
   oyoyo:
     devDependencies:
+      arryo:
+        specifier: workspace:*
+        version: link:../LIBS/arryo
       composyo:
         specifier: workspace:*
         version: link:../DONE/composyo
