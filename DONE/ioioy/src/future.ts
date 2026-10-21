@@ -12,7 +12,7 @@ export const Future =
     const $ = OP("FUT")(L)({
       OO: new Set<Cb<X>>(),
       I: (x: X) => (($.X = x), $.OO.forEach((c) => c(x)), x),
-      O: cId((c?: Cb<X>) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
+      O: cId((c?: Cb<X>) => (!c ? $.X : ($.OO.add(c), $.X !== __ && c($.X), () => $.OO.delete(c))), L),
     }) as Future<Ctx, X> & { X?: X };
     if ("#" in $.O) {
       $.I = (x: X) =>
