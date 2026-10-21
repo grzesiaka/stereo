@@ -1,5 +1,6 @@
 export * from "./cross-arr";
 export * from "./cross";
 export * from "./dethunk";
+export * from "./mutating-remove";
 export * from "./remove";
 export * from "./types";

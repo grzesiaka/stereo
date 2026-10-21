@@ -15,6 +15,7 @@ export type NestedArrays$ValuesUnion<T, Shape = unknown> = T extends Shape
 
 export type Head<X, E = never> = X extends readonly [infer H, ...any[]] ? H : X extends readonly [] ? E : X;
 export type Tail<X, E = never> = X extends readonly [any, ...infer R] ? R : X extends readonly [] ? E : X;
+export type Last<X, E = never> = X extends readonly [...any, infer Last] ? Last : X extends readonly [] ? E : X;
 
 /**
  * Easily control shape of deeply nested arrays.
