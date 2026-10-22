@@ -1,4 +1,4 @@
-import { CtxIdOptional, __, id } from "jsyoyo";
+import { CtxIdOptional, DISPOSE, __, id } from "jsyoyo";
 import { $Y0, makeCompletable, Y0 } from "../base/yo";
 
 export type Never<X = never, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["never", X?] }, Ctx>;
@@ -30,6 +30,7 @@ export const input = <X, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx): Input
       o,
       X: x,
       I: (x: X) => ((($ as { X: X }).X = x), $.o(x)),
+      [DISPOSE]: () => ($.o = id),
     };
     $.o(x);
     return $;
@@ -38,16 +39,15 @@ export const input = <X, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx): Input
 export type Event<X = unknown, Ctx extends CtxIdOptional = {}> = Y0<X, { __: ["event"]; I: (x: X) => X }, Ctx>;
 export type Event$<X = unknown, Ctx extends CtxIdOptional = {}> = $Y0<X, Event<X, Ctx>>;
 export const event = <X, Ctx extends CtxIdOptional = {}>(ctx?: Ctx): Event$<X, Ctx> =>
-  Y0(
-    (o) => ({
+  Y0((o) => {
+    const $ = {
       __: ["event"],
       o,
-      get I() {
-        return this.o;
-      },
-    }),
-    ctx,
-  ) as never;
+      I: (x: X) => $.o(x),
+      [DISPOSE]: () => ($.o = id),
+    };
+    return $;
+  }, ctx) as never;
 
 event.$ =
   <X>() =>
@@ -60,7 +60,7 @@ export const val = <X = unknown, Ctx extends CtxIdOptional = {}>(x: X, ctx?: Ctx
   Y0((o) => {
     const $ = {
       o,
-      __: ["val", x],
+      __: ["val", x] as ["val", X],
     };
     const [complete] = makeCompletable($);
     $.o(x);
@@ -77,10 +77,11 @@ export type OnceEvent$<X = unknown, Ctx extends CtxIdOptional = {}> = $Y0<X, Onc
 export const once = <X, Ctx extends CtxIdOptional = {}>(ctx?: Ctx): OnceEvent$<X, Ctx> =>
   Y0((o) => {
     const $ = {
-      __: ["once"],
+      __: ["once"] as ["once"],
       "#": 1,
       o,
-      I: (x: X): X => ((($ as any).X = x), ($.I = id), complete(1), $.o(x), x),
+      I: (x: X): X => ((($ as any).X = x), ($.I = id), $.o(x), complete(1), x),
+      [DISPOSE]: () => ($.o = id),
     };
     const [complete] = makeCompletable($);
     return $;
