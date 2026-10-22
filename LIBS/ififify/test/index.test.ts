@@ -1,7 +1,7 @@
 import { describe } from "~testing";
 
 import { ifFunction, ifKeyDefined } from "../src";
-import { __ } from "../src/-";
+// import { __ } from "../src/-"; This breaks CI
 
 describe(ifKeyDefined, ({ eq }) => ({
   defined: () => {
@@ -21,7 +21,7 @@ describe(ifKeyDefined, ({ eq }) => ({
       1,
     );
     const x = ifKeyDefined("key")({});
-    eq(x, __);
+    eq(x, void 0);
   },
 }));
 

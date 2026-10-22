@@ -35,7 +35,7 @@ describe(latest, ({ eq, res }) => ({
     I(1);
     r.eq([0, 1, "DONE"]);
 
-    I(2); // no effect
+    I(2); // no effect / take(2) disposed
     r.eq([0, 1, "DONE"]);
   },
 }));
@@ -134,7 +134,8 @@ $describe(setupFakeTimers)(latest, ({ v, res, eq }) => ({
     eq(Y.current!.__, ["delay", 1]);
     v.vi.advanceTimersByTime(1);
     r.eq([1, "ALL_DONE"]);
-    I(2); // TODO once done should not accept new values
+    eq(Y.current, __);
+    I(2);
     v.vi.advanceTimersByTime(1);
     r.eq([1, "ALL_DONE"]);
     eq(Y.current, __);
