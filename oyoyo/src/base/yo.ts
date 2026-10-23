@@ -1,5 +1,5 @@
 import { Pipe, pipe } from "composyo";
-import { __, ARR, Cb, CtxId, CtxIdOptional, Fn$O, WithOP } from "jsyoyo";
+import { __, ARR, Cb, CtxId, CtxIdOptional, DISPOSE, Fn$O, WithOP } from "jsyoyo";
 import { Future, ifResolved, Subscribable } from "ioioy";
 import { dispose } from "./exe";
 
@@ -43,8 +43,16 @@ export type Y0<X = any, R extends {} = {}, Ctx extends CtxIdOptional = {}> = Ctx
 
 export type $Y0<X, R> = Pipe<(o: Cb<X>) => R>;
 
-export const Y0 = <X, R extends {}, Ctx extends CtxIdOptional = __>($: (o: Cb<X>) => R, ctx = __ as Ctx) =>
-  pipe(ctx === __ ? $ : (o: Cb<X>) => CtxId($(o), ctx)) as never as $Y0<X, Y0<X, R, Ctx>>;
+export const Y0 = <X, R extends {}, D extends void | __ | (() => void) = void, Ctx extends CtxIdOptional = __>(
+  $: ($: { o: Cb<X> } & Partial<Yo>) => D,
+  ctx = __ as Ctx,
+) =>
+  pipe((o: Cb<X>) => {
+    const _ = CtxId({ o }, ctx);
+    const d = $(_);
+    d && ((_ as any)[DISPOSE] = d);
+    return _;
+  }) as never as $Y0<X, Y0<X, R & D extends __ ? {} : { [DISPOSE]: () => __ }, Ctx>>;
 
 export interface Completable<Z = unknown> {
   Z: Subscribable<Z, { readonly "#": 1 }> & { X?: Z };
