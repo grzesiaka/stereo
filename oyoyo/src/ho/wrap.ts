@@ -1,4 +1,4 @@
-import { __, a, DISPOSE, Fn, Fn$O, WithTag } from "jsyoyo";
+import { __, a, DISPOSE, Fn, Fn$O } from "jsyoyo";
 import { mutatingRemove } from "arryo";
 import {
   OP,
@@ -12,7 +12,7 @@ import {
   ClosestCompletable,
   Completable,
 } from "../base/yo";
-import { dispose, Flatten } from "../base";
+import { dispose, Flatten, Concurrency } from "../base";
 import { OnceEvent, OnceEvent$, val } from "../core";
 import { ifResolved } from "ioioy";
 
@@ -20,8 +20,6 @@ type EnforceSource<X, F> = Flatten<Fn$O<Fn$O<F>>>[0] extends { I?: (x: X) => unk
   ? F
   : ["INCORRECT_SOURCE", { EXPECTED: { I?: (x: X) => unknown } }];
 type WrapInnerFn<X = unknown, Y extends oYo = oYo> = Fn<[wrapped_value: OnceEvent$<X>, index: number], Y>;
-
-type Concurrency = WithTag<number, "concurrency"> | (number & {});
 
 export type WrapCtx<Z> = (__ extends Z ? {} : { Z: Z }) & {
   idx: number;

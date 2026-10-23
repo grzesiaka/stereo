@@ -10,7 +10,7 @@ const res = <X>() => {
   const r = [] as X[];
   return {
     items: r,
-    add: (x: X) => r.push(x),
+    add: r.push.bind(r),
     eq: eq(r),
     last: (n?: number, t?: (x: X) => unknown) => {
       n !== void 0 && eq(r.length, n);

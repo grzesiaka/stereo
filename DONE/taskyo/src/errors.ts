@@ -33,3 +33,5 @@ export const critical = (err: unknown, run: Run | RetryRun) => {
   }
   return ERR.critical({ error: err, trace: [run] });
 };
+
+export type CriticalError = typeof ERR.critical.$;

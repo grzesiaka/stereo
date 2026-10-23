@@ -28,6 +28,7 @@
     "arryo": "workspace:*",
     "composyo": "workspace:*",
     "ioioy": "workspace:*",
-    "jsyoyo": "workspace:*"
+    "jsyoyo": "workspace:*",
+    "taskyo": "workspace:*"
   }
 }
