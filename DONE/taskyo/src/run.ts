@@ -16,6 +16,7 @@ type RetryRunResult<S extends LoadedSpec | Spec> =
   | (S extends { retry: any } ? RRERRORR<ERR["retry"]["name"], { run: RetryRun<S> }> : never);
 export interface RetryRun<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   spec: S;
+  params: Spec$Params<S>;
   promise: Promise<RetryRunResult<S>>;
   runs: Run[];
   state: $State<Spec$State<S> & { runs: [Run<S>, ...Run<S>[]] }, Spec$Deps<S>>[0]["O"];
@@ -42,7 +43,7 @@ const retry =
   <S extends LoadedSpec & { retry: RetryOptions }>(spec: S, [r, state] = initRun<RetryRun>(spec)) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
     const def = deferred<RetryRunResult<S>>();
-
+    r.params = params;
     const abo = ON.promise(abort)("abort");
     const promise = [def.promise, abo] as Promise<RetryRunResult<S>>[];
     // if (spec.timeout) {
@@ -80,6 +81,7 @@ const retry =
 
 export interface Run<S extends LoadedSpec | Spec = Spec | LoadedSpec> {
   spec: S;
+  params: Spec$Params<S>;
   promise: Promise<
     | Spec$OK<S>
     | Spec$ERR<S>
@@ -94,7 +96,7 @@ const run1 =
   <S extends LoadedSpec>(spec: S, [r, state] = initRun(spec)) =>
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
     const abo = ON.promise(abort)("abort");
-
+    r.params = params;
     let run: Run | Promise<Run>;
     try {
       run = spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec);

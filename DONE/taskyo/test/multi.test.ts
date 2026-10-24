@@ -9,6 +9,7 @@ describe(choice, ({ eq, res }) => ({
     const c = choice(ts)("⨁");
     eq(c.__, ["⨁", ts]);
     const rp = await run(c)(["C", "C"]);
+    eq(rp.params, ["C", "C"]);
     const re = res();
 
     const p = <N extends number>(curr: N) => ({ curr, total: 4 });
