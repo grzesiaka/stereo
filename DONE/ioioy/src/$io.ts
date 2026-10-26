@@ -7,7 +7,7 @@ import Event from "./event";
 export const $IO =
   <X>($x: () => X) =>
   <I, O>(io: (OUT: Fn<[O], O>, X: (...x: [X?]) => X, IN: (cb: Cb<I>) => Dispose) => void | Dispose) =>
-  <Ctx extends CtxIdOptional = __>(ctx?: CtxIdOptional) => {
+  <Ctx extends CtxIdOptional>(ctx?: Ctx) => {
     // TODO optimize - do not use Event but something lighter
     const i = Event<I>()();
     const o = (x: O) => ($.OO.forEach((c) => c(x)), x);
