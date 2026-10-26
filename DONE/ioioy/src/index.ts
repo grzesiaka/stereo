@@ -1,3 +1,4 @@
+export * from "./$io";
 // (initial '_'; skipped from index)export * from "./_";
 export * from "./all-ios";
 export * from "./event";
