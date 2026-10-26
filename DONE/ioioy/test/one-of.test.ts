@@ -42,11 +42,22 @@ describe(I, ({ eq, res }) => ({
   tuple: () => {
     const ios = [E.N("Num"), V.S("Str")] as const;
     const i = I("Tuple")(ios);
+    const r = res();
+    i.O$()(r.add);
     eq(i.$1, ios[0]);
     eq(i.X, ["Num", __]);
+    r.eq([]);
     i.I(["Str", "1"]);
     eq(i.$1, ios[1]);
     eq(i.X, ["Str", "1"]);
+    r.eq([["Str", "1"]]);
+    i.I(["Str", "2"]);
+    eq(i.$1, ios[1]);
+    eq(i.X, ["Str", "2"]);
+    r.eq([
+      ["Str", "1"],
+      ["Str", "2"],
+    ]);
   },
 
   array: () => {

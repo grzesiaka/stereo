@@ -28,19 +28,19 @@ describe(Future, ({ eq }) => ({
     eq(f.X, 1);
   },
 
-  multi: () => {
-    const f = Future.$<number>();
+  multi_and_function: () => {
+    const f = Future.$((s: string) => parseInt(s));
     let x = 0;
     f.O((i) => (x = i));
     eq(resolved(f), "PENDING");
     eq(x, 0);
 
-    f.I(1);
+    f.I("1");
     eq(x, 1);
     eq(resolved(f), "OK");
     eq(f.X, 1);
 
-    f.I(2);
+    f.I("2");
     eq(x, 2);
     eq(resolved(f), "OK");
     eq(f.X, 2);
