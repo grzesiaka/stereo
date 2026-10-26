@@ -8,6 +8,7 @@ import { OP, WithOP, KeyValues$Object } from "jsyoyo";
 
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
+import { pipe } from "composyo";
 
 export type And_I<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "I"], IOs$FlatTypes<IOs>>>>;
 export type And_O<IOs extends IdIOs> = Simplify<KeyValues$Object<ij_Project<["Id", "O"], IOs$FlatTypes<IOs>>>>;
@@ -43,6 +44,9 @@ export const AndIOs =
         return x;
       },
       O: cId((c: Cb) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), L),
+      get O$() {
+        return pipe(this.O);
+      },
       get X() {
         return mb((v) => (v as IO).X)($.IOs);
       },

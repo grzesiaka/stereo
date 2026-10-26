@@ -3,6 +3,7 @@ import cId, { CtxIdOptional } from "jsyoyo/ctxid";
 import { IO } from "./io";
 import { ARR } from "~types";
 import { OP, WithOP } from "jsyoyo";
+import { pipe } from "composyo";
 
 export type Var<Ctx extends CtxIdOptional = __, X = unknown, IX = X, Params = __> = IO<IX, X, X, Ctx, IX> &
   WithOP<"VR", Params> & { OO: Set<Cb<X>> };
@@ -20,6 +21,9 @@ export const Var = <X, const Ctx extends CtxIdOptional = __>(X: X, L?: Ctx): Var
       (c?: Cb<X>, skipInitial = false) => (!c ? $.X : ($.OO.add(c), !skipInitial && c($.X), () => $.OO.delete(c))),
       L,
     ),
+    get O$() {
+      return pipe(this.O);
+    },
     OO: new Set<Cb<X>>(),
   }) as Var<Ctx, X> & { X: X };
   return $;

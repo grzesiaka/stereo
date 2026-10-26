@@ -2,6 +2,7 @@ import { __, Cb } from "jsyoyo";
 import cId, { CtxIdOptional } from "jsyoyo/ctxid";
 import { IO } from "./io";
 import { OP, WithOP } from "jsyoyo";
+import { pipe } from "composyo";
 
 export type Future<Ctx extends CtxIdOptional = __, X = unknown> = IO<X, X, __<X>, Ctx> &
   WithOP<"FUT", Ctx> & { OO: Set<Cb<X>>; X?: __<X> };
@@ -13,6 +14,9 @@ export const Future =
       OO: new Set<Cb<X>>(),
       I: (x: X) => (($.X = x), $.OO.forEach((c) => c(x)), x),
       O: cId((c?: Cb<X>) => (!c ? $.X : ($.OO.add(c), $.X !== __ && c($.X), () => $.OO.delete(c))), L),
+      get O$() {
+        return pipe(this.O);
+      },
     }) as Future<Ctx, X> & { X?: X };
     if ("#" in $.O) {
       $.I = (x: X) =>

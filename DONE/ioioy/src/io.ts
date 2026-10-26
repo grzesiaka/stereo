@@ -1,6 +1,7 @@
 import { __, Cb, Fn, ARR } from "jsyoyo";
 import CTX, { type CtxIdOptional } from "jsyoyo/ctxid";
 import type { Dispose } from "disposyo";
+import type { Pipe } from "composyo";
 
 /**
  * IO - a process
@@ -12,6 +13,7 @@ import type { Dispose } from "disposyo";
 export interface IO<I = any, O = any, X = any, Ctx extends CtxIdOptional = CtxIdOptional, OI = I> {
   I: Fn<[I], OI>;
   O: OUT<O, Ctx, X>;
+  O$: Pipe<OUT<O, Ctx, X>>;
   readonly X: X; // readonly when access from outside;
 }
 
@@ -35,6 +37,7 @@ export type IOs = ARR<IO>;
 export interface IO_FlatTypes<IO> {
   I: IO$I<IO>;
   O: IO$O<IO>;
+  O$: Pipe<IO$O<IO>>;
   X: IO$X<IO>;
   Id: IO$Id<IO>;
   IO: IO;

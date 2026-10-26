@@ -2,6 +2,7 @@ import { __, Cb } from "jsyoyo";
 import cId, { CtxIdOptional } from "jsyoyo/ctxid";
 import { IO } from "./io";
 import { OP, WithOP } from "jsyoyo";
+import { pipe } from "composyo";
 
 export type Event<Ctx extends CtxIdOptional = __, X = unknown> = IO<X, X, __, Ctx> &
   WithOP<"EV", Ctx> & { OO: Set<Cb<X>> };
@@ -12,6 +13,9 @@ export const Event = (<X>() =>
       OO: new Set<Cb<X>>(),
       I: (x: X) => ($.OO.forEach((c) => c(x)), x),
       O: cId((c?: Cb<X>) => (!c ? __ : ($.OO.add(c), () => $.OO.delete(c))), L),
+      get O$() {
+        return pipe(this.O);
+      },
     }) as Event<Ctx, X>;
     return $;
   }) as (<X>() => <const Ctx extends CtxIdOptional = __>(L?: Ctx) => Event<Ctx, X>) & {

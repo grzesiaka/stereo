@@ -6,6 +6,7 @@ import { OP, WithOP } from "jsyoyo";
 
 import type { IdIOs, IO, IOs$FlatTypes } from "./io";
 import iosById, { type IOsById } from "./ios-by-id";
+import { pipe } from "composyo";
 
 export type OneOf_I<IOs extends IdIOs> = ij_Project<["Id", "I"], IOs$FlatTypes<IOs>>[number];
 export type OneOf_O<IOs extends IdIOs> = ij_Project<["Id", "O"], IOs$FlatTypes<IOs>>[number];
@@ -71,6 +72,9 @@ export const OneOf =
         (c: Cb<any>, skipInitial = true) => (!c ? $.X : ($.OO.add(c), !skipInitial && c($.X), () => $.OO.delete(c))),
         L,
       ),
+      get O$() {
+        return pipe(this.O);
+      },
       OO: new Set(),
       [DISPOSE]: D() as Disposyo,
     }) as OneOf_IOs<Ctx, IOs, NullableValues> & { X: OneOf_X<IOs> | NullableValues[number] };
