@@ -114,6 +114,9 @@ importers:
         specifier: 'workspace:'
         version: link:../typier
     devDependencies:
+      composyo:
+        specifier: workspace:^
+        version: link:../composyo
       disposyo:
         specifier: workspace:^
         version: link:../../LIBS/disposyo

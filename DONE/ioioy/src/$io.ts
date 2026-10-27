@@ -1,27 +1,32 @@
-import { __, Cb, Fn } from "jsyoyo";
+import { __, Cb, Fn, id, ifFunction } from "jsyoyo";
 import cId, { CtxIdOptional } from "jsyoyo/ctxid";
 import { IO } from "./io";
 import { DISPOSE, Dispose } from "disposyo";
-import Event from "./event";
+
+type IN<I> = (I: I) => void;
 
 export const $IO =
   <X>($x: () => X) =>
-  <I, O>(io: (OUT: Fn<[O], O>, X: (...x: [X?]) => X, IN: (cb: Cb<I>) => Dispose) => void | Dispose) =>
+  <I, O>(io: (OUT: Fn<[O], O>, X: (...x: [X?]) => X) => IN<I> | [IN<I>, Dispose]) =>
   <Ctx extends CtxIdOptional>(ctx?: Ctx) => {
-    // TODO optimize - do not use Event but something lighter
-    const i = Event<I>()();
+    let i: IN<I>;
     const o = (x: O) => ($.OO.forEach((c) => c(x)), x);
     const $ = {
       OO: new Set<Cb<O>>(),
-      I: (v: I) => i.I(v),
+      I: (v: I) => i(v),
       X: $x(),
       O: cId((c?: Cb<O>) => (!c ? $.X : ($.OO.add(c), () => $.OO.delete(c))), ctx),
     } as IO<I, O, X, Ctx, I> & { OO: Set<Cb<O>>; [DISPOSE]: Dispose };
-    const d = io(o, (...x: [X?]) => (x.length && (($ as { X: any }).X = x[0]), $.X), i.O);
+    const _id = io(o, (...x: [X?]) => (x.length && (($ as { X: any }).X = x[0]), $.X));
+    ifFunction(
+      _id,
+      (f) => (i = f),
+      ([f]) => (i = f),
+    );
     $[DISPOSE] = () => {
-      i.OO.clear();
       $.OO.clear();
-      d?.();
+      i = id;
+      (_id as any)[1]?.();
     };
     return $;
   };
