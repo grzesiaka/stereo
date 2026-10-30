@@ -1,38 +1,47 @@
 import { AbortController, CtxIdOptional } from "jsyoyo";
-import { Run, run } from "./run";
-import { Spec$Params, SpecAny, Spec } from "./spec";
-import { $IO, IO, IO_State } from "ioioy";
+import { Run, run, Spec$Run } from "./run";
+import { Spec, Spec$ERR, Spec$OK, Spec$Params } from "./spec";
+import { $IO, IO } from "ioioy";
 
-export type RunnerUpdates<X, S extends SpecAny> = ["+" | "-", Run<S>, X];
+export type RunnerUpdates<X, S extends Spec> = ["+", Run<S>, X] | ["-", Spec$OK<S> | Spec$ERR<S>, Run<S>, X];
 
-export interface Runner<X, Spec extends SpecAny, Ctx extends CtxIdOptional> extends IO<
-  Spec$Params<Spec>,
-  X,
-  RunnerUpdates<X, Spec>,
-  Ctx
-> {
-  spec: Spec;
+export interface RunnerState {
+  runs: Set<Run>;
+}
+export interface Runner<
+  S extends Spec = Spec,
+  Ctx extends CtxIdOptional = {},
+  X extends RunnerState = RunnerState,
+  OnNext extends Promise<Spec$Run<S>> | Spec$Run<S> | null = Promise<Spec$Run<S>> | Spec$Run<S> | null,
+> extends IO<Spec$Params<S>, RunnerUpdates<X, S>, X, Ctx, OnNext> {
+  spec: S;
   abort: AbortController;
 }
 
 export const runner =
-  <X extends { runs: Run[] }>(
-    onNext: (run: Run, X: IO_State<X>) => void,
-    onRunDone: (run: Run, X: IO_State<X>) => void,
-    onDispose = (abort: AbortController, _X: IO_State<X>) => abort.abort(),
-    state = (() => ({ runs: [] as Run[] })) as () => X,
+  <X extends RunnerState>(
+    onNext: (run: () => Promise<Run> | Run | null, runner: Runner<Spec, CtxIdOptional>) => Promise<Run> | Run | null,
+    onRunDone?: (run: Run, runner: Runner<Spec, CtxIdOptional>) => void,
+    onDispose = (runner: Runner<Spec, CtxIdOptional>) => runner.abort.abort(),
+    state = (() => ({ runs: new Set() })) as () => X,
   ) =>
-  <S extends SpecAny, L = {}>(spec: S, L = {} as L) => {
-    const abort = new AbortController();
-    $IO(state, { spec, abort, ...L })<Spec$Params<S>, RunnerUpdates<X, S>>((O, X) => [
+  <S extends Spec, L = {}>(spec: S, L = {} as L) =>
+    $IO(state, { spec, abort: new AbortController(), ...L })<Spec$Params<S>, RunnerUpdates<X, S>>((O, X, $) => [
       async (x) => {
-        const r = (await run(spec as Spec)(x, abort.signal)) as Run<S>;
-        if (!abort.signal.aborted) {
-          r.promise.then(() => !abort.signal.aborted && (onRunDone(r, X), O(["-", r, X()])));
-          onNext(r, X);
-          O(["+", r, X()]);
+        const r = await onNext(() => {
+          if ($.abort.signal.aborted) return null;
+          return run($.spec as never)(x as never, $.abort.signal);
+        }, $ as never);
+        if (r && !$.abort.signal.aborted) {
+          r.promise.then(
+            (v) =>
+              !$.abort.signal.aborted &&
+              (onRunDone?.(r, $ as never), X().runs.delete(r), O(["-", v as never, r as never, X()])),
+          );
+          X().runs.add(r);
+          O(["+", r as never, X()]);
         }
+        return r;
       },
-      () => onDispose(abort, X),
-    ]) as <Ctx extends CtxIdOptional>(ctx?: Ctx) => Runner<X, S, Ctx> & L;
-  };
+      () => onDispose($ as never),
+    ]) as <Ctx extends CtxIdOptional>(ctx?: Ctx) => Runner<S, Ctx, X> & L;
