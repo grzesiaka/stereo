@@ -1,5 +1,5 @@
 import { RRERRORR } from "rrerrorr";
-import { __, AbortSignal, deferred, Fn$O, ifFunction, MsOrNumber, ON } from "jsyoyo";
+import { __, AbortSignal, deferred, DISPOSE, Fn$O, ifFunction, MsOrNumber, ON } from "jsyoyo";
 
 import { $State, $state, fakeAbort, load1 } from "./utils";
 import type { LoadedSpec, Spec$State, Spec$Deps, Spec$ERR, Spec$OK, Spec$Params, Spec, SpecOptions } from "./spec";
@@ -97,7 +97,7 @@ const run1 =
   (params: Spec$Params<S>, abort = fakeAbort): Run<S> => {
     const abo = ON.promise(abort)("abort");
     r.params = params;
-    let run: Run | Promise<Run>;
+    let run: unknown;
     try {
       run = spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec);
     } catch (e) {
@@ -118,9 +118,11 @@ const run1 =
             return x;
           })
         : Promise.race(promise)
-    ).catch((e) => {
-      throw critical(e, r);
-    });
+    )
+      .finally(abo[DISPOSE]) //
+      .catch((e) => {
+        throw critical(e, r);
+      });
 
     return r as never;
   };
