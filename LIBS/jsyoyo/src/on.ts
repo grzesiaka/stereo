@@ -1,6 +1,7 @@
 import { Fn, Fn$I } from "~types";
 import { id } from "./id";
 import { OnOff } from "./s-emitter";
+import { DISPOSE } from "disposyo";
 
 type ResolveCbs<T> = T extends { on: infer On extends Fn }
   ? Fn$I<On>
@@ -27,9 +28,18 @@ ON.CE =
 
 ON.promise =
   <T extends Partial<OnOff> = Partial<OnOff>>(t: T) =>
-  <K extends ResolveCbs<T>[0]>(k: K): Promise<Extract<ResolveCbs<T>, [K, any, any?]>[1]> =>
+  <K extends ResolveCbs<T>[0]>(
+    k: K,
+  ): Promise<Extract<ResolveCbs<T>, [K, any, any?]>[1]> & { [DISPOSE]: () => void } => {
     // TODO allow passing options
+    let d: () => void;
     // @ts-expect-error
-    new Promise((r) => ON.CE(t)(k, r));
+    const p = new Promise((r) => (d = ON.CE(t)(k, r))) as Promise<Extract<ResolveCbs<T>, [K, any, any?]>[1]> & {
+      [DISPOSE]: () => void;
+    };
+    // @ts-expect-error ok is assigned
+    p[DISPOSE] = d;
+    return p;
+  };
 
 export default ON;

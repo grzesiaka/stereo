@@ -35,9 +35,13 @@ export class AbortController implements _AbortController {
     this.signal = this.#$.$;
   }
   abort(reason?: unknown) {
+    if (this.signal.aborted) return;
     // @ts-expect-error readonly write
     this.signal.aborted = true;
+    // @ts-expect-error readonly write
+    this.signal.reason = reason;
     this.#$.emit("abort", { target: this.signal, type: "abort", reason });
+    this.#$.CBs.abort?.clear();
   }
 }
 
