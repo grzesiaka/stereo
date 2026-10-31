@@ -1,4 +1,4 @@
-import { __, a, CtxId, CtxIdOptional, Fn$I, Fn$O, Json, MsOrNumber, u } from "jsyoyo";
+import { __, a, CtxId, CtxIdOptional, Fn, Fn$I, Fn$O, Json, MsOrNumber, u } from "jsyoyo";
 
 import { ErrorLikes } from "./errors";
 import { ArrayTail, Simplify } from "type-fest";
@@ -17,7 +17,7 @@ export type Load$Deps<Lo extends Load> = __ extends Lo
     ? X
     : AwaiTreed<Dethunk<Lo>>;
 
-export type LoadedSpec<S extends SpecAny = SpecAny, O extends SpecOptions = SpecOptions> = S &
+export type LoadedSpec<S extends Spec = Spec, O extends SpecOptions = SpecOptions> = S &
   O & {
     deps: S extends { load?: __<Load> } ? Load$Deps<S["load"]> : __;
   };
@@ -91,7 +91,7 @@ export interface SpecAny<
 export type Spec$Params<S> = S extends { run: any } ? Fn$I<S["run"]>[0] : never;
 // Weirdly this does not picks up `undefined` after params provided
 // export type Spec$Params<S> = S extends { run: RunFn<infer X, any, any, any> } ? X : never;
-export type Spec$Result<S> = S extends { run: RunFn<any, infer X, any, any> } ? X : never;
+export type Spec$Result<S> = S extends { run: Fn } ? Fn$O<S["run"]> : never;
 export type Spec$Deps<S> = S extends { load: any } ? Load$Deps<S["load"]> : never;
 export type Spec$State<S> = S extends { state: any } ? ToRunState<S["state"]> : never;
 

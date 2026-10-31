@@ -1,36 +1,49 @@
 import { $describe, setupFakeTimers } from "~testing";
 
-import { loop, spec } from "../src";
-import { wait } from "jsyoyo";
+import { load, loop, spec } from "../src";
+import { ifError, wait } from "jsyoyo";
 
-$describe(setupFakeTimers)("replace", ({ res, eq, v }) => ({
+$describe(setupFakeTimers)("replace", ({ res, v }) => ({
   sync: async () => {
-    const x = res();
+    const r = res();
     let i = 1;
-    const s = spec()(async (n: number) => {
+    const s_ = spec()(async (n: number) => {
       await wait(1);
       i += n;
       return i;
     })("");
+    const s = await load(s_);
+
     const l = loop("replace")(s)();
-    // @ts-expect-error v[1].params
-    l.O((v) => x.add([v[0], v[1].params || v[1]]));
+
+    l.O((v) => {
+      switch (v[0]) {
+        case "+":
+          r.add(["+", v[1].params]);
+          break;
+        case "-":
+          r.add(["-", v[2].params, ifError(v[1], (e) => e.name)]);
+          break;
+      }
+    });
     l.I(1);
-    x.eq([]);
+    r.eq([["+", 1]]);
     await v.vi.advanceTimersByTimeAsync(1);
-    x.eq([
+    r.eq([
       ["+", 1],
-      ["-", 2],
+      ["-", 1, 2],
     ]);
 
     l.I(2);
     l.I(3);
     await v.vi.advanceTimersByTimeAsync(1);
-    x.eq([
+    r.eq([
       ["+", 1],
-      ["-", 2],
+      ["-", 1, 2],
       ["+", 2],
       ["+", 3],
+      ["-", 2, "taskyo.error.abort"],
+      ["-", 3, 7],
     ]);
   },
 }));

@@ -2,7 +2,18 @@ import { RRERRORR } from "rrerrorr";
 import { __, AbortSignal, deferred, DISPOSE, Fn$O, ifFunction, MsOrNumber, ON } from "jsyoyo";
 
 import { $State, $state, fakeAbort, load1 } from "./utils";
-import type { LoadedSpec, Spec$State, Spec$Deps, Spec$ERR, Spec$OK, Spec$Params, Spec, SpecOptions } from "./spec";
+import type {
+  LoadedSpec,
+  Spec$State,
+  Spec$Deps,
+  Spec$ERR,
+  Spec$OK,
+  Spec$Params,
+  Spec,
+  SpecOptions,
+  StateRunFn,
+  RunState,
+} from "./spec";
 import { initRetry, RetryOptions } from "./retry";
 
 import { critical, ERR, timeout } from "./errors";
@@ -28,12 +39,14 @@ type InitRun = Fn$O<typeof initRun>;
 const initRun = <R extends Run = Run>(spec: LoadedSpec) => {
   const r = {} as R;
   const _state = ifFunction(
-    spec.state,
+    spec.state as StateRunFn<RunState> | RunState, // TODO ideally no cast
     ($) => $(spec.deps),
     (x) => ({ ...x }),
   );
+  // @ts-expect-error fix spec.update
   const state = $state(_state, spec.deps, spec.update);
   r.spec = spec;
+  // @ts-expect-error fix type
   r.state = state[0].O;
   spec.retry && ((r as never as RetryRun).runs = []);
   return [r, state] as [run: R, state: typeof state];
@@ -99,7 +112,7 @@ const run1 =
     r.params = params;
     let run: unknown;
     try {
-      run = spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec);
+      run = spec.run(params, spec.deps, state[1], (f) => abo.then(f), spec as never); // TODO fix as never
     } catch (e) {
       throw critical(e, r);
     }
